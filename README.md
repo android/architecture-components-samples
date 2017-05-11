@@ -7,21 +7,16 @@ A collection of samples using the Architecture Components:
 - Lifecycle-aware components
 - ViewModels
 - LiveData
- 
+
+**The Architecture Components are not final and these samples are a preview**
+
 ### Samples
 
-**[PersistenceBasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicPersistenceSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
+**[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
 
 **[PersistenceContentProviderSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceContentProviderSample)** - Shows how to expose data via a Content Provider using Room.
 
-
-**[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/AdvancedArchitectureSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. 
-
-
-Prerequisites
---------------
-
-- TODO
+**[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/AdvancedArchitectureSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 2.4.
 
 License
 -------
