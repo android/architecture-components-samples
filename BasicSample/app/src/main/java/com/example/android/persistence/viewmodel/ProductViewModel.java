@@ -21,7 +21,6 @@ import android.arch.core.util.Function;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
@@ -37,20 +36,14 @@ import java.util.List;
 public class ProductViewModel extends AndroidViewModel {
 
     private static final MutableLiveData ABSENT = new MutableLiveData();
-
-    private final LiveData<ProductEntity> mObservableProduct;
-
-    private Observer<ProductEntity> mProductObserver;
-
-    public ObservableField<ProductEntity> product = new ObservableField<>();
-
     {
         //noinspection unchecked
         ABSENT.setValue(null);
     }
 
-    // Product exposed for data binding
-    //public final ObservableField<ProductEntity> product = new ObservableField<>();
+    private final LiveData<ProductEntity> mObservableProduct;
+
+    public ObservableField<ProductEntity> product = new ObservableField<>();
 
     private final int mProductId;
 
