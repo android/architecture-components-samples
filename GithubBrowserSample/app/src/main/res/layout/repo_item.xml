@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2017 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="showFullName" type="boolean"/>
+        <variable name="repo" type="com.android.example.github.vo.Repo"/>
+    </data>
+    <android.support.v7.widget.CardView android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:cardUseCompatPadding="true">
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:text="@{showFullName ? repo.fullName : repo.name}"
+                    android:layout_width="368dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/name"
+                    tools:text="repository name" android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/stars"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginLeft="@dimen/default_margin"/>
+            <TextView
+                    android:text="@{repo.description}"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/desc"
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/default_margin"
+                    tools:layout_editor_absoluteX="@dimen/default_margin"
+                    tools:text="this is some description more description more description"
+                    android:layout_width="0dp" android:layout_marginLeft="@dimen/default_margin"/>
+            <TextView
+                    android:text="@{`` + repo.stars}"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/stars" tools:text="5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/default_margin"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="@dimen/default_margin"
+                    android:drawableStart="@android:drawable/btn_star"
+                    android:drawableLeft="@android:drawable/btn_star"
+                    android:layout_marginLeft="@dimen/default_margin"/>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</layout>
