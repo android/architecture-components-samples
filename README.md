@@ -8,9 +8,10 @@ A collection of samples using the Architecture Components:
 - ViewModels
 - LiveData
 
-**The Architecture Components are not final and these samples are a preview**
-
 ### Samples
+
+**The Architecture Components and these samples are previews to gather developer feedback. 
+Samples may not be fully featured, documented or tested and could be modified or deleted in the future.**
 
 **[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
 

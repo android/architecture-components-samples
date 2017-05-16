@@ -32,7 +32,7 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url "https://android-devtools-staging.corp.google.com/no_crawl/maven2"
+            url "https://maven.google.com"
         }
     }
 }
@@ -47,6 +47,6 @@ ext {
     runnerVersion = "0.5"
     rulesVersion = "0.5"
     espressoVersion = "2.2.2"
-    archLifecycleVersion = "0.9.0"
-    archRoomVersion = "0.9.0"
+    archLifecycleVersion = "1.0.0-alpha1"
+    archRoomVersion = "1.0.0-alpha1"
 }

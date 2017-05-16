@@ -81,24 +81,26 @@ public class ProductFragment extends LifecycleFragment {
 
     private void subscribeToModel(final ProductViewModel model) {
 
-        model.getComments().observe(this, new Observer<List<CommentEntity>>() {
-                    @Override
-                    public void onChanged(@Nullable List<CommentEntity> commentEntities) {
-                        if (commentEntities != null) {
-                            mBinding.setIsLoading(false);
-                            mCommentAdapter.setCommentList(commentEntities);
-                        } else {
-                            mBinding.setIsLoading(true);
-                        }
-                    }
-                });
+        // Observe product data
+        model.getObservableProduct().observe(this, new Observer<ProductEntity>() {
+            @Override
+            public void onChanged(@Nullable ProductEntity productEntity) {
+                model.setProduct(productEntity);
+            }
+        });
 
-                model.getObservableProduct().observe(this, new Observer<ProductEntity>() {
-                    @Override
-                    public void onChanged(@Nullable ProductEntity productEntity) {
-                        model.setProduct(productEntity);
-                    }
-                });
+        // Observe comments
+        model.getComments().observe(this, new Observer<List<CommentEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<CommentEntity> commentEntities) {
+                if (commentEntities != null) {
+                    mBinding.setIsLoading(false);
+                    mCommentAdapter.setCommentList(commentEntities);
+                } else {
+                    mBinding.setIsLoading(true);
+                }
+            }
+        });
     }
 
     /** Creates product fragment for specific product ID */
