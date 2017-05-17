@@ -56,8 +56,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
 
     // App Toolkit
-    compile "android.arch.lifecycle:extensions:0.9.0"
-    compile "android.arch.persistence.room:runtime:0.9.0"
+    compile "android.arch.lifecycle:extensions:1.0.0-alpha1"
+    compile "android.arch.persistence.room:runtime:1.0.0-alpha1"
     annotationProcessor "android.arch.lifecycle:compiler:1.0.0-alpha1"
-    annotationProcessor "android.arch.persistence.room:compiler1.0.0-alpha1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha1"
 }
