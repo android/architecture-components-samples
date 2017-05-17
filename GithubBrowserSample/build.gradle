@@ -45,7 +45,7 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'maven.google.com' }
+        maven { url 'https://maven.google.com' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 }
