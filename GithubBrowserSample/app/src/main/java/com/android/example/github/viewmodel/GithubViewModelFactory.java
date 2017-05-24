@@ -16,42 +16,30 @@
 
 package com.android.example.github.viewmodel;
 
-import com.android.example.github.di.ViewModelSubComponent;
-import com.android.example.github.repository.RepoRepository;
-import com.android.example.github.repository.UserRepository;
-import com.android.example.github.ui.repo.RepoViewModel;
-import com.android.example.github.ui.search.SearchViewModel;
-import com.android.example.github.ui.user.UserViewModel;
-
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
-import android.support.v4.util.ArrayMap;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
 public class GithubViewModelFactory implements ViewModelProvider.Factory {
-    private final ArrayMap<Class, Callable<? extends ViewModel>> creators;
+    private final Map<Class<? extends ViewModel>, Provider<ViewModel>> creators;
 
     @Inject
-    public GithubViewModelFactory(ViewModelSubComponent viewModelSubComponent) {
-        creators = new ArrayMap<>();
-        // we cannot inject view models directly because they won't be bound to the owner's
-        // view model scope.
-        creators.put(SearchViewModel.class, () -> viewModelSubComponent.searchViewModel());
-        creators.put(UserViewModel.class, () -> viewModelSubComponent.userViewModel());
-        creators.put(RepoViewModel.class, () -> viewModelSubComponent.repoViewModel());
+    public GithubViewModelFactory(Map<Class<? extends ViewModel>, Provider<ViewModel>> creators) {
+        this.creators = creators;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
-        Callable<? extends ViewModel> creator = creators.get(modelClass);
+        Provider<? extends ViewModel> creator = creators.get(modelClass);
         if (creator == null) {
-            for (Map.Entry<Class, Callable<? extends ViewModel>> entry : creators.entrySet()) {
+            for (Map.Entry<Class<? extends ViewModel>, Provider<ViewModel>> entry : creators.entrySet()) {
                 if (modelClass.isAssignableFrom(entry.getKey())) {
                     creator = entry.getValue();
                     break;
@@ -62,7 +50,7 @@ public class GithubViewModelFactory implements ViewModelProvider.Factory {
             throw new IllegalArgumentException("unknown model class " + modelClass);
         }
         try {
-            return (T) creator.call();
+            return (T) creator.get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
