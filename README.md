@@ -17,7 +17,7 @@ Samples may not be fully featured, documented or tested and could be modified or
 
 **[PersistenceContentProviderSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceContentProviderSample)** - Shows how to expose data via a Content Provider using Room.
 
-**[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/AdvancedArchitectureSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 2.4.
+**[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 canary 1
 
 License
 -------

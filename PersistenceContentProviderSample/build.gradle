@@ -30,7 +30,7 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url "https://android-devtools-staging.corp.google.com/no_crawl/maven2"
+            url "https://maven.google.com"
         }
     }
 }

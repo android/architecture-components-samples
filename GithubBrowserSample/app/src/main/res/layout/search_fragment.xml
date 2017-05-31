@@ -26,8 +26,7 @@
         <variable name="resultCount" type="int"/>
         <variable name="query" type="String"/>
         <variable name="loadingMore" type="boolean"/>
-        <variable name="searchResource"
-                  type="Resource&lt;List&lt;Repo&gt;&gt;"/>
+        <variable name="searchResource" type="Resource"/>
         <variable name="callback" type="com.android.example.github.ui.common.RetryCallback"/>
     </data>
     <android.support.constraint.ConstraintLayout

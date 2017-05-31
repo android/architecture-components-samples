@@ -48,7 +48,7 @@ android {
         test.java.srcDirs += "src/test-common/java"
     }
     lintOptions {
-        disable 'GoogleAppIndexingWarning'
+        lintConfig rootProject.file('lint.xml')
     }
 }
 
