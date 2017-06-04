@@ -26,6 +26,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
@@ -48,10 +50,11 @@ public class SearchViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantExecutor = new InstantTaskExecutorRule();
     private SearchViewModel viewModel;
+    @Mock
     private RepoRepository repository;
     @Before
     public void init() {
-        repository = mock(RepoRepository.class);
+        MockitoAnnotations.initMocks(this);
         viewModel = new SearchViewModel(repository);
     }
 

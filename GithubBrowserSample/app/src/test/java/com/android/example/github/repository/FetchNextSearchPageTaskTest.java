@@ -30,6 +30,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
@@ -56,10 +58,13 @@ public class FetchNextSearchPageTaskTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    @Mock
     private GithubService service;
 
+    @Mock
     private GithubDb db;
 
+    @Mock
     private RepoDao repoDao;
 
     private FetchNextSearchPageTask task;
@@ -70,9 +75,7 @@ public class FetchNextSearchPageTaskTest {
 
     @Before
     public void init() {
-        service = mock(GithubService.class);
-        db = mock(GithubDb.class);
-        repoDao = mock(RepoDao.class);
+        MockitoAnnotations.initMocks(this);
         when(db.repoDao()).thenReturn(repoDao);
         task = new FetchNextSearchPageTask("foo", service, db);
         //noinspection unchecked

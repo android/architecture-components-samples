@@ -31,6 +31,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
@@ -59,7 +61,9 @@ public class UserFragmentTest {
     public ActivityTestRule<SingleFragmentActivity> activityRule =
             new ActivityTestRule<>(SingleFragmentActivity.class, true, true);
 
+    @Mock
     private UserViewModel viewModel;
+    @Mock
     private NavigationController navigationController;
     private FragmentBindingAdapters fragmentBindingAdapters;
     private MutableLiveData<Resource<User>> userData = new MutableLiveData<>();
@@ -67,11 +71,10 @@ public class UserFragmentTest {
 
     @Before
     public void init() {
+        MockitoAnnotations.initMocks(this);
         UserFragment fragment = UserFragment.create("foo");
-        viewModel = mock(UserViewModel.class);
         when(viewModel.getUser()).thenReturn(userData);
         when(viewModel.getRepositories()).thenReturn(repoListData);
-        navigationController = mock(NavigationController.class);
         fragmentBindingAdapters = mock(FragmentBindingAdapters.class);
 
         fragment.viewModelFactory = ViewModelUtil.createFor(viewModel);
