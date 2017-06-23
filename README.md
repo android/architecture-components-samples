@@ -19,7 +19,7 @@ Samples may not be fully featured, documented or tested and could be modified or
 
 **[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 canary 1
 
-**[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows hot to use Room with RxJava. Also uses ViewModels.
+**[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use Room with RxJava 2. Also uses ViewModels.
 
 License
 -------
