@@ -53,6 +53,7 @@ public class ProductListFragment extends LifecycleFragment {
         mProductAdapter = new ProductAdapter(mProductClickCallback);
         mBinding.productsList.setAdapter(mProductAdapter);
 
+
         return mBinding.getRoot();
     }
 

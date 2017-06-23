@@ -45,18 +45,15 @@ public class ProductListViewModel extends AndroidViewModel {
 
         LiveData<Boolean> databaseCreated = databaseCreator.isDatabaseCreated();
         mObservableProducts = Transformations.switchMap(databaseCreated,
-                new Function<Boolean, LiveData<List<ProductEntity>>>() {
-            @Override
-            public LiveData<List<ProductEntity>> apply(Boolean isDbCreated) {
-                if (!Boolean.TRUE.equals(isDbCreated)) { // Not needed here, but watch out for null
-                    //noinspection unchecked
-                    return ABSENT;
-                } else {
-                    //noinspection ConstantConditions
-                    return databaseCreator.getDatabase().productDao().loadAllProducts();
-                }
-            }
-        });
+                isDbCreated -> {
+                    if (!Boolean.TRUE.equals(isDbCreated)) { // Not needed here, but watch out for null
+                        //noinspection unchecked
+                        return ABSENT;
+                    } else {
+                        //noinspection ConstantConditions
+                        return databaseCreator.getDatabase().productDao().loadAllProducts();
+                    }
+                });
 
         databaseCreator.createDb(this.getApplication());
     }

@@ -56,29 +56,23 @@ public class ProductViewModel extends AndroidViewModel {
 
         final DatabaseCreator databaseCreator = DatabaseCreator.getInstance(this.getApplication());
 
-        mObservableComments = Transformations.switchMap(databaseCreator.isDatabaseCreated(), new Function<Boolean, LiveData<List<CommentEntity>>>() {
-            @Override
-            public LiveData<List<CommentEntity>> apply(Boolean isDbCreated) {
-                if (!isDbCreated) {
-                    //noinspection unchecked
-                    return ABSENT;
-                } else {
-                    //noinspection ConstantConditions
-                    return databaseCreator.getDatabase().commentDao().loadComments(mProductId);
-                }
+        mObservableComments = Transformations.switchMap(databaseCreator.isDatabaseCreated(), isDbCreated -> {
+            if (!isDbCreated) {
+                //noinspection unchecked
+                return ABSENT;
+            } else {
+                //noinspection ConstantConditions
+                return databaseCreator.getDatabase().commentDao().loadComments(mProductId);
             }
         });
 
-        mObservableProduct = Transformations.switchMap(databaseCreator.isDatabaseCreated(), new Function<Boolean, LiveData<ProductEntity>>() {
-            @Override
-            public LiveData<ProductEntity> apply(Boolean isDbCreated) {
-                if (!isDbCreated) {
-                    //noinspection unchecked
-                    return ABSENT;
-                } else {
-                    //noinspection ConstantConditions
-                    return databaseCreator.getDatabase().productDao().loadProduct(mProductId);
-                }
+        mObservableProduct = Transformations.switchMap(databaseCreator.isDatabaseCreated(), isDbCreated -> {
+            if (!isDbCreated) {
+                //noinspection unchecked
+                return ABSENT;
+            } else {
+                //noinspection ConstantConditions
+                return databaseCreator.getDatabase().productDao().loadProduct(mProductId);
             }
         });
 
