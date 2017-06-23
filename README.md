@@ -10,7 +10,7 @@ A collection of samples using the Architecture Components:
 
 ### Samples
 
-**The Architecture Components and these samples are previews to gather developer feedback. 
+**The Architecture Components and these samples are previews to gather developer feedback.
 Samples may not be fully featured, documented or tested and could be modified or deleted in the future.**
 
 **[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
@@ -18,6 +18,8 @@ Samples may not be fully featured, documented or tested and could be modified or
 **[PersistenceContentProviderSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceContentProviderSample)** - Shows how to expose data via a Content Provider using Room.
 
 **[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 canary 1
+
+**[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows hot to use Room with RxJava. Also uses ViewModels.
 
 License
 -------
@@ -38,5 +40,3 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
-
-
