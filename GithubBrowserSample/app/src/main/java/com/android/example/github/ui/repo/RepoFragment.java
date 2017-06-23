@@ -21,9 +21,10 @@ import com.android.example.github.binding.FragmentDataBindingComponent;
 import com.android.example.github.databinding.RepoFragmentBinding;
 import com.android.example.github.di.Injectable;
 import com.android.example.github.ui.common.NavigationController;
-import com.android.example.github.util.AutoClearedValue;
 import com.android.example.github.vo.Repo;
 import com.android.example.github.vo.Resource;
+import com.ivianuu.dusty.Dusty;
+import com.ivianuu.dusty.annotations.Clear;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
@@ -63,8 +64,10 @@ public class RepoFragment extends Fragment implements LifecycleRegistryOwner, In
     NavigationController navigationController;
 
     DataBindingComponent dataBindingComponent = new FragmentDataBindingComponent(this);
-    AutoClearedValue<RepoFragmentBinding> binding;
-    AutoClearedValue<ContributorAdapter> adapter;
+    @Clear
+    RepoFragmentBinding binding;
+    @Clear
+    ContributorAdapter adapter;
 
     @Override
     public LifecycleRegistry getLifecycle() {
@@ -85,15 +88,14 @@ public class RepoFragment extends Fragment implements LifecycleRegistryOwner, In
         }
         LiveData<Resource<Repo>> repo = repoViewModel.getRepo();
         repo.observe(this, resource -> {
-            binding.get().setRepo(resource == null ? null : resource.data);
-            binding.get().setRepoResource(resource);
-            binding.get().executePendingBindings();
+            binding.setRepo(resource == null ? null : resource.data);
+            binding.setRepoResource(resource);
+            binding.executePendingBindings();
         });
 
-        ContributorAdapter adapter = new ContributorAdapter(dataBindingComponent,
+        adapter = new ContributorAdapter(dataBindingComponent,
                 contributor -> navigationController.navigateToUser(contributor.getLogin()));
-        this.adapter = new AutoClearedValue<>(this, adapter);
-        binding.get().contributorList.setAdapter(adapter);
+        binding.contributorList.setAdapter(adapter);
         initContributorList(repoViewModel);
     }
 
@@ -102,23 +104,28 @@ public class RepoFragment extends Fragment implements LifecycleRegistryOwner, In
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
             if (listResource != null && listResource.data != null) {
-                adapter.get().replace(listResource.data);
+                adapter.replace(listResource.data);
             } else {
                 //noinspection ConstantConditions
-                adapter.get().replace(Collections.emptyList());
+                adapter.replace(Collections.emptyList());
             }
         });
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Dusty.register(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        RepoFragmentBinding dataBinding = DataBindingUtil
+        binding = DataBindingUtil
                 .inflate(inflater, R.layout.repo_fragment, container, false);
-        dataBinding.setRetryCallback(() -> repoViewModel.retry());
-        binding = new AutoClearedValue<>(this, dataBinding);
-        return dataBinding.getRoot();
+        binding.setRetryCallback(() -> repoViewModel.retry());
+        return binding.getRoot();
     }
 
     public static RepoFragment create(String owner, String name) {

@@ -22,7 +22,8 @@ import com.android.example.github.databinding.SearchFragmentBinding;
 import com.android.example.github.di.Injectable;
 import com.android.example.github.ui.common.NavigationController;
 import com.android.example.github.ui.common.RepoListAdapter;
-import com.android.example.github.util.AutoClearedValue;
+import com.ivianuu.dusty.Dusty;
+import com.ivianuu.dusty.annotations.Clear;
 
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.ViewModelProvider;
@@ -56,21 +57,28 @@ public class SearchFragment extends LifecycleFragment implements Injectable {
 
     DataBindingComponent dataBindingComponent = new FragmentDataBindingComponent(this);
 
-    AutoClearedValue<SearchFragmentBinding> binding;
+    @Clear
+    SearchFragmentBinding binding;
 
-    AutoClearedValue<RepoListAdapter> adapter;
+    @Clear
+    RepoListAdapter adapter;
 
     private SearchViewModel searchViewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Dusty.register(this);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        SearchFragmentBinding dataBinding = DataBindingUtil
+        binding = DataBindingUtil
                 .inflate(inflater, R.layout.search_fragment, container, false,
                         dataBindingComponent);
-        binding = new AutoClearedValue<>(this, dataBinding);
-        return dataBinding.getRoot();
+        return binding.getRoot();
     }
 
     @Override
@@ -78,25 +86,24 @@ public class SearchFragment extends LifecycleFragment implements Injectable {
         super.onActivityCreated(savedInstanceState);
         searchViewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel.class);
         initRecyclerView();
-        RepoListAdapter rvAdapter = new RepoListAdapter(dataBindingComponent, true,
+        adapter = new RepoListAdapter(dataBindingComponent, true,
                 repo -> navigationController.navigateToRepo(repo.owner.login, repo.name));
-        binding.get().repoList.setAdapter(rvAdapter);
-        adapter = new AutoClearedValue<>(this, rvAdapter);
+        binding.repoList.setAdapter(adapter);
 
         initSearchInputListener();
 
-        binding.get().setCallback(() -> searchViewModel.refresh());
+        binding.setCallback(() -> searchViewModel.refresh());
     }
 
     private void initSearchInputListener() {
-        binding.get().input.setOnEditorActionListener((v, actionId, event) -> {
+        binding.input.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch(v);
                 return true;
             }
             return false;
         });
-        binding.get().input.setOnKeyListener((v, keyCode, event) -> {
+        binding.input.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN)
                     && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 doSearch(v);
@@ -107,46 +114,46 @@ public class SearchFragment extends LifecycleFragment implements Injectable {
     }
 
     private void doSearch(View v) {
-        String query = binding.get().input.getText().toString();
+        String query = binding.input.getText().toString();
         // Dismiss keyboard
         dismissKeyboard(v.getWindowToken());
-        binding.get().setQuery(query);
+        binding.setQuery(query);
         searchViewModel.setQuery(query);
     }
 
     private void initRecyclerView() {
 
-        binding.get().repoList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.repoList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 LinearLayoutManager layoutManager = (LinearLayoutManager)
                         recyclerView.getLayoutManager();
                 int lastPosition = layoutManager
                         .findLastVisibleItemPosition();
-                if (lastPosition == adapter.get().getItemCount() - 1) {
+                if (lastPosition == adapter.getItemCount() - 1) {
                     searchViewModel.loadNextPage();
                 }
             }
         });
         searchViewModel.getResults().observe(this, result -> {
-            binding.get().setSearchResource(result);
-            binding.get().setResultCount((result == null || result.data == null)
+            binding.setSearchResource(result);
+            binding.setResultCount((result == null || result.data == null)
                     ? 0 : result.data.size());
-            adapter.get().replace(result == null ? null : result.data);
-            binding.get().executePendingBindings();
+            adapter.replace(result == null ? null : result.data);
+            binding.executePendingBindings();
         });
 
         searchViewModel.getLoadMoreStatus().observe(this, loadingMore -> {
             if (loadingMore == null) {
-                binding.get().setLoadingMore(false);
+                binding.setLoadingMore(false);
             } else {
-                binding.get().setLoadingMore(loadingMore.isRunning());
+                binding.setLoadingMore(loadingMore.isRunning());
                 String error = loadingMore.getErrorMessageIfNotHandled();
                 if (error != null) {
-                    Snackbar.make(binding.get().loadMoreBar, error, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show();
                 }
             }
-            binding.get().executePendingBindings();
+            binding.executePendingBindings();
         });
     }
 

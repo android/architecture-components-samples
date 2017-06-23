@@ -22,7 +22,8 @@ import com.android.example.github.databinding.UserFragmentBinding;
 import com.android.example.github.di.Injectable;
 import com.android.example.github.ui.common.NavigationController;
 import com.android.example.github.ui.common.RepoListAdapter;
-import com.android.example.github.util.AutoClearedValue;
+import com.ivianuu.dusty.Dusty;
+import com.ivianuu.dusty.annotations.Clear;
 
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.ViewModelProvider;
@@ -46,8 +47,10 @@ public class UserFragment extends LifecycleFragment implements Injectable {
 
     DataBindingComponent dataBindingComponent = new FragmentDataBindingComponent(this);
     private UserViewModel userViewModel;
-    private AutoClearedValue<UserFragmentBinding> binding;
-    private AutoClearedValue<RepoListAdapter> adapter;
+    @Clear
+    UserFragmentBinding binding;
+    @Clear
+    RepoListAdapter adapter;
 
     public static UserFragment create(String login) {
         UserFragment userFragment = new UserFragment();
@@ -57,15 +60,20 @@ public class UserFragment extends LifecycleFragment implements Injectable {
         return userFragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Dusty.register(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        UserFragmentBinding dataBinding = DataBindingUtil.inflate(inflater, R.layout.user_fragment,
+        binding = DataBindingUtil.inflate(inflater, R.layout.user_fragment,
                 container, false, dataBindingComponent);
-        dataBinding.setRetryCallback(() -> userViewModel.retry());
-        binding = new AutoClearedValue<>(this, dataBinding);
-        return dataBinding.getRoot();
+        binding.setRetryCallback(() -> userViewModel.retry());
+        return binding.getRoot();
     }
 
     @Override
@@ -74,26 +82,25 @@ public class UserFragment extends LifecycleFragment implements Injectable {
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         userViewModel.setLogin(getArguments().getString(LOGIN_KEY));
         userViewModel.getUser().observe(this, userResource -> {
-            binding.get().setUser(userResource == null ? null : userResource.data);
-            binding.get().setUserResource(userResource);
+            binding.setUser(userResource == null ? null : userResource.data);
+            binding.setUserResource(userResource);
             // this is only necessary because espresso cannot read data binding callbacks.
-            binding.get().executePendingBindings();
+            binding.executePendingBindings();
         });
-        RepoListAdapter rvAdapter = new RepoListAdapter(dataBindingComponent, false,
+        adapter = new RepoListAdapter(dataBindingComponent, false,
                 repo -> navigationController.navigateToRepo(repo.owner.login, repo.name));
-        binding.get().repoList.setAdapter(rvAdapter);
-        this.adapter = new AutoClearedValue<>(this, rvAdapter);
+        binding.repoList.setAdapter(adapter);
         initRepoList();
     }
 
     private void initRepoList() {
         userViewModel.getRepositories().observe(this, repos -> {
-            // no null checks for adapter.get() since LiveData guarantees that we'll not receive
+            // no null checks for adapter since LiveData guarantees that we'll not receive
             // the event if fragment is now show.
             if (repos == null) {
-                adapter.get().replace(null);
+                adapter.replace(null);
             } else {
-                adapter.get().replace(repos.data);
+                adapter.replace(repos.data);
             }
         });
     }
