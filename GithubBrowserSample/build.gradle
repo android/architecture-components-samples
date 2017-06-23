@@ -41,6 +41,7 @@ ext.mockito_version = "2.7.19"
 ext.constraint_layout_version = "1.0.2"
 ext.glide_version = "3.7.0"
 ext.timber_version = "4.5.1"
+ext.dusty_version = "1.1.4"
 
 allprojects {
     repositories {
@@ -48,6 +49,7 @@ allprojects {
         mavenCentral()
         maven { url 'https://maven.google.com' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven { url 'https://jitpack.io' }
     }
 }
 

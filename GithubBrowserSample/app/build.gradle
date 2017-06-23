@@ -75,10 +75,13 @@ dependencies {
 
     compile "com.jakewharton.timber:timber:$timber_version"
 
+    compile "com.github.IVIanuu.Dusty:dusty:$dusty_version"
+
     annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
     annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
     annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
+    annotationProcessor "com.github.IVIanuu.Dusty:dusty-processor:$dusty_version"
 
     testCompile "junit:junit:$junit_version"
     testCompile "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
