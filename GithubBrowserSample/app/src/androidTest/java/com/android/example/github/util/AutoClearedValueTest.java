@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -62,7 +63,21 @@ public class AutoClearedValueTest {
         assertThat(testFragment.testValue.get(), is("foo"));
     }
 
+    @Test
+    public void testDontClearForDialog() throws Throwable {
+        testFragment.testValue = new AutoClearedValue<>(testFragment, "foo");
+        DialogFragment dialogFragment = new DialogFragment();
+        dialogFragment.show(testFragment.getFragmentManager(), "dialog");
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        assertThat(testFragment.testValue.get(), is("foo"));
+    }
+
     public static class TestFragment extends Fragment {
         AutoClearedValue<String> testValue;
+
+        @Override
+        public void onDestroyView() {
+            super.onDestroyView();
+        }
     }
 }
