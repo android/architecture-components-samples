@@ -94,7 +94,7 @@ public class NetworkBoundResourceTest {
                 : new InstantAppExecutors();
         networkBoundResource = new NetworkBoundResource<Foo, Foo>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull Foo item) {
+            protected void saveCallResult(@Nullable Foo item) {
                 saveCallResult.apply(item);
             }
 

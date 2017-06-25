@@ -34,6 +34,7 @@ import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -74,7 +75,10 @@ public class RepoRepository {
     public LiveData<Resource<List<Repo>>> loadRepos(String owner) {
         return new NetworkBoundResource<List<Repo>, List<Repo>>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull List<Repo> item) {
+            protected void saveCallResult(@Nullable List<Repo> item) {
+                if (item == null) {
+                    return;
+                }
                 repoDao.insertRepos(item);
             }
 
@@ -105,7 +109,10 @@ public class RepoRepository {
     public LiveData<Resource<Repo>> loadRepo(String owner, String name) {
         return new NetworkBoundResource<Repo, Repo>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull Repo item) {
+            protected void saveCallResult(@Nullable Repo item) {
+                if (item == null) {
+                    return;
+                }
                 repoDao.insert(item);
             }
 
@@ -131,7 +138,10 @@ public class RepoRepository {
     public LiveData<Resource<List<Contributor>>> loadContributors(String owner, String name) {
         return new NetworkBoundResource<List<Contributor>, List<Contributor>>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull List<Contributor> contributors) {
+            protected void saveCallResult(@Nullable List<Contributor> contributors) {
+                if (contributors == null) {
+                    return;
+                }
                 for (Contributor contributor : contributors) {
                     contributor.setRepoName(name);
                     contributor.setRepoOwner(owner);
@@ -146,12 +156,10 @@ public class RepoRepository {
                 } finally {
                     db.endTransaction();
                 }
-                Timber.d("rece saved contributors to db");
             }
 
             @Override
             protected boolean shouldFetch(@Nullable List<Contributor> data) {
-                Timber.d("rece contributor list from db: %s", data);
                 return data == null || data.isEmpty();
             }
 
@@ -180,7 +188,10 @@ public class RepoRepository {
         return new NetworkBoundResource<List<Repo>, RepoSearchResponse>(appExecutors) {
 
             @Override
-            protected void saveCallResult(@NonNull RepoSearchResponse item) {
+            protected void saveCallResult(@Nullable RepoSearchResponse item) {
+                if (item == null) {
+                    return;
+                }
                 List<Integer> repoIds = item.getRepoIds();
                 RepoSearchResult repoSearchResult = new RepoSearchResult(
                         query, repoIds, item.getTotal(), item.getNextPage());
