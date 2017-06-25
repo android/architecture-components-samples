@@ -34,10 +34,12 @@ import static org.hamcrest.Matchers.nullValue;
 
 @RunWith(AndroidJUnit4.class)
 public class AutoClearedValueTest {
+
     @Rule
     public ActivityTestRule<SingleFragmentActivity> activityRule =
             new ActivityTestRule<>(SingleFragmentActivity.class, true, true);
-    public TestFragment testFragment;
+
+    private TestFragment testFragment;
 
     @Before
     public void init() {
@@ -73,11 +75,7 @@ public class AutoClearedValueTest {
     }
 
     public static class TestFragment extends Fragment {
-        AutoClearedValue<String> testValue;
 
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-        }
+        AutoClearedValue<String> testValue;
     }
 }
