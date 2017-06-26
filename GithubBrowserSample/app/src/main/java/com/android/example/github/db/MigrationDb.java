@@ -21,16 +21,17 @@ public class MigrationDb {
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE `Fruit` (`id` INTEGER, "
-                    + "`name` TEXT, PRIMARY KEY(`id`))");
+
+            database.execSQL("ALTER TABLE User "
+                    + " ADD COLUMN avatarUrl TEXT");
         }
     };
 
     static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE Book "
-                    + " ADD COLUMN pub_year INTEGER");
+            database.execSQL("ALTER TABLE User "
+                    + " ADD COLUMN reposUrl TEXT");
         }
     };
 }

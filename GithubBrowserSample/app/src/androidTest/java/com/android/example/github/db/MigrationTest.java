@@ -2,6 +2,7 @@ package com.android.example.github.db;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory;
+import android.arch.persistence.room.Room;
 import android.arch.persistence.room.testing.MigrationTestHelper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 import static com.android.example.github.db.MigrationDb.MIGRATION_1_2;
+import static com.android.example.github.db.MigrationDb.MIGRATION_2_3;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -41,6 +43,9 @@ public class MigrationTest {
 
         // Re-open the database with version 2 and provide
         // MIGRATION_1_2 as the migration process.
+        /*Room.databaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(), GithubDb.class, "database-name")
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3).build();*/
+
         db = helper.runMigrationsAndValidate(TEST_DB, 2, true, MIGRATION_1_2);
 
         // MigrationTestHelper automatically verifies the schema changes,
