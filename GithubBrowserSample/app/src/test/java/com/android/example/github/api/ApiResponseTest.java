@@ -28,6 +28,8 @@ import retrofit2.Response;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 
+
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -53,6 +55,8 @@ public class ApiResponseTest {
         assertThat(apiResponse.body, is("foo"));
         assertThat(apiResponse.getNextPage(), is(nullValue()));
     }
+
+
 
     @Test
     public void link() {

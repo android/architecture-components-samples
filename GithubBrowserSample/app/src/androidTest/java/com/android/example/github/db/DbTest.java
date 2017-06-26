@@ -23,6 +23,7 @@ import org.junit.Before;
 import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
 
+
 abstract public class DbTest {
     protected GithubDb db;
 
@@ -30,6 +31,7 @@ abstract public class DbTest {
     public void initDb() {
         db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 GithubDb.class).build();
+
     }
 
     @After
