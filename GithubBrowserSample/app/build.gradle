@@ -70,7 +70,6 @@ dependencies {
     compile "com.android.support:design:$support_version"
     compile "android.arch.persistence.room:runtime:$arch_version"
     compile "android.arch.persistence.room:rxjava2:$arch_version"
-
     compile "android.arch.lifecycle:runtime:$arch_version"
     compile "android.arch.lifecycle:extensions:$arch_version"
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
