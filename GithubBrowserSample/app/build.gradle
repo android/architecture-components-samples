@@ -77,9 +77,9 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
     compile "com.github.bumptech.glide:glide:$glide_version"
 
-    compile 'com.google.dagger:dagger:2.11'
-    compile 'com.google.dagger:dagger-android:2.11'
-    compile 'com.google.dagger:dagger-android-support:2.11'
+    compile "com.google.dagger:dagger:$dagger_version"
+    compile "com.google.dagger:dagger-android:$dagger_version"
+    compile "com.google.dagger:dagger-android-support:$dagger_version"
     compile "com.android.support.constraint:constraint-layout:$constraint_layout_version"
 
     compile "com.jakewharton.timber:timber:$timber_version"
@@ -90,7 +90,7 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
 
     testCompile "junit:junit:$junit_version"
-    testCompile 'com.squareup.okhttp3:mockwebserver:3.8.1'
+    testCompile "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
 
     testCompile ("android.arch.core:core-testing:$arch_version", {
         exclude group: 'com.android.support', module: 'support-compat'
@@ -117,7 +117,7 @@ dependencies {
 
     androidTestCompile("android.arch.core:core-testing:$arch_version", {
     })
-    androidTestCompile 'org.mockito:mockito-android:2.8.47'
+    androidTestCompile "org.mockito:mockito-android:$mockito_version"
 }
 
 task fullCoverageReport(type: JacocoReport) {

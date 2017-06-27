@@ -28,7 +28,6 @@ import android.arch.persistence.room.RoomDatabase;
 /**
  * Main database description.
  */
-
 @Database(entities = {User.class, Repo.class, Contributor.class,
         RepoSearchResult.class}, version = 3)
 public abstract class GithubDb extends RoomDatabase {
