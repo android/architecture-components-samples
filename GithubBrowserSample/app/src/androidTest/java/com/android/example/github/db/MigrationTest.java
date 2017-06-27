@@ -46,7 +46,29 @@ public class MigrationTest {
         /*Room.databaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(), GithubDb.class, "database-name")
                 .addMigrations(MIGRATION_1_2, MIGRATION_2_3).build();*/
 
-        db = helper.runMigrationsAndValidate(TEST_DB, 2, true, MIGRATION_1_2);
+        db = helper.runMigrationsAndValidate(TEST_DB, 1, true, MIGRATION_1_2);
+
+        // MigrationTestHelper automatically verifies the schema changes,
+        // but you need to validate that the data was migrated properly.
+    }
+
+    @Test
+    public void migrate2To3() throws IOException {
+        SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 2);
+
+        // db has schema version 1. insert some data using SQL queries.
+        // You cannot use DAO classes because they expect the latest schema.
+        //db.execSQL(...);
+
+        // Prepare for the next version.
+        db.close();
+
+        // Re-open the database with version 2 and provide
+        // MIGRATION_1_2 as the migration process.
+        /*Room.databaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(), GithubDb.class, "database-name")
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3).build();*/
+
+        db = helper.runMigrationsAndValidate(TEST_DB, 2, true, MIGRATION_2_3);
 
         // MigrationTestHelper automatically verifies the schema changes,
         // but you need to validate that the data was migrated properly.
