@@ -1,0 +1,213 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "8795476c78e97d2a4fabb7e2b09fe075",
+    "entities": [
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`login` TEXT, `avatarUrl` TEXT, `name` TEXT, `company` TEXT, `reposUrl` TEXT, `blog` TEXT, PRIMARY KEY(`login`))",
+        "fields": [
+          {
+            "fieldPath": "login",
+            "columnName": "login",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "avatarUrl",
+            "columnName": "avatarUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "company",
+            "columnName": "company",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "reposUrl",
+            "columnName": "reposUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "blog",
+            "columnName": "blog",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "login"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Repo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `name` TEXT, `fullName` TEXT, `description` TEXT, `stars` INTEGER, `owner_login` TEXT, `owner_url` TEXT, PRIMARY KEY(`name`, `owner_login`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "fullName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "stars",
+            "columnName": "stars",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "owner.login",
+            "columnName": "owner_login",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "owner.url",
+            "columnName": "owner_url",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "name",
+            "owner_login"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Repo_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE  INDEX `index_Repo_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_Repo_owner_login",
+            "unique": false,
+            "columnNames": [
+              "owner_login"
+            ],
+            "createSql": "CREATE  INDEX `index_Repo_owner_login` ON `${TABLE_NAME}` (`owner_login`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Contributor",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`login` TEXT, `contributions` INTEGER, `avatarUrl` TEXT, `repoName` TEXT, `repoOwner` TEXT, PRIMARY KEY(`repoName`, `repoOwner`, `login`), FOREIGN KEY(`repoName`, `repoOwner`) REFERENCES `Repo`(`name`, `owner_login`) ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "login",
+            "columnName": "login",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contributions",
+            "columnName": "contributions",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "avatarUrl",
+            "columnName": "avatarUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "repoName",
+            "columnName": "repoName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "repoOwner",
+            "columnName": "repoOwner",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "repoName",
+            "repoOwner",
+            "login"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Repo",
+            "onDelete": "NO ACTION",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "repoName",
+              "repoOwner"
+            ],
+            "referencedColumns": [
+              "name",
+              "owner_login"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "RepoSearchResult",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`query` TEXT, `repoIds` TEXT, `totalCount` INTEGER, `next` INTEGER, PRIMARY KEY(`query`))",
+        "fields": [
+          {
+            "fieldPath": "query",
+            "columnName": "query",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "repoIds",
+            "columnName": "repoIds",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "totalCount",
+            "columnName": "totalCount",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "next",
+            "columnName": "next",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "query"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8795476c78e97d2a4fabb7e2b09fe075\")"
+    ]
+  }
+}
