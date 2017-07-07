@@ -49,7 +49,10 @@ public class UserRepository {
     public LiveData<Resource<User>> loadUser(String login) {
         return new NetworkBoundResource<User,User>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull User item) {
+            protected void saveCallResult(@Nullable User item) {
+                if (item == null) {
+                    return;
+                }
                 userDao.insert(item);
             }
 
