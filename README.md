@@ -21,6 +21,8 @@ Samples may not be fully featured, documented or tested and could be modified or
 
 **[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use Room with RxJava 2. Also uses ViewModels.
 
+**[PersistenceMigrationsSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceMigrationsSample)** - Shows how to implement migrations in Room.
+
 License
 -------
 
