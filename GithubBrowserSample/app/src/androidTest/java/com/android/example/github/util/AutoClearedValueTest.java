@@ -49,7 +49,7 @@ public class AutoClearedValueTest {
     }
 
     @Test
-    public void testClear() throws Throwable {
+    public void clearOnReplace() throws Throwable {
         testFragment.testValue = new AutoClearedValue<>(testFragment, "foo");
         activityRule.getActivity().replaceFragment(new TestFragment());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -57,7 +57,7 @@ public class AutoClearedValueTest {
     }
 
     @Test
-    public void testDontClearForChildFragment() throws Throwable {
+    public void dontClearForChildFragment() throws Throwable {
         testFragment.testValue = new AutoClearedValue<>(testFragment, "foo");
         testFragment.getChildFragmentManager().beginTransaction()
                 .add(new Fragment(), "foo").commit();
@@ -66,10 +66,11 @@ public class AutoClearedValueTest {
     }
 
     @Test
-    public void testDontClearForDialog() throws Throwable {
+    public void dontClearForDialog() throws Throwable {
         testFragment.testValue = new AutoClearedValue<>(testFragment, "foo");
         DialogFragment dialogFragment = new DialogFragment();
         dialogFragment.show(testFragment.getFragmentManager(), "dialog");
+        dialogFragment.dismiss();
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertThat(testFragment.testValue.get(), is("foo"));
     }
