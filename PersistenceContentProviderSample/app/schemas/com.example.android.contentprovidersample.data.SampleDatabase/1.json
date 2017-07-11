@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d612c3c0739239af787986e19d97626b",
+    "identityHash": "ae2b3c5050f19e7ef121c30f1723d542",
     "entities": [
       {
         "tableName": "cheeses",
@@ -32,7 +32,7 @@
             "columnNames": [
               "_id"
             ],
-            "createSql": "CREATE  INDEX `index_cheeses__id` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE  INDEX `index_cheeses__id`\nON `${TABLE_NAME}` (`_id`)"
           }
         ],
         "foreignKeys": []
@@ -40,7 +40,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d612c3c0739239af787986e19d97626b\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ae2b3c5050f19e7ef121c30f1723d542\")"
     ]
   }
 }
