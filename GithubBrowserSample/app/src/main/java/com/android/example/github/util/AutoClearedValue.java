@@ -31,8 +31,10 @@ public class AutoClearedValue<T> {
                 new FragmentManager.FragmentLifecycleCallbacks() {
                     @Override
                     public void onFragmentViewDestroyed(FragmentManager fm, Fragment f) {
-                        AutoClearedValue.this.value = null;
-                        fragmentManager.unregisterFragmentLifecycleCallbacks(this);
+                        if (f == fragment) {
+                            AutoClearedValue.this.value = null;
+                            fragmentManager.unregisterFragmentLifecycleCallbacks(this);
+                        }
                     }
                 },false);
         this.value = value;
