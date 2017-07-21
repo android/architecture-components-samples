@@ -44,4 +44,9 @@ public class SingleFragmentActivity extends AppCompatActivity {
                 .add(R.id.container, fragment, "TEST")
                 .commit();
     }
+
+    public void replaceFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment).commit();
+    }
 }

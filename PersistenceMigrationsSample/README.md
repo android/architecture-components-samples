@@ -10,15 +10,15 @@ The sample app shows an editable user name, stored in the database.
 
 # Implementation
 
-The UI layer uses the Model-View-Presenter design pattern and works with a `UserRepository` class. The `UserRepository`  has a reference to the local repository to get and save the data. It ensures that all of these operations are done off the UI thread. The UI layer classes are common for all flavors. 
+The UI layer uses the Model-View-Presenter design pattern and works with a `UserRepository` class. The `UserRepository`  has a reference to the local repository to get and save the data. It ensures that all of these operations are done off the UI thread. The UI layer classes are common for all flavors.
 
 # Usage
 To showcase different implementations of the data layer product, flavors are used:
 
 * `sqlite` - Uses SQLiteOpenHelper and traditional SQLite interfaces. Database version is 1
 * `room` - Replaces implementation with Room and provides migrations. Database version is 2.
-* `room` - Adds a new column to the table and provides migration Database version is 3.
-* `room` - Changes the type of the table's primary key from `int` to `String` and priovides migration. Database version is 4.
+* `room2` - Adds a new column to the table and provides migration Database version is 3.
+* `room3` - Changes the type of the table's primary key from `int` to `String` and provides migration. Database version is 4.
 
 # Building
 
@@ -40,7 +40,7 @@ The project uses both instrumentation tests that run on the device and local uni
 ### Database Tests
 
 For the `sqlite` flavor the project is using the application database to test the functionality of `LocalUserDataSource` class.
-An in-memory database is used for  `room` flavors `UserDao` and `LocalUserDataSource` tests, but still they are run on the device.
+An in-memory database is used for `room` flavors `UserDao` and `LocalUserDataSource` tests, but still they are run on the device.
 An on-device database is used for the migration tests in all `room` flavors.
 
 ## Local Unit Tests
