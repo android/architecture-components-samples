@@ -19,15 +19,15 @@ Samples may not be fully featured, documented or tested and could be modified or
 
 * **[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 canary 1
 
+* **[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use Room with RxJava 2. Also uses ViewModels.
+
+* **[PersistenceMigrationsSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceMigrationsSample)** - Shows how to implement migrations in Room.
+
 ### Other Samples
 
 * **[Architecture Blueprints - todo-mvvm-live](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-live)** - Variant of the to-do app that uses ViewModels, LiveData and Data Binding with an MVVM architecture.
 * **[Architecture Blueprints - todo-mvp-room](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvp-room)** - Variant of the to-do app that uses Room as a local data source with an MVP architecture.
 
-
-**[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use Room with RxJava 2. Also uses ViewModels.
-
-**[PersistenceMigrationsSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceMigrationsSample)** - Shows how to implement migrations in Room.
 
 License
 -------
