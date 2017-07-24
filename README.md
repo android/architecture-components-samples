@@ -13,11 +13,17 @@ A collection of samples using the Architecture Components:
 **The Architecture Components and these samples are previews to gather developer feedback.
 Samples may not be fully featured, documented or tested and could be modified or deleted in the future.**
 
-**[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
+* **[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
 
-**[PersistenceContentProviderSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceContentProviderSample)** - Shows how to expose data via a Content Provider using Room.
+* **[PersistenceContentProviderSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceContentProviderSample)** - Shows how to expose data via a Content Provider using Room.
 
-**[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 canary 1
+* **[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 canary 1
+
+### Other Samples
+
+* **[Architecture Blueprints - todo-mvvm-live](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-live)** - Variant of the to-do app that uses ViewModels, LiveData and Data Binding with an MVVM architecture.
+* **[Architecture Blueprints - todo-mvp-room](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvp-room)** - Variant of the to-do app that uses Room as a local data source with an MVP architecture.
+
 
 **[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use Room with RxJava 2. Also uses ViewModels.
 
