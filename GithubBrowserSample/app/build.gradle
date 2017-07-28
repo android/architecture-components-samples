@@ -17,12 +17,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.android.example.github"
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.android.example.github.util.GithubTestRunner"
