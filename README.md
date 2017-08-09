@@ -23,6 +23,9 @@ Samples may not be fully featured, documented or tested and could be modified or
 
 * **[PersistenceMigrationsSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceMigrationsSample)** - Shows how to implement migrations in Room.
 
+* **[BasicRxJavaKotlinSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaKotlinSample)** - Shows
+ how to use ViewModels and Room together with RxJava, in Kotlin.
+
 ### Other Samples
 
 * **[Architecture Blueprints - todo-mvvm-live](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-live)** - Variant of the to-do app that uses ViewModels, LiveData and Data Binding with an MVVM architecture.
