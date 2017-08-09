@@ -51,6 +51,7 @@ public class UserViewModel extends ViewModel {
                 .map(new Function<User, String>() {
                     @Override
                     public String apply(User user) throws Exception {
+                        mUser = user;
                         return user.getUserName();
                     }
                 });
