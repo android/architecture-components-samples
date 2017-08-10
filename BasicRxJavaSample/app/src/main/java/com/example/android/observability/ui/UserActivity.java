@@ -99,7 +99,7 @@ public class UserActivity extends LifecycleActivity {
     protected void onStop() {
         super.onStop();
 
-        // clear all the subscription
+        // clear all the subscriptions
         mDisposable.clear();
     }
 
@@ -108,7 +108,7 @@ public class UserActivity extends LifecycleActivity {
         // Disable the update button until the user name update has been done
         mUpdateButton.setEnabled(false);
         // Subscribe to updating the user name.
-        // Enable back the button once the user name has been updated
+        // Re-enable the button once the user name has been updated
         mDisposable.add(mViewModel.updateUserName(userName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
