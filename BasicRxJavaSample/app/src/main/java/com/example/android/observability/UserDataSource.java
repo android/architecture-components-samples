@@ -21,7 +21,7 @@ import com.example.android.observability.persistence.User;
 import io.reactivex.Flowable;
 
 /**
- * Access point for accessing user data.
+ * Access point for managing user data.
  */
 public interface UserDataSource {
 
@@ -33,7 +33,7 @@ public interface UserDataSource {
     Flowable<User> getUser();
 
     /**
-     * Inserts the user in the data source, or, if this is an existing user, it updates it.
+     * Inserts the user into the data source, or, if this is an existing user, updates it.
      *
      * @param user the user to be inserted or updated.
      */

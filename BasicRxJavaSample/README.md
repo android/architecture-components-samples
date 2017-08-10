@@ -16,8 +16,8 @@ Queries are executed in the `UserDao` class. The user retrieval is done via an o
 
 The app has a main Activity that displays the data.
 The Activity works with a ViewModel to do the following:
-* subscribe to the emissions of the user name and updates the UI every time there is a new user name emitted
-* notify the ViewModel when the pressed the "Update" and passes the new user name.
+* subscribe to the emissions of the user name and update the UI every time there is a new user name emitted
+* notify the ViewModel when the "Update" button is pressed and pass the new user name.
 The ViewModel works with the data source to get and save the data.
 
 Room guarantees that the observable query will be triggered on a background thread. In the Activity, the Flowable events are set to be received on the main thread, so the UI can be updated. The insert query is synchronous so it's wrapped in a Completable and executed on a background thread. On completion, the Activity is notified on the main thread.

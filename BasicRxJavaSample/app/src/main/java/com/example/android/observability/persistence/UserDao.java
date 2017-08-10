@@ -30,7 +30,7 @@ import io.reactivex.Flowable;
 public interface UserDao {
 
     /**
-     * Get the user from the table. Since, for simplicity we only have one user in the database,
+     * Get the user from the table. Since for simplicity we only have one user in the database,
      * this query gets all users from the table, but limits the result to just the 1st user.
      *
      * @return the user from the table
