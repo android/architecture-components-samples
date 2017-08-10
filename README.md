@@ -23,7 +23,7 @@ Samples may not be fully featured, documented or tested and could be modified or
 
 * **[PersistenceMigrationsSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceMigrationsSample)** - Shows how to implement migrations in Room.
 
-* **[BasicRxJavaKotlinSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaKotlinSample)** - Shows
+* **[BasicRxJavaKotlinSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSampleKotlin)** - Shows
  how to use ViewModels and Room together with RxJava, in Kotlin.
 
 ### Other Samples
