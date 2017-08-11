@@ -38,28 +38,21 @@ import org.mockito.MockitoAnnotations
  */
 class UserViewModelTest {
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Mock
-    private lateinit var dataSource: UserDao
+    @Mock private lateinit var dataSource: UserDao
 
-    @Captor
-    private lateinit var userArgumentCaptor: ArgumentCaptor<User>
+    @Captor private lateinit var userArgumentCaptor: ArgumentCaptor<User>
 
     private lateinit var viewModel: UserViewModel
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
+    @Before fun setUp() {
         MockitoAnnotations.initMocks(this)
 
         viewModel = UserViewModel(dataSource)
     }
 
-    @Test
-    @Throws(InterruptedException::class)
-    fun getUserName_whenNoUserSaved() {
+    @Test fun getUserName_whenNoUserSaved() {
         // Given that the UserDataSource returns an empty list of users
         `when`(dataSource.getUserById(UserViewModel.USER_ID)).thenReturn(Flowable.empty<User>())
 
@@ -70,9 +63,7 @@ class UserViewModelTest {
                 .assertNoValues()
     }
 
-    @Test
-    @Throws(InterruptedException::class)
-    fun getUserName_whenUserSaved() {
+    @Test fun getUserName_whenUserSaved() {
         // Given that the UserDataSource returns a user
         val user = User(userName = "user name")
         `when`(dataSource.getUserById(UserViewModel.USER_ID)).thenReturn(Flowable.just(user))
@@ -84,8 +75,7 @@ class UserViewModelTest {
                 .assertValue("user name")
     }
 
-    @Test
-    fun updateUserName_updatesNameInDataSource() {
+    @Test fun updateUserName_updatesNameInDataSource() {
         // When updating the user name
         viewModel.updateUserName("new user name")
                 .test()
@@ -94,8 +84,7 @@ class UserViewModelTest {
         // The user name is updated in the data source
         // using ?: User("someUser") because otherwise, we get
         // "IllegalStateException: userArgumentCaptor.capture() must not be null"
-        verify<UserDao>(dataSource).insertUser(userArgumentCaptor.capture()
-                ?: User(userName = "someUser"))
+        verify<UserDao>(dataSource).insertUser(capture(userArgumentCaptor))
         assertThat(userArgumentCaptor.value.userName, Matchers.`is`("new user name"))
     }
 

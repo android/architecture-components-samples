@@ -32,14 +32,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class UserDaoTest {
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var database: UsersDatabase
 
-    @Before
-    @Throws(Exception::class)
-    fun initDb() {
+    @Before fun initDb() {
         // using an in-memory database because the information stored here disappears after test
         database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 UsersDatabase::class.java)
@@ -48,21 +45,17 @@ class UserDaoTest {
                 .build()
     }
 
-    @After
-    @Throws(Exception::class)
-    fun closeDb() {
+    @After fun closeDb() {
         database.close()
     }
 
-    @Test
-    fun getUsersWhenNoUserInserted() {
+    @Test fun getUsersWhenNoUserInserted() {
         database.userDao().getUserById("123")
                 .test()
                 .assertNoValues()
     }
 
-    @Test
-    fun insertAndGetUser() {
+    @Test fun insertAndGetUser() {
         // When inserting a new user in the data source
         database.userDao().insertUser(USER)
 
@@ -73,8 +66,7 @@ class UserDaoTest {
                 .assertValue { it.id == USER.id && it.userName == USER.userName }
     }
 
-    @Test
-    fun updateAndGetUser() {
+    @Test fun updateAndGetUser() {
         // Given that we have a user in the data source
         database.userDao().insertUser(USER)
 
@@ -89,8 +81,7 @@ class UserDaoTest {
                 .assertValue { it.id == USER.id && it.userName == "new username" }
     }
 
-    @Test
-    fun deleteAndGetUser() {
+    @Test fun deleteAndGetUser() {
         // Given that we have a user in the data source
         database.userDao().insertUser(USER)
 
