@@ -31,10 +31,10 @@ abstract class UsersDatabase : RoomDatabase() {
 
     companion object {
 
-        private var INSTANCE: UsersDatabase? = null
+        @Volatile private var INSTANCE: UsersDatabase? = null
 
         fun getInstance(context: Context): UsersDatabase =
-                INSTANCE ?: synchronized(UsersDatabase::class) {
+                INSTANCE ?: synchronized(this) {
                     INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
                 }
 

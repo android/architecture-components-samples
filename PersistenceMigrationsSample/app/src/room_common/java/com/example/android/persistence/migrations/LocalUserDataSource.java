@@ -25,7 +25,7 @@ import android.support.annotation.VisibleForTesting;
  */
 public class LocalUserDataSource implements UserDataSource {
 
-    private static LocalUserDataSource INSTANCE;
+    private static volatile LocalUserDataSource INSTANCE;
 
     private UserDao mUserDao;
 
