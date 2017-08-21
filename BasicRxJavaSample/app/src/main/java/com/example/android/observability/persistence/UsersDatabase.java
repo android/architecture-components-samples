@@ -27,7 +27,7 @@ import android.content.Context;
 @Database(entities = {User.class}, version = 1)
 public abstract class UsersDatabase extends RoomDatabase {
 
-    private static UsersDatabase INSTANCE;
+    private static volatile UsersDatabase INSTANCE;
 
     public abstract UserDao userDao();
 
