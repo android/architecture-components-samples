@@ -20,7 +20,7 @@ package com.example.android.persistence;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
-import android.support.test.espresso.Espresso;
+import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
@@ -55,7 +55,7 @@ public class MainActivityTest {
     @Before
     public void idlingResourceSetup() {
 
-        Espresso.registerIdlingResources(idlingRes);
+        IdlingRegistry.getInstance().register(idlingRes);
         // There's always
         idlingRes.setIdleNow(false);
 
