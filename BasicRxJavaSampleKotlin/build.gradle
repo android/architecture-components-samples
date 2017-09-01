@@ -53,7 +53,7 @@ ext {
     buildToolsVersion = '26.0.1'
 
     // App dependencies
-    supportLibraryVersion = '26.0.1'
+    supportLibraryVersion = '26.0.2'
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
     hamcrestVersion = '1.3'

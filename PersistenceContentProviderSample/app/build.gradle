@@ -52,8 +52,8 @@ dependencies {
     })
 
     // Support Libraries
-    compile 'com.android.support:appcompat-v7:26.0.1'
-    compile 'com.android.support:recyclerview-v7:26.0.1'
+    compile 'com.android.support:appcompat-v7:26.0.2'
+    compile 'com.android.support:recyclerview-v7:26.0.2'
 
     // App Toolkit
     compile "android.arch.lifecycle:extensions:1.0.0-alpha9"
