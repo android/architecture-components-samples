@@ -36,6 +36,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     // used by Room, to test migrations
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
