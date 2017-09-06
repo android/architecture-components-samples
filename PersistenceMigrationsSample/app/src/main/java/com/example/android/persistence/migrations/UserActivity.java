@@ -41,9 +41,6 @@ public class UserActivity extends AppCompatActivity implements UserView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        mUserName = (TextView) findViewById(R.id.user_name);
-        mUserNameInput = (EditText) findViewById(R.id.user_name_input);
-        mUpdateButton = (Button) findViewById(R.id.update_user);
 
         mUpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +48,9 @@ public class UserActivity extends AppCompatActivity implements UserView {
                 String userName = mUserNameInput.getText().toString();
                 mPresenter.updateUserName(userName);
             }
+        mUserName = findViewById(R.id.user_name);
+        mUserNameInput = findViewById(R.id.user_name_input);
+        mUpdateButton = findViewById(R.id.update_user);
         });
 
         // Creating the repository here for simplicity.
