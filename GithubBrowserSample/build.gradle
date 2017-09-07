@@ -29,18 +29,28 @@ buildscript {
     }
 }
 
-ext.arch_version = "1.0.0-alpha9"
-ext.support_version = "26.0.2"
-ext.dagger_version = "2.11"
-ext.junit_version = "4.12"
-ext.espresso_version = "3.0.1"
-ext.retrofit_version = "2.3.0"
-ext.mockwebserver_version = "3.8.1"
-ext.apache_commons_version = "2.5"
-ext.mockito_version = "2.7.19"
-ext.constraint_layout_version = "1.0.2"
-ext.glide_version = "3.8.0"
-ext.timber_version = "4.5.1"
+// Define versions in a single place
+ext {
+    // Sdk and tools
+    minSdkVersion = 14
+    targetSdkVersion = 26
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.1'
+
+    // App dependencies
+    arch_version = "1.0.0-alpha9"
+    support_version = "26.0.2"
+    dagger_version = "2.11"
+    junit_version = "4.12"
+    espresso_version = "3.0.1"
+    retrofit_version = "2.3.0"
+    mockwebserver_version = "3.8.1"
+    apache_commons_version = "2.5"
+    mockito_version = "2.7.19"
+    constraint_layout_version = "1.0.2"
+    glide_version = "3.8.0"
+    timber_version = "4.5.1"
+}
 
 allprojects {
     repositories {
