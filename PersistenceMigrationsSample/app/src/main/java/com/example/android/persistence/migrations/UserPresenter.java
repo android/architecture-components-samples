@@ -80,12 +80,9 @@ public class UserPresenter {
     }
 
     private UpdateUserCallback createUpdateUserCallback() {
-        return new UpdateUserCallback() {
-            @Override
-            public void onUserUpdated(User user) {
-                if (mView != null) {
-                    mView.showUserName(user.getUserName());
-                }
+        return user -> {
+            if (mView != null) {
+                mView.showUserName(user.getUserName());
             }
         };
     }
