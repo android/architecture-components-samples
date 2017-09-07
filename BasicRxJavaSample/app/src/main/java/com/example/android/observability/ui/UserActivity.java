@@ -59,9 +59,9 @@ public class UserActivity extends LifecycleActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        mUserName = (TextView) findViewById(R.id.user_name);
-        mUserNameInput = (EditText) findViewById(R.id.user_name_input);
-        mUpdateButton = (Button) findViewById(R.id.update_user);
+        mUserName = findViewById(R.id.user_name);
+        mUserNameInput = findViewById(R.id.user_name_input);
+        mUpdateButton = findViewById(R.id.update_user);
 
         mViewModelFactory = Injection.provideViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(UserViewModel.class);

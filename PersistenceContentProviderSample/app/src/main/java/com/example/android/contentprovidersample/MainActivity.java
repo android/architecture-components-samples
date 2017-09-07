@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        final RecyclerView list = (RecyclerView) findViewById(R.id.list);
+        final RecyclerView list = findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(list.getContext()));
         mCheeseAdapter = new CheeseAdapter();
         list.setAdapter(mCheeseAdapter);
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             ViewHolder(ViewGroup parent) {
                 super(LayoutInflater.from(parent.getContext()).inflate(
                         android.R.layout.simple_list_item_1, parent, false));
-                mText = (TextView) itemView.findViewById(android.R.id.text1);
+                mText = itemView.findViewById(android.R.id.text1);
             }
 
         }

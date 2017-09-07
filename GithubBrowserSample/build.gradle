@@ -19,34 +19,34 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://maven.google.com' }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-alpha8'
+        classpath 'com.android.tools.build:gradle:3.0.0-beta4'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-ext.arch_version = "1.0.0-alpha7"
-ext.support_version = "26.0.0"
+ext.arch_version = "1.0.0-alpha9"
+ext.support_version = "26.0.2"
 ext.dagger_version = "2.11"
 ext.junit_version = "4.12"
-ext.espresso_version = "2.2.2"
-ext.retrofit_version = "2.2.0"
-ext.mockwebserver_version = "3.6.0"
+ext.espresso_version = "3.0.1"
+ext.retrofit_version = "2.3.0"
+ext.mockwebserver_version = "3.8.1"
 ext.apache_commons_version = "2.5"
 ext.mockito_version = "2.7.19"
 ext.constraint_layout_version = "1.0.2"
-ext.glide_version = "3.7.0"
+ext.glide_version = "3.8.0"
 ext.timber_version = "4.5.1"
 
 allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'https://maven.google.com' }
+        google()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 }

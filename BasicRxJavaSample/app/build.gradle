@@ -43,6 +43,10 @@ dependencies {
     testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
     testCompile "android.arch.core:core-testing:$rootProject.architectureComponentsVersion"
 
+    // Resolve conflicts between main and local unit tests
+    testCompile "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
+    testCompile "com.android.support:support-core-utils:$rootProject.supportLibraryVersion"
+
     // Android Testing Support Library's runner and rules
     androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
     androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"
