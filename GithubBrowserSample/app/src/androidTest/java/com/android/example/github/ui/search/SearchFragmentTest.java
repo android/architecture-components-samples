@@ -41,6 +41,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.KeyEvent;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -103,7 +104,7 @@ public class SearchFragmentTest {
     @Test
     public void loadResults() {
         Repo repo = TestUtil.createRepo("foo", "bar", "desc");
-        results.postValue(Resource.success(Arrays.asList(repo)));
+        results.postValue(Resource.success(Collections.singletonList(repo)));
         onView(listMatcher().atPosition(0)).check(matches(hasDescendant(withText("foo/bar"))));
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())));
     }
@@ -111,7 +112,7 @@ public class SearchFragmentTest {
     @Test
     public void dataWithLoading() {
         Repo repo = TestUtil.createRepo("foo", "bar", "desc");
-        results.postValue(Resource.loading(Arrays.asList(repo)));
+        results.postValue(Resource.loading(Collections.singletonList(repo)));
         onView(listMatcher().atPosition(0)).check(matches(hasDescendant(withText("foo/bar"))));
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())));
     }
@@ -134,7 +135,7 @@ public class SearchFragmentTest {
     @Test
     public void navigateToRepo() throws Throwable {
         Repo repo = TestUtil.createRepo("foo", "bar", "desc");
-        results.postValue(Resource.success(Arrays.asList(repo)));
+        results.postValue(Resource.success(Collections.singletonList((repo))));
         onView(withText("desc")).perform(click());
         verify(navigationController).navigateToRepo("foo", "bar");
     }
