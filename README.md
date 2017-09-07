@@ -1,7 +1,7 @@
 Android Architecture Components samples
 ===================================
 
-A collection of samples using the Architecture Components:
+A collection of samples using the [Architecture Components](https://developer.android.com/arch):
 
 - Room
 - Lifecycle-aware components
@@ -26,11 +26,15 @@ Samples may not be fully featured, documented or tested and could be modified or
 * **[BasicRxJavaKotlinSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSampleKotlin)** - Shows
  how to use ViewModels and Room together with RxJava, in Kotlin.
 
-### Other Samples
+### Other Architecture Components Samples
 
 * **[Architecture Blueprints - todo-mvvm-live](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-live)** - Variant of the to-do app that uses ViewModels, LiveData and Data Binding with an MVVM architecture.
 * **[Architecture Blueprints - todo-mvp-room](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvp-room)** - Variant of the to-do app that uses Room as a local data source with an MVP architecture.
 
+
+### Reporting Issues
+
+You can report an [Issue](https://github.com/googlesamples/android-architecture-components/issues) on the samples using this repository. If you find an issue with the Architecture Components, report it using the [Architecture Components Issue Tracker](https://issuetracker.google.com/issues/new?component=197448&template=878802)
 
 License
 -------
