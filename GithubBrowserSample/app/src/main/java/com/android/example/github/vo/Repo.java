@@ -22,8 +22,6 @@ import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 
-import javax.inject.Inject;
-
 /**
  * Using name/owner_login as primary key instead of id since name/owner_login is always available
  * vs id is not.

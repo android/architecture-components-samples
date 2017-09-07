@@ -18,7 +18,6 @@ package com.android.example.github.binding;
 
 import android.databinding.BindingAdapter;
 import android.view.View;
-import android.widget.ImageView;
 
 /**
  * Data Binding adapters specific to the app.
