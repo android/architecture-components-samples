@@ -20,7 +20,6 @@ import android.arch.lifecycle.LifecycleActivity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,8 +29,6 @@ import com.example.android.persistence.R;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -65,12 +62,7 @@ public class UserActivity extends LifecycleActivity {
 
         mViewModelFactory = Injection.provideViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(UserViewModel.class);
-        mUpdateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateUserName();
-            }
-        });
+        mUpdateButton.setOnClickListener(v -> updateUserName());
     }
 
     @Override
@@ -82,17 +74,8 @@ public class UserActivity extends LifecycleActivity {
         mDisposable.add(mViewModel.getUserName()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String userName) throws Exception {
-                        mUserName.setText(userName);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG, "Unable to update username", throwable);
-                    }
-                }));
+                .subscribe(userName -> mUserName.setText(userName),
+                        throwable -> Log.e(TAG, "Unable to update username", throwable)));
     }
 
     @Override
@@ -112,16 +95,7 @@ public class UserActivity extends LifecycleActivity {
         mDisposable.add(mViewModel.updateUserName(userName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        mUpdateButton.setEnabled(true);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG, "Unable to update username", throwable);
-                    }
-                }));
+                .subscribe(() -> mUpdateButton.setEnabled(true),
+                        throwable -> Log.e(TAG, "Unable to update username", throwable)));
     }
 }

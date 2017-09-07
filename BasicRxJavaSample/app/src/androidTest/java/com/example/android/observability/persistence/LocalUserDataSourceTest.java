@@ -25,8 +25,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import io.reactivex.functions.Predicate;
-
 /**
  * Integration tests for the {@link LocalUserDataSource} implementation with Room.
  */
@@ -66,13 +64,10 @@ public class LocalUserDataSourceTest {
         mDataSource.getUser()
                 .test()
                 // assertValue asserts that there was only one emission of the user
-                .assertValue(new Predicate<User>() {
-                    @Override
-                    public boolean test(User user) throws Exception {
-                        // The emitted user is the expected one
-                        return user != null && user.getId().equals(USER.getId()) &&
-                                user.getUserName().equals(USER.getUserName());
-                    }
+                .assertValue(user -> {
+                    // The emitted user is the expected one
+                    return user != null && user.getId().equals(USER.getId()) &&
+                            user.getUserName().equals(USER.getUserName());
                 });
     }
 
@@ -89,13 +84,10 @@ public class LocalUserDataSourceTest {
         mDatabase.userDao().getUser()
                 .test()
                 // assertValue asserts that there was only one emission of the user
-                .assertValue(new Predicate<User>() {
-                    @Override
-                    public boolean test(User user) throws Exception {
-                        // The emitted user is the expected one
-                        return user != null && user.getId().equals(USER.getId()) &&
-                                user.getUserName().equals("new username");
-                    }
+                .assertValue(user -> {
+                    // The emitted user is the expected one
+                    return user != null && user.getId().equals(USER.getId()) &&
+                            user.getUserName().equals("new username");
                 });
     }
 
