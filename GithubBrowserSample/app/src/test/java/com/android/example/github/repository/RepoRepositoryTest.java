@@ -137,7 +137,7 @@ public class RepoRepositoryTest {
         dbData.setValue(Collections.emptyList());
 
         verify(service).getContributors("foo", "bar");
-        ArgumentCaptor<List<Contributor>> inserted = ArgumentCaptor.forClass((Class) List.class);
+        ArgumentCaptor<List<Contributor>> inserted = ArgumentCaptor.forClass(List.class);
         verify(dao).insertContributors(inserted.capture());
 
 
