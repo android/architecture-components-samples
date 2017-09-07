@@ -27,8 +27,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import io.reactivex.functions.Predicate;
-
 /**
  * Test the implementation of {@link UserDao}
  */
@@ -74,13 +72,10 @@ public class UserDaoTest {
         mDatabase.userDao().getUser()
                 .test()
                 // assertValue asserts that there was only one emission of the user
-                .assertValue(new Predicate<User>() {
-                    @Override
-                    public boolean test(User user) throws Exception {
-                        // The emitted user is the expected one
-                        return user != null && user.getId().equals(USER.getId()) &&
-                                user.getUserName().equals(USER.getUserName());
-                    }
+                .assertValue(user -> {
+                    // The emitted user is the expected one
+                    return user != null && user.getId().equals(USER.getId()) &&
+                            user.getUserName().equals(USER.getUserName());
                 });
     }
 
@@ -97,13 +92,10 @@ public class UserDaoTest {
         mDatabase.userDao().getUser()
                 .test()
                 // assertValue asserts that there was only one emission of the user
-                .assertValue(new Predicate<User>() {
-                    @Override
-                    public boolean test(User user) throws Exception {
-                        // The emitted user is the expected one
-                        return user != null && user.getId().equals(USER.getId()) &&
-                                user.getUserName().equals("new username");
-                    }
+                .assertValue(user -> {
+                    // The emitted user is the expected one
+                    return user != null && user.getId().equals(USER.getId()) &&
+                            user.getUserName().equals("new username");
                 });
     }
 
