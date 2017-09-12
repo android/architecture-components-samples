@@ -16,6 +16,7 @@
 
 package com.android.example.github.util;
 
+import android.arch.core.executor.AppToolkitTaskExecutor;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.Nullable;
@@ -35,7 +36,8 @@ public class LiveDataTestUtil {
                 liveData.removeObserver(this);
             }
         };
-        liveData.observeForever(observer);
+        AppToolkitTaskExecutor.getInstance().executeOnMainThread(
+                () -> liveData.observeForever(observer));
         latch.await(2, TimeUnit.SECONDS);
         //noinspection unchecked
         return (T) data[0];

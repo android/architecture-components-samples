@@ -16,10 +16,33 @@
 
 package com.android.example.github.ui.repo;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.paging.PagedList;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.android.example.github.R;
 import com.android.example.github.binding.FragmentBindingAdapters;
 import com.android.example.github.testing.SingleFragmentActivity;
 import com.android.example.github.ui.common.NavigationController;
+import com.android.example.github.util.PagedListUtil;
 import com.android.example.github.util.RecyclerViewMatcher;
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule;
 import com.android.example.github.util.TestUtil;
@@ -33,28 +56,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.not;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class RepoFragmentTest {
@@ -65,7 +68,7 @@ public class RepoFragmentTest {
     public TaskExecutorWithIdlingResourceRule executorRule =
             new TaskExecutorWithIdlingResourceRule();
     private MutableLiveData<Resource<Repo>> repo = new MutableLiveData<>();
-    private MutableLiveData<Resource<List<Contributor>>> contributors = new MutableLiveData<>();
+    private MutableLiveData<Resource<PagedList<Contributor>>> contributors = new MutableLiveData<>();
     private RepoFragment repoFragment;
     private RepoViewModel viewModel;
 
@@ -180,7 +183,8 @@ public class RepoFragmentTest {
         for (String name : names) {
             contributors.add(TestUtil.createContributor(repo, name, contributionCount--));
         }
-        this.contributors.postValue(Resource.success(contributors));
+
+        this.contributors.postValue(Resource.success(PagedListUtil.from(contributors)));
     }
 
     private String getString(@StringRes int id, Object... args) {

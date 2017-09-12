@@ -16,15 +16,6 @@
 
 package com.android.example.github.ui.repo;
 
-import com.android.example.github.R;
-import com.android.example.github.binding.FragmentDataBindingComponent;
-import com.android.example.github.databinding.RepoFragmentBinding;
-import com.android.example.github.di.Injectable;
-import com.android.example.github.ui.common.NavigationController;
-import com.android.example.github.util.AutoClearedValue;
-import com.android.example.github.vo.Repo;
-import com.android.example.github.vo.Resource;
-
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.LiveData;
@@ -39,7 +30,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Collections;
+import com.android.example.github.R;
+import com.android.example.github.binding.FragmentDataBindingComponent;
+import com.android.example.github.databinding.RepoFragmentBinding;
+import com.android.example.github.di.Injectable;
+import com.android.example.github.ui.common.NavigationController;
+import com.android.example.github.util.AutoClearedValue;
+import com.android.example.github.vo.Repo;
+import com.android.example.github.vo.Resource;
 
 import javax.inject.Inject;
 
@@ -102,10 +100,10 @@ public class RepoFragment extends Fragment implements LifecycleRegistryOwner, In
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
             if (listResource != null && listResource.data != null) {
-                adapter.get().replace(listResource.data);
+                adapter.get().setList(listResource.data);
             } else {
                 //noinspection ConstantConditions
-                adapter.get().replace(Collections.emptyList());
+                adapter.get().setList(null);
             }
         });
     }

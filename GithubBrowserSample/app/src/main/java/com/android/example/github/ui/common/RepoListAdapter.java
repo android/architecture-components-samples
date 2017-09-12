@@ -23,6 +23,8 @@ import com.android.example.github.vo.Repo;
 
 import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -36,6 +38,20 @@ public class RepoListAdapter extends DataBoundListAdapter<Repo, RepoItemBinding>
 
     public RepoListAdapter(DataBindingComponent dataBindingComponent, boolean showFullName,
             RepoClickCallback repoClickCallback) {
+        super(new DiffCallback<Repo>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Repo oldItem, @NonNull Repo newItem) {
+                return Objects.equals(oldItem.owner, newItem.owner) &&
+                        Objects.equals(oldItem.name, newItem.name);
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Repo oldItem, @NonNull Repo newItem) {
+                return Objects.equals(oldItem.description, newItem.description) &&
+                        oldItem.stars == newItem.stars;
+            }
+
+        });
         this.dataBindingComponent = dataBindingComponent;
         this.repoClickCallback = repoClickCallback;
         this.showFullName = showFullName;
@@ -59,18 +75,6 @@ public class RepoListAdapter extends DataBoundListAdapter<Repo, RepoItemBinding>
     @Override
     protected void bind(RepoItemBinding binding, Repo item) {
         binding.setRepo(item);
-    }
-
-    @Override
-    protected boolean areItemsTheSame(Repo oldItem, Repo newItem) {
-        return Objects.equals(oldItem.owner, newItem.owner) &&
-                Objects.equals(oldItem.name, newItem.name);
-    }
-
-    @Override
-    protected boolean areContentsTheSame(Repo oldItem, Repo newItem) {
-        return Objects.equals(oldItem.description, newItem.description) &&
-                oldItem.stars == newItem.stars;
     }
 
     public interface RepoClickCallback {

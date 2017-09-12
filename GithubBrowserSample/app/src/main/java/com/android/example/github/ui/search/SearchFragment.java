@@ -132,7 +132,7 @@ public class SearchFragment extends LifecycleFragment implements Injectable {
             binding.get().setSearchResource(result);
             binding.get().setResultCount((result == null || result.data == null)
                     ? 0 : result.data.size());
-            adapter.get().replace(result == null ? null : result.data);
+            adapter.get().setList(result == null ? null : result.data);
             binding.get().executePendingBindings();
         });
 

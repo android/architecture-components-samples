@@ -22,6 +22,7 @@ import com.android.example.github.vo.RepoSearchResult;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
+import android.arch.paging.LivePagedListProvider;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -57,7 +58,7 @@ public abstract class RepoDao {
     @Query("SELECT login, avatarUrl, contributions FROM contributor "
             + "WHERE repoName = :name AND repoOwner = :owner "
             + "ORDER BY contributions DESC")
-    public abstract LiveData<List<Contributor>> loadContributors(String owner, String name);
+    public abstract LivePagedListProvider<Integer, Contributor> loadContributors(String owner, String name);
 
     @Query("SELECT * FROM Repo "
             + "WHERE owner_login = :owner "

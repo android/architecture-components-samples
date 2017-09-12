@@ -16,6 +16,13 @@
 
 package com.android.example.github.ui.repo;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
+import android.arch.lifecycle.ViewModel;
+import android.arch.paging.PagedList;
+import android.support.annotation.VisibleForTesting;
+
 import com.android.example.github.repository.RepoRepository;
 import com.android.example.github.util.AbsentLiveData;
 import com.android.example.github.util.Objects;
@@ -23,21 +30,13 @@ import com.android.example.github.vo.Contributor;
 import com.android.example.github.vo.Repo;
 import com.android.example.github.vo.Resource;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.VisibleForTesting;
-
-import java.util.List;
-
 import javax.inject.Inject;
 
 public class RepoViewModel extends ViewModel {
     @VisibleForTesting
     final MutableLiveData<RepoId> repoId;
     private final LiveData<Resource<Repo>> repo;
-    private final LiveData<Resource<List<Contributor>>> contributors;
+    private final LiveData<Resource<PagedList<Contributor>>> contributors;
 
     @Inject
     public RepoViewModel(RepoRepository repository) {
@@ -54,7 +53,6 @@ public class RepoViewModel extends ViewModel {
             } else {
                 return repository.loadContributors(input.owner, input.name);
             }
-
         });
     }
 
@@ -62,7 +60,7 @@ public class RepoViewModel extends ViewModel {
         return repo;
     }
 
-    public LiveData<Resource<List<Contributor>>> getContributors() {
+    public LiveData<Resource<PagedList<Contributor>>> getContributors() {
         return contributors;
     }
 

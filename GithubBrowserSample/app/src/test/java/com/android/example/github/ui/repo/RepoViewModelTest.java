@@ -16,24 +16,6 @@
 
 package com.android.example.github.ui.repo;
 
-import com.android.example.github.repository.RepoRepository;
-import com.android.example.github.vo.Contributor;
-import com.android.example.github.vo.Repo;
-import com.android.example.github.vo.Resource;
-
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.lifecycle.Observer;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.ArgumentCaptor;
-
-import java.util.Arrays;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,6 +26,24 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import android.arch.core.executor.testing.InstantTaskExecutorRule;
+import android.arch.lifecycle.Observer;
+import android.arch.paging.PagedList;
+
+import com.android.example.github.repository.RepoRepository;
+import com.android.example.github.vo.Contributor;
+import com.android.example.github.vo.Repo;
+import com.android.example.github.vo.Resource;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
+
+import java.util.Arrays;
 
 @RunWith(JUnit4.class)
 public class RepoViewModelTest {
@@ -104,7 +104,7 @@ public class RepoViewModelTest {
 
     @Test
     public void contributors() {
-        Observer<Resource<List<Contributor>>> observer = mock(Observer.class);
+        Observer<Resource<PagedList<Contributor>>> observer = mock(Observer.class);
         repoViewModel.getContributors().observeForever(observer);
         verifyNoMoreInteractions(observer);
         verifyNoMoreInteractions(repository);
@@ -144,7 +144,7 @@ public class RepoViewModelTest {
     public void nullRepoId() {
         repoViewModel.setId(null, null);
         Observer<Resource<Repo>> observer1 = mock(Observer.class);
-        Observer<Resource<List<Contributor>>> observer2 = mock(Observer.class);
+        Observer<Resource<PagedList<Contributor>>> observer2 = mock(Observer.class);
         repoViewModel.getRepo().observeForever(observer1);
         repoViewModel.getContributors().observeForever(observer2);
         verify(observer1).onChanged(null);

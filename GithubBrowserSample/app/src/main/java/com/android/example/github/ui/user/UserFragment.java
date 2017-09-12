@@ -91,9 +91,9 @@ public class UserFragment extends LifecycleFragment implements Injectable {
             // no null checks for adapter.get() since LiveData guarantees that we'll not receive
             // the event if fragment is now show.
             if (repos == null) {
-                adapter.get().replace(null);
+                adapter.get().setList(null);
             } else {
-                adapter.get().replace(repos.data);
+                adapter.get().setList(repos.data);
             }
         });
     }

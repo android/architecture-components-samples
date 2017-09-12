@@ -24,6 +24,8 @@ import com.android.example.github.vo.Contributor;
 
 import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -35,6 +37,20 @@ public class ContributorAdapter
 
     public ContributorAdapter(DataBindingComponent dataBindingComponent,
             ContributorClickCallback callback) {
+        super(new DiffCallback<Contributor>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Contributor oldItem,
+                    @NonNull Contributor newItem) {
+                return Objects.equals(oldItem.getLogin(), newItem.getLogin());
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Contributor oldItem,
+                    @NonNull Contributor newItem) {
+                return Objects.equals(oldItem.getAvatarUrl(), newItem.getAvatarUrl())
+                        && oldItem.getContributions() == newItem.getContributions();
+            }
+        });
         this.dataBindingComponent = dataBindingComponent;
         this.callback = callback;
     }
@@ -57,17 +73,6 @@ public class ContributorAdapter
     @Override
     protected void bind(ContributorItemBinding binding, Contributor item) {
         binding.setContributor(item);
-    }
-
-    @Override
-    protected boolean areItemsTheSame(Contributor oldItem, Contributor newItem) {
-        return Objects.equals(oldItem.getLogin(), newItem.getLogin());
-    }
-
-    @Override
-    protected boolean areContentsTheSame(Contributor oldItem, Contributor newItem) {
-        return Objects.equals(oldItem.getAvatarUrl(), newItem.getAvatarUrl())
-                && oldItem.getContributions() == newItem.getContributions();
     }
 
     public interface ContributorClickCallback {

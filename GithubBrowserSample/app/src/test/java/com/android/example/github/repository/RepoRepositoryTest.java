@@ -16,6 +16,27 @@
 
 package com.android.example.github.repository;
 
+import static com.android.example.github.util.ApiUtil.successCall;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import android.arch.core.executor.testing.InstantTaskExecutorRule;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.paging.LivePagedListProvider;
+import android.arch.paging.PagedList;
+
 import com.android.example.github.api.ApiResponse;
 import com.android.example.github.api.GithubService;
 import com.android.example.github.api.RepoSearchResponse;
@@ -23,6 +44,7 @@ import com.android.example.github.db.GithubDb;
 import com.android.example.github.db.RepoDao;
 import com.android.example.github.util.AbsentLiveData;
 import com.android.example.github.util.InstantAppExecutors;
+import com.android.example.github.util.PagedListUtil;
 import com.android.example.github.util.TestUtil;
 import com.android.example.github.vo.Contributor;
 import com.android.example.github.vo.Repo;
@@ -35,11 +57,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
-
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
+import org.mockito.ArgumentMatchers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,18 +66,6 @@ import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Response;
-
-import static com.android.example.github.util.ApiUtil.successCall;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @SuppressWarnings("unchecked")
 @RunWith(JUnit4.class)
@@ -108,10 +114,14 @@ public class RepoRepositoryTest {
 
     @Test
     public void loadContributors() throws IOException {
-        MutableLiveData<List<Contributor>> dbData = new MutableLiveData<>();
-        when(dao.loadContributors("foo", "bar")).thenReturn(dbData);
+        LivePagedListProvider<Integer, Contributor> provider = mock(LivePagedListProvider.class);
 
-        LiveData<Resource<List<Contributor>>> data = repository.loadContributors("foo",
+        MutableLiveData<PagedList<Contributor>> dbData = new MutableLiveData<>();
+        when(provider.create(ArgumentMatchers.isNull(), anyInt())).thenReturn(dbData);
+
+        when(dao.loadContributors("foo", "bar")).thenReturn(provider);
+
+        LiveData<Resource<PagedList<Contributor>>> data = repository.loadContributors("foo",
                 "bar");
         verify(dao).loadContributors("foo", "bar");
 
@@ -127,17 +137,15 @@ public class RepoRepositoryTest {
         when(service.getContributors("foo", "bar"))
                 .thenReturn(call);
 
-        Observer<Resource<List<Contributor>>> observer = mock(Observer.class);
+        Observer<Resource<PagedList<Contributor>>> observer = mock(Observer.class);
         data.observeForever(observer);
 
         verify(observer).onChanged(Resource.loading( null));
 
-        MutableLiveData<List<Contributor>> updatedDbData = new MutableLiveData<>();
-        when(dao.loadContributors("foo", "bar")).thenReturn(updatedDbData);
-        dbData.setValue(Collections.emptyList());
+        dbData.setValue(PagedListUtil.from(Collections.emptyList()));
 
         verify(service).getContributors("foo", "bar");
-        ArgumentCaptor<List<Contributor>> inserted = ArgumentCaptor.forClass((Class) List.class);
+        ArgumentCaptor<List<Contributor>> inserted = ArgumentCaptor.forClass(List.class);
         verify(dao).insertContributors(inserted.capture());
 
 
@@ -146,8 +154,8 @@ public class RepoRepositoryTest {
         assertThat(first.getRepoName(), is("bar"));
         assertThat(first.getRepoOwner(), is("foo"));
 
-        updatedDbData.setValue(contributors);
-        verify(observer).onChanged(Resource.success(contributors));
+        dbData.setValue(PagedListUtil.from(contributors));
+        verify(observer).onChanged(Resource.success(PagedListUtil.from(contributors)));
     }
 
     @Test

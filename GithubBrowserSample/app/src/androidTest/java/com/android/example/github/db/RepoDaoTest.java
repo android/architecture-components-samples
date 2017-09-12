@@ -16,6 +16,18 @@
 
 package com.android.example.github.db;
 
+import static com.android.example.github.util.LiveDataTestUtil.getValue;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import android.arch.lifecycle.LiveData;
+import android.arch.paging.LivePagedListProvider;
+import android.arch.paging.PagedList;
+import android.database.sqlite.SQLiteException;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.android.example.github.util.TestUtil;
 import com.android.example.github.vo.Contributor;
 import com.android.example.github.vo.Repo;
@@ -23,18 +35,8 @@ import com.android.example.github.vo.Repo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.arch.lifecycle.LiveData;
-import android.database.sqlite.SQLiteException;
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-
-import static com.android.example.github.util.LiveDataTestUtil.getValue;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class RepoDaoTest extends DbTest {
@@ -57,7 +59,8 @@ public class RepoDaoTest extends DbTest {
         try {
             db.repoDao().insertContributors(Collections.singletonList(contributor));
             throw new AssertionError("must fail because repo does not exist");
-        } catch (SQLiteException ex) {}
+        } catch (SQLiteException ex) {
+        }
     }
 
     @Test
@@ -73,7 +76,9 @@ public class RepoDaoTest extends DbTest {
         } finally {
             db.endTransaction();
         }
-        List<Contributor> list = getValue(db.repoDao().loadContributors("foo", "bar"));
+        LivePagedListProvider<Integer, Contributor> provider =
+                db.repoDao().loadContributors("foo", "bar");
+        PagedList<Contributor> list = getValue(provider.create(0, 10));
         assertThat(list.size(), is(2));
         Contributor first = list.get(0);
 
@@ -104,12 +109,14 @@ public class RepoDaoTest extends DbTest {
         db.repoDao().insert(repo);
         Contributor contributor = TestUtil.createContributor(repo, "aa", 3);
         db.repoDao().insertContributors(Collections.singletonList(contributor));
-        LiveData<List<Contributor>> data = db.repoDao().loadContributors("foo", "bar");
+
+        LivePagedListProvider<Integer, Contributor> provider =
+                db.repoDao().loadContributors("foo", "bar");
+        LiveData<PagedList<Contributor>> data = provider.create(null, 10);
         assertThat(getValue(data).size(), is(1));
 
         Repo update = TestUtil.createRepo("foo", "bar", "desc");
         db.repoDao().insert(update);
-        data = db.repoDao().loadContributors("foo", "bar");
         assertThat(getValue(data).size(), is(1));
     }
 }

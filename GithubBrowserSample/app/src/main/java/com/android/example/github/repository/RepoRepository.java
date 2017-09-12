@@ -16,6 +16,13 @@
 
 package com.android.example.github.repository;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
+import android.arch.paging.LivePagedListProvider;
+import android.arch.paging.PagedList;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.android.example.github.AppExecutors;
 import com.android.example.github.api.ApiResponse;
 import com.android.example.github.api.GithubService;
@@ -28,11 +35,6 @@ import com.android.example.github.vo.Contributor;
 import com.android.example.github.vo.Repo;
 import com.android.example.github.vo.RepoSearchResult;
 import com.android.example.github.vo.Resource;
-
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -128,8 +130,8 @@ public class RepoRepository {
         }.asLiveData();
     }
 
-    public LiveData<Resource<List<Contributor>>> loadContributors(String owner, String name) {
-        return new NetworkBoundResource<List<Contributor>, List<Contributor>>(appExecutors) {
+    public LiveData<Resource<PagedList<Contributor>>> loadContributors(String owner, String name) {
+        return new NetworkBoundResource<PagedList<Contributor>, List<Contributor>>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull List<Contributor> contributors) {
                 for (Contributor contributor : contributors) {
@@ -150,15 +152,17 @@ public class RepoRepository {
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<Contributor> data) {
-                Timber.d("rece contributor list from db: %s", data);
+            protected boolean shouldFetch(@Nullable PagedList<Contributor> data) {
                 return data == null || data.isEmpty();
             }
 
             @NonNull
             @Override
-            protected LiveData<List<Contributor>> loadFromDb() {
-                return repoDao.loadContributors(owner, name);
+            protected LiveData<PagedList<Contributor>> loadFromDb() {
+                LivePagedListProvider<Integer, Contributor> provider = repoDao.loadContributors(
+                        owner, name);
+                LiveData<PagedList<Contributor>> liveData = provider.create(null, 50);
+                return liveData;
             }
 
             @NonNull
