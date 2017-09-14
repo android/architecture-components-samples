@@ -24,10 +24,10 @@ Samples may not be fully featured, documented or tested and could be modified or
 * **[PersistenceMigrationsSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceMigrationsSample)** - Shows how to implement migrations in Room.
 
 * **[BasicRxJavaKotlinSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSampleKotlin)** - Shows
- how to use the Paging library with Room, in Kotlin.
+how to use ViewModels and Room together with RxJava, in Kotlin.
 
  * **[PagingSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingSample)** - Shows
-  how to use ViewModels and Room together with RxJava, in Kotlin.
+  how to use the Paging library with Room, in Kotlin.
 
 ### Other Architecture Components Samples
 
