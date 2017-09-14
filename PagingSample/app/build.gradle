@@ -43,7 +43,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:${versions.support}"
-    implementation "com.android.support.constraint:constraint-layout:${versions.constraint_layout}"
     implementation "com.android.support:recyclerview-v7:${versions.support}"
     implementation "com.android.support:cardview-v7:${versions.support}"
     implementation "android.arch.persistence.room:runtime:${versions.arch}"
