@@ -16,16 +16,18 @@
 
 package com.example.android.persistence.ui;
 
+import android.annotation.SuppressLint;
 import android.databinding.DataBindingUtil;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.example.android.persistence.R;
 import com.example.android.persistence.databinding.CommentItemBinding;
 import com.example.android.persistence.model.Comment;
-import com.example.android.persistence.R;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,41 +43,53 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         mCommentClickCallback = commentClickCallback;
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void setCommentList(final List<? extends Comment> comments) {
         if (mCommentList == null) {
             mCommentList = comments;
             notifyItemRangeInserted(0, comments.size());
         } else {
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                @Override
-                public int getOldListSize() {
-                    return mCommentList.size();
-                }
-
-                @Override
-                public int getNewListSize() {
-                    return comments.size();
-                }
-
-                @Override
-                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    Comment old = mCommentList.get(oldItemPosition);
-                    Comment comment = comments.get(newItemPosition);
-                    return old.getId() == comment.getId();
-                }
-
-                @Override
-                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Comment old = mCommentList.get(oldItemPosition);
-                    Comment comment = comments.get(newItemPosition);
-                    return old.getId() == comment.getId()
-                            && old.getPostedAt() == comment.getPostedAt()
-                            && old.getProductId() == comment.getProductId()
-                            && Objects.equals(old.getText(), comment.getText());
-                }
-            });
             mCommentList = comments;
-            diffResult.dispatchUpdatesTo(this);
+            new AsyncTask<Void, Void, DiffUtil.DiffResult>() {
+
+                @Override
+                protected DiffUtil.DiffResult doInBackground(Void... voids) {
+                    return DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                        @Override
+                        public int getOldListSize() {
+                            return mCommentList.size();
+                        }
+
+                        @Override
+                        public int getNewListSize() {
+                            return comments.size();
+                        }
+
+                        @Override
+                        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                            Comment old = mCommentList.get(oldItemPosition);
+                            Comment comment = comments.get(newItemPosition);
+                            return old.getId() == comment.getId();
+                        }
+
+                        @Override
+                        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                            Comment old = mCommentList.get(oldItemPosition);
+                            Comment comment = comments.get(newItemPosition);
+                            return old.getId() == comment.getId()
+                                    && old.getPostedAt() == comment.getPostedAt()
+                                    && old.getProductId() == comment.getProductId()
+                                    && Objects.equals(old.getText(), comment.getText());
+                        }
+                    });
+                }
+
+                @Override
+                protected void onPostExecute(DiffUtil.DiffResult diffResult) {
+                    super.onPostExecute(diffResult);
+                    diffResult.dispatchUpdatesTo(CommentAdapter.this);
+                }
+            }.execute();
         }
     }
 
