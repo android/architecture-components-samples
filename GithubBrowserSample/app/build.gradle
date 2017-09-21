@@ -87,6 +87,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'
     })
+    testImplementation "org.mockito:mockito-core:$mockito_version"
 
     androidTestImplementation "com.android.support:appcompat-v7:$support_version"
     androidTestImplementation "com.android.support:recyclerview-v7:$support_version"
@@ -104,7 +105,8 @@ dependencies {
 
     androidTestImplementation("android.arch.core:core-testing:$arch_version", {
     })
-    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexmaker_version", { exclude group: 'net.bytebuddy' }
+    androidTestImplementation "org.mockito:mockito-core:$mockito_version", { exclude group: 'net.bytebuddy' }
 }
 
 task fullCoverageReport(type: JacocoReport) {

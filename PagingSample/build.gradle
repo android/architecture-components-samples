@@ -35,6 +35,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://android-devtools-staging.corp.google.com/no_crawl/maven2/yboyar_20170921110403' }
     }
 }
 
@@ -45,6 +46,6 @@ task clean(type: Delete) {
 ext.versions = [
         support : "26.1.0",
         constraint_layout : "1.0.2",
-        arch : "1.0.0-alpha9-1",
-        paging : "1.0.0-alpha1"
+        arch : "1.0.0-beta1",
+        paging : "1.0.0-alpha2"
 ]

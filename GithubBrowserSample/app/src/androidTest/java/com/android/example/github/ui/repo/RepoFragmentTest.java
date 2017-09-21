@@ -52,6 +52,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,7 +81,7 @@ public class RepoFragmentTest {
         viewModel = mock(RepoViewModel.class);
         fragmentBindingAdapters = mock(FragmentBindingAdapters.class);
         navigationController = mock(NavigationController.class);
-
+        doNothing().when(viewModel).setId(anyString(), anyString());
         when(viewModel.getRepo()).thenReturn(repo);
         when(viewModel.getContributors()).thenReturn(contributors);
 

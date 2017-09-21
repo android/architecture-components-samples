@@ -73,7 +73,8 @@ public class RepoViewModel extends ViewModel {
         }
     }
 
-    void setId(String owner, String name) {
+    @VisibleForTesting
+    public void setId(String owner, String name) {
         RepoId update = new RepoId(owner, name);
         if (Objects.equals(repoId.getValue(), update)) {
             return;

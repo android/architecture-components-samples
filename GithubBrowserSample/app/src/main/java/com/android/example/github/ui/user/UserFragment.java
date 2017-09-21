@@ -46,7 +46,7 @@ public class UserFragment extends LifecycleFragment implements Injectable {
 
     DataBindingComponent dataBindingComponent = new FragmentDataBindingComponent(this);
     private UserViewModel userViewModel;
-    private AutoClearedValue<UserFragmentBinding> binding;
+    AutoClearedValue<UserFragmentBinding> binding;
     private AutoClearedValue<RepoListAdapter> adapter;
 
     public static UserFragment create(String login) {
