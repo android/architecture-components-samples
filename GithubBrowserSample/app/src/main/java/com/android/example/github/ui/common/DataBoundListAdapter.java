@@ -67,7 +67,7 @@ public abstract class DataBoundListAdapter<T, V extends ViewDataBinding>
             }
             items = update;
             notifyDataSetChanged();
-        } else if (update == null) {
+        } else if (update == null || update.size() == 0) {
             int oldSize = items.size();
             items = null;
             notifyItemRangeRemoved(0, oldSize);
