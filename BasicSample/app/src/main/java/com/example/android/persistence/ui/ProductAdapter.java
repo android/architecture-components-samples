@@ -65,12 +65,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Product product = productList.get(newItemPosition);
-                    Product old = productList.get(oldItemPosition);
-                    return product.getId() == old.getId()
-                            && Objects.equals(product.getDescription(), old.getDescription())
-                            && Objects.equals(product.getName(), old.getName())
-                            && product.getPrice() == old.getPrice();
+                    Product newProduct = productList.get(newItemPosition);
+                    Product oldProduct = mProductList.get(oldItemPosition);
+                    return newProduct.getId() == oldProduct.getId()
+                            && Objects.equals(newProduct.getDescription(), oldProduct.getDescription())
+                            && Objects.equals(newProduct.getName(), oldProduct.getName())
+                            && newProduct.getPrice() == oldProduct.getPrice();
                 }
             });
             mProductList = productList;
