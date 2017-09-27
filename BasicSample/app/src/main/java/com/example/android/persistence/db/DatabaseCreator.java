@@ -33,26 +33,22 @@ import static com.example.android.persistence.db.AppDatabase.DATABASE_NAME;
  */
 public class DatabaseCreator {
 
-    private static DatabaseCreator sInstance;
-
     private final MutableLiveData<Boolean> mIsDatabaseCreated = new MutableLiveData<>();
 
     private AppDatabase mDb;
 
     private final AtomicBoolean mInitializing = new AtomicBoolean(true);
 
-    // For Singleton instantiation
-    private static final Object LOCK = new Object();
+    private static class SingletonInstance {
+        private static final DatabaseCreator sInstance = new DatabaseCreator();
+    }
 
-    public synchronized static DatabaseCreator getInstance(Context context) {
-        if (sInstance == null) {
-            synchronized (LOCK) {
-                if (sInstance == null) {
-                    sInstance = new DatabaseCreator();
-                }
-            }
-        }
-        return sInstance;
+    private DatabaseCreator(){
+
+    }
+
+    public synchronized static DatabaseCreator getInstance() {
+        return SingletonInstance.sInstance;
     }
 
     /** Used to observe when the database initialization is done */

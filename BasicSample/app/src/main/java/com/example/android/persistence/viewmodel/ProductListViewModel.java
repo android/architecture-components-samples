@@ -41,7 +41,7 @@ public class ProductListViewModel extends AndroidViewModel {
     public ProductListViewModel(Application application) {
         super(application);
 
-        final DatabaseCreator databaseCreator = DatabaseCreator.getInstance(this.getApplication());
+        final DatabaseCreator databaseCreator = DatabaseCreator.getInstance();
 
         LiveData<Boolean> databaseCreated = databaseCreator.isDatabaseCreated();
         mObservableProducts = Transformations.switchMap(databaseCreated,

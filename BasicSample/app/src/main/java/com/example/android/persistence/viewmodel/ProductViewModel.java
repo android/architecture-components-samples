@@ -54,7 +54,7 @@ public class ProductViewModel extends AndroidViewModel {
         super(application);
         mProductId = productId;
 
-        final DatabaseCreator databaseCreator = DatabaseCreator.getInstance(this.getApplication());
+        final DatabaseCreator databaseCreator = DatabaseCreator.getInstance();
 
         mObservableComments = Transformations.switchMap(databaseCreator.isDatabaseCreated(), new Function<Boolean, LiveData<List<CommentEntity>>>() {
             @Override
