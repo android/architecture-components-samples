@@ -19,7 +19,6 @@ package com.example.android.persistence;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -47,13 +46,18 @@ public class ProductFragment extends LifecycleFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
-        // Inflate this data binding layout
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.product_fragment, container, false);
+                             @Nullable Bundle savedInstanceState) {
+        if (mBinding == null) {
+            View rootView = inflater.inflate(R.layout.product_fragment, container, false);
 
-        // Create and set the adapter for the RecyclerView.
-        mCommentAdapter = new CommentAdapter(mCommentClickCallback);
-        mBinding.commentList.setAdapter(mCommentAdapter);
+            //attach inflated view to binding layout
+            mBinding = ProductFragmentBinding.bind(rootView);
+
+            // Create and set the adapter for the RecyclerView.
+            mCommentAdapter = new CommentAdapter(mCommentClickCallback);
+            mBinding.commentList.setAdapter(mCommentAdapter);
+        }
+
         return mBinding.getRoot();
     }
 
@@ -103,7 +107,9 @@ public class ProductFragment extends LifecycleFragment {
         });
     }
 
-    /** Creates product fragment for specific product ID */
+    /**
+     * Creates product fragment for specific product ID
+     */
     public static ProductFragment forProduct(int productId) {
         ProductFragment fragment = new ProductFragment();
         Bundle args = new Bundle();
