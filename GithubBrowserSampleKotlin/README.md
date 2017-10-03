@@ -1,4 +1,4 @@
-Github Browser Sample with Android Architecture Components
+Github Browser Sample with Android Architecture Components - Kotlin
 
 This is a sample app that uses Android Architecture Components with Dagger 2.
 
