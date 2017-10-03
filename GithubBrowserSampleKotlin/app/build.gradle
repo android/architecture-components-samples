@@ -1,0 +1,161 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'jacoco'
+apply plugin: 'kotlin-allopen'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+    defaultConfig {
+        applicationId "com.android.example.github"
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "com.android.example.github.util.GithubTestRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            testCoverageEnabled !project.hasProperty('android.injected.invoked.from.ide')
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    sourceSets {
+        androidTest.java.srcDirs += "src/test-common/java"
+        test.java.srcDirs += "src/test-common/java"
+    }
+    lintOptions {
+        lintConfig rootProject.file('lint.xml')
+    }
+}
+
+allOpen {
+    annotation("com.android.example.github.OpenClass")
+}
+
+jacoco {
+    toolVersion = "0.7.4+"
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation "com.android.support:cardview-v7:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation "android.arch.persistence.room:runtime:$arch_version"
+    implementation "android.arch.lifecycle:runtime:$arch_version"
+    implementation "android.arch.lifecycle:extensions:$arch_version"
+    implementation "android.arch.paging:runtime:$paging_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
+
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "android.arch.persistence.room:compiler:$arch_version"
+    kapt "android.arch.lifecycle:compiler:$arch_version"
+    kapt "com.android.databinding:compiler:$gradle_version"
+
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
+    testImplementation("android.arch.core:core-testing:$arch_version", {
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-core-utils'
+    })
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+
+    androidTestImplementation "com.android.support:appcompat-v7:$support_version"
+    androidTestImplementation "com.android.support:recyclerview-v7:$support_version"
+    androidTestImplementation "com.android.support:support-v4:$support_version"
+    androidTestImplementation "com.android.support:design:$support_version"
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espresso_version", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    })
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$espresso_version", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    })
+
+    androidTestImplementation("android.arch.core:core-testing:$arch_version", {
+    })
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    androidTestImplementation "com.android.support.test:runner:$test_runner_version"
+
+    androidTestImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+}
+
+task fullCoverageReport(type: JacocoReport) {
+    dependsOn 'createDebugCoverageReport'
+    dependsOn 'testDebugUnitTest'
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+                      '**/*Test*.*', 'android/**/*.*',
+                      '**/*_MembersInjector.class',
+                      '**/Dagger*Component.class',
+                      '**/Dagger*Component$Builder.class',
+                      '**/*_*Factory.class',
+                      '**/*ComponentImpl.class',
+                      '**/*SubComponentBuilder.class']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code-coverage/connected/*coverage.ec"
+    ])
+}
+repositories {
+    mavenCentral()
+}
