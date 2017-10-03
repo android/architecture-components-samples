@@ -65,7 +65,10 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
             //noinspection ConstantConditions
             if (response.isSuccessful()) {
                 appExecutors.diskIO().execute(() -> {
-                    saveCallResult(processResponse(response));
+                    RequestType processResponse = processResponse(response);
+                    if (processResponse != null) {
+                        saveCallResult(processResponse);
+                    }
                     appExecutors.mainThread().execute(() ->
                             // we specially request a new live data,
                             // otherwise we will get immediately last cached value,

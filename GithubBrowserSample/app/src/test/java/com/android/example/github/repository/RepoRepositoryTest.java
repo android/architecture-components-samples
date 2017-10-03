@@ -16,12 +16,18 @@
 
 package com.android.example.github.repository;
 
+import android.arch.core.executor.testing.InstantTaskExecutorRule;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+
 import com.android.example.github.api.ApiResponse;
 import com.android.example.github.api.GithubService;
 import com.android.example.github.api.RepoSearchResponse;
 import com.android.example.github.db.GithubDb;
 import com.android.example.github.db.RepoDao;
 import com.android.example.github.util.AbsentLiveData;
+import com.android.example.github.util.ApiUtil;
 import com.android.example.github.util.InstantAppExecutors;
 import com.android.example.github.util.TestUtil;
 import com.android.example.github.vo.Contributor;
@@ -35,11 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
-
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
+import org.mockito.ArgumentMatchers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import okhttp3.Protocol;
+import okhttp3.Request;
 import retrofit2.Response;
 
 import static com.android.example.github.util.ApiUtil.successCall;
@@ -69,6 +73,7 @@ public class RepoRepositoryTest {
     private GithubService service;
     @Rule
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
+
     @Before
     public void init() {
         dao = mock(RepoDao.class);
@@ -130,7 +135,7 @@ public class RepoRepositoryTest {
         Observer<Resource<List<Contributor>>> observer = mock(Observer.class);
         data.observeForever(observer);
 
-        verify(observer).onChanged(Resource.loading( null));
+        verify(observer).onChanged(Resource.loading(null));
 
         MutableLiveData<List<Contributor>> updatedDbData = new MutableLiveData<>();
         when(dao.loadContributors("foo", "bar")).thenReturn(updatedDbData);
@@ -145,6 +150,50 @@ public class RepoRepositoryTest {
         Contributor first = inserted.getValue().get(0);
         assertThat(first.getRepoName(), is("bar"));
         assertThat(first.getRepoOwner(), is("foo"));
+
+        updatedDbData.setValue(contributors);
+        verify(observer).onChanged(Resource.success(contributors));
+    }
+
+    @Test
+    public void loadContributors_204_NoContent() {
+        MutableLiveData<List<Contributor>> dbData = new MutableLiveData<>();
+        when(dao.loadContributors("foo", "bar")).thenReturn(dbData);
+
+        LiveData<Resource<List<Contributor>>> data = repository.loadContributors("foo",
+                "bar");
+        verify(dao).loadContributors("foo", "bar");
+
+        verify(service, never()).getContributors(anyString(), anyString());
+
+        Repo repo = TestUtil.createRepo("foo", "bar", "desc");
+
+        List<Contributor> contributors = null;
+
+        LiveData<ApiResponse<List<Contributor>>> call = ApiUtil.createCall(Response.success(contributors,
+                new okhttp3.Response.Builder()
+                        .code(204)
+                        .message("No Content")
+                        .protocol(Protocol.HTTP_1_1)
+                        .request(new Request.Builder().url("http://localhost/").build())
+                        .build()));
+
+
+        when(service.getContributors("foo", "bar"))
+                .thenReturn(call);
+
+        Observer<Resource<List<Contributor>>> observer = mock(Observer.class);
+        data.observeForever(observer);
+
+        verify(observer).onChanged(Resource.loading(null));
+
+        MutableLiveData<List<Contributor>> updatedDbData = new MutableLiveData<>();
+        when(dao.loadContributors("foo", "bar")).thenReturn(updatedDbData);
+        dbData.setValue(Collections.emptyList());
+
+        verify(service).getContributors("foo", "bar");
+        verify(dao, never()).insertContributors(ArgumentMatchers.any());
+
 
         updatedDbData.setValue(contributors);
         verify(observer).onChanged(Resource.success(contributors));
