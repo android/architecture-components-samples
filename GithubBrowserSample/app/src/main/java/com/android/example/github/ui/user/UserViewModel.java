@@ -58,22 +58,26 @@ public class UserViewModel extends ViewModel {
         });
     }
 
-    void setLogin(String login) {
+    @VisibleForTesting
+    public void setLogin(String login) {
         if (Objects.equals(this.login.getValue(), login)) {
             return;
         }
         this.login.setValue(login);
     }
 
-    LiveData<Resource<User>> getUser() {
+    @VisibleForTesting
+    public LiveData<Resource<User>> getUser() {
         return user;
     }
 
-    LiveData<Resource<List<Repo>>> getRepositories() {
+    @VisibleForTesting
+    public LiveData<Resource<List<Repo>>> getRepositories() {
         return repositories;
     }
 
-    void retry() {
+    @VisibleForTesting
+    public void retry() {
         if (this.login.getValue() != null) {
             this.login.setValue(this.login.getValue());
         }
