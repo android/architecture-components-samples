@@ -23,7 +23,10 @@ import com.android.example.github.vo.*
 /**
  * Main database description.
  */
-@Database(entities = arrayOf(User::class, Repo::class, Contributor::class, RepoSearchResult::class), version = 4)
+@Database(entities = arrayOf(User::class, Repo::class,
+                             Contributor::class,
+                             RepoSearchResult::class),
+          version = 1)
 abstract class GithubDb : RoomDatabase() {
 
     abstract fun userDao(): UserDao

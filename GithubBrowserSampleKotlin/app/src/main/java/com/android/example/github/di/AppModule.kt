@@ -46,9 +46,7 @@ internal class AppModule {
     @Provides
     fun provideDb(app: Application): GithubDb {
         return Room
-                //.databaseBuilder(app, GithubDb::class.java, "github.db")
-                .inMemoryDatabaseBuilder(app, GithubDb::class.java)
-                .fallbackToDestructiveMigration()
+                .databaseBuilder(app, GithubDb::class.java, "github.db")
                 .build()
     }
 

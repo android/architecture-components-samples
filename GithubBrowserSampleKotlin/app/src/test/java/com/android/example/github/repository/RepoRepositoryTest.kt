@@ -31,6 +31,8 @@ import com.android.example.github.db.RepoDao
 import com.android.example.github.util.*
 import com.android.example.github.vo.*
 import com.nhaarman.mockito_kotlin.*
+import okhttp3.Protocol
+import okhttp3.Request
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -43,6 +45,7 @@ import org.mockito.ArgumentMatchers.anyInt
 import retrofit2.Response
 import java.io.IOException
 import java.util.*
+import java.util.Collections.emptyList
 
 @RunWith(JUnit4::class)
 class RepoRepositoryTest {
@@ -102,8 +105,7 @@ class RepoRepositoryTest {
         whenever(provider.create(ArgumentMatchers.isNull(), anyInt())).thenReturn(dbData)
         whenever(dao.loadContributors("foo", "bar")).thenReturn(provider)
 
-        val data = repository.loadContributors("foo",
-                                               "bar")
+        val data = repository.loadContributors("foo", "bar")
         verify(dao).loadContributors("foo", "bar")
 
         verify(service, never()).getContributors(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
@@ -137,6 +139,44 @@ class RepoRepositoryTest {
 
         dbData.value = PagedListUtil.from(contributors)
         verify(observer).onChanged(Resource.success(PagedListUtil.from(contributors)))
+    }
+
+    @Test
+    fun loadContributors_204_NoContent() {
+        val provider: LivePagedListProvider<Int, Contributor> = mock()
+        val dbData = MutableLiveData<PagedList<Contributor>>()
+        whenever(provider.create(ArgumentMatchers.isNull(), anyInt())).thenReturn(dbData)
+        whenever(dao.loadContributors("foo", "bar")).thenReturn(provider)
+
+        val data = repository.loadContributors("foo", "bar")
+
+        verify(dao).loadContributors("foo", "bar")
+        verify(service, never()).getContributors(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+
+
+        val contributors: List<Contributor>? = null
+
+        val call = createCall(Response.success(contributors,
+                                                  okhttp3.Response.Builder()
+                                                          .code(204)
+                                                          .message("No Content")
+                                                          .protocol(Protocol.HTTP_1_1)
+                                                          .request(Request.Builder().url("http://localhost/").build())
+                                                          .build()))
+
+        whenever(service.getContributors("foo", "bar"))
+                .thenReturn(call)
+
+        val observer: Observer<Resource<PagedList<Contributor>>> = mock()
+        data.observeForever(observer)
+
+        verify(observer).onChanged(Resource.loading<PagedList<Contributor>>(null))
+
+        dbData.value = PagedListUtil.from(emptyList())
+
+        verify(service).getContributors("foo", "bar")
+
+        verify(dao, never()).insertContributors(any())
     }
 
     @Test
