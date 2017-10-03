@@ -20,13 +20,13 @@
 
     <data>
 
-        <import type="com.android.example.github.vo.Status" />
+        <import type="com.android.example.github_kotlin.vo.Status" />
 
-        <import type="com.android.example.github.vo.Resource" />
+        <import type="com.android.example.github_kotlin.vo.Resource" />
 
         <variable
             name="repo"
-            type="com.android.example.github.vo.Repo" />
+            type="com.android.example.github_kotlin.vo.Repo" />
 
         <variable
             name="repoResource"
@@ -34,11 +34,11 @@
 
         <variable
             name="contributorsStatus"
-            type="com.android.example.github.vo.Status" />
+            type="com.android.example.github_kotlin.vo.Status" />
 
         <variable
             name="retryCallback"
-            type="com.android.example.github.ui.common.RetryCallback" />
+            type="com.android.example.github_kotlin.ui.common.RetryCallback" />
     </data>
 
     <android.support.constraint.ConstraintLayout

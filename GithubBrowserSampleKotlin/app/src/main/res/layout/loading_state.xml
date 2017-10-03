@@ -19,9 +19,9 @@
 
     <data>
 
-        <import type="com.android.example.github.vo.Resource" />
+        <import type="com.android.example.github_kotlin.vo.Resource" />
 
-        <import type="com.android.example.github.vo.Status" />
+        <import type="com.android.example.github_kotlin.vo.Status" />
 
         <variable
             name="resource"
@@ -29,7 +29,7 @@
 
         <variable
             name="callback"
-            type="com.android.example.github.ui.common.RetryCallback" />
+            type="com.android.example.github_kotlin.ui.common.RetryCallback" />
     </data>
 
     <LinearLayout
