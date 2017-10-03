@@ -24,20 +24,20 @@ import com.android.example.github.ui.common.NavigationController;
 import com.android.example.github.ui.common.RepoListAdapter;
 import com.android.example.github.util.AutoClearedValue;
 
-import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import javax.inject.Inject;
 
-public class UserFragment extends LifecycleFragment implements Injectable {
+public class UserFragment extends Fragment implements Injectable {
     private static final String LOGIN_KEY = "login";
     @Inject
     ViewModelProvider.Factory viewModelFactory;
