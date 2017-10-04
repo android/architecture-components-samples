@@ -7,6 +7,7 @@ A collection of samples using the [Architecture Components](https://developer.an
 - Lifecycle-aware components
 - ViewModels
 - LiveData
+- Paging
 
 ### Samples
 
