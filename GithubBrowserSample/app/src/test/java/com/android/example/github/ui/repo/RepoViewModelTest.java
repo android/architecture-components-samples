@@ -30,6 +30,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,12 +53,13 @@ public class RepoViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
 
+    @Mock
     private RepoRepository repository;
     private RepoViewModel repoViewModel;
 
     @Before
     public void setup() {
-        repository = mock(RepoRepository.class);
+        MockitoAnnotations.initMocks(this);
         repoViewModel = new RepoViewModel(repository);
     }
 

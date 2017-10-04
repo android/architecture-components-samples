@@ -22,6 +22,8 @@ import com.android.example.github.vo.Resource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.MutableLiveData;
@@ -43,11 +45,12 @@ public class NextPageHandlerTest {
 
     private SearchViewModel.NextPageHandler pageHandler;
 
+    @Mock
     private RepoRepository repository;
 
     @Before
     public void init() {
-        repository = mock(RepoRepository.class);
+        MockitoAnnotations.initMocks(this);
         pageHandler = new SearchViewModel.NextPageHandler(repository);
     }
 

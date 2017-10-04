@@ -31,6 +31,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
@@ -44,7 +46,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class UserRepositoryTest {
+    @Mock
     private UserDao userDao;
+    @Mock
     private GithubService githubService;
     private UserRepository repo;
 
@@ -53,8 +57,7 @@ public class UserRepositoryTest {
 
     @Before
     public void setup() {
-        userDao = mock(UserDao.class);
-        githubService = mock(GithubService.class);
+        MockitoAnnotations.initMocks(this);
         repo = new UserRepository(new InstantAppExecutors(), userDao, githubService);
     }
 

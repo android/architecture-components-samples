@@ -35,6 +35,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
@@ -65,14 +67,15 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class RepoRepositoryTest {
     private RepoRepository repository;
+    @Mock
     private RepoDao dao;
+    @Mock
     private GithubService service;
     @Rule
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
     @Before
     public void init() {
-        dao = mock(RepoDao.class);
-        service = mock(GithubService.class);
+        MockitoAnnotations.initMocks(this);
         GithubDb db = mock(GithubDb.class);
         when(db.repoDao()).thenReturn(dao);
         repository = new RepoRepository(new InstantAppExecutors(), db, dao, service);

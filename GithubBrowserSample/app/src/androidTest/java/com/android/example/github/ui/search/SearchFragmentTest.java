@@ -31,6 +31,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
@@ -68,9 +70,12 @@ public class SearchFragmentTest {
     public TaskExecutorWithIdlingResourceRule executorRule =
             new TaskExecutorWithIdlingResourceRule();
 
+    @Mock
     private FragmentBindingAdapters fragmentBindingAdapters;
+    @Mock
     private NavigationController navigationController;
 
+    @Mock
     private SearchViewModel viewModel;
 
     private MutableLiveData<Resource<List<Repo>>> results = new MutableLiveData<>();
@@ -78,13 +83,11 @@ public class SearchFragmentTest {
 
     @Before
     public void init() {
+        MockitoAnnotations.initMocks(this);
         SearchFragment searchFragment = new SearchFragment();
-        viewModel = mock(SearchViewModel.class);
         when(viewModel.getLoadMoreStatus()).thenReturn(loadMoreStatus);
         when(viewModel.getResults()).thenReturn(results);
 
-        fragmentBindingAdapters = mock(FragmentBindingAdapters.class);
-        navigationController = mock(NavigationController.class);
         searchFragment.viewModelFactory = ViewModelUtil.createFor(viewModel);
         searchFragment.dataBindingComponent = () -> fragmentBindingAdapters;
         searchFragment.navigationController = navigationController;
