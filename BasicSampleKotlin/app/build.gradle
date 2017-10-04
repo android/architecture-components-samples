@@ -80,8 +80,8 @@ dependencies {
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
 
 // Force usage of dependencies in the test app, since it is internally used by the runner module.
-    androidTestImplementation "com.android.support:design:$rootProject.supportLibVersion";
-    androidTestImplementation "com.android.support:recyclerview-v7:$rootProject.supportLibVersion";
+    androidTestImplementation "com.android.support:design:$rootProject.supportLibVersion"
+    androidTestImplementation "com.android.support:recyclerview-v7:$rootProject.supportLibVersion"
 
 
 }
