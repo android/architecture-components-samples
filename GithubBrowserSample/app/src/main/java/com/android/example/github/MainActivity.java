@@ -30,18 +30,13 @@ import javax.inject.Inject;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
-public class MainActivity extends AppCompatActivity implements LifecycleRegistryOwner,
+public class MainActivity extends AppCompatActivity implements
         HasSupportFragmentInjector {
-    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
     @Inject
     NavigationController navigationController;
 
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
