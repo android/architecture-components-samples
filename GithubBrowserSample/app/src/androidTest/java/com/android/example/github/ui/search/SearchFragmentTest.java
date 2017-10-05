@@ -55,6 +55,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVi
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,7 +82,7 @@ public class SearchFragmentTest {
     public void init() {
         SearchFragment searchFragment = new SearchFragment();
         viewModel = mock(SearchViewModel.class);
-        when(viewModel.getLoadMoreStatus()).thenReturn(loadMoreStatus);
+        doReturn(loadMoreStatus).when(viewModel).getLoadMoreStatus();
         when(viewModel.getResults()).thenReturn(results);
 
         fragmentBindingAdapters = mock(FragmentBindingAdapters.class);
@@ -134,6 +136,7 @@ public class SearchFragmentTest {
 
     @Test
     public void navigateToRepo() throws Throwable {
+        doNothing().when(viewModel).loadNextPage();
         Repo repo = TestUtil.createRepo("foo", "bar", "desc");
         results.postValue(Resource.success(Arrays.asList(repo)));
         onView(withText("desc")).perform(click());

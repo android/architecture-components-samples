@@ -56,7 +56,8 @@ public class SearchViewModel extends ViewModel {
         });
     }
 
-    LiveData<Resource<List<Repo>>> getResults() {
+    @VisibleForTesting
+    public LiveData<Resource<List<Repo>>> getResults() {
         return results;
     }
 
@@ -69,11 +70,13 @@ public class SearchViewModel extends ViewModel {
         query.setValue(input);
     }
 
-    LiveData<LoadMoreState> getLoadMoreStatus() {
+    @VisibleForTesting
+    public LiveData<LoadMoreState> getLoadMoreStatus() {
         return nextPageHandler.getLoadMoreState();
     }
 
-    void loadNextPage() {
+    @VisibleForTesting
+    public void loadNextPage() {
         String value = query.getValue();
         if (value == null || value.trim().length() == 0) {
             return;
