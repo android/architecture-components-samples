@@ -98,7 +98,7 @@ dependencies {
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.runnerVersion"
-    androidTestImplementation "com.android.support.test:rules:$rootProject.ext.runnerVersion"
+    androidTestImplementation "com.android.support.test:rules:$rootProject.ext.rulesVersion"
     androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
 
     // Dependencies for Android unit tests
