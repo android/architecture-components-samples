@@ -54,7 +54,7 @@ public abstract class RepoDao {
     public abstract LiveData<Repo> load(String login, String name);
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT login, avatarUrl, contributions FROM contributor "
+    @Query("SELECT login, avatarUrl, repoName, repoOwner, contributions FROM contributor "
             + "WHERE repoName = :name AND repoOwner = :owner "
             + "ORDER BY contributions DESC")
     public abstract LiveData<List<Contributor>> loadContributors(String owner, String name);

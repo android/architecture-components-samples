@@ -18,7 +18,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.android.example.github"
         minSdkVersion 14
@@ -64,6 +64,7 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$arch_version"
     implementation "android.arch.lifecycle:runtime:$arch_version"
     implementation "android.arch.lifecycle:extensions:$arch_version"
+    implementation "android.arch.lifecycle:common-java8:$arch_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -87,6 +88,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'
     })
+    testImplementation "org.mockito:mockito-core:$mockito_version"
 
     androidTestImplementation "com.android.support:appcompat-v7:$support_version"
     androidTestImplementation "com.android.support:recyclerview-v7:$support_version"
@@ -104,7 +106,8 @@ dependencies {
 
     androidTestImplementation("android.arch.core:core-testing:$arch_version", {
     })
-    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexmaker_version", { exclude group: 'net.bytebuddy' }
+    androidTestImplementation "org.mockito:mockito-core:$mockito_version", { exclude group: 'net.bytebuddy' }
 }
 
 task fullCoverageReport(type: JacocoReport) {
