@@ -88,7 +88,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'
     })
-    testImplementation deps.mockito
+    testImplementation deps.mockito.core
 
     androidTestImplementation deps.support.app_compat
     androidTestImplementation deps.support.recyclerview
@@ -107,7 +107,7 @@ dependencies {
     androidTestImplementation(deps.arch_core.testing, {
     })
     androidTestImplementation deps.dexmaker
-    androidTestImplementation deps.mockito
+    androidTestImplementation deps.mockito.core { exclude group: 'net.bytebuddy' }
 }
 
 task fullCoverageReport(type: JacocoReport) {
