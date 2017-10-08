@@ -100,3 +100,11 @@ build_versions.min_sdk = 14
 build_versions.target_sdk = 26
 build_versions.build_tools = "26.0.2"
 ext.build_versions = build_versions
+
+
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+ext.addRepos = this.&addRepos
