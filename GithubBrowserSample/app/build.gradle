@@ -17,12 +17,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.android.example.github"
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.android.example.github.util.GithubTestRunner"
@@ -107,7 +107,7 @@ dependencies {
     androidTestImplementation(deps.arch_core.testing, {
     })
     androidTestImplementation deps.dexmaker
-    androidTestImplementation deps.mockito.core { exclude group: 'net.bytebuddy' }
+    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
 }
 
 task fullCoverageReport(type: JacocoReport) {
