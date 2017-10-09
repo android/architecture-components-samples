@@ -1,27 +1,22 @@
-# Disable emulator audio
 machine:
-  environment:
-    QEMU_AUDIO_DRV: none
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx3000m'
   java:
-    version: openjdk8
+    version: oraclejdk8
+  environment:
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
 dependencies:
-  # start the emulator, it takes time, do it first.
   pre:
-    - emulator -avd circleci-android24 -no-audio -no-window:
-        background: true
-        parallel: true
-    - echo y | android update sdk -u -a -t tools
-    - echo y | android update sdk -u -a -t platform-tools
-    - echo y | android update sdk -u -a -t build-tools-26.0.2
-    - echo y | android update sdk -u -a -t android-26
+    - sudo pip install -U crcmod
+    - echo y | android update sdk --no-ui --all --filter "tools,platform-tools,build-tools-26.0.2,android-26,extra-android-m2repository"
+    - echo ${GCLOUD_SERVICE_KEY} | base64 --decode > ${HOME}/client-secret.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud config set project android-devrel-ci
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account travis-ci-for-blueprints@android-devrel-ci.iam.gserviceaccount.com --key-file ${HOME}/client-secret.json
 
 test:
   override:
-    # wait for it to have booted
-    - circle-android wait-for-boot
-    - adb shell input keyevent 82
-    - ./run_tests.sh
+    - ./test_all_ftl.sh
   post:
-    - ./collect_test_results.sh $CIRCLE_TEST_REPORTS
+    - sudo /opt/google-cloud-sdk/bin/gsutil -m cp -r -U `sudo /opt/google-cloud-sdk/bin/gsutil ls gs://cloud-test-android-devrel-ci | tail -1` $CIRCLE_ARTIFACTS/ | true
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find $CIRCLE_ARTIFACTS -name \*.xml -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
