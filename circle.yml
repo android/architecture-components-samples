@@ -1,0 +1,27 @@
+# Disable emulator audio
+machine:
+  environment:
+    QEMU_AUDIO_DRV: none
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx3000m'
+  java:
+    version: openjdk8
+
+dependencies:
+  # start the emulator, it takes time, do it first.
+  pre:
+    - emulator -avd circleci-android24 -no-audio -no-window:
+        background: true
+        parallel: true
+    - echo y | android update sdk -u -a -t tools
+    - echo y | android update sdk -u -a -t platform-tools
+    - echo y | android update sdk -u -a -t build-tools-26.0.2
+    - echo y | android update sdk -u -a -t android-26
+
+test:
+  override:
+    # wait for it to have booted
+    - circle-android wait-for-boot
+    - adb shell input keyevent 82
+    - ./run_tests.sh
+  post:
+    - ./collect_test_results.sh $CIRCLE_TEST_REPORTS

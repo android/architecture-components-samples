@@ -6,5 +6,6 @@ do
   echo "will run tests for ${line}";
   cd $(dirname "${line}");
   pwd
-  ./gradlew test cC;
+  adb shell input keyevent 82 # unlock device
+  ./gradlew --no-daemon test cC;
 done
