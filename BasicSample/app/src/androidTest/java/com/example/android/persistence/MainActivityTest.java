@@ -17,23 +17,32 @@
 package com.example.android.persistence;
 
 
+import android.arch.core.executor.testing.CountingTaskExecutorRule;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.v4.app.Fragment;
 
+import com.example.android.persistence.db.DatabaseCreator;
 import com.example.android.persistence.db.entity.ProductEntity;
 import com.example.android.persistence.viewmodel.ProductListViewModel;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -50,83 +59,56 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
 
-    private SimpleIdlingResource idlingRes = new SimpleIdlingResource();
+    @Rule
+    public CountingTaskExecutorRule mCountingTaskExecutorRule = new CountingTaskExecutorRule();
 
     @Before
-    public void idlingResourceSetup() {
-
-        IdlingRegistry.getInstance().register(idlingRes);
-        // There's always
-        idlingRes.setIdleNow(false);
-
-        ProductListViewModel productListViewModel = getProductListViewModel();
-
-        // Subscribe to ProductListViewModel's products list observable to figure out when the
-        // app is idle.
-        productListViewModel.getProducts().observeForever(new Observer<List<ProductEntity>>() {
+    public void waitForDbCreation() throws Throwable {
+        final CountDownLatch latch = new CountDownLatch(1);
+        final LiveData<Boolean> databaseCreated = DatabaseCreator.getInstance(
+                InstrumentationRegistry.getTargetContext())
+                .isDatabaseCreated();
+        mActivityRule.runOnUiThread(new Runnable() {
             @Override
-            public void onChanged(@Nullable List<ProductEntity> productEntities) {
-                if (productEntities != null) {
-                    idlingRes.setIdleNow(true);
-                }
+            public void run() {
+                databaseCreated.observeForever(new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(@Nullable Boolean aBoolean) {
+                        if (Boolean.TRUE.equals(aBoolean)) {
+                            databaseCreated.removeObserver(this);
+                            latch.countDown();
+                        }
+                    }
+                });
             }
         });
+        MatcherAssert.assertThat("database should've initialized",
+                latch.await(1, TimeUnit.MINUTES), CoreMatchers.is(true));
+    }
+
+    @Before
+    public void disableRecyclerViewAnimations() {
+        EspressoTestUtil.disableAnimations(mActivityRule);
     }
 
     @Test
-    public void clickOnFirstItem_opensComments() {
+    public void clickOnFirstItem_opensComments() throws TimeoutException, InterruptedException {
+        drain();
         // When clicking on the first product
         onView(withContentDescription(R.string.cd_products_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-
+        drain();
         // Then the second screen with the comments should appear.
         onView(withContentDescription(R.string.cd_comments_list))
                 .check(matches(isDisplayed()));
-
+        drain();
         // Then the second screen with the comments should appear.
         onView(withContentDescription(R.string.cd_product_name))
                 .check(matches(not(withText(""))));
 
     }
 
-    /** Gets the ViewModel for the current fragment */
-    private ProductListViewModel getProductListViewModel() {
-        MainActivity activity = mActivityRule.getActivity();
-
-        Fragment productListFragment = activity.getSupportFragmentManager()
-                .findFragmentByTag(ProductListFragment.TAG);
-
-        return ViewModelProviders.of(productListFragment)
-                .get(ProductListViewModel.class);
-    }
-
-    private static class SimpleIdlingResource implements IdlingResource {
-
-        // written from main thread, read from any thread.
-        private volatile ResourceCallback mResourceCallback;
-
-        private AtomicBoolean mIsIdleNow = new AtomicBoolean(true);
-
-        public void setIdleNow(boolean idleNow) {
-            mIsIdleNow.set(idleNow);
-            if (idleNow) {
-                mResourceCallback.onTransitionToIdle();
-            }
-        }
-
-        @Override
-        public String getName() {
-            return "Simple idling resource";
-        }
-
-        @Override
-        public boolean isIdleNow() {
-            return mIsIdleNow.get();
-        }
-
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback callback) {
-            mResourceCallback = callback;
-        }
+    private void drain() throws TimeoutException, InterruptedException {
+        mCountingTaskExecutorRule.drainTasks(1, TimeUnit.MINUTES);
     }
 }
