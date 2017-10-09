@@ -67,8 +67,15 @@ public abstract class UsersDatabase extends RoomDatabase {
     static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE users "
-                    + " ADD COLUMN last_update INTEGER");
+            database.execSQL("CREATE TABLE IF NOT EXISTS Users_new ("
+                    + "`userid` INTEGER NOT NULL,"
+                    + "`username` TEXT,"
+                    + "`last_update` INTEGER,"
+                    + "PRIMARY KEY(`userid`))");
+            database.execSQL("INSERT INTO Users_new "
+                    + " SELECT userid, username, null FROM Users");
+            database.execSQL("DROP TABLE Users");
+            database.execSQL("ALTER TABLE Users_new RENAME TO users");
         }
     };
 
@@ -87,8 +94,10 @@ public abstract class UsersDatabase extends RoomDatabase {
             // to do:
             // Create the new table
             database.execSQL(
-                    "CREATE TABLE users_new (userid TEXT, username TEXT, last_update INTEGER,"
-                            + " PRIMARY KEY(userid))");
+                    "CREATE TABLE users_new (userid TEXT NOT NULL,"
+                            + "username TEXT,"
+                            + "last_update INTEGER,"
+                            + "PRIMARY KEY(userid))");
             // Copy the data
             database.execSQL("INSERT INTO users_new (userid, username, last_update) "
                     + "SELECT userid, username, last_update "
