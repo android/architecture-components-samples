@@ -1,6 +1,6 @@
 ext.deps = [:]
 def versions = [:]
-versions.arch = "1.0.0-beta2"
+versions.arch = hasProperty("ARCH_VERSION") ? getProperty("ARCH_VERSION") : "1.0.0-beta2"
 versions.support = "26.1.0"
 versions.dagger = "2.11"
 versions.junit = "4.12"
@@ -21,6 +21,7 @@ versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
 versions.kotlin = "1.1.4-2"
+versions.paging = "1.0.0-alpha2"
 def deps = [:]
 
 def support = [:]
@@ -88,7 +89,7 @@ kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 
 deps.kotlin = kotlin
-
+deps.paging = "android.arch.paging:runtime:$versions.paging"
 deps.glide = "com.github.bumptech.glide:glide:$versions.glide"
 deps.dexmaker = "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
 deps.constraint_layout = "com.android.support.constraint:constraint-layout:$versions.constraint_layout"
