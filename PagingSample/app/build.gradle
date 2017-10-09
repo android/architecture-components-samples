@@ -56,8 +56,5 @@ dependencies {
     androidTestImplementation deps.room.testing
     androidTestImplementation deps.arch_core.testing
 
-    // Dependencies for Android unit tests
-    androidTestImplemtation deps.junit
-
     kapt deps.room.compiler
 }
