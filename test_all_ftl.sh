@@ -11,9 +11,23 @@ for line in $(find . -name 'gradlew'); do
 
    pushd $p > /dev/null  # Silent pushd
    ./gradlew :app:assembleDebug -PdisablePreDex | sed "s@^@$p @"  # Prefix every line with directory
+   code=${PIPESTATUS[0]}
+   if [ "$code" -ne "0" ]; then
+       exit $code
+   fi
+
    ./gradlew :app:assembleAndroidTest -PdisablePreDex | sed "s@^@$p @"  # Prefix every line with directory
-   ./gradlew test | sed "s@^@$p @"  # Prefix every line with directory
-   echo "y" | sudo /opt/google-cloud-sdk/bin/gcloud firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk -d Nexus5X -v 21,25 -l fr --results-bucket cloud-test-android-devrel-ci
+   ./gradlew test -PdisablePreDex | sed "s@^@$p @"  # Prefix every line with directory
+
+   apkfile=app/build/outputs/apk/debug/app-debug.apk
+   testapkfile=app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+   if [ ! -f $apkfile ] || [ ! -f $testapkfile ] ; then
+      echo "APKs not found, probably due to project using multiple flavors. Skipping $p"
+      popd > /dev/null  # Silent popd
+      continue
+   fi
+   echo "Sending APKs to Firebase..."
+   echo "y" | sudo /opt/google-cloud-sdk/bin/gcloud firebase test android run --app $apkfile --test $testapkfile -d Nexus5X -v 21,25 -l fr --results-bucket cloud-test-android-devrel-ci
    code=${PIPESTATUS[0]}
    if [ "$code" -ne "0" ]; then
        exit $code
