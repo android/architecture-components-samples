@@ -2,7 +2,7 @@ machine:
   java:
     version: oraclejdk8
   environment:
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1000m -XX:+HeapDumpOnOutOfMemoryError"'
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1024m -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.compiler.execution.strategy="out-of-process" -Djava.util.concurrent.ForkJoinPool.common.parallelism=2'
 
 dependencies:
   pre:
