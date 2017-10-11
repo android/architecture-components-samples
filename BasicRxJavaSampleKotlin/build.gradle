@@ -17,16 +17,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.1.4-2'
-
-    repositories {
-        google()
-        jcenter()
-        mavenCentral()
-    }
+    apply from: '../versions.gradle'
+    addRepos(repositories)
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta4'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath deps.android_gradle_plugin
+        classpath deps.kotlin.plugin
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -34,10 +29,7 @@ buildscript {
 }
 
 allprojects {
-    repositories {
-        google()
-        jcenter()
-    }
+    addRepos(repositories)
 }
 
 task clean(type: Delete) {

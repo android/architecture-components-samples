@@ -17,12 +17,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.android.example.github"
-        minSdkVersion 14
-        targetSdkVersion 26
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.android.example.github.util.GithubTestRunner"
@@ -57,57 +57,57 @@ jacoco {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:$support_version"
-    implementation "com.android.support:recyclerview-v7:$support_version"
-    implementation "com.android.support:cardview-v7:$support_version"
-    implementation "com.android.support:design:$support_version"
-    implementation "android.arch.persistence.room:runtime:$arch_version"
-    implementation "android.arch.lifecycle:runtime:$arch_version"
-    implementation "android.arch.lifecycle:extensions:$arch_version"
-    implementation "android.arch.lifecycle:common-java8:$arch_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation deps.support.app_compat
+    implementation deps.support.recyclerview
+    implementation deps.support.cardview
+    implementation deps.support.design
+    implementation deps.room.runtime
+    implementation deps.lifecycle.runtime
+    implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.java8
+    implementation deps.retrofit.runtime
+    implementation deps.retrofit.gson
+    implementation deps.glide
 
-    implementation "com.google.dagger:dagger:$dagger_version"
-    implementation "com.google.dagger:dagger-android:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
+    implementation deps.dagger.runtime
+    implementation deps.dagger.android
+    implementation deps.dagger.android_support
+    implementation deps.constraint_layout
 
-    implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation deps.timber
 
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
-    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
-    annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
+    annotationProcessor deps.dagger.android_support_compiler
+    annotationProcessor deps.dagger.compiler
+    annotationProcessor deps.room.compiler
+    annotationProcessor deps.lifecycle.compiler
 
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
-    testImplementation ("android.arch.core:core-testing:$arch_version", {
+    testImplementation deps.junit
+    testImplementation deps.mock_web_server
+    testImplementation (deps.arch_core.testing, {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'
     })
-    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation deps.mockito.core
 
-    androidTestImplementation "com.android.support:appcompat-v7:$support_version"
-    androidTestImplementation "com.android.support:recyclerview-v7:$support_version"
-    androidTestImplementation "com.android.support:support-v4:$support_version"
-    androidTestImplementation "com.android.support:design:$support_version"
+    androidTestImplementation deps.support.app_compat
+    androidTestImplementation deps.support.recyclerview
+    androidTestImplementation deps.support.cardview
+    androidTestImplementation deps.support.design
 
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espresso_version", {
+    androidTestImplementation(deps.espresso.core, {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
-    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$espresso_version", {
+    androidTestImplementation(deps.espresso.contrib, {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
 
-    androidTestImplementation("android.arch.core:core-testing:$arch_version", {
+    androidTestImplementation(deps.arch_core.testing, {
     })
-    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexmaker_version", { exclude group: 'net.bytebuddy' }
-    androidTestImplementation "org.mockito:mockito-core:$mockito_version", { exclude group: 'net.bytebuddy' }
+    androidTestImplementation deps.dexmaker
+    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
 }
 
 task fullCoverageReport(type: JacocoReport) {

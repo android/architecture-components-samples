@@ -35,7 +35,7 @@ public class UsersDbHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_NAME_ENTRY_ID + " INTEGER  PRIMARY KEY," +
+                    COLUMN_NAME_ENTRY_ID + " INTEGER  PRIMARY KEY NOT NULL," +
                     COLUMN_NAME_USERNAME + " TEXT )";
 
     public UsersDbHelper(Context context) {
