@@ -27,7 +27,7 @@ for line in $(find . -name 'gradlew'); do
       continue
    fi
    echo "Sending APKs to Firebase..."
-   echo "y" | sudo /opt/google-cloud-sdk/bin/gcloud firebase test android run --app $apkfile --test $testapkfile -d Nexus5X -v 21,25 -l fr --results-bucket cloud-test-android-devrel-ci
+   echo "y" | sudo /opt/google-cloud-sdk/bin/gcloud firebase test android run --app $apkfile --test $testapkfile -d Nexus5X -v 26 -l fr --results-bucket android-architecture-components-test-results
    code=${PIPESTATUS[0]}
    if [ "$code" -ne "0" ]; then
        exit $code
