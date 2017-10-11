@@ -2,7 +2,7 @@
 
 set -e  # Exit immediately if a command exits with a non-zero status.
 
-for line in $(find . -name 'gradlew'); do
+for line in $(find . -name 'gradlew' | tail -2); do # TODO: Remove tail, this is for testing.
    p=$(dirname "${line}");
    name="${p##*/}";
    echo
@@ -36,7 +36,7 @@ for line in $(find . -name 'gradlew'); do
    fi
 
    # Copy the test results to the build artifacts folder in CircleCI
-   sudo /opt/google-cloud-sdk/bin/gsutil -m cp -r -U `sudo /opt/google-cloud-sdk/bin/gsutil ls gs://android-architecture-components-test-results/$CIRCLE_BUILD_NUM/$name/test_result*.xml | tail -1` $CIRCLE_ARTIFACTS/ | true
+   sudo /opt/google-cloud-sdk/bin/gsutil -m cp -r -U `sudo /opt/google-cloud-sdk/bin/gsutil ls gs://android-architecture-components-test-results/$CIRCLE_BUILD_NUM/$name/**/test_result*.xml | tail -1` $CIRCLE_ARTIFACTS/ | true
    popd > /dev/null  # Silent popd
 done
 
