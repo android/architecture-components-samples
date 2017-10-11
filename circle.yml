@@ -17,6 +17,5 @@ test:
   override:
     - ./test_all_ftl.sh
   post:
-    - sudo /opt/google-cloud-sdk/bin/gsutil -m cp -r -U `sudo /opt/google-cloud-sdk/bin/gsutil ls gs://cloud-test-android-devrel-ci | tail -1` $CIRCLE_ARTIFACTS/ | true
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find $CIRCLE_ARTIFACTS -name \*.xml -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
