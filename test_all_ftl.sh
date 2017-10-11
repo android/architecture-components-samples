@@ -2,7 +2,7 @@
 
 set -e  # Exit immediately if a command exits with a non-zero status.
 
-for line in $(find . -name 'gradlew' | tail -2); do # TODO: Remove tail, this is for testing.
+for line in $(find . -name 'gradlew'); do
    p=$(dirname "${line}");
    name="${p##*/}";
    echo
