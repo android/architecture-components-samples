@@ -71,6 +71,7 @@ public class UserFragmentTest {
 
     @Before
     public void init() throws Throwable {
+        EspressoTestUtil.disableProgressBarAnimations(activityRule);
         UserFragment fragment = UserFragment.create("foo");
         viewModel = mock(UserViewModel.class);
         when(viewModel.getUser()).thenReturn(userData);
@@ -85,7 +86,6 @@ public class UserFragmentTest {
 
         activityRule.getActivity().setFragment(fragment);
         activityRule.runOnUiThread(() -> fragment.binding.get().repoList.setItemAnimator(null));
-        EspressoTestUtil.disableProgressBarAnimations(activityRule);
     }
 
     @Test

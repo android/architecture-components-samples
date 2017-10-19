@@ -79,6 +79,7 @@ public class RepoFragmentTest {
 
     @Before
     public void init() {
+        EspressoTestUtil.disableProgressBarAnimations(activityRule);
         repoFragment = RepoFragment.create("a", "b");
         viewModel = mock(RepoViewModel.class);
         fragmentBindingAdapters = mock(FragmentBindingAdapters.class);
@@ -90,7 +91,6 @@ public class RepoFragmentTest {
         repoFragment.viewModelFactory = ViewModelUtil.createFor(viewModel);
         repoFragment.dataBindingComponent = () -> fragmentBindingAdapters;
         repoFragment.navigationController = navigationController;
-        EspressoTestUtil.disableProgressBarAnimations(activityRule);
         activityRule.getActivity().setFragment(repoFragment);
     }
 
