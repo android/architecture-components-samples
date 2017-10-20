@@ -81,6 +81,7 @@ public class SearchFragmentTest {
 
     @Before
     public void init() {
+        EspressoTestUtil.disableProgressBarAnimations(activityRule);
         SearchFragment searchFragment = new SearchFragment();
         viewModel = mock(SearchViewModel.class);
         doReturn(loadMoreStatus).when(viewModel).getLoadMoreStatus();
@@ -91,7 +92,6 @@ public class SearchFragmentTest {
         searchFragment.viewModelFactory = ViewModelUtil.createFor(viewModel);
         searchFragment.dataBindingComponent = () -> fragmentBindingAdapters;
         searchFragment.navigationController = navigationController;
-        EspressoTestUtil.disableProgressBarAnimations(activityRule);
         activityRule.getActivity().setFragment(searchFragment);
     }
 

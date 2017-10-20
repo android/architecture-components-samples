@@ -17,8 +17,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    // TODO remove when alpha 3 is shipped
-    ext["ARCH_VERSION"] = "1.0.0-beta1"
     apply from: '../versions.gradle'
     addRepos(repositories)
     dependencies {
