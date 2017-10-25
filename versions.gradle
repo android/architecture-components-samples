@@ -4,12 +4,20 @@
 **/
 ext.deps = [:]
 def versions = [:]
+<<<<<<< HEAD
 versions.arch = hasProperty("ARCH_VERSION") ? getProperty("ARCH_VERSION") : "1.0.0-rc1"
+=======
+versions.arch = hasProperty("ARCH_VERSION") ? getProperty("ARCH_VERSION") : "1.0.0"
+>>>>>>> 529e7e8... Paging sample with different network configurations
 versions.support = "26.1.0"
 versions.dagger = "2.11"
 versions.junit = "4.12"
 versions.espresso = "3.0.1"
 versions.retrofit = "2.3.0"
+<<<<<<< HEAD
+=======
+versions.okhttp_logging_interceptor = "3.9.0"
+>>>>>>> 529e7e8... Paging sample with different network configurations
 versions.mockwebserver = "3.8.1"
 versions.apache_commons = "2.5"
 versions.mockito = "2.7.19"
@@ -18,14 +26,22 @@ versions.dexmaker = "2.2.0"
 versions.constraint_layout = "1.0.2"
 versions.glide = "3.8.0"
 versions.timber = "4.5.1"
+<<<<<<< HEAD
 versions.android_gradle_plugin = "3.0.0-rc2"
+=======
+versions.android_gradle_plugin = "3.0.0"
+>>>>>>> 529e7e8... Paging sample with different network configurations
 versions.rxjava2 = "2.1.3"
 versions.rx_android = "2.0.1"
 versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
 versions.kotlin = "1.1.4-2"
+<<<<<<< HEAD
 versions.paging = "1.0.0-alpha3"
+=======
+versions.paging = "1.0.0-alpha4"
+>>>>>>> 529e7e8... Paging sample with different network configurations
 def deps = [:]
 
 def support = [:]
@@ -59,7 +75,13 @@ deps.arch_core = arch_core
 def retrofit = [:]
 retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
 retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+<<<<<<< HEAD
 deps.retrofit = retrofit
+=======
+retrofit.mock = "com.squareup.retrofit2:retrofit-mock:$versions.retrofit"
+deps.retrofit = retrofit
+deps.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${versions.okhttp_logging_interceptor}"
+>>>>>>> 529e7e8... Paging sample with different network configurations
 
 
 def dagger = [:]
