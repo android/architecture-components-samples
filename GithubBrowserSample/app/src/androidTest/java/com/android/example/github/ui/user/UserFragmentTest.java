@@ -16,10 +16,32 @@
 
 package com.android.example.github.ui.user;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import android.arch.lifecycle.MutableLiveData;
+import android.support.annotation.NonNull;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.android.example.github.R;
 import com.android.example.github.binding.FragmentBindingAdapters;
 import com.android.example.github.testing.SingleFragmentActivity;
 import com.android.example.github.ui.common.NavigationController;
+import com.android.example.github.util.EspressoTestUtil;
 import com.android.example.github.util.RecyclerViewMatcher;
 import com.android.example.github.util.TestUtil;
 import com.android.example.github.util.ViewModelUtil;
@@ -32,26 +54,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.not;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class UserFragmentTest {
@@ -66,11 +70,13 @@ public class UserFragmentTest {
     private MutableLiveData<Resource<List<Repo>>> repoListData = new MutableLiveData<>();
 
     @Before
-    public void init() {
+    public void init() throws Throwable {
+        EspressoTestUtil.disableProgressBarAnimations(activityRule);
         UserFragment fragment = UserFragment.create("foo");
         viewModel = mock(UserViewModel.class);
         when(viewModel.getUser()).thenReturn(userData);
         when(viewModel.getRepositories()).thenReturn(repoListData);
+        doNothing().when(viewModel).setLogin(anyString());
         navigationController = mock(NavigationController.class);
         fragmentBindingAdapters = mock(FragmentBindingAdapters.class);
 
@@ -79,6 +85,7 @@ public class UserFragmentTest {
         fragment.dataBindingComponent = () -> fragmentBindingAdapters;
 
         activityRule.getActivity().setFragment(fragment);
+        activityRule.runOnUiThread(() -> fragment.binding.get().repoList.setItemAnimator(null));
     }
 
     @Test
@@ -89,7 +96,8 @@ public class UserFragmentTest {
     }
 
     @Test
-    public void error() {
+    public void error() throws InterruptedException {
+        doNothing().when(viewModel).retry();
         userData.postValue(Resource.error("wtf", null));
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())));
         onView(withId(R.id.error_msg)).check(matches(withText("wtf")));

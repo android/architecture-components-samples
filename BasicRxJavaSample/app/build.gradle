@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
 
     defaultConfig {
         applicationId "com.example.android.persistence"
-        minSdkVersion 15
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,51 +28,50 @@ android {
 
 dependencies {
     // Support libraries
-    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
-    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile deps.support.app_compat
+    compile deps.support.v4
+    compile deps.support.design
     // Architecture components
-    compile "android.arch.lifecycle:runtime:$rootProject.architectureComponentsVersion"
-    compile "android.arch.lifecycle:extensions:$rootProject.architectureComponentsVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$rootProject.architectureComponentsVersion"
-    compile "android.arch.persistence.room:runtime:$rootProject.architectureComponentsVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.architectureComponentsVersion"
-    compile "android.arch.persistence.room:rxjava2:$rootProject.architectureComponentsVersion"
+    compile deps.lifecycle.runtime
+    compile deps.lifecycle.extensions
+    annotationProcessor deps.lifecycle.compiler
+    compile deps.room.runtime
+    annotationProcessor deps.room.compiler
+    compile deps.room.rxjava2
 
     // RxJava
-    compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
-    compile "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
+    compile deps.rx_android
+    compile deps.rxjava2
 
     // Dependencies for local unit tests
-    testCompile "junit:junit:$rootProject.ext.junitVersion"
-    testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
-    testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
-    testCompile "android.arch.core:core-testing:$rootProject.architectureComponentsVersion"
+    testCompile deps.junit
+    testCompile deps.hamcrest
+    testCompile deps.arch_core.testing
+    testCompile deps.mockito.all
 
     // Resolve conflicts between main and local unit tests
-    testCompile "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
-    testCompile "com.android.support:support-core-utils:$rootProject.supportLibraryVersion"
+    testCompile deps.support.annotations
+    testCompile deps.support.core_utils
 
     // Android Testing Support Library's runner and rules
-    androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
-    androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"
-    androidTestCompile "android.arch.persistence.room:testing:$rootProject.architectureComponentsVersion"
-    androidTestCompile "android.arch.core:core-testing:$rootProject.architectureComponentsVersion"
+    androidTestCompile deps.atsl.runner
+    androidTestCompile deps.atsl.rules
+    androidTestCompile deps.room.testing
+    androidTestCompile deps.arch_core.testing
 
     // Dependencies for Android unit tests
-    androidTestCompile "junit:junit:$rootProject.ext.junitVersion"
-    androidTestCompile "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
+    androidTestCompile deps.junit
+    androidTestCompile deps.mockito.core, { exclude group: 'net.bytebuddy' }
+    androidTestCompile deps.dexmaker
 
     // Espresso UI Testing
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
+    androidTestCompile deps.espresso.core
+    androidTestCompile deps.espresso.contrib
+    androidTestCompile deps.espresso.intents
 
     // Resolve conflicts between main and test APK:
-    androidTestCompile "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
-    androidTestCompile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
-    androidTestCompile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    androidTestCompile "com.android.support:design:$rootProject.supportLibraryVersion"
+    androidTestCompile deps.support.annotations
+    androidTestCompile deps.support.v4
+    androidTestCompile deps.support.app_compat
+    androidTestCompile deps.support.design
 }

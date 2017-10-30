@@ -16,10 +16,34 @@
 
 package com.android.example.github.ui.repo;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import android.arch.lifecycle.MutableLiveData;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.android.example.github.R;
 import com.android.example.github.binding.FragmentBindingAdapters;
 import com.android.example.github.testing.SingleFragmentActivity;
 import com.android.example.github.ui.common.NavigationController;
+import com.android.example.github.util.EspressoTestUtil;
 import com.android.example.github.util.RecyclerViewMatcher;
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule;
 import com.android.example.github.util.TestUtil;
@@ -33,28 +57,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.not;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class RepoFragmentTest {
@@ -75,18 +79,18 @@ public class RepoFragmentTest {
 
     @Before
     public void init() {
+        EspressoTestUtil.disableProgressBarAnimations(activityRule);
         repoFragment = RepoFragment.create("a", "b");
         viewModel = mock(RepoViewModel.class);
         fragmentBindingAdapters = mock(FragmentBindingAdapters.class);
         navigationController = mock(NavigationController.class);
-
+        doNothing().when(viewModel).setId(anyString(), anyString());
         when(viewModel.getRepo()).thenReturn(repo);
         when(viewModel.getContributors()).thenReturn(contributors);
 
         repoFragment.viewModelFactory = ViewModelUtil.createFor(viewModel);
         repoFragment.dataBindingComponent = () -> fragmentBindingAdapters;
         repoFragment.navigationController = navigationController;
-
         activityRule.getActivity().setFragment(repoFragment);
     }
 

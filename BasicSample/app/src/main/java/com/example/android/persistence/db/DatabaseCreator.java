@@ -16,6 +16,7 @@
 
 package com.example.android.persistence.db;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Room;
@@ -70,6 +71,7 @@ public class DatabaseCreator {
      * <p>
      * Although this uses an AsyncTask which currently uses a serial executor, it's thread-safe.
      */
+    @SuppressLint("StaticFieldLeak")
     public void createDb(Context context) {
 
         Log.d("DatabaseCreator", "Creating DB from " + Thread.currentThread().getName());

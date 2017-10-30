@@ -15,35 +15,15 @@
  */
 
 buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
+    apply from: '../versions.gradle'
+    addRepos(repositories)
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta4'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath deps.android_gradle_plugin
     }
 }
 
 allprojects {
-    repositories {
-        jcenter()
-        google()
-    }
-}
-
-ext {
-    // Sdk and tools
-    minSdkVersion = 14
-    targetSdkVersion = 26
-    compileSdkVersion = 26
-    buildToolsVersion = '26.0.1'
-
-    // App dependencies
-    supportLibraryVersion = '26.0.2'
-    architectureComponentsVersion = '1.0.0-alpha9'
+    addRepos(repositories)
 }
 
 task clean(type: Delete) {

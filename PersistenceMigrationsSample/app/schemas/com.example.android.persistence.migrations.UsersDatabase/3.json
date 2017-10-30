@@ -2,26 +2,29 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "9ce74730f03594d59d1780980ad39b73",
+    "identityHash": "30a079c09b902b7e6d50fb4eca6380b0",
     "entities": [
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userid` INTEGER, `username` TEXT, `last_update` INTEGER, PRIMARY KEY(`userid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userid` INTEGER NOT NULL, `username` TEXT, `last_update` INTEGER, PRIMARY KEY(`userid`))",
         "fields": [
           {
             "fieldPath": "mId",
             "columnName": "userid",
-            "affinity": "INTEGER"
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "mUserName",
             "columnName": "username",
-            "affinity": "TEXT"
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "mDate",
             "columnName": "last_update",
-            "affinity": "INTEGER"
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -36,7 +39,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9ce74730f03594d59d1780980ad39b73\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"30a079c09b902b7e6d50fb4eca6380b0\")"
     ]
   }
 }

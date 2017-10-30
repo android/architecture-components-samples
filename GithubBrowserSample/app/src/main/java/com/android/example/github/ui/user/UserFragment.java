@@ -31,6 +31,7 @@ import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,8 @@ public class UserFragment extends LifecycleFragment implements Injectable {
 
     DataBindingComponent dataBindingComponent = new FragmentDataBindingComponent(this);
     private UserViewModel userViewModel;
-    private AutoClearedValue<UserFragmentBinding> binding;
+    @VisibleForTesting
+    AutoClearedValue<UserFragmentBinding> binding;
     private AutoClearedValue<RepoListAdapter> adapter;
 
     public static UserFragment create(String login) {

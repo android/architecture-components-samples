@@ -20,9 +20,9 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -33,6 +33,7 @@ public class User {
 
     @PrimaryKey
     @ColumnInfo(name = "userid")
+    @NonNull
     private String mId;
 
     @ColumnInfo(name = "username")
