@@ -45,7 +45,7 @@ public class DatabaseCreator {
     // For Singleton instantiation
     private static final Object LOCK = new Object();
 
-    public synchronized static DatabaseCreator getInstance(Context context) {
+    public synchronized static DatabaseCreator getInstance() {
         if (sInstance == null) {
             synchronized (LOCK) {
                 if (sInstance == null) {
