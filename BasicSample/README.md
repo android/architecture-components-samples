@@ -1,5 +1,5 @@
 Android Architecture Components Basic Sample
-===================================
+=============================================
 
 This sample showcases the following Architecture Components:
 
@@ -7,11 +7,14 @@ This sample showcases the following Architecture Components:
 * [ViewModels](https://developer.android.com/reference/android/arch/lifecycle/ViewModel.html)
 * [LiveData](https://developer.android.com/reference/android/arch/lifecycle/LiveData.html)
 
-## Features
+Introduction
+-------------
+
+### Features
 
 This sample contains two screens: a list of products and a detail view, that shows product reviews.
 
-### Presentation layer
+#### Presentation layer
 
 The presentation layer consists of the following components:
  * A main activity that handles navigation.
@@ -46,7 +49,7 @@ The app uses a Model-View-ViewModel (MVVM) architecture for the presentation lay
         });
 ```
 
-### Data layer
+#### Data layer
 
 The database is created using Room and it has two entities: a `ProductEntity` and a `CommentEntity` that generate corresponding SQLite tables at runtime.
 
@@ -61,7 +64,7 @@ To access the data and execute queries, you use a [Data Access Object](https://d
 
 Queries that return a `LiveData` object can be observed, so when  a change in one of the affected tables is detected, `LiveData` delivers a notification of that change to the registered observers.
 
-### Transformations
+#### Transformations
 
 Fragments don't observe the database directly, they only interact with ViewModel objects. A ViewModel observes database queries as well as the `DatabaseCreator`, which exposes whether the database is created or not.
 
@@ -93,8 +96,8 @@ The following diagram shows the general structure of the sample:
 Exercise for the reader: try to apply a transformation to the list of products in the ViewModel
 before they are delivered to the fragment. (hint: `Transformations.Map`).
 
-## License
--------
+License
+--------
 
 Copyright 2015 The Android Open Source Project, Inc.
 
