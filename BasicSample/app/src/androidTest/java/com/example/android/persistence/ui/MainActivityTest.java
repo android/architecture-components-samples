@@ -14,36 +14,20 @@
  * limitations under the License.
  */
 
-package com.example.android.persistence;
+package com.example.android.persistence.ui;
 
 
 import android.arch.core.executor.testing.CountingTaskExecutorRule;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.IdlingRegistry;
-import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
-import android.support.v4.app.Fragment;
 
-import com.example.android.persistence.db.DatabaseCreator;
-import com.example.android.persistence.db.entity.ProductEntity;
-import com.example.android.persistence.viewmodel.ProductListViewModel;
-
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -52,6 +36,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.core.IsNot.not;
+
+import com.example.android.persistence.EspressoTestUtil;
+import com.example.android.persistence.R;
+import com.example.android.persistence.ui.MainActivity;
 
 public class MainActivityTest {
 
@@ -63,30 +51,6 @@ public class MainActivityTest {
     public CountingTaskExecutorRule mCountingTaskExecutorRule = new CountingTaskExecutorRule();
 
     @Before
-    public void waitForDbCreation() throws Throwable {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final LiveData<Boolean> databaseCreated = DatabaseCreator.getInstance(
-                InstrumentationRegistry.getTargetContext())
-                .isDatabaseCreated();
-        mActivityRule.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                databaseCreated.observeForever(new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(@Nullable Boolean aBoolean) {
-                        if (Boolean.TRUE.equals(aBoolean)) {
-                            databaseCreated.removeObserver(this);
-                            latch.countDown();
-                        }
-                    }
-                });
-            }
-        });
-        MatcherAssert.assertThat("database should've initialized",
-                latch.await(1, TimeUnit.MINUTES), CoreMatchers.is(true));
-    }
-
-    @Before
     public void disableRecyclerViewAnimations() {
         EspressoTestUtil.disableAnimations(mActivityRule);
     }
@@ -95,7 +59,7 @@ public class MainActivityTest {
     public void clickOnFirstItem_opensComments() throws TimeoutException, InterruptedException {
         drain();
         // When clicking on the first product
-        onView(withContentDescription(R.string.cd_products_list))
+        onView(ViewMatchers.withContentDescription(R.string.cd_products_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         drain();
         // Then the second screen with the comments should appear.

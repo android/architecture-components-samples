@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package com.example.android.persistence;
+package com.example.android.persistence.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import android.arch.lifecycle.LifecycleActivity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+
+import com.example.android.persistence.R;
 import com.example.android.persistence.model.Product;
 
-public class MainActivity extends LifecycleActivity {
+public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
