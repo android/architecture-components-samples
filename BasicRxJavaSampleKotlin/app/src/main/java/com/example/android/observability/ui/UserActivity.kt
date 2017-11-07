@@ -16,9 +16,9 @@
 
 package com.example.android.observability.ui
 
-import android.arch.lifecycle.LifecycleActivity
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.example.android.observability.Injection
 import com.example.android.observability.R
@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.activity_user.*
 /**
  * Main screen of the app. Displays a user name and gives the option to update the user name.
  */
-class UserActivity : LifecycleActivity() {
+class UserActivity : AppCompatActivity() {
 
     private lateinit var viewModelFactory: ViewModelFactory
 
