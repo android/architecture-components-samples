@@ -19,9 +19,12 @@ package com.example.android.persistence.db;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -95,7 +98,19 @@ public class DatabaseCreator {
 
                 // Build the database!
                 AppDatabase db = Room.databaseBuilder(context.getApplicationContext(),
-                        AppDatabase.class, DATABASE_NAME).build();
+                        AppDatabase.class, DATABASE_NAME).addCallback(new RoomDatabase.Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        // Similar to SQLiteOpenHelper.onCreate(). Called after all tables are created.
+                        // Might be useful for populating the database. Consider notifying observers.
+                    }
+
+                    @Override
+                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                        // Similar to SQLiteOpenHelper.onOpen(). Called when the database has been opened.
+                        // Might be useful for logging. Consider notifying observers.
+                    }
+                }).build();
 
                 // Add a delay to simulate a long-running operation
                 addDelay();
