@@ -17,29 +17,21 @@
 package com.example.android.persistence.viewmodel;
 
 import android.app.Application;
-import android.arch.core.util.Function;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.databinding.ObservableField;
 import android.support.annotation.NonNull;
 
-import com.example.android.persistence.db.DatabaseCreator;
+import com.example.android.persistence.BasicApp;
+import com.example.android.persistence.DataRepository;
 import com.example.android.persistence.db.entity.CommentEntity;
 import com.example.android.persistence.db.entity.ProductEntity;
 
 import java.util.List;
 
 public class ProductViewModel extends AndroidViewModel {
-
-    private static final MutableLiveData ABSENT = new MutableLiveData();
-    {
-        //noinspection unchecked
-        ABSENT.setValue(null);
-    }
 
     private final LiveData<ProductEntity> mObservableProduct;
 
@@ -49,42 +41,15 @@ public class ProductViewModel extends AndroidViewModel {
 
     private final LiveData<List<CommentEntity>> mObservableComments;
 
-    public ProductViewModel(@NonNull Application application,
-                            final int productId) {
+    public ProductViewModel(@NonNull Application application, DataRepository repository,
+            final int productId) {
         super(application);
         mProductId = productId;
 
-        final DatabaseCreator databaseCreator = DatabaseCreator.getInstance(this.getApplication());
-
-        mObservableComments = Transformations.switchMap(databaseCreator.isDatabaseCreated(), new Function<Boolean, LiveData<List<CommentEntity>>>() {
-            @Override
-            public LiveData<List<CommentEntity>> apply(Boolean isDbCreated) {
-                if (!isDbCreated) {
-                    //noinspection unchecked
-                    return ABSENT;
-                } else {
-                    //noinspection ConstantConditions
-                    return databaseCreator.getDatabase().commentDao().loadComments(mProductId);
-                }
-            }
-        });
-
-        mObservableProduct = Transformations.switchMap(databaseCreator.isDatabaseCreated(), new Function<Boolean, LiveData<ProductEntity>>() {
-            @Override
-            public LiveData<ProductEntity> apply(Boolean isDbCreated) {
-                if (!isDbCreated) {
-                    //noinspection unchecked
-                    return ABSENT;
-                } else {
-                    //noinspection ConstantConditions
-                    return databaseCreator.getDatabase().productDao().loadProduct(mProductId);
-                }
-            }
-        });
-
-        databaseCreator.createDb(this.getApplication());
-
+        mObservableComments = repository.loadComments(mProductId);
+        mObservableProduct = repository.loadProduct(mProductId);
     }
+
     /**
      * Expose the LiveData Comments query so the UI can observe it.
      */
@@ -113,15 +78,18 @@ public class ProductViewModel extends AndroidViewModel {
 
         private final int mProductId;
 
+        private final DataRepository mRepository;
+
         public Factory(@NonNull Application application, int productId) {
             mApplication = application;
             mProductId = productId;
+            mRepository = ((BasicApp) application).getRepository();
         }
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
             //noinspection unchecked
-            return (T) new ProductViewModel(mApplication, mProductId);
+            return (T) new ProductViewModel(mApplication, mRepository, mProductId);
         }
     }
 }

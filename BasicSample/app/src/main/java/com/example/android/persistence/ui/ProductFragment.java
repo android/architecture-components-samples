@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.persistence;
+package com.example.android.persistence.ui;
 
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
@@ -22,21 +22,21 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.android.persistence.R;
 import com.example.android.persistence.databinding.ProductFragmentBinding;
 import com.example.android.persistence.db.entity.CommentEntity;
 import com.example.android.persistence.db.entity.ProductEntity;
 import com.example.android.persistence.model.Comment;
-import com.example.android.persistence.ui.CommentAdapter;
-import com.example.android.persistence.ui.CommentClickCallback;
 import com.example.android.persistence.viewmodel.ProductViewModel;
 
 import java.util.List;
 
-public class ProductFragment extends LifecycleFragment {
+public class ProductFragment extends Fragment {
 
     private static final String KEY_PRODUCT_ID = "product_id";
 
@@ -68,6 +68,7 @@ public class ProductFragment extends LifecycleFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         ProductViewModel.Factory factory = new ProductViewModel.Factory(
                 getActivity().getApplication(), getArguments().getInt(KEY_PRODUCT_ID));
 

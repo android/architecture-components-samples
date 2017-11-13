@@ -68,6 +68,13 @@ public class ProductEntity implements Product {
     public ProductEntity() {
     }
 
+    public ProductEntity(int id, String name, String description, int price) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
     public ProductEntity(Product product) {
         this.id = product.getId();
         this.name = product.getName();

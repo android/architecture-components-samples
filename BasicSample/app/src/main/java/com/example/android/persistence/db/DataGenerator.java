@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/** Generates dummy data and inserts them into the database */
-class DatabaseInitUtil {
+/**
+ * Generates data to pre-populate the database
+ */
+public class DataGenerator {
 
     private static final String[] FIRST = new String[]{
             "Special edition", "New", "Cheap", "Quality", "Used"};
@@ -40,16 +42,8 @@ class DatabaseInitUtil {
             "Comment 1", "Comment 2", "Comment 3", "Comment 4", "Comment 5", "Comment 6",
     };
 
-    static void initializeDb(AppDatabase db) {
+    public static List<ProductEntity> generateProducts() {
         List<ProductEntity> products = new ArrayList<>(FIRST.length * SECOND.length);
-        List<CommentEntity> comments = new ArrayList<>();
-
-        generateData(products, comments);
-
-        insertData(db, products, comments);
-    }
-
-    private static void generateData(List<ProductEntity> products, List<CommentEntity> comments) {
         Random rnd = new Random();
         for (int i = 0; i < FIRST.length; i++) {
             for (int j = 0; j < SECOND.length; j++) {
@@ -61,6 +55,13 @@ class DatabaseInitUtil {
                 products.add(product);
             }
         }
+        return products;
+    }
+
+    public static List<CommentEntity> generateCommentsForProducts(
+            final List<ProductEntity> products) {
+        List<CommentEntity> comments = new ArrayList<>();
+        Random rnd = new Random();
 
         for (Product product : products) {
             int commentsNumber = rnd.nextInt(5) + 1;
@@ -73,16 +74,7 @@ class DatabaseInitUtil {
                 comments.add(comment);
             }
         }
-    }
 
-    private static void insertData(AppDatabase db, List<ProductEntity> products, List<CommentEntity> comments) {
-        db.beginTransaction();
-        try {
-            db.productDao().insertAll(products);
-            db.commentDao().insertAll(comments);
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+        return comments;
     }
 }
