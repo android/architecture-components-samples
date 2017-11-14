@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package com.example.android.persistence;
+package com.example.android.persistence.ui;
 
 import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.android.persistence.R;
 import com.example.android.persistence.databinding.ListFragmentBinding;
 import com.example.android.persistence.db.entity.ProductEntity;
 import com.example.android.persistence.model.Product;
-import com.example.android.persistence.ui.ProductAdapter;
-import com.example.android.persistence.ui.ProductClickCallback;
 import com.example.android.persistence.viewmodel.ProductListViewModel;
 
 import java.util.List;
 
-public class ProductListFragment extends LifecycleFragment {
+public class ProductListFragment extends Fragment {
 
     public static final String TAG = "ProductListViewModel";
 

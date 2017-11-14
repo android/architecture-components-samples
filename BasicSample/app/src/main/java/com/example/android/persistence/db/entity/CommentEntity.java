@@ -20,17 +20,19 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+
 import com.example.android.persistence.model.Comment;
 
 import java.util.Date;
 
-@Entity(tableName = "comments", foreignKeys = {
-        @ForeignKey(entity = ProductEntity.class,
-                parentColumns = "id",
-                childColumns = "productId",
-                onDelete = ForeignKey.CASCADE)}, indices = {
-        @Index(value = "productId")
-})
+@Entity(tableName = "comments",
+        foreignKeys = {
+                @ForeignKey(entity = ProductEntity.class,
+                        parentColumns = "id",
+                        childColumns = "productId",
+                        onDelete = ForeignKey.CASCADE)},
+        indices = {@Index(value = "productId")
+        })
 public class CommentEntity implements Comment {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -77,10 +79,10 @@ public class CommentEntity implements Comment {
     public CommentEntity() {
     }
 
-    public CommentEntity(Comment comment) {
-        id = comment.getId();
-        productId = comment.getProductId();
-        text = comment.getText();
-        postedAt = comment.getPostedAt();
+    public CommentEntity(int id, int productId, String text, Date postedAt) {
+        this.id = id;
+        this.productId = productId;
+        this.text = text;
+        this.postedAt = postedAt;
     }
 }
