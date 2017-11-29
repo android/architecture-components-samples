@@ -25,6 +25,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.example.android.persistence.AppExecutors;
 import com.example.android.persistence.db.converter.DateConverter;
@@ -41,7 +42,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase sInstance;
 
-    private static final String DATABASE_NAME = "basic-sample-db";
+    @VisibleForTesting
+    public static final String DATABASE_NAME = "basic-sample-db";
 
     public abstract ProductDao productDao();
 
