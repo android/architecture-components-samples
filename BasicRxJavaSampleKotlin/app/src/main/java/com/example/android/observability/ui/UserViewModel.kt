@@ -45,10 +45,10 @@ class UserViewModel(private val dataSource: UserDao) : ViewModel() {
      * @return a [Completable] that completes when the user name is updated
      */
     fun updateUserName(userName: String): Completable {
-        return Completable.fromAction({
+        return Completable.fromAction {
             val user = User(USER_ID, userName)
             dataSource.insertUser(user)
-        })
+        }
     }
 
     companion object {
