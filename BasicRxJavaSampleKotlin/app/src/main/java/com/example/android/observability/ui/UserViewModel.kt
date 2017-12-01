@@ -21,8 +21,6 @@ import com.example.android.observability.persistence.User
 import com.example.android.observability.persistence.UserDao
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.functions.Action
-import io.reactivex.internal.operators.completable.CompletableFromAction
 
 /**
  * View Model for the [UserActivity]
@@ -47,10 +45,10 @@ class UserViewModel(private val dataSource: UserDao) : ViewModel() {
      * @return a [Completable] that completes when the user name is updated
      */
     fun updateUserName(userName: String): Completable {
-        return CompletableFromAction(Action {
+        return Completable.fromAction {
             val user = User(USER_ID, userName)
             dataSource.insertUser(user)
-        })
+        }
     }
 
     companion object {
