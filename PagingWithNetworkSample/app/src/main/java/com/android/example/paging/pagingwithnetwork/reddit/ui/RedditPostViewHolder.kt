@@ -26,8 +26,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 
 /**
  * A RecyclerView ViewHolder that displays a reddit post.
@@ -56,12 +56,12 @@ class RedditPostViewHolder(view: View, private val glide: RequestManager)
         score.text = "${post?.score ?: 0}"
         if (post?.thumbnail?.startsWith("http") == true) {
             thumbnail.visibility = View.VISIBLE
-            glide.load(post.thumbnail).centerCrop()
-                    .placeholder(R.drawable.ic_insert_photo_black_48dp)
+            glide.load(post.thumbnail).apply(RequestOptions.centerCropTransform()
+                    .placeholder(R.drawable.ic_insert_photo_black_48dp))
                     .into(thumbnail)
         } else {
             thumbnail.visibility = View.GONE
-            Glide.clear(thumbnail)
+            glide.clear(thumbnail)
         }
 
     }
