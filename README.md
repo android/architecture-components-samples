@@ -33,7 +33,7 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
 ### Other Architecture Components Samples
 
 * **[Architecture Blueprints - todo-mvvm-live](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-live)** - Variant of the to-do app that uses ViewModels, LiveData and Data Binding with an MVVM architecture.
-* **[Architecture Blueprints - todo-mvp-room](https://github.com/googlesamples/android-architecture/tree/todo-mvp)** - Variant of the to-do app that uses Room as a local data source with an MVP architecture.
+* **[Architecture Blueprints - todo-mvp](https://github.com/googlesamples/android-architecture/tree/todo-mvp)** - Variant of the to-do app that uses Room as a local data source with an MVP architecture.
 
 
 ### Reporting Issues
