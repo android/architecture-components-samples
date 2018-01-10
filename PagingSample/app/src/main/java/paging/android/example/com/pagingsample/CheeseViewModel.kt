@@ -18,6 +18,7 @@ package paging.android.example.com.pagingsample
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 
 /**
@@ -49,11 +50,11 @@ class CheeseViewModel(app: Application) : AndroidViewModel(app) {
         private const val ENABLE_PLACEHOLDERS = true
     }
 
-    val allCheeses = dao.allCheesesByName().create(0,
+    val allCheeses = LivePagedListBuilder(dao.allCheesesByName(),
             PagedList.Config.Builder()
                     .setPageSize(PAGE_SIZE)
                     .setEnablePlaceholders(ENABLE_PLACEHOLDERS)
-                    .build())!!
+                    .build()).build()
 
     fun insert(text: CharSequence) = ioThread {
         dao.insert(Cheese(id = 0, name = text.toString()))
