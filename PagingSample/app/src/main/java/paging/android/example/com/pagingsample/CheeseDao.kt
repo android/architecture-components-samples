@@ -16,7 +16,7 @@
 
 package paging.android.example.com.pagingsample
 
-import android.arch.paging.LivePagedListProvider
+import android.arch.paging.DataSource
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
@@ -32,7 +32,7 @@ interface CheeseDao {
      * it back to UI via ViewModel.
      */
     @Query("SELECT * FROM Cheese ORDER BY name COLLATE NOCASE ASC")
-    fun allCheesesByName(): LivePagedListProvider<Int, Cheese>
+    fun allCheesesByName(): DataSource.Factory<Int, Cheese>
 
     @Insert
     fun insert(cheeses: List<Cheese>)
