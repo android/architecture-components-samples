@@ -61,6 +61,7 @@ public class SearchFragment extends LifecycleFragment implements Injectable {
     AutoClearedValue<RepoListAdapter> adapter;
 
     private SearchViewModel searchViewModel;
+    private boolean isLoading;
 
     @Nullable
     @Override
@@ -123,7 +124,7 @@ public class SearchFragment extends LifecycleFragment implements Injectable {
                         recyclerView.getLayoutManager();
                 int lastPosition = layoutManager
                         .findLastVisibleItemPosition();
-                if (lastPosition == adapter.get().getItemCount() - 1) {
+                if (!isLoading && lastPosition == adapter.get().getItemCount() - 1) {
                     searchViewModel.loadNextPage();
                 }
             }
@@ -140,6 +141,7 @@ public class SearchFragment extends LifecycleFragment implements Injectable {
             if (loadingMore == null) {
                 binding.get().setLoadingMore(false);
             } else {
+                isLoading = loadingMore.isRunning();
                 binding.get().setLoadingMore(loadingMore.isRunning());
                 String error = loadingMore.getErrorMessageIfNotHandled();
                 if (error != null) {
