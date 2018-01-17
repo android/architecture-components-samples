@@ -30,6 +30,9 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
  * **[PagingSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingSample)** - Shows
   how to use the Paging library with Room, in Kotlin.
 
+ * **[PagingNetworkSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingNetworkSample)** - Shows
+  how to use the Paging library with a backend API via Retrofit, in Kotlin.
+
 ### Other Architecture Components Samples
 
 * **[Architecture Blueprints - todo-mvvm-live](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-live)** - Variant of the to-do app that uses ViewModels, LiveData and Data Binding with an MVVM architecture.
