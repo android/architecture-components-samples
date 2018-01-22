@@ -16,7 +16,7 @@
 
 package com.example.android.observability.ui;
 
-import android.arch.lifecycle.LifecycleActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Main screen of the app. Displays a user name and gives the option to update the user name.
  */
-public class UserActivity extends LifecycleActivity {
+public class UserActivity extends AppCompatActivity {
 
     private static final String TAG = UserActivity.class.getSimpleName();
 
