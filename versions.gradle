@@ -4,7 +4,9 @@
 **/
 ext.deps = [:]
 def versions = [:]
-versions.arch = hasProperty("ARCH_VERSION") ? getProperty("ARCH_VERSION") : "1.0.0"
+versions.arch_core = "1.1.0"
+versions.room = "1.1.0-alpha1"
+versions.lifecycle = "1.1.0"
 versions.support = "26.1.0"
 versions.dagger = "2.11"
 versions.junit = "4.12"
@@ -25,8 +27,8 @@ versions.rx_android = "2.0.1"
 versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
-versions.kotlin = "1.1.4-2"
-versions.paging = "1.0.0-alpha4-1"
+versions.kotlin = "1.2.20"
+versions.paging = "1.0.0-alpha5"
 def deps = [:]
 
 def support = [:]
@@ -40,21 +42,21 @@ support.core_utils = "com.android.support:support-core-utils:$versions.support"
 deps.support = support
 
 def room = [:]
-room.runtime = "android.arch.persistence.room:runtime:$versions.arch"
-room.compiler = "android.arch.persistence.room:compiler:$versions.arch"
-room.rxjava2 = "android.arch.persistence.room:rxjava2:$versions.arch"
-room.testing = "android.arch.persistence.room:testing:$versions.arch"
+room.runtime = "android.arch.persistence.room:runtime:$versions.room"
+room.compiler = "android.arch.persistence.room:compiler:$versions.room"
+room.rxjava2 = "android.arch.persistence.room:rxjava2:$versions.room"
+room.testing = "android.arch.persistence.room:testing:$versions.room"
 deps.room = room
 
 def lifecycle = [:]
-lifecycle.runtime = "android.arch.lifecycle:runtime:$versions.arch"
-lifecycle.extensions = "android.arch.lifecycle:extensions:$versions.arch"
-lifecycle.java8 = "android.arch.lifecycle:common-java8:$versions.arch"
-lifecycle.compiler = "android.arch.lifecycle:compiler:$versions.arch"
+lifecycle.runtime = "android.arch.lifecycle:runtime:$versions.lifecycle"
+lifecycle.extensions = "android.arch.lifecycle:extensions:$versions.lifecycle"
+lifecycle.java8 = "android.arch.lifecycle:common-java8:$versions.lifecycle"
+lifecycle.compiler = "android.arch.lifecycle:compiler:$versions.lifecycle"
 deps.lifecycle = lifecycle
 
 def arch_core = [:]
-arch_core.testing = "android.arch.core:core-testing:$versions.arch"
+arch_core.testing = "android.arch.core:core-testing:$versions.arch_core"
 deps.arch_core = arch_core
 
 def retrofit = [:]
