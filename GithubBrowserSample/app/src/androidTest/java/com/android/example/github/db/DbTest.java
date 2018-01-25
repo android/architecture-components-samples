@@ -24,7 +24,7 @@ import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
 
 abstract public class DbTest {
-    protected GithubDb db;
+    GithubDb db;
 
     @Before
     public void initDb() {
