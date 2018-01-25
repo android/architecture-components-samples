@@ -24,19 +24,24 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class LiveDataTestUtil {
+
+    /**
+     * Observes and returns the value of {@code liveData}. Note that this method is not thread-safe
+     * and will probably return null when {@code liveData} executes tasks on another thread. Add
+     * {@link android.arch.core.executor.testing.InstantTaskExecutorRule} to your tests in order to
+     * run everything on the same thread.
+     * @param liveData The {@link LiveData} to observe
+     */
     public static <T> T getValue(LiveData<T> liveData) throws InterruptedException {
         final Object[] data = new Object[1];
-        CountDownLatch latch = new CountDownLatch(1);
         Observer<T> observer = new Observer<T>() {
             @Override
             public void onChanged(@Nullable T o) {
                 data[0] = o;
-                latch.countDown();
                 liveData.removeObserver(this);
             }
         };
         liveData.observeForever(observer);
-        latch.await(2, TimeUnit.SECONDS);
         //noinspection unchecked
         return (T) data[0];
     }
