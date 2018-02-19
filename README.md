@@ -27,7 +27,7 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
  * **[PagingSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingSample)** - Shows
   how to use the Paging library (preview) with Room, in Kotlin.
 
- * **[PagingNetworkSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingNetworkSample)** - Shows
+ * **[PagingNetworkSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingWithNetworkSample)** - Shows
   how to use the Paging library (preview) with a backend API via Retrofit, in Kotlin.
 
 ### Other Architecture Components Samples
