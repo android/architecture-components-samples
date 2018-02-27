@@ -85,7 +85,7 @@ class RedditActivity : AppCompatActivity() {
         }
         list.adapter = adapter
         model.posts.observe(this, Observer<PagedList<RedditPost>> {
-            adapter.setList(it)
+            adapter.submitList(it)
         })
         model.networkState.observe(this, Observer {
             adapter.setNetworkState(it)
@@ -130,7 +130,7 @@ class RedditActivity : AppCompatActivity() {
             if (it.isNotEmpty()) {
                 if (model.showSubreddit(it)) {
                     list.scrollToPosition(0)
-                    (list.adapter as? PostsAdapter)?.setList(null)
+                    (list.adapter as? PostsAdapter)?.submitList(null)
                 }
             }
         }
