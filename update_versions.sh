@@ -6,4 +6,5 @@ do
   p=$(dirname "${line}");
   echo "Copying versions.gradle -> ${p}";
   cp versions.gradle "$p"
+  sed -i 's/.*\[ADMIN\].*//' $p/versions.gradle
 done
