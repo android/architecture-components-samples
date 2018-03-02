@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-/** [ADMIN] RUN update_version.sh AFTER CHANGING THIS FILE **/
+
+
 
 /**
 * Shared file between builds so that they can all use the same dependencies and
@@ -25,7 +26,7 @@ def versions = [:]
 versions.arch_core = "1.1.0"
 versions.room = "1.1.0-alpha1"
 versions.lifecycle = "1.1.0"
-versions.support = "27.1.0"
+versions.support = "26.1.0"
 versions.dagger = "2.11"
 versions.junit = "4.12"
 versions.espresso = "3.0.1"
@@ -46,7 +47,7 @@ versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
 versions.kotlin = "1.2.20"
-versions.paging = "1.0.0-alpha6"
+versions.paging = "1.0.0-alpha5"
 def deps = [:]
 
 def support = [:]
