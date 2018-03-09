@@ -7,18 +7,15 @@ A collection of samples using the [Architecture Components](https://developer.an
 - Lifecycle-aware components
 - ViewModels
 - LiveData
-- Paging
+- Paging (preview)
 
 ### Samples
-
-**The Architecture Components and these samples are previews to gather developer feedback.
-Samples may not be fully featured, documented or tested and could be modified or deleted in the future.**
 
 * **[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
 
 * **[PersistenceContentProviderSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceContentProviderSample)** - Shows how to expose data via a Content Provider using Room.
 
-* **[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 canary 1
+* **[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, Dagger and the Github API. Requires Android Studio 3.0 or later.
 
 * **[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use Room with RxJava 2. Also uses ViewModels.
 
@@ -28,10 +25,10 @@ Samples may not be fully featured, documented or tested and could be modified or
 how to use ViewModels and Room together with RxJava, in Kotlin.
 
  * **[PagingSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingSample)** - Shows
-  how to use the Paging library with Room, in Kotlin.
+  how to use the Paging library (preview) with Room, in Kotlin.
 
- * **[PagingNetworkSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingNetworkSample)** - Shows
-  how to use the Paging library with a backend API via Retrofit, in Kotlin.
+ * **[PagingNetworkSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingWithNetworkSample)** - Shows
+  how to use the Paging library (preview) with a backend API via Retrofit, in Kotlin.
 
 ### Other Architecture Components Samples
 
@@ -46,7 +43,7 @@ You can report an [Issue](https://github.com/googlesamples/android-architecture-
 License
 -------
 
-Copyright 2015 The Android Open Source Project, Inc.
+Copyright 2018 The Android Open Source Project, Inc.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements.  See the NOTICE file distributed with this work for

@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         // Subscribe the adapter to the ViewModel, so the items in the adapter are refreshed
         // when the list changes
-        viewModel.allCheeses.observe(this, Observer(adapter::setList))
+        viewModel.allCheeses.observe(this, Observer(adapter::submitList))
 
         initAddButtonListener()
         initSwipeToDelete()

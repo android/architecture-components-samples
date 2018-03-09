@@ -46,13 +46,11 @@ import javax.inject.Inject;
 /**
  * The UI Controller for displaying a Github Repo's information with its contributors.
  */
-public class RepoFragment extends Fragment implements LifecycleRegistryOwner, Injectable {
+public class RepoFragment extends Fragment implements Injectable {
 
     private static final String REPO_OWNER_KEY = "repo_owner";
 
     private static final String REPO_NAME_KEY = "repo_name";
-
-    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -65,11 +63,6 @@ public class RepoFragment extends Fragment implements LifecycleRegistryOwner, In
     DataBindingComponent dataBindingComponent = new FragmentDataBindingComponent(this);
     AutoClearedValue<RepoFragmentBinding> binding;
     AutoClearedValue<ContributorAdapter> adapter;
-
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return lifecycleRegistry;
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
