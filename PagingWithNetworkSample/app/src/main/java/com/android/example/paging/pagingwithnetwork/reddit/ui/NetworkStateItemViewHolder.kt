@@ -43,7 +43,7 @@ class NetworkStateItemViewHolder(view: View,
             retryCallback()
         }
     }
-    fun bindTo(networkState: NetworkState?) {
+    fun bind(networkState: NetworkState?) {
         progressBar.visibility = toVisbility(networkState?.status == RUNNING)
         retry.visibility = toVisbility(networkState?.status == FAILED)
         errorMsg.visibility = toVisbility(networkState?.msg != null)

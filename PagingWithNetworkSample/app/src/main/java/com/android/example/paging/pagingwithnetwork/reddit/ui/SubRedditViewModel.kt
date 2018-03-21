@@ -23,19 +23,19 @@ import android.arch.lifecycle.ViewModel
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 
 /**
- * A RecyclerView ViewHolder that displays a single reddit post.
+ * ViewModel for the [SubRedditActivity].
  */
 class SubRedditViewModel(private val repository: RedditPostRepository) : ViewModel() {
     private val subredditName = MutableLiveData<String>()
-    private val repoResult = map(subredditName, {
+    private val subredditResult = map(subredditName, {
         repository.postsOfSubreddit(it, 30)
     })
-    val posts = switchMap(repoResult, { it.pagedList })!!
-    val networkState = switchMap(repoResult, { it.networkState })!!
-    val refreshState = switchMap(repoResult, { it.refreshState })!!
+    val posts = switchMap(subredditResult, { it.pagedList })!!
+    val networkState = switchMap(subredditResult, { it.networkState })!!
+    val refreshState = switchMap(subredditResult, { it.refreshState })!!
 
     fun refresh() {
-        repoResult.value?.refresh?.invoke()
+        subredditResult.value?.refresh?.invoke()
     }
 
     fun showSubreddit(subreddit: String): Boolean {
@@ -47,7 +47,7 @@ class SubRedditViewModel(private val repository: RedditPostRepository) : ViewMod
     }
 
     fun retry() {
-        val listing = repoResult?.value
+        val listing = subredditResult?.value
         listing?.retry?.invoke()
     }
 

@@ -26,7 +26,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
  * Database schema used by the DbRedditPostRepository
  */
 @Database(
-        entities = arrayOf(RedditPost::class),
+        entities = [RedditPost::class],
         version = 1,
         exportSchema = false
 )
@@ -44,5 +44,5 @@ abstract class RedditDb : RoomDatabase() {
         }
     }
 
-    abstract fun posts(): RedditPostDao
+    abstract fun postsDao(): RedditPostDao
 }

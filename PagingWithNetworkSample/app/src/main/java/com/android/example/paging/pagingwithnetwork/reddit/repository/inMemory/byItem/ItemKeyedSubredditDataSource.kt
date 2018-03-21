@@ -16,6 +16,7 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.ItemKeyedDataSource
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
@@ -48,9 +49,16 @@ class ItemKeyedSubredditDataSource(
      * <p>
      * See BoundaryCallback example for a more complete example on syncing multiple network states.
      */
-    val networkState = MutableLiveData<NetworkState>()
+    private val _networkState = MutableLiveData<NetworkState>()
+    // using a backing property here so we don't expose a MutableLiveData object outside this class
+    val networkState: LiveData<NetworkState>
+        get() = _networkState
 
-    val initialLoad = MutableLiveData<NetworkState>()
+    private val _initialLoad = MutableLiveData<NetworkState>()
+    // using a backing property here so we don't expose a MutableLiveData object outside this class
+    val initialLoad: MutableLiveData<NetworkState>
+        get() = _initialLoad
+
     fun retryAllFailed() {
         val prevRetry = retry
         retry = null
@@ -67,7 +75,7 @@ class ItemKeyedSubredditDataSource(
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<RedditPost>) {
         // set network value to loading.
-        networkState.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
         // even though we are using async retrofit API here, we could also use sync
         // it is just different to show that the callback can be called async.
         redditApi.getTopAfter(subreddit = subredditName,
@@ -80,23 +88,24 @@ class ItemKeyedSubredditDataSource(
                             loadAfter(params, callback)
                         }
                         // publish the error
-                        networkState.postValue(NetworkState.error(t.message ?: "unknown err"))
+                        _networkState.postValue(NetworkState.error(t.message ?: "unknown err"))
                     }
 
                     override fun onResponse(
                             call: Call<RedditApi.ListingResponse>,
                             response: Response<RedditApi.ListingResponse>) {
                         if (response.isSuccessful) {
-                            val items = response.body()?.data?.children?.map { it.data } ?: emptyList()
+                            val items = response.body()?.data?.children?.map { it.data }
+                                    ?: emptyList()
                             // clear retry since last request succeeded
                             retry = null
                             callback.onResult(items)
-                            networkState.postValue(NetworkState.LOADED)
+                            _networkState.postValue(NetworkState.LOADED)
                         } else {
                             retry = {
                                 loadAfter(params, callback)
                             }
-                            networkState.postValue(
+                            _networkState.postValue(
                                     NetworkState.error("error code: ${response.code()}"))
                         }
                     }
@@ -121,24 +130,24 @@ class ItemKeyedSubredditDataSource(
         // update network states.
         // we also provide an initial load state to the listeners so that the UI can know when the
         // very first list is loaded.
-        networkState.postValue(NetworkState.LOADING)
-        initialLoad.postValue(NetworkState.LOADING)
+        _networkState.postValue(NetworkState.LOADING)
+        _initialLoad.postValue(NetworkState.LOADING)
 
         // triggered by a refresh, we better execute sync
         try {
             val response = request.execute()
             val items = response.body()?.data?.children?.map { it.data } ?: emptyList()
             retry = null
-            networkState.postValue(NetworkState.LOADED)
-            initialLoad.postValue(NetworkState.LOADED)
+            _networkState.postValue(NetworkState.LOADED)
+            _initialLoad.postValue(NetworkState.LOADED)
             callback.onResult(items)
         } catch (ioException: IOException) {
             retry = {
                 loadInitial(params, callback)
             }
             val error = NetworkState.error(ioException.message ?: "unknown error")
-            networkState.postValue(error)
-            initialLoad.postValue(error)
+            _networkState.postValue(error)
+            _initialLoad.postValue(error)
         }
     }
 }

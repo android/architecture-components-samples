@@ -36,7 +36,7 @@ class PostsAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             R.layout.reddit_post_item -> (holder as RedditPostViewHolder).bind(getItem(position))
-            R.layout.network_state_item -> (holder as NetworkStateItemViewHolder).bindTo(
+            R.layout.network_state_item -> (holder as NetworkStateItemViewHolder).bind(
                     networkState)
         }
     }

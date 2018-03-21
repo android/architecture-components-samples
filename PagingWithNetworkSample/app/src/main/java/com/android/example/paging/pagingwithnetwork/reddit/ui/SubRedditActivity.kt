@@ -33,36 +33,37 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkSta
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_reddit.*
+import kotlinx.android.synthetic.main.activity_subreddit.*
 
 /**
- * A list activity that shows reddit posts in the given sub-reddit.
+ * A list activity that shows reddit postsDao in the given sub-reddit.
  * <p>
  * The intent arguments can be modified to make it use a different repository (see MainActivity).
  */
-class RedditActivity : AppCompatActivity() {
+class SubRedditActivity : AppCompatActivity() {
     companion object {
-        val KEY_SUBREDDIT = "subreddit"
-        val DEFAULT_SUBREDDIT = "androiddev"
-        val KEY_REPOSITORY_TYPE = "repository_type"
+        private const val KEY_SUBREDDIT = "subreddit"
+        private const val DEFAULT_SUBREDDIT = "androiddev"
+
+        const val KEY_REPOSITORY_TYPE = "repository_type"
         fun intentFor(context: Context, type: RedditPostRepository.Type): Intent {
-            val intent = Intent(context, RedditActivity::class.java)
+            val intent = Intent(context, SubRedditActivity::class.java)
             intent.putExtra(KEY_REPOSITORY_TYPE, type.ordinal)
             return intent
         }
     }
 
-    private lateinit var model: SubRedditViewModel
+    private lateinit var viewModel: SubRedditViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reddit)
-        model = getViewModel()
+        setContentView(R.layout.activity_subreddit)
+        viewModel = getViewModel()
         initAdapter()
         initSwipeToRefresh()
         initSearch()
         val subreddit = savedInstanceState?.getString(KEY_SUBREDDIT) ?: DEFAULT_SUBREDDIT
-        model.showSubreddit(subreddit)
+        viewModel.showSubreddit(subreddit)
     }
 
     private fun getViewModel(): SubRedditViewModel {
@@ -70,7 +71,7 @@ class RedditActivity : AppCompatActivity() {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
-                val repo = ServiceLocator.instance(this@RedditActivity)
+                val repo = ServiceLocator.instance(this@SubRedditActivity)
                         .getRepository(repoType)
                 @Suppress("UNCHECKED_CAST")
                 return SubRedditViewModel(repo) as T
@@ -81,29 +82,29 @@ class RedditActivity : AppCompatActivity() {
     private fun initAdapter() {
         val glide = Glide.with(this)
         val adapter = PostsAdapter(glide) {
-            model.retry()
+            viewModel.retry()
         }
         list.adapter = adapter
-        model.posts.observe(this, Observer<PagedList<RedditPost>> {
+        viewModel.posts.observe(this, Observer<PagedList<RedditPost>> {
             adapter.submitList(it)
         })
-        model.networkState.observe(this, Observer {
+        viewModel.networkState.observe(this, Observer {
             adapter.setNetworkState(it)
         })
     }
 
     private fun initSwipeToRefresh() {
-        model.refreshState.observe(this, Observer {
+        viewModel.refreshState.observe(this, Observer {
             swipe_refresh.isRefreshing = it == NetworkState.LOADING
         })
         swipe_refresh.setOnRefreshListener {
-            model.refresh()
+            viewModel.refresh()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(KEY_SUBREDDIT, model.currentSubreddit())
+        outState.putString(KEY_SUBREDDIT, viewModel.currentSubreddit())
     }
 
     private fun initSearch() {
@@ -128,7 +129,7 @@ class RedditActivity : AppCompatActivity() {
     private fun updatedSubredditFromInput() {
         input.text.trim().toString().let {
             if (it.isNotEmpty()) {
-                if (model.showSubreddit(it)) {
+                if (viewModel.showSubreddit(it)) {
                     list.scrollToPosition(0)
                     (list.adapter as? PostsAdapter)?.submitList(null)
                 }

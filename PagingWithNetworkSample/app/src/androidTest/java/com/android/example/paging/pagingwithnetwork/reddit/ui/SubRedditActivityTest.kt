@@ -26,7 +26,6 @@ import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
-import com.android.example.paging.pagingwithnetwork.reddit.ui.RedditActivity.Companion.DEFAULT_SUBREDDIT
 import com.android.example.paging.pagingwithnetwork.repository.FakeRedditApi
 import com.android.example.paging.pagingwithnetwork.repository.PostFactory
 import org.hamcrest.CoreMatchers
@@ -43,7 +42,7 @@ import java.util.concurrent.TimeoutException
  * Simple sanity test to ensure data is displayed
  */
 @RunWith(Parameterized::class)
-class RedditActivityTest(private val type: RedditPostRepository.Type) {
+class SubRedditActivityTest(private val type: RedditPostRepository.Type) {
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -57,9 +56,9 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     @Before
     fun init() {
         val fakeApi = FakeRedditApi()
-        fakeApi.addPost(postFactory.createRedditPost(DEFAULT_SUBREDDIT))
-        fakeApi.addPost(postFactory.createRedditPost(DEFAULT_SUBREDDIT))
-        fakeApi.addPost(postFactory.createRedditPost(DEFAULT_SUBREDDIT))
+        fakeApi.addPost(postFactory.createRedditPost("androiddev"))
+        fakeApi.addPost(postFactory.createRedditPost("androiddev"))
+        fakeApi.addPost(postFactory.createRedditPost("androiddev"))
         val app = InstrumentationRegistry.getTargetContext().applicationContext as Application
         // use a controlled service locator w/ fake API
         ServiceLocator.swap(
@@ -73,7 +72,7 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     @Test
     @Throws(InterruptedException::class, TimeoutException::class)
     fun showSomeResults() {
-        val intent = RedditActivity.intentFor(
+        val intent = SubRedditActivity.intentFor(
                 context = InstrumentationRegistry.getTargetContext(),
                 type = type)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

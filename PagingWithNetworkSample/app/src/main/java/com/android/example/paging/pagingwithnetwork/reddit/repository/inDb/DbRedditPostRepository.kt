@@ -51,12 +51,12 @@ class DbRedditPostRepository(
     private fun insertResultIntoDb(subredditName: String, body: RedditApi.ListingResponse?) {
         body!!.data.children.let { posts ->
             db.runInTransaction {
-                val start = db.posts().getNextIndexInSubreddit(subredditName)
+                val start = db.postsDao().getNextIndexInSubreddit(subredditName)
                 val items = posts.mapIndexed { index, child ->
                     child.data.indexInResponse = start + index
                     child.data
                 }
-                db.posts().insert(items)
+                db.postsDao().insert(items)
             }
         }
     }
@@ -84,7 +84,7 @@ class DbRedditPostRepository(
                             response: Response<RedditApi.ListingResponse>) {
                         ioExecutor.execute {
                             db.runInTransaction {
-                                db.posts().deleteBySubreddit(subredditName)
+                                db.postsDao().deleteBySubreddit(subredditName)
                                 insertResultIntoDb(subredditName, response.body())
                             }
                             // since we are in bg thread now, post the result.
@@ -110,7 +110,7 @@ class DbRedditPostRepository(
                 ioExecutor = ioExecutor,
                 networkPageSize = networkPageSize)
         // create a data source factory from Room
-        val dataSourceFactory = db.posts().postsBySubreddit(subredditName)
+        val dataSourceFactory = db.postsDao().postsBySubreddit(subredditName)
         val builder = LivePagedListBuilder(dataSourceFactory, pageSize)
                 .setBoundaryCallback(boundaryCallback)
 

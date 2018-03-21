@@ -37,8 +37,9 @@ class RedditPostViewHolder(view: View, private val glide: RequestManager)
     private val title: TextView = view.findViewById(R.id.title)
     private val subtitle: TextView = view.findViewById(R.id.subtitle)
     private val score: TextView = view.findViewById(R.id.score)
-    private val thumbnail : ImageView = view.findViewById(R.id.thumbnail)
-    private var post : RedditPost? = null
+    private val thumbnail: ImageView = view.findViewById(R.id.thumbnail)
+    private var post: RedditPost? = null
+
     init {
         view.setOnClickListener {
             post?.url?.let { url ->
@@ -49,14 +50,16 @@ class RedditPostViewHolder(view: View, private val glide: RequestManager)
     }
 
     fun bind(post: RedditPost?) {
+        val resources = itemView.context.resources
         this.post = post
-        title.text = post?.title ?: "loading"
+        title.text = post?.title ?: resources.getString(R.string.loading)
         subtitle.text = itemView.context.resources.getString(R.string.post_subtitle,
-                post?.author ?: "unknown")
+                post?.author ?: resources.getString(R.string.unknown_author))
         score.text = "${post?.score ?: 0}"
         if (post?.thumbnail?.startsWith("http") == true) {
             thumbnail.visibility = View.VISIBLE
-            glide.load(post.thumbnail).centerCrop()
+            glide.load(post.thumbnail)
+                    .centerCrop()
                     .placeholder(R.drawable.ic_insert_photo_black_48dp)
                     .into(thumbnail)
         } else {
