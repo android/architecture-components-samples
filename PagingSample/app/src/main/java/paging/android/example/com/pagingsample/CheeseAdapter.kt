@@ -17,7 +17,6 @@
 package paging.android.example.com.pagingsample
 
 import android.arch.paging.PagedListAdapter
-import android.support.v7.recyclerview.extensions.DiffCallback
 import android.support.v7.util.DiffUtil
 import android.view.ViewGroup
 
