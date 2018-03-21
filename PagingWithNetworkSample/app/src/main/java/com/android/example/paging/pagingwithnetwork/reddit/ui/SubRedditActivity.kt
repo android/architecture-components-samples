@@ -36,7 +36,7 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_subreddit.*
 
 /**
- * A list activity that shows reddit postsDao in the given sub-reddit.
+ * A list activity that shows reddit posts in the given sub-reddit.
  * <p>
  * The intent arguments can be modified to make it use a different repository (see MainActivity).
  */
