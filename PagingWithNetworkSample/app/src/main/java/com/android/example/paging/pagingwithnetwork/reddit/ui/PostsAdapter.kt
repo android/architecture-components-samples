@@ -17,7 +17,6 @@
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.arch.paging.PagedListAdapter
-import android.support.v7.recyclerview.extensions.DiffCallback
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup

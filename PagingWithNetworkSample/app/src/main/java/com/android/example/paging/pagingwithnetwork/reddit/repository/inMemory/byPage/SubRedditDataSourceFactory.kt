@@ -30,7 +30,7 @@ import java.util.concurrent.Executor
 class SubRedditDataSourceFactory(
         private val redditApi: RedditApi,
         private val subredditName: String,
-        private val retryExecutor: Executor) : DataSource.Factory<String, RedditPost> {
+        private val retryExecutor: Executor) : DataSource.Factory<String, RedditPost>() {
     val sourceLiveData = MutableLiveData<PageKeyedSubredditDataSource>()
     override fun create(): DataSource<String, RedditPost> {
         val source = PageKeyedSubredditDataSource(redditApi, subredditName, retryExecutor)
