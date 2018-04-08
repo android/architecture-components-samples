@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/** [ADMIN] RUN update_version.sh AFTER CHANGING THIS FILE **/
+
 
 /**
 * Shared file between builds so that they can all use the same dependencies and

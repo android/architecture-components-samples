@@ -17,7 +17,7 @@
 package paging.android.example.com.pagingsample
 
 import android.arch.paging.PagedListAdapter
-import android.support.v7.recyclerview.extensions.DiffCallback
+import android.support.v7.util.DiffUtil
 import android.view.ViewGroup
 
 /**
@@ -32,7 +32,7 @@ import android.view.ViewGroup
  * adapter instead.
  *
  * @see android.arch.paging.PagedListAdapter
- * @see android.arch.paging.PagedListAdapterHelper
+ * @see android.arch.paging.AsyncPagedListDiffer
  */
 class CheeseAdapter : PagedListAdapter<Cheese, CheeseViewHolder>(diffCallback) {
     override fun onBindViewHolder(holder: CheeseViewHolder, position: Int) {
@@ -53,7 +53,7 @@ class CheeseAdapter : PagedListAdapter<Cheese, CheeseViewHolder>(diffCallback) {
          *
          * @see android.support.v7.util.DiffUtil
          */
-        private val diffCallback = object : DiffCallback<Cheese>() {
+        private val diffCallback = object : DiffUtil.ItemCallback<Cheese>() {
             override fun areItemsTheSame(oldItem: Cheese, newItem: Cheese): Boolean =
                     oldItem.id == newItem.id
 

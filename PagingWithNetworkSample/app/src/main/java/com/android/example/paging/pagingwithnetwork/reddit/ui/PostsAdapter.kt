@@ -17,7 +17,7 @@
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.arch.paging.PagedListAdapter
-import android.support.v7.recyclerview.extensions.DiffCallback
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.android.example.paging.pagingwithnetwork.R
@@ -93,7 +93,7 @@ class PostsAdapter(
 
     companion object {
         private val PAYLOAD_SCORE = Any()
-        val POST_COMPARATOR = object : DiffCallback<RedditPost>() {
+        val POST_COMPARATOR = object : DiffUtil.ItemCallback<RedditPost>() {
             override fun areContentsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean =
                     oldItem == newItem
 

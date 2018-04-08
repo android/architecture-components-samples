@@ -39,8 +39,7 @@ public class DataGenerator {
             "is finally here", "is recommended by Stan S. Stanman",
             "is the best sold product on Mêlée Island", "is \uD83D\uDCAF", "is ❤️", "is fine"};
     private static final String[] COMMENTS = new String[]{
-            "Comment 1", "Comment 2", "Comment 3", "Comment 4", "Comment 5", "Comment 6",
-    };
+            "Comment 1", "Comment 2", "Comment 3", "Comment 4", "Comment 5", "Comment 6"};
 
     public static List<ProductEntity> generateProducts() {
         List<ProductEntity> products = new ArrayList<>(FIRST.length * SECOND.length);
