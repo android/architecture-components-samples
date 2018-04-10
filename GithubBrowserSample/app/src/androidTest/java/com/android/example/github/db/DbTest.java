@@ -17,19 +17,32 @@
 package com.android.example.github.db;
 
 
-import org.junit.After;
-import org.junit.Before;
-
+import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.Timeout;
+
+import java.util.concurrent.TimeUnit;
+
 abstract public class DbTest {
-    protected GithubDb db;
+
+    @Rule
+    public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
+
+    @Rule
+    public Timeout timeout = new Timeout(4, TimeUnit.SECONDS);
+
+    GithubDb db;
 
     @Before
     public void initDb() {
-        db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
-                GithubDb.class).build();
+        db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(), GithubDb.class)
+                .allowMainThreadQueries()
+                .build();
     }
 
     @After

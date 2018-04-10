@@ -17,17 +17,19 @@
 package com.android.example.github.util;
 
 
+import android.annotation.SuppressLint;
+import android.arch.core.executor.ArchTaskExecutor;
+import android.arch.lifecycle.LiveData;
+import android.support.annotation.NonNull;
+
 import com.android.example.github.api.ApiResponse;
 
-import android.arch.lifecycle.LiveData;
-
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
 import retrofit2.CallAdapter;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A Retrofit adapter that converts the Call into a LiveData of ApiResponse.
@@ -35,7 +37,8 @@ import retrofit2.Response;
  */
 public class LiveDataCallAdapter<R> implements CallAdapter<R, LiveData<ApiResponse<R>>> {
     private final Type responseType;
-    public LiveDataCallAdapter(Type responseType) {
+
+    LiveDataCallAdapter(Type responseType) {
         this.responseType = responseType;
     }
 
@@ -44,25 +47,35 @@ public class LiveDataCallAdapter<R> implements CallAdapter<R, LiveData<ApiRespon
         return responseType;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
-    public LiveData<ApiResponse<R>> adapt(Call<R> call) {
+    public LiveData<ApiResponse<R>> adapt(@NonNull Call<R> call) {
         return new LiveData<ApiResponse<R>>() {
+
             AtomicBoolean started = new AtomicBoolean(false);
+
+            Runnable runnable = () -> {
+                try {
+                    ApiResponse<R> response = new ApiResponse<>(call.execute());
+                    setThreadAwareValue(response);
+                } catch (IOException e) {
+                    setThreadAwareValue(new ApiResponse<>(e));
+                }
+            };
+
             @Override
             protected void onActive() {
                 super.onActive();
                 if (started.compareAndSet(false, true)) {
-                    call.enqueue(new Callback<R>() {
-                        @Override
-                        public void onResponse(Call<R> call, Response<R> response) {
-                            postValue(new ApiResponse<>(response));
-                        }
+                    ArchTaskExecutor.getIOThreadExecutor().execute(runnable);
+                }
+            }
 
-                        @Override
-                        public void onFailure(Call<R> call, Throwable throwable) {
-                            postValue(new ApiResponse<R>(throwable));
-                        }
-                    });
+            private void setThreadAwareValue(ApiResponse<R> value) {
+                if (ArchTaskExecutor.getInstance().isMainThread()) {
+                    setValue(value);
+                } else {
+                    postValue(value);
                 }
             }
         };
