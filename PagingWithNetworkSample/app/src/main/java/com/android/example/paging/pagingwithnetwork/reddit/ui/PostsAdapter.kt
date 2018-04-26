@@ -20,16 +20,16 @@ import android.arch.paging.PagedListAdapter
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.android.example.paging.pagingwithnetwork.GlideRequests
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import com.bumptech.glide.RequestManager
 
 /**
  * A simple adapter implementation that shows Reddit posts.
  */
 class PostsAdapter(
-        private val glide: RequestManager,
+        private val glide: GlideRequests,
         private val retryCallback: () -> Unit)
     : PagedListAdapter<RedditPost, RecyclerView.ViewHolder>(POST_COMPARATOR) {
     private var networkState: NetworkState? = null

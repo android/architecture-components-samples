@@ -7,4 +7,5 @@ do
   echo "Copying versions.gradle -> ${p}";
   cp versions.gradle "$p"
   sed -i 's/.*\[ADMIN\].*//' $p/versions.gradle
+  cp gradle-wrapper.properties "$p/gradle/wrapper/."
 done
