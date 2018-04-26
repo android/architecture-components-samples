@@ -15,11 +15,12 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.android.example.github">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <application>
-        <activity android:name=".testing.SingleFragmentActivity">
-        </activity>
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.android.example.github">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".testing.SingleFragmentActivity"></activity>
     </application>
 
 </manifest>

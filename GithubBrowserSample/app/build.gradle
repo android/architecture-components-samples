@@ -16,6 +16,15 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'kotlin-allopen'
+
+allOpen {
+    // allows mocking for classes w/o directly opening them for release builds
+    annotation 'com.android.example.github.testing.OpenClass'
+}
 android {
     compileSdkVersion build_versions.target_sdk
     buildToolsVersion build_versions.build_tools
@@ -73,17 +82,19 @@ dependencies {
     implementation deps.dagger.android
     implementation deps.dagger.android_support
     implementation deps.constraint_layout
+    implementation deps.kotlin.stdlib
 
     implementation deps.timber
 
-    annotationProcessor deps.dagger.android_support_compiler
-    annotationProcessor deps.dagger.compiler
-    annotationProcessor deps.room.compiler
-    annotationProcessor deps.lifecycle.compiler
+    kapt deps.dagger.android_support_compiler
+    kapt deps.dagger.compiler
+    kapt deps.room.compiler
+    kapt deps.lifecycle.compiler
+    kapt deps.databinding_compiler
 
     testImplementation deps.junit
     testImplementation deps.mock_web_server
-    testImplementation (deps.arch_core.testing, {
+    testImplementation(deps.arch_core.testing, {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'
@@ -135,4 +146,11 @@ task fullCoverageReport(type: JacocoReport) {
             "jacoco/testDebugUnitTest.exec",
             "outputs/code-coverage/connected/*coverage.ec"
     ])
+}
+
+// we need all open to run tests which  a we enable only for debug builds.
+project.tasks.whenTaskAdded {
+    if (it.name == "testReleaseUnitTest") {
+        it.enabled = false
+    }
 }
