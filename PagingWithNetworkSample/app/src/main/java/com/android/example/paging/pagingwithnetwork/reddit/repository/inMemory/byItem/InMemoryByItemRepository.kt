@@ -34,8 +34,8 @@ class InMemoryByItemRepository(
         private val redditApi: RedditApi,
         private val networkExecutor: Executor) : RedditPostRepository {
     @MainThread
-    override fun postsOfSubreddit(subredditName: String, pageSize: Int): Listing<RedditPost> {
-        val sourceFactory = SubRedditDataSourceFactory(redditApi, subredditName, networkExecutor)
+    override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
+        val sourceFactory = SubRedditDataSourceFactory(redditApi, subReddit, networkExecutor)
         val pagedListConfig = PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(pageSize * 2)

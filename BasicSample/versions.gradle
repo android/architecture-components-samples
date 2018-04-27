@@ -117,7 +117,11 @@ kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
 
 deps.kotlin = kotlin
 deps.paging = "android.arch.paging:runtime:$versions.paging"
-deps.glide = "com.github.bumptech.glide:glide:$versions.glide"
+
+def glide = [:]
+glide.runtime = "com.github.bumptech.glide:glide:$versions.glide"
+glide.compiler = "com.github.bumptech.glide:compiler:$versions.glide"
+deps.glide = glide
 deps.dexmaker = "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
 deps.constraint_layout = "com.android.support.constraint:constraint-layout:$versions.constraint_layout"
 deps.timber = "com.jakewharton.timber:timber:$versions.timber"
@@ -127,7 +131,6 @@ deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
 deps.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
 deps.hamcrest = "org.hamcrest:hamcrest-all:$versions.hamcrest"
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
-deps.databinding_compiler = "com.android.databinding:compiler:$versions.android_gradle_plugin"
 ext.deps = deps
 
 def build_versions = [:]
