@@ -107,7 +107,7 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     private fun initSearchInputListener() {
-        binding.input.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent ->
+        binding.input.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent? ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch(view)
                 true
