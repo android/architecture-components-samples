@@ -26,12 +26,13 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.RepoFragmentBinding
 import com.android.example.github.di.Injectable
-import com.android.example.github.ui.common.NavigationController
+import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
 import javax.inject.Inject
@@ -39,15 +40,13 @@ import javax.inject.Inject
 /**
  * The UI Controller for displaying a Github Repo's information with its contributors.
  */
+@OpenForTesting
 class RepoFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var repoViewModel: RepoViewModel
-
-    @Inject
-    lateinit var navigationController: NavigationController
 
     @Inject
     lateinit var appExecutors: AppExecutors
@@ -62,10 +61,8 @@ class RepoFragment : Fragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         repoViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RepoViewModel::class.java)
-        val args = arguments
-        val ownerParam = args?.getString(REPO_OWNER_KEY)
-        val repoParam = args?.getString(REPO_NAME_KEY)
-        repoViewModel.setId(ownerParam, repoParam)
+        val params = RepoFragmentArgs.fromBundle(arguments)
+        repoViewModel.setId(params.owner, params.name)
 
         val repo = repoViewModel.repo
         repo.observe(this, Observer { resource ->
@@ -75,7 +72,9 @@ class RepoFragment : Fragment(), Injectable {
         })
 
         val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor ->
-            navigationController.navigateToUser(contributor.login)
+            navController().navigate(
+                    RepoFragmentDirections.showUser(contributor.login)
+            )
         }
         this.adapter = adapter
         binding.contributorList.adapter = adapter
@@ -113,19 +112,8 @@ class RepoFragment : Fragment(), Injectable {
         return dataBinding.root
     }
 
-    companion object {
-
-        private const val REPO_OWNER_KEY = "repo_owner"
-
-        private const val REPO_NAME_KEY = "repo_name"
-
-        fun create(owner: String, name: String): RepoFragment {
-            val repoFragment = RepoFragment()
-            val args = Bundle()
-            args.putString(REPO_OWNER_KEY, owner)
-            args.putString(REPO_NAME_KEY, name)
-            repoFragment.arguments = args
-            return repoFragment
-        }
-    }
+    /**
+     * Created to be able to override in tests
+     */
+    fun navController() = findNavController()
 }

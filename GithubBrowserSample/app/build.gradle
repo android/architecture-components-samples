@@ -20,6 +20,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-allopen'
+apply plugin: 'androidx.navigation.safeargs'
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
@@ -70,6 +71,7 @@ dependencies {
     implementation deps.support.recyclerview
     implementation deps.support.cardview
     implementation deps.support.design
+    implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime
     implementation deps.lifecycle.extensions
@@ -100,6 +102,7 @@ dependencies {
     })
     testImplementation deps.mockito.core
 
+    androidTestImplementation deps.navigation.testing_ktx
     androidTestImplementation deps.support.app_compat
     androidTestImplementation deps.support.recyclerview
     androidTestImplementation deps.support.cardview

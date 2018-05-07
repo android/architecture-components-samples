@@ -28,16 +28,18 @@ import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import androidx.navigation.NavController
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
-import com.android.example.github.ui.common.NavigationController
 import com.android.example.github.util.CountingAppExecutorsRule
 import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
+import com.android.example.github.util.matcher
+import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
 import com.android.example.github.vo.User
@@ -64,34 +66,33 @@ class UserFragmentTest {
     @JvmField
     val countingAppExecutors = CountingAppExecutorsRule()
     private lateinit var viewModel: UserViewModel
-    private lateinit var navigationController: NavigationController
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
     private val userData = MutableLiveData<Resource<User>>()
     private val repoListData = MutableLiveData<Resource<List<Repo>>>()
+    private val testFragment = TestUserFragment().apply {
+        arguments = UserFragmentArgs.Builder("foo").build().toBundle()
+    }
 
     @Before
     fun init() {
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
-        val fragment = UserFragment.create("foo")
         viewModel = mock(UserViewModel::class.java)
         `when`(viewModel.user).thenReturn(userData)
         `when`(viewModel.repositories).thenReturn(repoListData)
         doNothing().`when`(viewModel).setLogin(anyString())
-        navigationController = mock(NavigationController::class.java)
         mockBindingAdapter = mock(FragmentBindingAdapters::class.java)
 
-        fragment.appExecutors = countingAppExecutors.appExecutors
-        fragment.viewModelFactory = ViewModelUtil.createFor(viewModel)
-        fragment.navigationController = navigationController
-        fragment.dataBindingComponent = object : DataBindingComponent {
+        testFragment.appExecutors = countingAppExecutors.appExecutors
+        testFragment.viewModelFactory = ViewModelUtil.createFor(viewModel)
+        testFragment.dataBindingComponent = object : DataBindingComponent {
             override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
                 return mockBindingAdapter
             }
         }
-        activityRule.activity.setFragment(fragment)
+        activityRule.activity.setFragment(testFragment)
         activityRule.runOnUiThread {
-            fragment.binding.repoList.itemAnimator = null
+            testFragment.binding.repoList.itemAnimator = null
         }
+        EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
 
     @Test
@@ -141,7 +142,7 @@ class UserFragmentTest {
         }
         val repo3 = setRepos(3)[2]
         onView(listMatcher().atPosition(2)).check(
-            matches(hasDescendant(withText(repo3.name)))
+                matches(hasDescendant(withText(repo3.name)))
         )
     }
 
@@ -150,7 +151,9 @@ class UserFragmentTest {
         val repos = setRepos(2)
         val selected = repos[1]
         onView(withText(selected.description)).perform(click())
-        verify(navigationController).navigateToRepo(selected.owner.login, selected.name)
+        verify(testFragment.navController).navigate(
+                UserFragmentDirections.showRepo(selected.owner.login, selected.name).matcher()
+        )
     }
 
     @Test
@@ -190,5 +193,10 @@ class UserFragmentTest {
         }
         repoListData.postValue(Resource.success(repos))
         return repos
+    }
+
+    class TestUserFragment : UserFragment() {
+        val navController = mock<NavController>()
+        override fun navController() = navController
     }
 }

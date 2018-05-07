@@ -30,16 +30,18 @@ import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import androidx.navigation.NavController
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
-import com.android.example.github.ui.common.NavigationController
 import com.android.example.github.util.CountingAppExecutorsRule
 import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
+import com.android.example.github.util.matcher
+import com.android.example.github.util.mock
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
@@ -67,19 +69,17 @@ class RepoFragmentTest {
     val countingAppExecutors = CountingAppExecutorsRule()
     private val repoLiveData = MutableLiveData<Resource<Repo>>()
     private val contributorsLiveData = MutableLiveData<Resource<List<Contributor>>>()
-    private lateinit var repoFragment: RepoFragment
     private lateinit var viewModel: RepoViewModel
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
-    private lateinit var navigationController: NavigationController
 
+    private val repoFragment = TestRepoFragment().apply {
+        arguments = RepoFragmentArgs.Builder("a", "b").build().toBundle()
+    }
 
     @Before
     fun init() {
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
-        repoFragment = RepoFragment.create("a", "b")
         viewModel = mock(RepoViewModel::class.java)
         mockBindingAdapter = mock(FragmentBindingAdapters::class.java)
-        navigationController = mock(NavigationController::class.java)
         doNothing().`when`(viewModel).setId(anyString(), anyString())
         `when`(viewModel.repo).thenReturn(repoLiveData)
         `when`(viewModel.contributors).thenReturn(contributorsLiveData)
@@ -90,8 +90,8 @@ class RepoFragmentTest {
                 return mockBindingAdapter
             }
         }
-        repoFragment.navigationController = navigationController
         activityRule.activity.setFragment(repoFragment)
+        EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
 
     @Test
@@ -168,7 +168,9 @@ class RepoFragmentTest {
     fun testContributorClick() {
         setContributors("aa", "bb", "cc")
         onView(withText("cc")).perform(click())
-        verify(navigationController).navigateToUser("cc")
+        verify(repoFragment.navController).navigate(
+                RepoFragmentDirections.showUser("cc").matcher()
+        )
     }
 
     @Test
@@ -199,5 +201,10 @@ class RepoFragmentTest {
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {
         return InstrumentationRegistry.getTargetContext().getString(id, *args)
+    }
+
+    class TestRepoFragment : RepoFragment() {
+        val navController = mock<NavController>()
+        override fun navController() = navController
     }
 }
