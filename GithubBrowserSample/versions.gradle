@@ -145,6 +145,7 @@ def work = [:]
 work.runtime = "android.arch.work:work-runtime:$versions.work"
 work.testing = "android.arch.work:work-testing:$versions.work"
 work.firebase = "android.arch.work:work-firebase:$versions.work"
+work.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work"
 deps.work = work
 
 def navigation = [:]

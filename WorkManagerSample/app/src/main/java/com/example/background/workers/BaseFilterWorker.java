@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,7 +51,8 @@ public abstract class BaseFilterWorker extends Worker {
     private static final String TAG = "BaseFilterWorker";
 
     /** A prefix shared by all Android Asset URIs. */
-    private static final String ASSET_PREFIX = "file:///android_asset/";
+    @VisibleForTesting
+    public static final String ASSET_PREFIX = "file:///android_asset/";
 
     /**
      * Reads a {@link Bitmap} given an {@code imageUri} via {@code KEY_IMAGE_URI} and
@@ -101,7 +103,8 @@ public abstract class BaseFilterWorker extends Worker {
      * @param resourceUri the {@link String} resourceUri.
      * @return the {@link InputStream} for the resourceUri.
      */
-    private static InputStream inputStreamFor(
+    @VisibleForTesting
+    public static InputStream inputStreamFor(
             @NonNull Context context,
             @NonNull String resourceUri) throws IOException {
 
