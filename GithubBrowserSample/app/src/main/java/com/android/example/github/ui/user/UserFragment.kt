@@ -81,8 +81,6 @@ class UserFragment : Fragment(), Injectable {
         userViewModel.user.observe(this, Observer { userResource ->
             binding.user = userResource?.data
             binding.userResource = userResource
-            // this is only necessary because espresso cannot read data binding callbacks.
-            binding.executePendingBindings()
         })
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
