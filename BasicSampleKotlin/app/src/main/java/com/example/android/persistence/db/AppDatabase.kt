@@ -37,10 +37,10 @@ import com.example.android.persistence.db.entity.ProductEntity
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
-    private val mIsDatabaseCreated = MutableLiveData<Boolean>()
+    private val isDatabaseCreated = MutableLiveData<Boolean>()
 
     val databaseCreated: LiveData<Boolean>
-        get() = mIsDatabaseCreated
+        get() = isDatabaseCreated
 
     abstract fun productDao(): ProductDao
 
@@ -56,26 +56,27 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     private fun setDatabaseCreated() {
-        mIsDatabaseCreated.postValue(true)
+        isDatabaseCreated.postValue(true)
     }
 
     companion object {
-        private var sInstance: AppDatabase? = null
+        private var instance: AppDatabase? = null
 
         @VisibleForTesting
         const val DATABASE_NAME = "basic-sample-db"
 
         @JvmStatic
         fun getInstance(context: Context, executors: AppExecutors): AppDatabase {
-            if (sInstance == null) {
+            if (instance == null) {
                 synchronized(AppDatabase::class.java) {
-                    if (sInstance == null) {
-                        sInstance = buildDatabase(context.applicationContext, executors)
-                        sInstance!!.updateDatabaseCreated(context.applicationContext)
+                    if (instance == null) {
+                        instance = buildDatabase(context.applicationContext, executors).also { db ->
+                            db.updateDatabaseCreated(context.applicationContext)
+                        }
                     }
                 }
             }
-            return sInstance!!
+            return instance!!
         }
 
         /**
