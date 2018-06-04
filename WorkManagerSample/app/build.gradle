@@ -48,6 +48,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime
+    implementation deps.work.runtime_ktx
     implementation deps.support.app_compat
     implementation deps.support.cardview
     implementation deps.support.design
@@ -62,4 +63,5 @@ dependencies {
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.work.testing
 }
