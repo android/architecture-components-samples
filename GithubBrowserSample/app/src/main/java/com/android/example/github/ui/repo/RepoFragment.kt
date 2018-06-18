@@ -68,7 +68,6 @@ class RepoFragment : Fragment(), Injectable {
         repo.observe(this, Observer { resource ->
             binding.repo = resource?.data
             binding.repoResource = resource
-            binding.executePendingBindings()
         })
 
         val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor ->

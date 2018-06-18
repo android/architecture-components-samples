@@ -146,7 +146,6 @@ class SearchFragment : Fragment(), Injectable {
             binding.searchResource = result
             binding.resultCount = result?.data?.size ?: 0
             adapter.submitList(result?.data)
-            binding.executePendingBindings()
         })
 
         searchViewModel.loadMoreStatus.observe(this, Observer { loadingMore ->
@@ -159,7 +158,6 @@ class SearchFragment : Fragment(), Injectable {
                     Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show()
                 }
             }
-            binding.executePendingBindings()
         })
     }
 
