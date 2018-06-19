@@ -35,7 +35,6 @@ public class GrayScaleFilterWorker extends BaseFilterWorker {
     @Override
     Bitmap applyFilter(@NonNull Bitmap bitmap) {
         Context applicationContext = getApplicationContext();
-        Resources resources = applicationContext.getResources();
         RenderScript rsContext = null;
         try {
             Bitmap output = Bitmap
@@ -47,8 +46,7 @@ public class GrayScaleFilterWorker extends BaseFilterWorker {
             // `src/main/rs/grayscale.rs`. We compute a new pixel value for every pixel which is
             // out = (r + g + b) / 3 where r, g, b are the red, green and blue channels in the
             // input image.
-            ScriptC_grayscale grayscale =
-                    new ScriptC_grayscale(rsContext, resources, R.raw.grayscale);
+            ScriptC_grayscale grayscale = new ScriptC_grayscale(rsContext);
             grayscale.set_script(grayscale);
             grayscale.set_width(bitmap.getWidth());
             grayscale.set_height(bitmap.getHeight());

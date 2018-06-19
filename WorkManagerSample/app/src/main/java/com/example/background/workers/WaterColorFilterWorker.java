@@ -36,7 +36,6 @@ public class WaterColorFilterWorker extends BaseFilterWorker {
     @Override
     Bitmap applyFilter(@NonNull Bitmap bitmap) {
         Context applicationContext = getApplicationContext();
-        Resources resources = applicationContext.getResources();
         RenderScript rsContext = null;
         try {
             Bitmap output = Bitmap
@@ -48,8 +47,7 @@ public class WaterColorFilterWorker extends BaseFilterWorker {
             // `src/main/rs/waterColorEffect.rs`. The main idea, is to select a window of the image
             // and then find the most dominant pixel value. Then we set the r, g, b, channels of the
             // pixels to the one with the dominant pixel value.
-            ScriptC_waterColorEffect oilFilterEffect =
-                    new ScriptC_waterColorEffect(rsContext, resources, R.raw.watercoloreffect);
+            ScriptC_waterColorEffect oilFilterEffect = new ScriptC_waterColorEffect(rsContext);
             oilFilterEffect.set_script(oilFilterEffect);
             oilFilterEffect.set_width(bitmap.getWidth());
             oilFilterEffect.set_height(bitmap.getHeight());
