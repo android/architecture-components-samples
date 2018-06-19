@@ -58,11 +58,11 @@ public abstract class BaseFilterWorker extends Worker {
      * Reads a {@link Bitmap} given an {@code imageUri} via {@code KEY_IMAGE_URI} and
      * delegates to the implementation of {@link BaseFilterWorker#applyFilter(Bitmap)}.
      *
-     * @return an instance of {@link androidx.work.Worker.WorkerResult}.
+     * @return an instance of {@link androidx.work.Worker.Result}.
      */
     @Override
     @NonNull
-    public WorkerResult doWork() {
+    public Result doWork() {
         String resourceUri = getInputData().getString(Constants.KEY_IMAGE_URI, null);
         try {
             if (TextUtils.isEmpty(resourceUri)) {
@@ -77,13 +77,13 @@ public abstract class BaseFilterWorker extends Worker {
             Uri outputUri = writeBitmapToFile(getApplicationContext(), output);
             setOutputData(new Data.Builder().putString(
                     Constants.KEY_IMAGE_URI, outputUri.toString()).build());
-            return WorkerResult.SUCCESS;
+            return Result.SUCCESS;
         } catch (FileNotFoundException fileNotFoundException) {
             Log.e(TAG, "Failed to decode input stream", fileNotFoundException);
             throw new RuntimeException("Failed to decode input stream", fileNotFoundException);
         } catch (Throwable throwable) {
             Log.e(TAG, "Error applying filter", throwable);
-            return WorkerResult.FAILURE;
+            return Result.FAILURE;
         }
     }
 

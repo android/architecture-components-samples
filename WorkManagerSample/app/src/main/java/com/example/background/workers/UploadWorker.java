@@ -43,7 +43,7 @@ public class UploadWorker extends Worker {
 
     @Override
     @NonNull
-    public WorkerResult doWork() {
+    public Result doWork() {
         String imageUriInput = null;
         try {
             Data args = getInputData();
@@ -59,7 +59,7 @@ public class UploadWorker extends Worker {
                 String message = String.format("Request failed %s (%s)", imageUriInput, error);
                 Log.e(TAG, message);
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                return WorkerResult.FAILURE;
+                return Result.FAILURE;
             } else {
                 PostImageResponse imageResponse = response.body();
                 if (imageResponse != null) {
@@ -70,13 +70,13 @@ public class UploadWorker extends Worker {
                             .build()
                     );
                 }
-                return WorkerResult.SUCCESS;
+                return Result.SUCCESS;
             }
         } catch (Exception e) {
             String message = String.format("Failed to upload image with URI %s", imageUriInput);
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             Log.e(TAG, message);
-            return WorkerResult.FAILURE;
+            return Result.FAILURE;
         }
     }
 }

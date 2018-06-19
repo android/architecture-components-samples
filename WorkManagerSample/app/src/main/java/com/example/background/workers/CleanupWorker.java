@@ -36,7 +36,7 @@ public class CleanupWorker extends Worker {
 
     @Override
     @NonNull
-    public WorkerResult doWork() {
+    public Result doWork() {
         try {
             File outputDirectory =
                     new File(getApplicationContext().getFilesDir(), Constants.OUTPUT_PATH);
@@ -52,10 +52,10 @@ public class CleanupWorker extends Worker {
                     }
                 }
             }
-            return WorkerResult.SUCCESS;
+            return Result.SUCCESS;
         } catch (Exception exception) {
             Log.e(TAG, "Error cleaning up", exception);
-            return WorkerResult.FAILURE;
+            return Result.FAILURE;
         }
     }
 }
