@@ -49,7 +49,7 @@ public class SaveImageToGalleryWorker extends Worker {
 
     @Override
     @NonNull
-    public WorkerResult doWork() {
+    public Result doWork() {
         Context applicationContext = getApplicationContext();
         ContentResolver resolver = applicationContext.getContentResolver();
         try {
@@ -61,17 +61,17 @@ public class SaveImageToGalleryWorker extends Worker {
                     resolver, bitmap, TITLE, DATE_FORMATTER.format(new Date()));
             if (TextUtils.isEmpty(imageUrl)) {
                 Log.e(TAG, "Writing to MediaStore failed");
-                return WorkerResult.FAILURE;
+                return Result.FAILURE;
             }
             // Set the result of the worker by calling setOutputData().
             Data output = new Data.Builder()
                     .putString(Constants.KEY_IMAGE_URI, imageUrl)
                     .build();
             setOutputData(output);
-            return WorkerResult.SUCCESS;
+            return Result.SUCCESS;
         } catch (Exception exception) {
             Log.e(TAG, "Unable to save image to Gallery", exception);
-            return WorkerResult.FAILURE;
+            return Result.FAILURE;
         }
     }
 }
