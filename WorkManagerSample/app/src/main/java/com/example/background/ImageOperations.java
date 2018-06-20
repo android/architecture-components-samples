@@ -24,19 +24,17 @@ import static com.example.background.Constants.TAG_OUTPUT;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkContinuation;
+import androidx.work.WorkManager;
 import com.example.background.workers.BlurEffectFilterWorker;
 import com.example.background.workers.CleanupWorker;
 import com.example.background.workers.GrayScaleFilterWorker;
 import com.example.background.workers.SaveImageToGalleryWorker;
 import com.example.background.workers.UploadWorker;
 import com.example.background.workers.WaterColorFilterWorker;
-
-import androidx.work.Data;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkContinuation;
-import androidx.work.WorkManager;
 
 /**
  * Builds and holds WorkContinuation based on supplied filters.

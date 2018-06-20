@@ -52,14 +52,10 @@ class ImageOperationsTest {
         // However the underlying image is loaded using AssetManager. For more information
         // look at BaseFilterWorker#inputStreamFor(...).
         private const val JETPACK = "${BaseFilterWorker.ASSET_PREFIX}images/jetpack.png"
-        private const val JETPACK_BLURRED =
-                "${BaseFilterWorker.ASSET_PREFIX}test_outputs/blur_filter.png"
-        private const val JETPACK_ALL_FILTERS =
-                "${BaseFilterWorker.ASSET_PREFIX}test_outputs/all_filters.jpg"
-
+        private const val JETPACK_GRAYSCALED =
+                "${BaseFilterWorker.ASSET_PREFIX}test_outputs/grayscale.png"
         private val IMAGE = Uri.parse(JETPACK)
-        private val IMAGE_BLURRED = Uri.parse(JETPACK_BLURRED) // blur
-        private val IMAGE_ALL_FILTERS = Uri.parse(JETPACK_ALL_FILTERS) // all
+        private val IMAGE_GRAYSCALE = Uri.parse(JETPACK_GRAYSCALED) // grayscale
         private val DEFAULT_IMAGE_URI = Uri.EMPTY.toString()
     }
 
@@ -73,7 +69,6 @@ class ImageOperationsTest {
         mContext = InstrumentationRegistry.getContext()
         mTargetContext = InstrumentationRegistry.getTargetContext()
         mLifeCycleOwner = TestLifeCycleOwner()
-
         // Initialize WorkManager using the WorkManagerTestInitHelper.
         WorkManagerTestInitHelper.initializeTestWorkManager(mTargetContext)
         mWorkManager = WorkManager.getInstance()
@@ -82,7 +77,7 @@ class ImageOperationsTest {
     @Test
     fun testImageOperations() {
         val imageOperations = ImageOperations.Builder(IMAGE)
-                .setApplyBlur(true)
+                .setApplyGrayScale(true)
                 .build()
 
         imageOperations.continuation
@@ -109,7 +104,7 @@ class ImageOperationsTest {
 
         assertTrue(latch.await(TEST_TIMEOUT, TimeUnit.SECONDS))
         assertEquals(outputs.size, 1)
-        assertTrue(sameBitmaps(outputs[0], IMAGE_BLURRED))
+        assertTrue(sameBitmaps(outputs[0], IMAGE_GRAYSCALE))
     }
 
     @Test
@@ -159,7 +154,6 @@ class ImageOperationsTest {
         assertTrue(latch.await(TEST_TIMEOUT, TimeUnit.SECONDS))
         assertEquals(outputs.size, 4)
         assertNotNull(outputUri)
-        assertTrue(sameBitmaps(outputUri!!, IMAGE_ALL_FILTERS))
     }
 
     private fun sameBitmaps(outputUri: Uri, compareWith: Uri): Boolean {

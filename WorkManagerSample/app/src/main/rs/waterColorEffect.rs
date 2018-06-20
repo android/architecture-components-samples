@@ -58,6 +58,6 @@ void root(const uchar4* v_in, uchar4* v_out, const void* usrData, uint32_t x, ui
 }
 
 void filter() {
-  rsDebug("Processing image with dimensions for oil filter effect", width, height);
+  rsDebug("Processing image with dimensions for water color effect", width, height);
   rsForEach(script, in, out);
 }
