@@ -8,6 +8,7 @@ A collection of samples using the [Architecture Components](https://developer.an
 - ViewModels
 - LiveData
 - Paging (preview)
+- WorkManager (alpha)
 
 ### Samples
 
@@ -29,6 +30,9 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
 
  * **[PagingNetworkSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingWithNetworkSample)** - Shows
   how to use the Paging library (preview) with a backend API via Retrofit, in Kotlin.
+
+* **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
+  how to use WorkManager (alpha) to do background work, in Java.
 
 ### Other Architecture Components Samples
 

@@ -34,16 +34,19 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
+import androidx.navigation.NavController
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
-import com.android.example.github.ui.common.NavigationController
 import com.android.example.github.util.CountingAppExecutorsRule
+import com.android.example.github.util.DataBindingIdlingResourceRule
 import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
+import com.android.example.github.util.matcher
+import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
 import org.hamcrest.CoreMatchers.not
@@ -68,23 +71,23 @@ class SearchFragmentTest {
     @Rule
     @JvmField
     val countingAppExecutors = CountingAppExecutorsRule()
+    @Rule
+    @JvmField
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
 
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
-    private lateinit var navigationController: NavigationController
     private lateinit var viewModel: SearchViewModel
     private val results = MutableLiveData<Resource<List<Repo>>>()
     private val loadMoreStatus = MutableLiveData<SearchViewModel.LoadMoreState>()
+    private val searchFragment = TestSearchFragment()
 
     @Before
     fun init() {
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
-        val searchFragment = SearchFragment()
         viewModel = mock(SearchViewModel::class.java)
         doReturn(loadMoreStatus).`when`(viewModel).loadMoreStatus
         `when`(viewModel.results).thenReturn(results)
 
         mockBindingAdapter = mock(FragmentBindingAdapters::class.java)
-        navigationController = mock(NavigationController::class.java)
 
         searchFragment.appExecutors = countingAppExecutors.appExecutors
         searchFragment.viewModelFactory = ViewModelUtil.createFor(viewModel)
@@ -93,8 +96,8 @@ class SearchFragmentTest {
                 return mockBindingAdapter
             }
         }
-        searchFragment.navigationController = navigationController
         activityRule.activity.setFragment(searchFragment)
+        EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
 
     @Test
@@ -147,7 +150,9 @@ class SearchFragmentTest {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         results.postValue(Resource.success(arrayListOf(repo)))
         onView(withText("desc")).perform(click())
-        verify(navigationController).navigateToRepo("foo", "bar")
+        verify(searchFragment.navController).navigate(
+                SearchFragmentDirections.showRepo("foo", "bar").matcher()
+        )
     }
 
     @Test
@@ -170,5 +175,10 @@ class SearchFragmentTest {
 
     private fun listMatcher(): RecyclerViewMatcher {
         return RecyclerViewMatcher(R.id.repo_list)
+    }
+
+    class TestSearchFragment : SearchFragment() {
+        val navController = mock<NavController>()
+        override fun navController() = navController
     }
 }

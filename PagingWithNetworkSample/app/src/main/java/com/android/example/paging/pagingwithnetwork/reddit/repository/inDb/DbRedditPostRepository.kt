@@ -42,7 +42,7 @@ class DbRedditPostRepository(
         private val ioExecutor: Executor,
         private val networkPageSize: Int = DEFAULT_NETWORK_PAGE_SIZE) : RedditPostRepository {
     companion object {
-        private val DEFAULT_NETWORK_PAGE_SIZE = 10
+        private const val DEFAULT_NETWORK_PAGE_SIZE = 10
     }
 
     /**
@@ -100,17 +100,17 @@ class DbRedditPostRepository(
      * Returns a Listing for the given subreddit.
      */
     @MainThread
-    override fun postsOfSubreddit(subredditName: String, pageSize: Int): Listing<RedditPost> {
+    override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
         // create a boundary callback which will observe when the user reaches to the edges of
         // the list and update the database with extra data.
         val boundaryCallback = SubredditBoundaryCallback(
                 webservice = redditApi,
-                subredditName = subredditName,
+                subredditName = subReddit,
                 handleResponse = this::insertResultIntoDb,
                 ioExecutor = ioExecutor,
                 networkPageSize = networkPageSize)
         // create a data source factory from Room
-        val dataSourceFactory = db.posts().postsBySubreddit(subredditName)
+        val dataSourceFactory = db.posts().postsBySubreddit(subReddit)
         val builder = LivePagedListBuilder(dataSourceFactory, pageSize)
                 .setBoundaryCallback(boundaryCallback)
 
@@ -119,7 +119,7 @@ class DbRedditPostRepository(
         // dispatched data in refreshTrigger
         val refreshTrigger = MutableLiveData<Unit>()
         val refreshState = Transformations.switchMap(refreshTrigger, {
-            refresh(subredditName)
+            refresh(subReddit)
         })
 
         return Listing(

@@ -26,22 +26,22 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.UserFragmentBinding
 import com.android.example.github.di.Injectable
-import com.android.example.github.ui.common.NavigationController
+import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
 import javax.inject.Inject
 
+@OpenForTesting
 class UserFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var navigationController: NavigationController
     @Inject
     lateinit var appExecutors: AppExecutors
 
@@ -75,24 +75,19 @@ class UserFragment : Fragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(UserViewModel::class.java)
-
-        userViewModel.setLogin(arguments?.getString(LOGIN_KEY))
+        val params = UserFragmentArgs.fromBundle(arguments)
+        userViewModel.setLogin(params.login)
 
         userViewModel.user.observe(this, Observer { userResource ->
             binding.user = userResource?.data
             binding.userResource = userResource
-            // this is only necessary because espresso cannot read data binding callbacks.
-            binding.executePendingBindings()
         })
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
             appExecutors = appExecutors,
             showFullName = false
         ) { repo ->
-            navigationController.navigateToRepo(
-                owner = repo.owner.login,
-                name = repo.name
-            )
+            navController().navigate(UserFragmentDirections.showRepo(repo.owner.login, repo.name))
         }
         binding.repoList.adapter = rvAdapter
         this.adapter = rvAdapter
@@ -101,21 +96,12 @@ class UserFragment : Fragment(), Injectable {
 
     private fun initRepoList() {
         userViewModel.repositories.observe(this, Observer { repos ->
-            // no null checks for adapter since LiveData guarantees that we'll not receive
-            // the event if fragment is now show.
             adapter.submitList(repos?.data)
         })
     }
 
-    companion object {
-        private const val LOGIN_KEY = "login"
-
-        fun create(login: String): UserFragment {
-            val userFragment = UserFragment()
-            val bundle = Bundle()
-            bundle.putString(LOGIN_KEY, login)
-            userFragment.arguments = bundle
-            return userFragment
-        }
-    }
+    /**
+     * Created to be able to override in tests
+     */
+    fun navController() = findNavController()
 }

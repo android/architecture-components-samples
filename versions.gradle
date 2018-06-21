@@ -23,7 +23,7 @@
 ext.deps = [:]
 def versions = [:]
 versions.arch_core = "1.1.1"
-versions.room = "1.1.0-beta2"
+versions.room = "1.1.1"
 versions.lifecycle = "1.1.1"
 versions.support = "27.1.1"
 versions.dagger = "2.15"
@@ -39,14 +39,16 @@ versions.dexmaker = "2.2.0"
 versions.constraint_layout = "1.0.2"
 versions.glide = "4.7.1"
 versions.timber = "4.5.1"
-versions.android_gradle_plugin = "3.1.1"
+versions.android_gradle_plugin = "3.1.2"
 versions.rxjava2 = "2.1.3"
 versions.rx_android = "2.0.1"
 versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
-versions.kotlin = "1.2.20"
-versions.paging = "1.0.0-beta1"
+versions.kotlin = "1.2.41"
+versions.paging = "1.0.0"
+versions.work = "1.0.0-alpha03"
+versions.navigation = "1.0.0-alpha01"
 def deps = [:]
 
 def support = [:]
@@ -117,7 +119,11 @@ kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
 
 deps.kotlin = kotlin
 deps.paging = "android.arch.paging:runtime:$versions.paging"
-deps.glide = "com.github.bumptech.glide:glide:$versions.glide"
+
+def glide = [:]
+glide.runtime = "com.github.bumptech.glide:glide:$versions.glide"
+glide.compiler = "com.github.bumptech.glide:compiler:$versions.glide"
+deps.glide = glide
 deps.dexmaker = "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
 deps.constraint_layout = "com.android.support.constraint:constraint-layout:$versions.constraint_layout"
 deps.timber = "com.jakewharton.timber:timber:$versions.timber"
@@ -127,7 +133,6 @@ deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
 deps.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
 deps.hamcrest = "org.hamcrest:hamcrest-all:$versions.hamcrest"
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
-deps.databinding_compiler = "com.android.databinding:compiler:$versions.android_gradle_plugin"
 ext.deps = deps
 
 def build_versions = [:]
@@ -136,6 +141,23 @@ build_versions.target_sdk = 26
 build_versions.build_tools = "27.0.3"
 ext.build_versions = build_versions
 
+def work = [:]
+work.runtime = "android.arch.work:work-runtime:$versions.work"
+work.testing = "android.arch.work:work-testing:$versions.work"
+work.firebase = "android.arch.work:work-firebase:$versions.work"
+work.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work"
+deps.work = work
+
+def navigation = [:]
+navigation.runtime = "android.arch.navigation:navigation-runtime:$versions.navigation"
+navigation.runtime_ktx = "android.arch.navigation:navigation-runtime-ktx:$versions.navigation"
+navigation.fragment = "android.arch.navigation:navigation-fragment:$versions.navigation"
+navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$versions.navigation"
+navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
+navigation.testing_ktx = "android.arch.navigation:navigation-testing-ktx:$versions.navigation"
+deps.navigation = navigation
+
+ext.deps = deps
 
 def addRepos(RepositoryHandler handler) {
     handler.google()

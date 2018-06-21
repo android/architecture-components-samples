@@ -34,24 +34,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.navigation.fragment.findNavController
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.SearchFragmentBinding
 import com.android.example.github.di.Injectable
-import com.android.example.github.ui.common.NavigationController
+import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
 import javax.inject.Inject
 
+@OpenForTesting
 class SearchFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var navigationController: NavigationController
 
     @Inject
     lateinit var appExecutors: AppExecutors
@@ -89,9 +88,8 @@ class SearchFragment : Fragment(), Injectable {
             appExecutors = appExecutors,
             showFullName = true
         ) { repo ->
-            navigationController.navigateToRepo(
-                owner = repo.owner.login,
-                name = repo.name
+            navController().navigate(
+                    SearchFragmentDirections.showRepo(repo.owner.login, repo.name)
             )
         }
         binding.repoList.adapter = rvAdapter
@@ -107,7 +105,7 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     private fun initSearchInputListener() {
-        binding.input.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent ->
+        binding.input.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent? ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch(view)
                 true
@@ -148,7 +146,6 @@ class SearchFragment : Fragment(), Injectable {
             binding.searchResource = result
             binding.resultCount = result?.data?.size ?: 0
             adapter.submitList(result?.data)
-            binding.executePendingBindings()
         })
 
         searchViewModel.loadMoreStatus.observe(this, Observer { loadingMore ->
@@ -161,7 +158,6 @@ class SearchFragment : Fragment(), Injectable {
                     Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show()
                 }
             }
-            binding.executePendingBindings()
         })
     }
 
@@ -169,4 +165,9 @@ class SearchFragment : Fragment(), Injectable {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(windowToken, 0)
     }
+
+    /**
+     * Created to be able to override in tests
+     */
+    fun navController() = findNavController()
 }
