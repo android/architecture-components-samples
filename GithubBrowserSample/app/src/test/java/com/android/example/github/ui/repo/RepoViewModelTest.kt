@@ -116,8 +116,8 @@ class RepoViewModelTest {
     }
 
     @Test
-    fun nullRepoId() {
-        repoViewModel.setId(null, null)
+    fun blankRepoId() {
+        repoViewModel.setId("", "")
         val observer1 = mock<Observer<Resource<Repo>>>()
         val observer2 = mock<Observer<Resource<List<Contributor>>>>()
         repoViewModel.repo.observeForever(observer1)
