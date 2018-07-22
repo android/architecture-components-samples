@@ -54,4 +54,11 @@ dependencies {
     implementation deps.navigation.runtime
     implementation deps.navigation.fragment
 
+    // Testing
+    testImplementation deps.junit
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
+
 }
