@@ -20,6 +20,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'androidx.navigation.safeargs'
+
 android {
     compileSdkVersion build_versions.target_sdk
     defaultConfig {
@@ -53,5 +55,13 @@ dependencies {
 
     implementation deps.navigation.runtime
     implementation deps.navigation.fragment
+
+    // Testing
+
+    testImplementation deps.junit
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
 
 }
