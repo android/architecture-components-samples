@@ -46,9 +46,9 @@ versions.atsl_runner = "1.0.1"
 versions.atsl_rules = "1.0.1"
 versions.hamcrest = "1.3"
 versions.kotlin = "1.2.41"
-versions.paging = "1.0.0"
-versions.work = "1.0.0-alpha03"
-versions.navigation = "1.0.0-alpha01"
+versions.paging = "1.0.1"
+versions.work = "1.0.0-alpha04"
+versions.navigation = "1.0.0-alpha04"
 def deps = [:]
 
 def support = [:]

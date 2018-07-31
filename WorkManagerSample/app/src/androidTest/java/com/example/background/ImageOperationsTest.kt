@@ -62,7 +62,7 @@ class ImageOperationsTest {
     private lateinit var mContext: Context
     private lateinit var mTargetContext: Context
     private lateinit var mLifeCycleOwner: LifecycleOwner
-    private lateinit var mWorkManager: WorkManager
+    private var mWorkManager: WorkManager? = null
 
     @Before
     fun setUp() {
@@ -87,7 +87,7 @@ class ImageOperationsTest {
         val latch = CountDownLatch(1)
         val outputs: MutableList<Uri> = mutableListOf()
 
-        imageOperations.continuation.statuses?.observe(mLifeCycleOwner, Observer {
+        imageOperations.continuation.statuses.observe(mLifeCycleOwner, Observer {
             val statuses = it ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
@@ -123,7 +123,7 @@ class ImageOperationsTest {
         val latch = CountDownLatch(2)
         val outputs: MutableList<Uri> = mutableListOf()
 
-        imageOperations.continuation.statuses?.observe(mLifeCycleOwner, Observer {
+        imageOperations.continuation.statuses.observe(mLifeCycleOwner, Observer {
             val statuses = it ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
@@ -139,7 +139,7 @@ class ImageOperationsTest {
         })
 
         var outputUri: Uri? = null
-        mWorkManager.getStatusesByTag(TAG_OUTPUT).observe(mLifeCycleOwner, Observer {
+        mWorkManager?.getStatusesByTag(TAG_OUTPUT)?.observe(mLifeCycleOwner, Observer {
             val statuses = it ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {

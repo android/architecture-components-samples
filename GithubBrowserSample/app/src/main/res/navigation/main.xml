@@ -33,10 +33,10 @@
         android:label="RepoFragment" >
         <argument
             android:name="owner"
-            app:type="string" />
+            app:argType="string" />
         <argument
             android:name="name"
-            app:type="string" />
+            app:argType="string" />
         <action
             android:id="@+id/showUser"
             app:destination="@id/userFragment" />
@@ -47,7 +47,7 @@
         android:label="UserFragment" >
         <argument
             android:name="login"
-            app:type="string" />
+            app:argType="string" />
         <action
             android:id="@+id/showRepo"
             app:destination="@id/repoFragment" />
