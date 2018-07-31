@@ -85,7 +85,7 @@
             android:label="fragment_user_profile"
             tools:layout="@layout/fragment_user_profile">
         <argument android:name="userName"
-                  android:defaultValue="name"/>
+                  android:defaultValue="Ali Connors"/>
         <deepLink app:uri="www.example.com/user/{userName}" />
     </fragment>
     <fragment
