@@ -26,6 +26,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.support.test.InstrumentationRegistry
+import android.support.test.filters.SdkSuppress
 import android.support.test.filters.SmallTest
 import android.support.test.runner.AndroidJUnit4
 import androidx.work.WorkManager
@@ -92,7 +93,7 @@ class ImageOperationsTest {
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
                 val outputUris = statuses.map {
-                    val output = it.outputData.getString(KEY_IMAGE_URI, DEFAULT_IMAGE_URI)
+                    val output = it.outputData.getString(KEY_IMAGE_URI) ?: DEFAULT_IMAGE_URI
                     Uri.parse(output)
                 }.filter {
                     it != Uri.EMPTY
@@ -108,6 +109,7 @@ class ImageOperationsTest {
     }
 
     @Test
+    @SdkSuppress(maxSdkVersion = 22)
     fun testImageOperationsChain() {
         val imageOperations = ImageOperations.Builder(IMAGE)
                 .setApplyWaterColor(true)
@@ -128,7 +130,7 @@ class ImageOperationsTest {
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
                 val outputUris = statuses.map {
-                    val output = it.outputData.getString(KEY_IMAGE_URI, DEFAULT_IMAGE_URI)
+                    val output = it.outputData.getString(KEY_IMAGE_URI) ?: DEFAULT_IMAGE_URI
                     Uri.parse(output)
                 }.filter {
                     it != Uri.EMPTY
@@ -145,7 +147,7 @@ class ImageOperationsTest {
             if (finished) {
                 outputUri =
                         statuses.firstOrNull()
-                                ?.outputData?.getString(KEY_IMAGE_URI, DEFAULT_IMAGE_URI)
+                                ?.outputData?.getString(KEY_IMAGE_URI)
                                 ?.let { Uri.parse(it) }
                 latch.countDown()
             }

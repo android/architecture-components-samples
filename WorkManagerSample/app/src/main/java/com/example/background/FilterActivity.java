@@ -153,7 +153,7 @@ public class FilterActivity extends AppCompatActivity {
 
                     Data outputData = status.getOutputData();
                     String outputImageUri =
-                            outputData.getString(Constants.KEY_IMAGE_URI, null);
+                            outputData.getString(Constants.KEY_IMAGE_URI);
 
                     if (!TextUtils.isEmpty(outputImageUri)) {
                         mOutputImageUri = Uri.parse(outputImageUri);

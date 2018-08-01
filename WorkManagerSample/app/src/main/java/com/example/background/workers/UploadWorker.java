@@ -47,7 +47,7 @@ public class UploadWorker extends Worker {
         String imageUriInput = null;
         try {
             Data args = getInputData();
-            imageUriInput = args.getString(Constants.KEY_IMAGE_URI, null);
+            imageUriInput = args.getString(Constants.KEY_IMAGE_URI);
             Uri imageUri = Uri.parse(imageUriInput);
             ImgurApi imgurApi = ImgurApi.getInstance();
             // Upload the image to Imgur.

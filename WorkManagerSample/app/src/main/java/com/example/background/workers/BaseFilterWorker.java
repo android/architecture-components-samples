@@ -63,7 +63,7 @@ public abstract class BaseFilterWorker extends Worker {
     @Override
     @NonNull
     public Result doWork() {
-        String resourceUri = getInputData().getString(Constants.KEY_IMAGE_URI, null);
+        String resourceUri = getInputData().getString(Constants.KEY_IMAGE_URI);
         try {
             if (TextUtils.isEmpty(resourceUri)) {
                 Log.e(TAG, "Invalid input uri");
