@@ -54,7 +54,7 @@ public class SaveImageToGalleryWorker extends Worker {
         ContentResolver resolver = applicationContext.getContentResolver();
         try {
             String resourceUri = getInputData()
-                    .getString(Constants.KEY_IMAGE_URI, null);
+                    .getString(Constants.KEY_IMAGE_URI);
             Bitmap bitmap = BitmapFactory.decodeStream(
                     resolver.openInputStream(Uri.parse(resourceUri)));
             String imageUrl = MediaStore.Images.Media.insertImage(
