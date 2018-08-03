@@ -35,7 +35,7 @@ class UserProfile : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_user_profile, container, false)
 
-        val name = arguments?.getString("userName") ?: "Ali Connors"
+        val name = UserProfileArgs.fromBundle(arguments).userName
         view.findViewById<TextView>(R.id.profile_user_name).text = name
         return view
     }
