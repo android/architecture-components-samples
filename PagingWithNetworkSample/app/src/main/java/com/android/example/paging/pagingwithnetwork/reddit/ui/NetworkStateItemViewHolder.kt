@@ -44,9 +44,9 @@ class NetworkStateItemViewHolder(view: View,
         }
     }
     fun bindTo(networkState: NetworkState?) {
-        progressBar.visibility = toVisbility(networkState?.status == RUNNING)
-        retry.visibility = toVisbility(networkState?.status == FAILED)
-        errorMsg.visibility = toVisbility(networkState?.msg != null)
+        progressBar.visibility = toVisibility(networkState?.status == RUNNING)
+        retry.visibility = toVisibility(networkState?.status == FAILED)
+        errorMsg.visibility = toVisibility(networkState?.msg != null)
         errorMsg.text = networkState?.msg
     }
 
@@ -57,7 +57,7 @@ class NetworkStateItemViewHolder(view: View,
             return NetworkStateItemViewHolder(view, retryCallback)
         }
 
-        fun toVisbility(constraint : Boolean): Int {
+        fun toVisibility(constraint : Boolean): Int {
             return if (constraint) {
                 View.VISIBLE
             } else {
