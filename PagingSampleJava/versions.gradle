@@ -1,0 +1,114 @@
+/*
+ *
+ *  * Copyright (C) 2018 The Android Open Source Project
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ */
+ext.deps = [:]
+def versions = [:]
+versions.arch_core = "1.1.1"
+versions.room = "1.1.1"
+versions.paging = "1.0.1"
+versions.lifecycle = "1.1.1"
+versions.support = "27.1.1"
+versions.rxjava2 = "2.1.13"
+versions.rxandroid = "2.0.2"
+versions.android_gradle_plugin = '3.1.4'
+versions.junit = "4.12"
+versions.espresso = "3.0.1"
+versions.atsl_runner = "1.0.1"
+versions.atsl_rules = "1.0.1"
+versions.play_services = "12.0.1"
+versions.constrain_layout = "1.0.2"
+versions.support_multidex = "1.0.2"
+versions.dexmaker = "2.16.0"
+versions.awaitility = "3.1.0"
+versions.mockito = "2.18.3"
+
+def deps = [:]
+
+def support = [:]
+support.annotations = "com.android.support:support-annotations:$versions.support"
+support.app_compat = "com.android.support:appcompat-v7:$versions.support"
+support.recyclerview = "com.android.support:recyclerview-v7:$versions.support"
+support.cardview = "com.android.support:cardview-v7:$versions.support"
+support.design = "com.android.support:design:$versions.support"
+support.v4 = "com.android.support:support-v4:$versions.support"
+support.core_utils = "com.android.support:support-core-utils:$versions.support"
+deps.support = support
+
+def room = [:]
+room.runtime = "android.arch.persistence.room:runtime:$versions.room"
+room.compiler = "android.arch.persistence.room:compiler:$versions.room"
+room.rxjava2 = "android.arch.persistence.room:rxjava2:$versions.room"
+room.testing = "android.arch.persistence.room:testing:$versions.room"
+deps.room = room
+
+def lifecycle = [:]
+lifecycle.runtime = "android.arch.lifecycle:runtime:$versions.lifecycle"
+lifecycle.extensions = "android.arch.lifecycle:extensions:$versions.lifecycle"
+lifecycle.java8 = "android.arch.lifecycle:common-java8:$versions.lifecycle"
+lifecycle.compiler = "android.arch.lifecycle:compiler:$versions.lifecycle"
+deps.lifecycle = lifecycle
+
+def arch_core = [:]
+arch_core.testing = "android.arch.core:core-testing:$versions.arch_core"
+deps.arch_core = arch_core
+
+
+def atsl = [:]
+atsl.runner = "com.android.support.test:runner:$versions.atsl_runner"
+atsl.rules = "com.android.support.test:rules:$versions.atsl_runner"
+deps.atsl = atsl
+
+def espresso = [:]
+espresso.core = "com.android.support.test.espresso:espresso-core:$versions.espresso"
+espresso.intents = "com.android.support.test.espresso:espresso-intents:$versions.espresso"
+espresso.contrib = "com.android.support.test.espresso:espresso-contrib:$versions.espresso"
+deps.espresso = espresso
+
+deps.gson = "com.google.code.gson:gson:$versions.gson"
+deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
+deps.rxandroid = "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
+deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
+deps.constrain_layout = "com.android.support.constraint:constraint-layout:$versions.constrain_layout"
+deps.picasso = "com.squareup.picasso:picasso:$versions.picasso"
+deps.support_multidex = "com.android.support:multidex:$versions.support_multidex"
+deps.dexmaker = "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
+deps.awaitility = "org.awaitility:awaitility:$versions.awaitility"
+deps.junit = "junit:junit:$versions.junit"
+deps.mockito = "org.mockito:mockito-android:$versions.mockito"
+deps.paging = "android.arch.paging:runtime:$versions.paging"
+ext.deps = deps
+
+def build_versions = [:]
+build_versions.min_sdk = 19
+build_versions.target_sdk = 27
+build_versions.build_tools = "27.1.1"
+ext.build_versions = build_versions
+
+def app_versions = [:]
+app_versions.code = 1
+app_versions.name = "0.0.1"
+ext.app_versions = app_versions
+
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.maven {
+        url 'https://maven.google.com'
+    }
+    handler.mavenCentral()
+}
+ext.addRepos = this.&addRepos
