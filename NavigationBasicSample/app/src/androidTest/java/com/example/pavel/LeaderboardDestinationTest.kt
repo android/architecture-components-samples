@@ -14,12 +14,7 @@ class LeaderboardDestinationTest : BaseNavigationTest() {
         onView(withId(R.id.leaderboard_btn)).perform(click())
     }
 
-    @Test
-    fun testGoingToUserProfileDestination() {
-        navigator.addOnNavigatorNavigatedListener { _, destId, _ ->
-            assertEquals(destId, R.id.user_profile)
-        }
-        onView(withId(R.id.leaderboard_list)).perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-        onView(withText("Flo")).check(matches(isDisplayed()))
+    override fun testDestination() {
+        onView(withId(R.id.leaderboard_list)).check(matches(isDisplayed()))
     }
 }

@@ -43,16 +43,16 @@
         tools:src="@drawable/purple_frame" />
 
     <View
-            android:id="@+id/view2"
-            android:layout_width="0dp"
-            android:layout_height="141dp"
-            android:layout_marginTop="64dp"
-            android:background="@drawable/rounded_rect"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView7"
-            app:layout_constraintVertical_bias="1.0"/>
+        android:id="@+id/view2"
+        android:layout_width="0dp"
+        android:layout_height="141dp"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/rounded_rect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/profile_user_name"
