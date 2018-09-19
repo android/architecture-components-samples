@@ -18,10 +18,12 @@
 
 package com.example.background.workers;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.work.WorkerParameters;
 import com.example.background.Constants;
 
 import java.io.File;
@@ -33,6 +35,16 @@ import androidx.work.Worker;
  */
 public class CleanupWorker extends Worker {
     private static final String TAG = "CleanupWorker";
+
+    /**
+     * Creates an instance of the {@link Worker}.
+     *
+     * @param appContext   the application {@link Context}
+     * @param workerParams the set of {@link WorkerParameters}
+     */
+    public CleanupWorker(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
+        super(appContext, workerParams);
+    }
 
     @Override
     @NonNull

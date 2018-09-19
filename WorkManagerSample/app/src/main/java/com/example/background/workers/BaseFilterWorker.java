@@ -30,6 +30,7 @@ import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.work.WorkerParameters;
 import com.example.background.Constants;
 
 import java.io.File;
@@ -53,6 +54,16 @@ public abstract class BaseFilterWorker extends Worker {
     /** A prefix shared by all Android Asset URIs. */
     @VisibleForTesting
     public static final String ASSET_PREFIX = "file:///android_asset/";
+
+    /**
+     * Creates an instance of the {@link Worker}.
+     *
+     * @param appContext   the application {@link Context}
+     * @param workerParams the set of {@link WorkerParameters}
+     */
+    public BaseFilterWorker(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
+        super(appContext, workerParams);
+    }
 
     /**
      * Reads a {@link Bitmap} given an {@code imageUri} via {@code KEY_IMAGE_URI} and

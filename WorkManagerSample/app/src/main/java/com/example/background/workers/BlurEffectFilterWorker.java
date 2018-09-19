@@ -25,11 +25,24 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 /**
  * Applies a Gaussian Blur effect using a RenderScript {@link ScriptIntrinsicBlur}.
  */
 public class BlurEffectFilterWorker extends BaseFilterWorker {
+
+    /**
+     * Creates an instance of the {@link Worker}.
+     *
+     * @param appContext   the application {@link Context}
+     * @param workerParams the set of {@link WorkerParameters}
+     */
+    public BlurEffectFilterWorker(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
+        super(appContext, workerParams);
+    }
+
     @Override
     Bitmap applyFilter(@NonNull Bitmap bitmap) {
         Context applicationContext = getApplicationContext();
