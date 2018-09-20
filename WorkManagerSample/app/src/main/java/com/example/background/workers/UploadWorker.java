@@ -18,11 +18,13 @@
 
 package com.example.background.workers;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.work.WorkerParameters;
 import com.example.background.Constants;
 import com.example.background.imgur.ImgurApi;
 import com.example.background.imgur.PostImageResponse;
@@ -40,6 +42,16 @@ import retrofit2.Response;
 public class UploadWorker extends Worker {
 
     private static final String TAG = "UploadWorker";
+
+    /**
+     * Creates an instance of the {@link Worker}.
+     *
+     * @param appContext   the application {@link Context}
+     * @param workerParams the set of {@link WorkerParameters}
+     */
+    public UploadWorker(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
+        super(appContext, workerParams);
+    }
 
     @Override
     @NonNull

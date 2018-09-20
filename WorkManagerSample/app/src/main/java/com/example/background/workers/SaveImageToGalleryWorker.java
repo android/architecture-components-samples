@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.work.WorkerParameters;
 import com.example.background.Constants;
 
 import java.text.SimpleDateFormat;
@@ -41,6 +42,17 @@ import androidx.work.Worker;
  * Saves an output image to the {@link MediaStore}.
  */
 public class SaveImageToGalleryWorker extends Worker {
+
+    /**
+     * Creates an instance of the {@link Worker}.
+     *
+     * @param appContext   the application {@link Context}
+     * @param workerParams the set of {@link WorkerParameters}
+     */
+    public SaveImageToGalleryWorker(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
+        super(appContext, workerParams);
+    }
+
     private static final String TAG = "SvImageToGalleryWrkr";
 
     private static final String TITLE = "Filtered Image";
