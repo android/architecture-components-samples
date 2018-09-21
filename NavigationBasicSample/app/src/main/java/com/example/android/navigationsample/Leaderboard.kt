@@ -89,11 +89,8 @@ class MyAdapter(private val myDataset: Array<String>) :
                 .setImageResource(listOfAvatars[position])
 
         holder.item.setOnClickListener {
-            val bundle = bundleOf("userName" to myDataset[position])
-
-            Navigation.findNavController(holder.item).navigate(
-                    R.id.action_leaderboard_to_userProfile,
-                bundle)
+            Navigation.findNavController(holder.item).navigate(LeaderboardDirections
+                    .actionLeaderboardToUserProfile().setUserName(myDataset[position]))
         }
     }
 
