@@ -22,6 +22,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingComponent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.transition.TransitionInflater
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -68,6 +69,8 @@ class UserFragment : Fragment(), Injectable {
             }
         }
         binding = dataBinding
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
+        postponeEnterTransition()
         return dataBinding.root
     }
 
@@ -77,6 +80,7 @@ class UserFragment : Fragment(), Injectable {
             .get(UserViewModel::class.java)
         val params = UserFragmentArgs.fromBundle(arguments)
         userViewModel.setLogin(params.login)
+        binding.args = params
 
         userViewModel.user.observe(this, Observer { userResource ->
             binding.user = userResource?.data

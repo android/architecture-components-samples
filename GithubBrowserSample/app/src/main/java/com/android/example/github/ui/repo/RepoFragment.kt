@@ -22,10 +22,12 @@ import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingComponent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.transition.TransitionInflater
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
@@ -70,13 +72,23 @@ class RepoFragment : Fragment(), Injectable {
             binding.repoResource = resource
         })
 
-        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor ->
+        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor, imageView ->
+            val extras = FragmentNavigatorExtras(
+                    imageView to contributor.login
+            )
             navController().navigate(
-                    RepoFragmentDirections.showUser(contributor.login)
+                    RepoFragmentDirections.showUser(contributor.login, contributor.avatarUrl ?: ""),
+                    extras
             )
         }
         this.adapter = adapter
         binding.contributorList.adapter = adapter
+        postponeEnterTransition()
+        binding.contributorList.getViewTreeObserver()
+            .addOnPreDrawListener {
+                startPostponedEnterTransition()
+                true
+            }
         initContributorList(repoViewModel)
     }
 
@@ -108,6 +120,8 @@ class RepoFragment : Fragment(), Injectable {
             }
         }
         binding = dataBinding
+        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
+
         return dataBinding.root
     }
 

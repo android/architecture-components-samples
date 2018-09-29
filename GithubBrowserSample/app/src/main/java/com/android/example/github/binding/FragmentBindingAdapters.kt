@@ -17,12 +17,15 @@
 package com.android.example.github.binding
 
 import android.databinding.BindingAdapter
+import android.graphics.drawable.Drawable
 import android.support.v4.app.Fragment
 import android.widget.ImageView
 import com.android.example.github.testing.OpenForTesting
-
 import com.bumptech.glide.Glide
-
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import javax.inject.Inject
 
 /**
@@ -34,4 +37,22 @@ class FragmentBindingAdapters @Inject constructor(val fragment: Fragment) {
     fun bindImage(imageView: ImageView, url: String?) {
         Glide.with(fragment).load(url).into(imageView)
     }
+
+    @BindingAdapter("sharedElementImageUrl")
+    fun bindSharedImage(imageView: ImageView, url: String?) {
+        Glide.with(fragment).load(url)
+                .listener(object : RequestListener<Drawable?> {
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        fragment.startPostponedEnterTransition()
+                        return false
+                    }
+
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+                        fragment.startPostponedEnterTransition()
+                        return false
+                    }
+                })
+                .into(imageView)
+    }
 }
+

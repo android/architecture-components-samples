@@ -47,7 +47,10 @@
         android:label="UserFragment" >
         <argument
             android:name="login"
-            app:argType="string" />
+            app:argType="string"/>
+        <argument
+            android:name="avatarUrl"
+            app:argType="string"/>
         <action
             android:id="@+id/showRepo"
             app:destination="@id/repoFragment" />

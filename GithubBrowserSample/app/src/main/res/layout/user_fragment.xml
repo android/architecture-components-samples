@@ -25,6 +25,10 @@
             type="com.android.example.github.vo.User" />
 
         <variable
+            name="args"
+            type="com.android.example.github.ui.user.UserFragmentArgs" />
+
+        <variable
             name="userResource"
             type="com.android.example.github.vo.Resource" />
 
@@ -38,7 +42,6 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            app:visibleGone="@{user != null}"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +53,8 @@
 
             <ImageView
                 android:layout_width="@dimen/photo_size"
-                app:imageUrl="@{user.avatarUrl}"
+                app:sharedElementImageUrl="@{user.avatarUrl ?? args.avatarUrl}"
+                app:transitionName="@{args.login}"
                 android:layout_height="@dimen/photo_size"
                 android:id="@+id/avatar"
                 android:contentDescription="@string/a11y_user_photo"
@@ -60,6 +64,7 @@
                 tools:layout_editor_absoluteX="8dp" />
 
             <TextView
+                app:visibleGone="@{user != null}"
                 android:text="@{user.name ?? user.login}"
                 android:contentDescription="@string/a11y_user_name"
                 android:layout_width="wrap_content"
