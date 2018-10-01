@@ -24,7 +24,6 @@ repositories {
 
 android {
     compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.android.contentprovidersample"
         minSdkVersion 15
