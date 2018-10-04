@@ -1,8 +1,8 @@
 package com.android.example.paging.pagingwithnetwork.reddit.util
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.PagingRequestHelper
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingRequestHelper
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 
 private fun getErrorMessage(report: PagingRequestHelper.StatusReport): String {

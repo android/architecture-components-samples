@@ -17,9 +17,9 @@
 package com.android.example.github.ui.search
 
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.android.example.github.repository.RepoRepository
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo

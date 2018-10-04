@@ -17,7 +17,6 @@
 package com.example.android.observability.persistence;
 
 import com.example.android.observability.UserDataSource;
-
 import io.reactivex.Flowable;
 
 /**

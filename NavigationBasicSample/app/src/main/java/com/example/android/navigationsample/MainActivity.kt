@@ -17,7 +17,7 @@
 package com.example.android.navigationsample
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 /**
  * An activity that inflates a layout that has a NavHostFragment.

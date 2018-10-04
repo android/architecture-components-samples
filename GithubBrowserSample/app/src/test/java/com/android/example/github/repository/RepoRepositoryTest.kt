@@ -16,9 +16,9 @@
 
 package com.android.example.github.repository
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.android.example.github.api.ApiResponse
 import com.android.example.github.api.GithubService
 import com.android.example.github.api.RepoSearchResponse

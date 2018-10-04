@@ -16,8 +16,8 @@
 
 package paging.android.example.com.pagingsample
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 /**
  * Data class that represents our items.

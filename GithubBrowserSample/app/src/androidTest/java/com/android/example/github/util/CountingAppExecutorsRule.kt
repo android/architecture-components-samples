@@ -16,8 +16,8 @@
 
 package com.android.example.github.util
 
-import android.support.test.espresso.IdlingRegistry
-import android.support.test.espresso.IdlingResource
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import com.android.example.github.AppExecutors
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description

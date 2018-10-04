@@ -16,7 +16,7 @@
 
 package com.example.android.observability.ui;
 
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel;
 import com.example.android.observability.UserDataSource;
 import com.example.android.observability.persistence.User;
 import io.reactivex.Completable;

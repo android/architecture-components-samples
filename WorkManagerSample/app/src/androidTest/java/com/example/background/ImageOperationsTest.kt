@@ -19,16 +19,17 @@
 package com.example.background
 
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.support.test.InstrumentationRegistry
-import android.support.test.filters.SdkSuppress
-import android.support.test.filters.SmallTest
-import android.support.test.runner.AndroidJUnit4
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.InstrumentationRegistry
+import androidx.test.filters.SdkSuppress
+import androidx.test.filters.SmallTest
+import androidx.test.runner.AndroidJUnit4
 import androidx.work.WorkManager
 import androidx.work.test.WorkManagerTestInitHelper
 import com.example.background.Constants.KEY_IMAGE_URI
@@ -37,6 +38,7 @@ import com.example.background.workers.BaseFilterWorker
 import com.example.background.workers.BaseFilterWorker.inputStreamFor
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
@@ -64,6 +66,9 @@ class ImageOperationsTest {
     private lateinit var mTargetContext: Context
     private lateinit var mLifeCycleOwner: LifecycleOwner
     private var mWorkManager: WorkManager? = null
+
+  @get:Rule
+  var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
