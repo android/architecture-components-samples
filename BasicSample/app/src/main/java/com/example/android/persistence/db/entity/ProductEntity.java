@@ -16,9 +16,9 @@
 
 package com.example.android.persistence.db.entity;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 import com.example.android.persistence.model.Product;
 
 @Entity(tableName = "products")
@@ -68,6 +68,7 @@ public class ProductEntity implements Product {
     public ProductEntity() {
     }
 
+    @Ignore
     public ProductEntity(int id, String name, String description, int price) {
         this.id = id;
         this.name = name;

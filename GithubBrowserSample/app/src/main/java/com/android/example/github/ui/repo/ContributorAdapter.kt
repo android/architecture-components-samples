@@ -16,9 +16,9 @@
 
 package com.android.example.github.ui.repo
 
-import android.databinding.DataBindingComponent
-import android.databinding.DataBindingUtil
-import android.support.v7.util.DiffUtil
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.android.example.github.AppExecutors

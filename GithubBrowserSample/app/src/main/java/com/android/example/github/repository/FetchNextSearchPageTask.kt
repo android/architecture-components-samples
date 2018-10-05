@@ -16,8 +16,8 @@
 
 package com.android.example.github.repository
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.android.example.github.api.ApiEmptyResponse
 import com.android.example.github.api.ApiErrorResponse
 import com.android.example.github.api.ApiResponse

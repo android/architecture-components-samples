@@ -18,9 +18,9 @@
 
 package com.example.background
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 
 /**
  * A [LifecycleOwner] which is always in a [Lifecycle.State.STARTED] state.

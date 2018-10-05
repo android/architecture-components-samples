@@ -16,7 +16,7 @@
 
 package com.android.example.github.util
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.android.example.github.api.ApiResponse
 import retrofit2.CallAdapter
 import retrofit2.CallAdapter.Factory

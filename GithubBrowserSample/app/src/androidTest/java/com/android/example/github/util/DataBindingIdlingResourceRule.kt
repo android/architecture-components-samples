@@ -16,8 +16,8 @@
 
 package com.android.example.github.util
 
-import android.support.test.espresso.IdlingRegistry
-import android.support.test.rule.ActivityTestRule
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.rule.ActivityTestRule
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 

@@ -16,8 +16,8 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.DataSource
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.DataSource
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import java.util.concurrent.Executor

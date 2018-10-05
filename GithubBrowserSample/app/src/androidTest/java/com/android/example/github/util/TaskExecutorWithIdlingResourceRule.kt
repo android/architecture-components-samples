@@ -16,9 +16,9 @@
 
 package com.android.example.github.util
 
-import android.arch.core.executor.testing.CountingTaskExecutorRule
-import android.support.test.espresso.IdlingRegistry
-import android.support.test.espresso.IdlingResource
+import androidx.arch.core.executor.testing.CountingTaskExecutorRule
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import org.junit.runner.Description
 import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList

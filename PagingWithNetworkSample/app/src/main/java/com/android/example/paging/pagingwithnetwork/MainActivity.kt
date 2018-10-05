@@ -17,7 +17,7 @@
 package com.android.example.paging.pagingwithnetwork
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.ui.RedditActivity
 import kotlinx.android.synthetic.main.activity_main.*

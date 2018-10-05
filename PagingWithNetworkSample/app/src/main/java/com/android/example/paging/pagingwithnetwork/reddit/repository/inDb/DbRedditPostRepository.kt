@@ -16,11 +16,11 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
-import android.arch.paging.LivePagedListBuilder
-import android.support.annotation.MainThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
+import androidx.annotation.MainThread
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
@@ -118,9 +118,9 @@ class DbRedditPostRepository(
         // refresh method and gets a new live data. Each refresh request by the user becomes a newly
         // dispatched data in refreshTrigger
         val refreshTrigger = MutableLiveData<Unit>()
-        val refreshState = Transformations.switchMap(refreshTrigger, {
+        val refreshState = Transformations.switchMap(refreshTrigger) {
             refresh(subReddit)
-        })
+        }
 
         return Listing(
                 pagedList = builder.build(),

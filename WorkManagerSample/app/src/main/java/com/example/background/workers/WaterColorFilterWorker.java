@@ -22,9 +22,9 @@ package com.example.background.workers;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.RenderScript;
+import androidx.annotation.NonNull;
+import androidx.renderscript.Allocation;
+import androidx.renderscript.RenderScript;
 
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;

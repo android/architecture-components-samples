@@ -17,9 +17,9 @@
 package paging.android.example.com.pagingsample
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.paging.LivePagedListBuilder
-import android.arch.paging.PagedList
+import androidx.lifecycle.AndroidViewModel
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 
 /**
  * A simple ViewModel that provides a paged list of delicious Cheeses.

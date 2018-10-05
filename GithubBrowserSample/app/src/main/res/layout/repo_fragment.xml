@@ -41,7 +41,7 @@
             type="com.android.example.github.ui.common.RetryCallback" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -75,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@+id/name"
             tools:text="description of the user" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/contributor_list"
             app:layoutManager="LinearLayoutManager"
             android:layout_width="0dp"
@@ -104,5 +104,5 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
