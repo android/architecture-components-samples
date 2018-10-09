@@ -71,17 +71,14 @@ class UserFragment : Fragment(), Injectable {
         return dataBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(UserViewModel::class.java)
         val params = UserFragmentArgs.fromBundle(arguments)
         userViewModel.setLogin(params.login)
 
-        userViewModel.user.observe(this, Observer { userResource ->
-            binding.user = userResource?.data
-            binding.userResource = userResource
-        })
+        binding.user = userViewModel.user
+        binding.setLifecycleOwner(viewLifecycleOwner)
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
             appExecutors = appExecutors,
@@ -95,7 +92,7 @@ class UserFragment : Fragment(), Injectable {
     }
 
     private fun initRepoList() {
-        userViewModel.repositories.observe(this, Observer { repos ->
+        userViewModel.repositories.observe(viewLifecycleOwner, Observer { repos ->
             adapter.submitList(repos?.data)
         })
     }
