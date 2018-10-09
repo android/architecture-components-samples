@@ -57,31 +57,8 @@ class RepoFragment : Fragment(), Injectable {
 
     private var adapter by autoCleared<ContributorAdapter>()
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        repoViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(RepoViewModel::class.java)
-        val params = RepoFragmentArgs.fromBundle(arguments)
-        repoViewModel.setId(params.owner, params.name)
-
-        val repo = repoViewModel.repo
-        repo.observe(this, Observer { resource ->
-            binding.repo = resource?.data
-            binding.repoResource = resource
-        })
-
-        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor ->
-            navController().navigate(
-                    RepoFragmentDirections.showUser(contributor.login)
-            )
-        }
-        this.adapter = adapter
-        binding.contributorList.adapter = adapter
-        initContributorList(repoViewModel)
-    }
-
     private fun initContributorList(viewModel: RepoViewModel) {
-        viewModel.contributors.observe(this, Observer { listResource ->
+        viewModel.contributors.observe(viewLifecycleOwner, Observer { listResource ->
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
             if (listResource?.data != null) {
@@ -109,6 +86,24 @@ class RepoFragment : Fragment(), Injectable {
         }
         binding = dataBinding
         return dataBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        repoViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(RepoViewModel::class.java)
+        val params = RepoFragmentArgs.fromBundle(arguments)
+        repoViewModel.setId(params.owner, params.name)
+        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.repo = repoViewModel.repo
+
+        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor ->
+            navController().navigate(
+                RepoFragmentDirections.showUser(contributor.login)
+            )
+        }
+        this.adapter = adapter
+        binding.contributorList.adapter = adapter
+        initContributorList(repoViewModel)
     }
 
     /**
