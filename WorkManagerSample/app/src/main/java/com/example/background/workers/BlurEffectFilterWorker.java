@@ -21,10 +21,10 @@ package com.example.background.workers;
 import android.content.Context;
 import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
-import androidx.renderscript.Allocation;
-import androidx.renderscript.Element;
-import androidx.renderscript.RenderScript;
-import androidx.renderscript.ScriptIntrinsicBlur;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 

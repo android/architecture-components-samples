@@ -49,7 +49,7 @@ versions.hamcrest = "1.3"
 versions.kotlin = "1.2.71"
 versions.paging = "2.0.0"
 versions.navigation = "1.0.0-alpha06"
-versions.work = "1.0.0-alpha09"
+versions.work = "1.0.0-alpha10"
 def deps = [:]
 
 def support = [:]

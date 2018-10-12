@@ -25,13 +25,11 @@ android {
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.background"
-        // RenderScript has 64 bit support starting API 21.
-        renderscriptTargetApi 21
-        renderscriptSupportModeEnabled true
         vectorDrawables {
             useSupportLibrary true
         }
-        minSdkVersion build_versions.min_sdk
+        // Switching to Renderscript support provided by framework.
+        minSdkVersion 18
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
