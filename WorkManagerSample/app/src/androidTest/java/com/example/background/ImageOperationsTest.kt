@@ -87,13 +87,13 @@ class ImageOperationsTest {
                 .build()
 
         imageOperations.continuation
-                .synchronous()
-                .enqueueSync()
+                .enqueue()
+                .get()
 
         val latch = CountDownLatch(1)
         val outputs: MutableList<Uri> = mutableListOf()
 
-        imageOperations.continuation.statuses.observe(mLifeCycleOwner, Observer {
+        imageOperations.continuation.statusesLiveData.observe(mLifeCycleOwner, Observer {
             val statuses = it ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
@@ -124,13 +124,13 @@ class ImageOperationsTest {
                 .build()
 
         imageOperations.continuation
-                .synchronous()
-                .enqueueSync()
+                .enqueue()
+                .get()
 
         val latch = CountDownLatch(2)
         val outputs: MutableList<Uri> = mutableListOf()
 
-        imageOperations.continuation.statuses.observe(mLifeCycleOwner, Observer {
+        imageOperations.continuation.statusesLiveData.observe(mLifeCycleOwner, Observer {
             val statuses = it ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
@@ -146,7 +146,7 @@ class ImageOperationsTest {
         })
 
         var outputUri: Uri? = null
-        mWorkManager?.getStatusesByTag(TAG_OUTPUT)?.observe(mLifeCycleOwner, Observer {
+        mWorkManager?.getStatusesByTagLiveData(TAG_OUTPUT)?.observe(mLifeCycleOwner, Observer {
             val statuses = it ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {

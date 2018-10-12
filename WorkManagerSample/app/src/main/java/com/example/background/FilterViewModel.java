@@ -50,6 +50,6 @@ public class FilterViewModel extends ViewModel {
     }
 
     LiveData<List<WorkStatus>> getOutputStatus() {
-        return mWorkManager.getStatusesByTag(TAG_OUTPUT);
+        return mWorkManager.getStatusesByTagLiveData(TAG_OUTPUT);
     }
 }
