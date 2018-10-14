@@ -16,9 +16,7 @@
 
 package com.android.example.github.ui.search
 
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
@@ -44,6 +42,8 @@ import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
+import com.android.example.github.util.observe
+import com.android.example.github.util.viewModelProvider
 import javax.inject.Inject
 
 @OpenForTesting
@@ -80,8 +80,7 @@ class SearchFragment : Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        searchViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(SearchViewModel::class.java)
+        searchViewModel = viewModelProvider(viewModelFactory)
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
@@ -142,13 +141,13 @@ class SearchFragment : Fragment(), Injectable {
                 }
             }
         })
-        searchViewModel.results.observe(this, Observer { result ->
+        searchViewModel.results.observe(this) { result ->
             binding.searchResource = result
             binding.resultCount = result?.data?.size ?: 0
             adapter.submitList(result?.data)
-        })
+        }
 
-        searchViewModel.loadMoreStatus.observe(this, Observer { loadingMore ->
+        searchViewModel.loadMoreStatus.observe(this) { loadingMore ->
             if (loadingMore == null) {
                 binding.loadingMore = false
             } else {
@@ -158,7 +157,7 @@ class SearchFragment : Fragment(), Injectable {
                     Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show()
                 }
             }
-        })
+        }
     }
 
     private fun dismissKeyboard(windowToken: IBinder) {

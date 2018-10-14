@@ -18,12 +18,12 @@ package com.android.example.github.ui.user
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.android.example.github.repository.RepoRepository
 import com.android.example.github.repository.UserRepository
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.util.AbsentLiveData
+import com.android.example.github.util.switchMap
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
 import com.android.example.github.vo.User
@@ -35,22 +35,20 @@ class UserViewModel
     private val _login = MutableLiveData<String>()
     val login: LiveData<String>
         get() = _login
-    val repositories: LiveData<Resource<List<Repo>>> = Transformations
-        .switchMap(_login) { login ->
-            if (login == null) {
-                AbsentLiveData.create()
-            } else {
-                repoRepository.loadRepos(login)
-            }
+    val repositories: LiveData<Resource<List<Repo>>> = _login.switchMap { login ->
+        if (login == null) {
+            AbsentLiveData.create()
+        } else {
+            repoRepository.loadRepos(login)
         }
-    val user: LiveData<Resource<User>> = Transformations
-        .switchMap(_login) { login ->
-            if (login == null) {
-                AbsentLiveData.create()
-            } else {
-                userRepository.loadUser(login)
-            }
+    }
+    val user: LiveData<Resource<User>> = _login.switchMap { login ->
+        if (login == null) {
+            AbsentLiveData.create()
+        } else {
+            userRepository.loadUser(login)
         }
+    }
 
     fun setLogin(login: String?) {
         if (_login.value != login) {

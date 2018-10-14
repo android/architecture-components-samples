@@ -55,8 +55,8 @@ class ContributorAdapter(
                 dataBindingComponent
             )
         binding.root.setOnClickListener {
-            binding.contributor?.let {
-                callback?.invoke(it)
+            binding.contributor?.let { contributor ->
+                callback?.invoke(contributor)
             }
         }
         return binding

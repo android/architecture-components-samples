@@ -16,9 +16,7 @@
 
 package com.android.example.github.ui.repo
 
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import android.os.Bundle
@@ -35,6 +33,8 @@ import com.android.example.github.di.Injectable
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
+import com.android.example.github.util.observe
+import com.android.example.github.util.viewModelProvider
 import javax.inject.Inject
 
 /**
@@ -59,16 +59,15 @@ class RepoFragment : Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        repoViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(RepoViewModel::class.java)
+        repoViewModel = viewModelProvider(viewModelFactory)
         val params = RepoFragmentArgs.fromBundle(arguments)
         repoViewModel.setId(params.owner, params.name)
 
         val repo = repoViewModel.repo
-        repo.observe(this, Observer { resource ->
+        repo.observe(this) { resource ->
             binding.repo = resource?.data
             binding.repoResource = resource
-        })
+        }
 
         val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor ->
             navController().navigate(
@@ -81,7 +80,7 @@ class RepoFragment : Fragment(), Injectable {
     }
 
     private fun initContributorList(viewModel: RepoViewModel) {
-        viewModel.contributors.observe(this, Observer { listResource ->
+        viewModel.contributors.observe(this) { listResource ->
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
             if (listResource?.data != null) {
@@ -89,7 +88,7 @@ class RepoFragment : Fragment(), Injectable {
             } else {
                 adapter.submitList(emptyList())
             }
-        })
+        }
     }
 
     override fun onCreateView(

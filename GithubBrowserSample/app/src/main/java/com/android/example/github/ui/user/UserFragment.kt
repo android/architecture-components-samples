@@ -16,9 +16,7 @@
 
 package com.android.example.github.ui.user
 
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import android.os.Bundle
@@ -36,6 +34,8 @@ import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
+import com.android.example.github.util.observe
+import com.android.example.github.util.viewModelProvider
 import javax.inject.Inject
 
 @OpenForTesting
@@ -73,15 +73,14 @@ class UserFragment : Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        userViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(UserViewModel::class.java)
+        userViewModel = viewModelProvider(viewModelFactory)
         val params = UserFragmentArgs.fromBundle(arguments)
         userViewModel.setLogin(params.login)
 
-        userViewModel.user.observe(this, Observer { userResource ->
+        userViewModel.user.observe(this) { userResource ->
             binding.user = userResource?.data
             binding.userResource = userResource
-        })
+        }
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
             appExecutors = appExecutors,
@@ -95,9 +94,9 @@ class UserFragment : Fragment(), Injectable {
     }
 
     private fun initRepoList() {
-        userViewModel.repositories.observe(this, Observer { repos ->
+        userViewModel.repositories.observe(this) { repos ->
             adapter.submitList(repos?.data)
-        })
+        }
     }
 
     /**
