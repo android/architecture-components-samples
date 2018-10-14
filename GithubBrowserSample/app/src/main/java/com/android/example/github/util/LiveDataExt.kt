@@ -6,11 +6,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 
 inline fun <T> LiveData<T>.observe(
-        owner: LifecycleOwner,
-        crossinline observer: (T?) -> Unit
+    owner: LifecycleOwner,
+    crossinline observer: (T?) -> Unit
 ) {
     observe(owner, Observer<T> { v -> observer(v) })
 }
 
 inline fun <X, Y> LiveData<X>.switchMap(crossinline transformer: (X) -> LiveData<Y>): LiveData<Y> =
-        Transformations.switchMap(this) { transformer(it) }
+    Transformations.switchMap(this) { transformer(it) }
