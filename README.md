@@ -3,12 +3,12 @@ Android Architecture Components samples
 
 A collection of samples using the [Architecture Components](https://developer.android.com/arch):
 
-- Room
-- Lifecycle-aware components
-- ViewModels
-- LiveData
-- Paging (preview)
-- WorkManager (alpha)
+- **Room** --> A Persistence Library provides an abstraction layer over SQLite with Compile-time Error Checking
+- **Lifecycle-aware components** -->Lifecycle-aware components perform actions in response to a change in the lifecycle status of another component
+- **ViewModels** --> Designed to store and manage UI-related data in a lifecycle conscious way. This class allows data to survive configuration changes 
+- **LiveData** --> An observable data holder class
+- **Paging (preview)** --> The Paging Library helps you display data in your UI's list containers smoothly
+- **WorkManager (alpha)** -->  This class makes easy to specify deferrable, asynchronous tasks and when they should run.
 
 ### Samples
 
