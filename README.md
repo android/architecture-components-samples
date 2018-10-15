@@ -3,12 +3,13 @@ Android Architecture Components samples
 
 A collection of samples using the [Architecture Components](https://developer.android.com/arch):
 
-- Room
-- Lifecycle-aware components
-- ViewModels
-- LiveData
-- Paging (preview)
-- WorkManager (alpha)
+- [Room](https://developer.android.com/topic/libraries/architecture/room)
+- [Lifecycle-aware components](https://developer.android.com/topic/libraries/architecture/lifecycle)
+- [ViewModels](https://developer.android.com/topic/libraries/architecture/viewmodel)
+- [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
+- [Paging](https://developer.android.com/topic/libraries/architecture/paging/)
+- [Navigation (alpha)](https://developer.android.com/topic/libraries/architecture/navigation/)
+- [WorkManager (alpha)](https://developer.android.com/topic/libraries/architecture/workmanager/)
 
 ### Samples
 
@@ -31,6 +32,9 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
  * **[PagingNetworkSample](https://github.com/googlesamples/android-architecture-components/tree/master/PagingWithNetworkSample)** - Shows
   how to use the Paging library with a backend API via Retrofit, in Kotlin.
 
+* **[NavigationBasicSample](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationBasicSample)** - Shows
+  how to use Navigation (alpha) to perform navigation and deep linking in Kotlin.
+  
 * **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
   how to use WorkManager (alpha) to do background work, in Java.
 
