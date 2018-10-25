@@ -10,7 +10,7 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -28,50 +28,50 @@ android {
 
 dependencies {
     // Support libraries
-    compile deps.support.app_compat
-    compile deps.support.v4
-    compile deps.support.design
+    implementation deps.support.app_compat
+    implementation deps.support.v4
+    implementation deps.support.design
     // Architecture components
-    compile deps.lifecycle.runtime
-    compile deps.lifecycle.extensions
+    implementation deps.lifecycle.runtime
+    implementation deps.lifecycle.extensions
     annotationProcessor deps.lifecycle.compiler
-    compile deps.room.runtime
+    implementation deps.room.runtime
     annotationProcessor deps.room.compiler
-    compile deps.room.rxjava2
+    implementation deps.room.rxjava2
 
     // RxJava
-    compile deps.rx_android
-    compile deps.rxjava2
+    implementation deps.rx_android
+    implementation deps.rxjava2
 
     // Dependencies for local unit tests
-    testCompile deps.junit
-    testCompile deps.hamcrest
-    testCompile deps.arch_core.testing
-    testCompile deps.mockito.all
+    testImplementation deps.junit
+    testImplementation deps.hamcrest
+    testImplementation deps.arch_core.testing
+    testImplementation deps.mockito.all
 
     // Resolve conflicts between main and local unit tests
-    testCompile deps.support.annotations
-    testCompile deps.support.core_utils
+    testImplementation deps.support.annotations
+    testImplementation deps.support.core_utils
 
     // Android Testing Support Library's runner and rules
-    androidTestCompile deps.atsl.runner
-    androidTestCompile deps.atsl.rules
-    androidTestCompile deps.room.testing
-    androidTestCompile deps.arch_core.testing
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
+    androidTestImplementation deps.room.testing
+    androidTestImplementation deps.arch_core.testing
 
     // Dependencies for Android unit tests
-    androidTestCompile deps.junit
-    androidTestCompile deps.mockito.core, { exclude group: 'net.bytebuddy' }
-    androidTestCompile deps.dexmaker
+    androidTestImplementation deps.junit
+    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
+    androidTestImplementation deps.dexmaker
 
     // Espresso UI Testing
-    androidTestCompile deps.espresso.core
-    androidTestCompile deps.espresso.contrib
-    androidTestCompile deps.espresso.intents
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
+    androidTestImplementation deps.espresso.intents
 
     // Resolve conflicts between main and test APK:
-    androidTestCompile deps.support.annotations
-    androidTestCompile deps.support.v4
-    androidTestCompile deps.support.app_compat
-    androidTestCompile deps.support.design
+    androidTestImplementation deps.support.annotations
+    androidTestImplementation deps.support.v4
+    androidTestImplementation deps.support.app_compat
+    androidTestImplementation deps.support.design
 }

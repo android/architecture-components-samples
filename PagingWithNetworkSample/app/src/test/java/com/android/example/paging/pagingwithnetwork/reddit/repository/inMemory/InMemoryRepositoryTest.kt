@@ -16,9 +16,9 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.Observer
-import android.arch.paging.PagedList
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
@@ -61,6 +61,15 @@ class InMemoryRepositoryTest(type : RedditPostRepository.Type) {
         else -> throw IllegalArgumentException()
     }
     private val postFactory = PostFactory()
+
+    private fun <T> PagedList<T>.loadAllData() {
+        do {
+            val oldSize = this.loadedCount
+            this.loadAround(this.size - 1)
+        } while (this.size != oldSize)
+    }
+
+
     /**
      * asserts that empty list works fine
      */
@@ -92,7 +101,7 @@ class InMemoryRepositoryTest(type : RedditPostRepository.Type) {
         val listing = repository.postsOfSubreddit(subReddit = "bar", pageSize = 3)
         // trigger loading of the whole list
         val pagedList = getPagedList(listing)
-        pagedList.loadAround(posts.size - 1)
+        pagedList.loadAllData()
         assertThat(pagedList, `is`(posts))
     }
 
@@ -147,10 +156,11 @@ class InMemoryRepositoryTest(type : RedditPostRepository.Type) {
                 list.size < posts.size, `is`(true))
         assertThat(getNetworkState(listing), `is`(NetworkState.LOADED))
         fakeApi.failureMsg = "fail"
-        list.loadAround(posts.size - 1)
+        list.loadAllData()
         assertThat(getNetworkState(listing), `is`(NetworkState.error("fail")))
         fakeApi.failureMsg = null
         listing.retry()
+        list.loadAllData()
         assertThat(getNetworkState(listing), `is`(NetworkState.LOADED))
         assertThat(list, `is`(posts))
     }
@@ -164,7 +174,7 @@ class InMemoryRepositoryTest(type : RedditPostRepository.Type) {
         postsV1.forEach(fakeApi::addPost)
         val listing = repository.postsOfSubreddit(subReddit = "bar", pageSize = 5)
         val list = getPagedList(listing)
-        list.loadAround(10)
+        list.loadAround(5)
         val postsV2 = (0..10).map { postFactory.createRedditPost("bar") }
         fakeApi.clear()
         postsV2.forEach(fakeApi::addPost)
@@ -175,7 +185,7 @@ class InMemoryRepositoryTest(type : RedditPostRepository.Type) {
         listing.refresh()
 
         val list2 = getPagedList(listing)
-        list2.loadAround(10)
+        list2.loadAround(5)
         assertThat(list2, `is`(postsV2))
         val inOrder = Mockito.inOrder(refreshObserver)
         inOrder.verify(refreshObserver).onChanged(NetworkState.LOADED) // initial state

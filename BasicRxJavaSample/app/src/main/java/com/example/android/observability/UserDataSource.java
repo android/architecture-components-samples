@@ -17,7 +17,6 @@
 package com.example.android.observability;
 
 import com.example.android.observability.persistence.User;
-
 import io.reactivex.Flowable;
 
 /**

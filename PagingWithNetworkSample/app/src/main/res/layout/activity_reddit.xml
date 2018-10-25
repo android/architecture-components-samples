@@ -24,7 +24,7 @@
     android:orientation="vertical"
     android:id="@+id/root"
     tools:context="com.android.example.paging.pagingwithnetwork.reddit.ui.RedditActivity">
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,15 +41,15 @@
             android:inputType="textNoSuggestions"
             tools:text="androiddev"
             android:text="@string/default_subreddit"/>
-    </android.support.design.widget.TextInputLayout>
-    <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_refresh"
+    </com.google.android.material.textfield.TextInputLayout>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/swipe_refresh"
                                                   android:layout_width="match_parent"
                                                   android:layout_height="match_parent">
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

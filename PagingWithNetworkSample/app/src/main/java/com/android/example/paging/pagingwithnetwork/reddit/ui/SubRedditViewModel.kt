@@ -16,20 +16,17 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations.map
-import android.arch.lifecycle.Transformations.switchMap
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations.map
+import androidx.lifecycle.Transformations.switchMap
+import androidx.lifecycle.ViewModel
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 
-/**
- * A RecyclerView ViewHolder that displays a single reddit post.
- */
 class SubRedditViewModel(private val repository: RedditPostRepository) : ViewModel() {
     private val subredditName = MutableLiveData<String>()
-    private val repoResult = map(subredditName, {
+    private val repoResult = map(subredditName) {
         repository.postsOfSubreddit(it, 30)
-    })
+    }
     val posts = switchMap(repoResult, { it.pagedList })!!
     val networkState = switchMap(repoResult, { it.networkState })!!
     val refreshState = switchMap(repoResult, { it.refreshState })!!

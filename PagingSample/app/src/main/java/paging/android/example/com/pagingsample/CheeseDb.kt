@@ -16,9 +16,8 @@
 
 package paging.android.example.com.pagingsample
 
-import android.arch.paging.LivePagedListProvider
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.*
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.*
 import android.content.Context
 
 /**

@@ -23,12 +23,10 @@ import static junit.framework.Assert.assertTrue;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.persistence.room.Room;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
-
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.room.Room;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 import com.example.android.persistence.LiveDataTestUtil;
 import com.example.android.persistence.db.dao.ProductDao;
 import com.example.android.persistence.db.entity.ProductEntity;

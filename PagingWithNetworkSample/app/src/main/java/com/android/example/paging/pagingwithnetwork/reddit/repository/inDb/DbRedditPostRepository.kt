@@ -16,11 +16,12 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
-import android.arch.paging.LivePagedListBuilder
-import android.support.annotation.MainThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
+import androidx.annotation.MainThread
+import androidx.paging.toLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
@@ -42,7 +43,7 @@ class DbRedditPostRepository(
         private val ioExecutor: Executor,
         private val networkPageSize: Int = DEFAULT_NETWORK_PAGE_SIZE) : RedditPostRepository {
     companion object {
-        private val DEFAULT_NETWORK_PAGE_SIZE = 10
+        private const val DEFAULT_NETWORK_PAGE_SIZE = 10
     }
 
     /**
@@ -100,30 +101,30 @@ class DbRedditPostRepository(
      * Returns a Listing for the given subreddit.
      */
     @MainThread
-    override fun postsOfSubreddit(subredditName: String, pageSize: Int): Listing<RedditPost> {
+    override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
         // create a boundary callback which will observe when the user reaches to the edges of
         // the list and update the database with extra data.
         val boundaryCallback = SubredditBoundaryCallback(
                 webservice = redditApi,
-                subredditName = subredditName,
+                subredditName = subReddit,
                 handleResponse = this::insertResultIntoDb,
                 ioExecutor = ioExecutor,
                 networkPageSize = networkPageSize)
-        // create a data source factory from Room
-        val dataSourceFactory = db.posts().postsBySubreddit(subredditName)
-        val builder = LivePagedListBuilder(dataSourceFactory, pageSize)
-                .setBoundaryCallback(boundaryCallback)
-
         // we are using a mutable live data to trigger refresh requests which eventually calls
         // refresh method and gets a new live data. Each refresh request by the user becomes a newly
         // dispatched data in refreshTrigger
         val refreshTrigger = MutableLiveData<Unit>()
-        val refreshState = Transformations.switchMap(refreshTrigger, {
-            refresh(subredditName)
-        })
+        val refreshState = Transformations.switchMap(refreshTrigger) {
+            refresh(subReddit)
+        }
+
+        // We use toLiveData Kotlin extension function here, you could also use LivePagedListBuilder
+        val livePagedList = db.posts().postsBySubreddit(subReddit).toLiveData(
+                pageSize = pageSize,
+                boundaryCallback = boundaryCallback)
 
         return Listing(
-                pagedList = builder.build(),
+                pagedList = livePagedList,
                 networkState = boundaryCallback.networkState,
                 retry = {
                     boundaryCallback.helper.retryAllFailed()

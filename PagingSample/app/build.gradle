@@ -30,7 +30,7 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -47,7 +47,7 @@ dependencies {
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime
     implementation deps.lifecycle.extensions
-    implementation deps.paging
+    implementation deps.paging_ktx
     implementation deps.kotlin.stdlib
 
     // Android Testing Support Library's runner and rules

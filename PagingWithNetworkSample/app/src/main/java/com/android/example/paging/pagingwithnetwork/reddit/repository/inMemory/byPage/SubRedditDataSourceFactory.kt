@@ -16,8 +16,8 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.DataSource
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.DataSource
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import java.util.concurrent.Executor
@@ -30,7 +30,7 @@ import java.util.concurrent.Executor
 class SubRedditDataSourceFactory(
         private val redditApi: RedditApi,
         private val subredditName: String,
-        private val retryExecutor: Executor) : DataSource.Factory<String, RedditPost> {
+        private val retryExecutor: Executor) : DataSource.Factory<String, RedditPost>() {
     val sourceLiveData = MutableLiveData<PageKeyedSubredditDataSource>()
     override fun create(): DataSource<String, RedditPost> {
         val source = PageKeyedSubredditDataSource(redditApi, subredditName, retryExecutor)

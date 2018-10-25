@@ -31,7 +31,7 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -48,6 +48,7 @@ android {
 
 dependencies {
     kapt deps.room.compiler
+    kapt deps.glide.compiler
 
     implementation deps.constraint_layout
     implementation deps.support.app_compat
@@ -57,12 +58,12 @@ dependencies {
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime
     implementation deps.lifecycle.extensions
-    implementation deps.paging
+    implementation deps.paging_ktx
     implementation deps.kotlin.stdlib
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
     implementation deps.okhttp_logging_interceptor
-    implementation deps.glide
+    implementation deps.glide.runtime
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation deps.atsl.runner
@@ -71,9 +72,8 @@ dependencies {
 
     androidTestImplementation deps.junit
     androidTestImplementation deps.retrofit.mock
-    androidTestImplementation deps.arch_core.testing
-    androidTestImplementation deps.dexmaker
-    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
+    androidTestImplementation deps.mockito.core
+    androidTestImplementation deps.mockito.android
 
     testImplementation deps.junit
     testImplementation deps.retrofit.mock

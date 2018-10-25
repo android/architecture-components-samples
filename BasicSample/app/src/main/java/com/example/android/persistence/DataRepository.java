@@ -1,8 +1,7 @@
 package com.example.android.persistence;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import com.example.android.persistence.db.AppDatabase;
 import com.example.android.persistence.db.entity.CommentEntity;
 import com.example.android.persistence.db.entity.ProductEntity;

@@ -18,21 +18,20 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.android.example.paging.pagingwithnetwork.GlideRequests
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 
 /**
  * A RecyclerView ViewHolder that displays a reddit post.
  */
-class RedditPostViewHolder(view: View, private val glide: RequestManager)
+class RedditPostViewHolder(view: View, private val glide: GlideRequests)
     : RecyclerView.ViewHolder(view) {
     private val title: TextView = view.findViewById(R.id.title)
     private val subtitle: TextView = view.findViewById(R.id.subtitle)
@@ -56,18 +55,18 @@ class RedditPostViewHolder(view: View, private val glide: RequestManager)
         score.text = "${post?.score ?: 0}"
         if (post?.thumbnail?.startsWith("http") == true) {
             thumbnail.visibility = View.VISIBLE
-            glide.load(post.thumbnail).centerCrop()
+            glide.load(post.thumbnail)
+                    .centerCrop()
                     .placeholder(R.drawable.ic_insert_photo_black_48dp)
                     .into(thumbnail)
         } else {
             thumbnail.visibility = View.GONE
-            Glide.clear(thumbnail)
+            glide.clear(thumbnail)
         }
-
     }
 
     companion object {
-        fun create(parent: ViewGroup, glide: RequestManager): RedditPostViewHolder {
+        fun create(parent: ViewGroup, glide: GlideRequests): RedditPostViewHolder {
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.reddit_post_item, parent, false)
             return RedditPostViewHolder(view, glide)

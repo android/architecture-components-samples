@@ -17,10 +17,10 @@
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.app.Application
-import android.arch.core.executor.testing.CountingTaskExecutorRule
 import android.content.Intent
-import android.support.test.InstrumentationRegistry
-import android.support.v7.widget.RecyclerView
+import androidx.arch.core.executor.testing.CountingTaskExecutorRule
+import androidx.test.InstrumentationRegistry
+import androidx.recyclerview.widget.RecyclerView
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
@@ -29,13 +29,15 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
 import com.android.example.paging.pagingwithnetwork.reddit.ui.RedditActivity.Companion.DEFAULT_SUBREDDIT
 import com.android.example.paging.pagingwithnetwork.repository.FakeRedditApi
 import com.android.example.paging.pagingwithnetwork.repository.PostFactory
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
@@ -50,9 +52,9 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         fun params() = RedditPostRepository.Type.values()
     }
 
-    @Suppress("MemberVisibilityCanPrivate")
     @get:Rule
     var testRule = CountingTaskExecutorRule()
+
     private val postFactory = PostFactory()
     @Before
     fun init() {
@@ -78,10 +80,30 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
                 type = type)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val activity = InstrumentationRegistry.getInstrumentation().startActivitySync(intent)
-        testRule.drainTasks(10, TimeUnit.SECONDS)
         val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
-        MatcherAssert.assertThat(recyclerView.adapter, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(recyclerView.adapter.itemCount,
-                CoreMatchers.`is`(3))
+        assertThat(recyclerView.adapter, notNullValue())
+        waitForAdapterChange(recyclerView)
+        assertThat(recyclerView.adapter?.itemCount, `is`(3))
+    }
+
+    private fun waitForAdapterChange(recyclerView: RecyclerView) {
+        val latch = CountDownLatch(1)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            recyclerView.adapter?.registerAdapterDataObserver(
+                    object : RecyclerView.AdapterDataObserver() {
+                        override fun onChanged() {
+                            latch.countDown()
+                        }
+
+                        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                            latch.countDown()
+                        }
+                    })
+        }
+        testRule.drainTasks(1, TimeUnit.SECONDS)
+        if (recyclerView.adapter?.itemCount ?: 0 > 0) {
+            return
+        }
+        assertThat(latch.await(10, TimeUnit.SECONDS), `is`(true))
     }
 }
