@@ -41,7 +41,6 @@ import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
-import com.android.example.github.util.matcher
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
@@ -174,7 +173,7 @@ class RepoFragmentTest {
         setContributors("aa", "bb", "cc")
         onView(withText("cc")).perform(click())
         verify(repoFragment.navController).navigate(
-                RepoFragmentDirections.showUser("cc").matcher()
+                RepoFragmentDirections.showUser("cc")
         )
     }
 
