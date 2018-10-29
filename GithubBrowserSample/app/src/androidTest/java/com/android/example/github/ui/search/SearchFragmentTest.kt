@@ -45,7 +45,6 @@ import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
-import com.android.example.github.util.matcher
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
@@ -151,7 +150,7 @@ class SearchFragmentTest {
         results.postValue(Resource.success(arrayListOf(repo)))
         onView(withText("desc")).perform(click())
         verify(searchFragment.navController).navigate(
-                SearchFragmentDirections.showRepo("foo", "bar").matcher()
+                SearchFragmentDirections.showRepo("foo", "bar")
         )
     }
 
