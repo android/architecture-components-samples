@@ -55,4 +55,8 @@ public class DataRepository {
     public LiveData<List<CommentEntity>> loadComments(final int productId) {
         return mDatabase.commentDao().loadComments(productId);
     }
+
+    public LiveData<List<ProductEntity>> searchProducts(String query) {
+        return mDatabase.productDao().searchAllProducts(query);
+    }
 }

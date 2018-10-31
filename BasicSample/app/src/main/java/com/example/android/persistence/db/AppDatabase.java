@@ -18,6 +18,7 @@ package com.example.android.persistence.db;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.room.Database;
 import androidx.room.Room;
@@ -33,9 +34,10 @@ import com.example.android.persistence.db.dao.ProductDao;
 import com.example.android.persistence.db.entity.CommentEntity;
 import com.example.android.persistence.db.entity.ProductEntity;
 
+import com.example.android.persistence.db.entity.ProductFtsEntity;
 import java.util.List;
 
-@Database(entities = {ProductEntity.class, CommentEntity.class}, version = 1)
+@Database(entities = {ProductEntity.class, ProductFtsEntity.class, CommentEntity.class}, version = 2)
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -88,7 +90,9 @@ public abstract class AppDatabase extends RoomDatabase {
                             database.setDatabaseCreated();
                         });
                     }
-                }).build();
+                })
+            .addMigrations(MIGRATION_1_2)
+            .build();
     }
 
     /**
@@ -122,4 +126,16 @@ public abstract class AppDatabase extends RoomDatabase {
     public LiveData<Boolean> getDatabaseCreated() {
         return mIsDatabaseCreated;
     }
+
+    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS `productsFts` USING FTS4("
+                + "`name` TEXT, `description` TEXT, content=`products`)");
+            database.execSQL("INSERT INTO productsFts (`rowid`, `name`, `description`) "
+                + "SELECT `id`, `name`, `description` FROM products");
+
+        }
+    };
 }
