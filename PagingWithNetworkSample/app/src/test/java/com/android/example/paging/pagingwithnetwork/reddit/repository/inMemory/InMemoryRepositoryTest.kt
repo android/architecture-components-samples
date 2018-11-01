@@ -69,7 +69,6 @@ class InMemoryRepositoryTest(type : RedditPostRepository.Type) {
         } while (this.size != oldSize)
     }
 
-
     /**
      * asserts that empty list works fine
      */
