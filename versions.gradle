@@ -23,7 +23,7 @@
 ext.deps = [:]
 def versions = [:]
 versions.arch_core = "2.0.0"
-versions.room = "2.0.0"
+versions.room = "2.1.0-alpha02"
 versions.lifecycle = "2.0.0"
 versions.support = "1.0.0"
 versions.dagger = "2.16"

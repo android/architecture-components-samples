@@ -39,6 +39,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public ProductAdapter(@Nullable ProductClickCallback clickCallback) {
         mProductClickCallback = clickCallback;
+        setHasStableIds(true);
     }
 
     public void setProductList(final List<? extends Product> productList) {
@@ -96,6 +97,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public int getItemCount() {
         return mProductList == null ? 0 : mProductList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mProductList.get(position).getId();
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
