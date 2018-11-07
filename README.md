@@ -36,7 +36,7 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
   how to use Navigation (alpha) to perform navigation and deep linking in Kotlin.
   
 * **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
-  how to use WorkManager (alpha) to do background work, in Java.
+  how to use WorkManager (alpha) to do background work, in Kotlin.
 
 ### Other Architecture Components Samples
 

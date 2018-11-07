@@ -16,50 +16,30 @@
  *
  */
 
-package com.example.background.imgur;
+package com.example.background.imgur
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
 /**
  * The Imgur API post image response.
  */
-public class PostImageResponse {
+class PostImageResponse {
 
     @SerializedName("data")
-    private UploadedImage mData;
+    val data: UploadedImage? = null
 
     @SerializedName("success")
-    private boolean mSuccess;
+    val isSuccess: Boolean = false
 
     @SerializedName("status")
-    private int mStatus;
+    val status: Int = 0
 
-    public UploadedImage getData() {
-        return mData;
-    }
-
-    public boolean isSuccess() {
-        return mSuccess;
-    }
-
-    public int getStatus() {
-        return mStatus;
-    }
-
-    public static class UploadedImage {
+    class UploadedImage {
         @SerializedName("id")
-        private String mId;
+        val id: String? = null
 
         @SerializedName("link")
-        private String mLink;
-
-        public String getId() {
-            return mId;
-        }
-
-        public String getLink() {
-            return mLink;
-        }
+        val link: String? = null
     }
 
 }
