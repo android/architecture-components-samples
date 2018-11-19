@@ -19,23 +19,26 @@
 package com.example.background
 
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.test.InstrumentationRegistry
 import androidx.test.filters.SdkSuppress
 import androidx.test.filters.SmallTest
 import androidx.test.runner.AndroidJUnit4
+import androidx.work.Configuration
 import androidx.work.WorkManager
-import androidx.work.test.WorkManagerTestInitHelper
+import androidx.work.testing.SynchronousExecutor
+import androidx.work.testing.WorkManagerTestInitHelper
 import com.example.background.Constants.KEY_IMAGE_URI
 import com.example.background.Constants.TAG_OUTPUT
 import com.example.background.workers.BaseFilterWorker
-import com.example.background.workers.BaseFilterWorker.inputStreamFor
+import com.example.background.workers.BaseFilterWorker.Companion.inputStreamFor
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -65,18 +68,23 @@ class ImageOperationsTest {
     private lateinit var mContext: Context
     private lateinit var mTargetContext: Context
     private lateinit var mLifeCycleOwner: LifecycleOwner
+    private lateinit var mConfiguration: Configuration
     private var mWorkManager: WorkManager? = null
 
-  @get:Rule
-  var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
         mContext = InstrumentationRegistry.getContext()
         mTargetContext = InstrumentationRegistry.getTargetContext()
         mLifeCycleOwner = TestLifeCycleOwner()
+        mConfiguration = Configuration.Builder()
+                .setExecutor(SynchronousExecutor())
+                .setMinimumLoggingLevel(Log.DEBUG)
+                .build()
         // Initialize WorkManager using the WorkManagerTestInitHelper.
-        WorkManagerTestInitHelper.initializeTestWorkManager(mTargetContext)
+        WorkManagerTestInitHelper.initializeTestWorkManager(mTargetContext, mConfiguration)
         mWorkManager = WorkManager.getInstance()
     }
 
@@ -88,13 +96,14 @@ class ImageOperationsTest {
 
         imageOperations.continuation
                 .enqueue()
+                .result
                 .get()
 
         val latch = CountDownLatch(1)
         val outputs: MutableList<Uri> = mutableListOf()
 
-        imageOperations.continuation.statusesLiveData.observe(mLifeCycleOwner, Observer {
-            val statuses = it ?: return@Observer
+        imageOperations.continuation.workInfosLiveData.observe(mLifeCycleOwner, Observer { workInfos ->
+            val statuses = workInfos ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
                 val outputUris = statuses.map {
@@ -125,13 +134,14 @@ class ImageOperationsTest {
 
         imageOperations.continuation
                 .enqueue()
+                .result
                 .get()
 
         val latch = CountDownLatch(2)
         val outputs: MutableList<Uri> = mutableListOf()
 
-        imageOperations.continuation.statusesLiveData.observe(mLifeCycleOwner, Observer {
-            val statuses = it ?: return@Observer
+        imageOperations.continuation.workInfosLiveData.observe(mLifeCycleOwner, Observer { workInfos ->
+            val statuses = workInfos ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
                 val outputUris = statuses.map {
@@ -146,8 +156,8 @@ class ImageOperationsTest {
         })
 
         var outputUri: Uri? = null
-        mWorkManager?.getStatusesByTagLiveData(TAG_OUTPUT)?.observe(mLifeCycleOwner, Observer {
-            val statuses = it ?: return@Observer
+        mWorkManager?.getWorkInfosByTagLiveData(TAG_OUTPUT)?.observe(mLifeCycleOwner, Observer { workInfos ->
+            val statuses = workInfos ?: return@Observer
             val finished = statuses.all { it.state.isFinished }
             if (finished) {
                 outputUri =

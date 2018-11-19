@@ -46,7 +46,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.kotlin.stdlib
-    implementation deps.work.runtime
     implementation deps.work.runtime_ktx
     implementation deps.support.app_compat
     implementation deps.support.cardview

@@ -16,36 +16,29 @@
  *
  */
 
-package com.example.background;
+package com.example.background
 
-import android.net.Uri;
-
-import java.util.Random;
+import android.net.Uri
+import java.util.*
 
 /**
- * Helps produce a random stock image {@link Uri}.
+ * Helps produce a random stock image [Uri].
  */
-final class StockImages {
-
-    private static final Random sRandom = new Random();
-    private static final Uri[] sAssetUris = new Uri[]{
+internal object StockImages {
+    private val sRandom = Random()
+    private val sAssetUris = arrayOf(
             Uri.parse("file:///android_asset/images/lit_pier.jpg"),
             Uri.parse("file:///android_asset/images/parting_ways.jpg"),
-            Uri.parse("file:///android_asset/images/wrong_way.jpg")
-    };
+            Uri.parse("file:///android_asset/images/wrong_way.jpg"))
 
     /**
-     * This method produces a random image {@link Uri}. This is so you can see
+     * This method produces a random image [Uri]. This is so you can see
      * the effects of applying filters on different kinds of stock images.
      *
-     * @return a random stock image {@link Uri}.
+     * @return a random stock image [Uri].
      */
-    static Uri randomStockImage() {
-        int index = sRandom.nextInt(sAssetUris.length);
-        return sAssetUris[index];
-    }
-
-    private StockImages() {
-
+    fun randomStockImage(): Uri {
+        val index = sRandom.nextInt(sAssetUris.size)
+        return sAssetUris[index]
     }
 }
