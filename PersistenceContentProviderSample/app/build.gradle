@@ -16,12 +16,18 @@
 
 apply plugin: 'com.android.application'
 
+repositories {
+    maven {
+        url "https://s3.amazonaws.com/repo.commonsware.com"
+    }
+}
+
 android {
     compileSdkVersion build_versions.target_sdk
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.android.contentprovidersample"
-        minSdkVersion build_versions.min_sdk
+        minSdkVersion 15
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
@@ -43,6 +49,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.commonsware.cwac:saferoom.x:0.5.0'
+
     // Test
     testImplementation deps.junit
     androidTestImplementation(deps.espresso.core, {

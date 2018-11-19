@@ -20,6 +20,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
+
+import com.commonsware.cwac.saferoom.SafeHelperFactory;
+
 import androidx.annotation.VisibleForTesting;
 
 /**
@@ -45,8 +48,12 @@ public abstract class SampleDatabase extends RoomDatabase {
      */
     public static synchronized SampleDatabase getInstance(Context context) {
         if (sInstance == null) {
+            char[] secret = "abcd1234".toCharArray();
+            SafeHelperFactory saveFactory = new SafeHelperFactory(secret);
+
             sInstance = Room
-                    .databaseBuilder(context.getApplicationContext(), SampleDatabase.class, "ex")
+                    .databaseBuilder(context.getApplicationContext(), SampleDatabase.class, "secure.db")
+                    .openHelperFactory(saveFactory)
                     .build();
             sInstance.populateInitialData();
         }
