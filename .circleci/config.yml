@@ -48,10 +48,19 @@ jobs:
     environment:
       PROJECT_DIR: BasicSample
     <<: *test_sample
-
+  test_rx_java_sample:
+    environment:
+      PROJECT_DIR: BasicRxJavaSample
+    <<: *test_sample
+  test_rx_java_sample_kotlin:
+    environment:
+      PROJECT_DIR: BasicRxJavaSampleKotlin
+    <<: *test_sample
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - test_basic_sample
+      - test_rx_java_sample
+      - test_rx_java_sample_kotlin
