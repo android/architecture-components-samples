@@ -24,13 +24,13 @@ jobs:
     working_directory: ~/project
     steps:
       - environment:
-        PROJECT_DIR: BasicSample
+          PROJECT_DIR: BasicSample
       - attach_workspace:
           at: .
       - run: 
-        <<: *setup_ftl1
+          <<: *setup_ftl1
       - run:
-        <<: *setup_ftl2
+          <<: *setup_ftl2
       - run:
           name: Test $PROJECT_DIR with Firebase Test Lab
           command: >
@@ -39,7 +39,7 @@ jobs:
               --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR}
       - run:
-        <<: *download_results
+          <<: *download_results
 
 workflows:
   version: 2
