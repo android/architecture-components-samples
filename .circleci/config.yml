@@ -29,8 +29,6 @@ jobs:
     steps:
       - environment:
         PROJECT_DIR: BasicSample
-      - attach_workspace:
-          at: .
       - <<: *setup_ftl1
       - <<: *setup_ftl2
       - run:
@@ -40,7 +38,7 @@ jobs:
               --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
               --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR}
-      - <<: *download_results
+#      - <<: *download_results
 
 workflows:
   version: 2
