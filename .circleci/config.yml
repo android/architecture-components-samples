@@ -4,32 +4,45 @@ setup_ftl1: &setup_ftl1
     name: Store Google Service Account
     command: echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
 
-
 setup_ftl2: &setup_ftl2
     name: Authorize gcloud and set config defaults
     command: |
       sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
       sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
+download_results: &download_results
+    name: Install gsutil dependency and copy test results data
+    command: |
+      sudo pip install -U crcmod
+      sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
+
 
 jobs:
   test_basic_sample:
     docker:
-    - image: circleci/android:api-28-alpha  # gcloud is baked into this image
+      - image: circleci/android:api-28-alpha  # gcloud is baked into this image
     working_directory: ~/project
     steps:
-    - run: *setup_ftl1
-    - run: *setup_ftl2
-    - run:
-        name: Test $PROJECT_DIR with Firebase Test Lab
-        command: >
-          sudo gcloud firebase test android run \
-            --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
-            --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
-            --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR}
+      - environment:
+        PROJECT_DIR: BasicSample
+      - attach_workspace:
+          at: .
+      - run: 
+        <<: *setup_ftl1
+      - run:
+        <<: *setup_ftl2
+      - run:
+          name: Test $PROJECT_DIR with Firebase Test Lab
+          command: >
+            sudo gcloud firebase test android run \
+              --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
+              --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR}
+      - run:
+        <<: *download_results
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-    - test_basic_sample
+      - test_basic_sample
