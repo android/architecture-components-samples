@@ -24,24 +24,24 @@ setup_ftl2: &setup_ftl2
 jobs:
   test_basic_sample:
     docker:
-      - image: circleci/android:api-28-alpha  # gcloud is baked into this image
+    - image: circleci/android:api-28-alpha  # gcloud is baked into this image
     working_directory: ~/project
     steps:
-      - environment:
-          PROJECT_DIR: BasicSample
-      - <<: *setup_ftl1
-      - <<: *setup_ftl2
-      - run:
-          name: Test $PROJECT_DIR with Firebase Test Lab
-          command: >
-            sudo gcloud firebase test android run \
-              --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
-              --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
-              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR}
+#     - environment:
+#         PROJECT_DIR: BasicSample
+    - <<: *setup_ftl1
+    - <<: *setup_ftl2
+    - run:
+        name: Test $PROJECT_DIR with Firebase Test Lab
+        command: >
+          sudo gcloud firebase test android run \
+            --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
+            --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+            --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR}
 #      - <<: *download_results
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - test_basic_sample
+    - test_basic_sample
