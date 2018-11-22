@@ -16,14 +16,10 @@ download_results: &download_results
       sudo pip install -U crcmod
       sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
 
-
-jobs:
-  test_basic_sample:
+test_sample: &test_sample
     docker:
       - image: circleci/android:api-28-alpha  # gcloud is baked into this image
     working_directory: ~/project
-    environment:
-      PROJECT_DIR: BasicSample
     steps:
       - checkout
       - run: 
@@ -46,6 +42,13 @@ jobs:
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${PROJECT_DIR,,}
       - run:
           <<: *download_results
+
+jobs:
+  test_basic_sample:
+    environment:
+      PROJECT_DIR: BasicSample
+    <<: *test_sample
+
 
 workflows:
   version: 2
