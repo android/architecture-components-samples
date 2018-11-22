@@ -7,11 +7,10 @@ setup_ftl1: &setup_ftl1
 
 
 setup_ftl2: &setup_ftl2
-  - run:
-      name: Authorize gcloud and set config defaults
-      command: |
-        sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-        sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+    name: Authorize gcloud and set config defaults
+    command: |
+      sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
 
 jobs:
@@ -20,8 +19,7 @@ jobs:
     - image: circleci/android:api-28-alpha  # gcloud is baked into this image
     working_directory: ~/project
     steps:
-    - <<: *setup_ftl1
-    - <<: *setup_ftl2
+    - run: *setup_ftl2
     - run:
         name: Test $PROJECT_DIR with Firebase Test Lab
         command: >
