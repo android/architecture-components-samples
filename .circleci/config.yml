@@ -28,7 +28,7 @@ jobs:
     working_directory: ~/project
     steps:
       - environment:
-        PROJECT_DIR: BasicSample
+          PROJECT_DIR: BasicSample
       - <<: *setup_ftl1
       - <<: *setup_ftl2
       - run:
