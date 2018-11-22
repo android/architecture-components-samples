@@ -1,9 +1,8 @@
 version: 2
 
 setup_ftl1: &setup_ftl1
-  - run:
-      name: Store Google Service Account
-      command: echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
+    name: Store Google Service Account
+    command: echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
 
 
 setup_ftl2: &setup_ftl2
@@ -19,6 +18,7 @@ jobs:
     - image: circleci/android:api-28-alpha  # gcloud is baked into this image
     working_directory: ~/project
     steps:
+    - run: *setup_ftl1
     - run: *setup_ftl2
     - run:
         name: Test $PROJECT_DIR with Firebase Test Lab
