@@ -32,6 +32,13 @@ jobs:
       - run:
           <<: *setup_ftl2
       - run:
+          name: Assemble APKs
+          command: |
+            cd ${PROJECT_DIR}
+            ./gradlew :app:assembleDebug
+            ./gradlew :app:assembleDebugAndroidTest
+            
+      - run:
           name: Test $PROJECT_DIR with Firebase Test Lab
           command: >
             sudo gcloud firebase test android run \
