@@ -25,8 +25,7 @@ jobs:
     environment:
       PROJECT_DIR: BasicSample
     steps:
-      - attach_workspace:
-          at: .
+      - checkout
       - run: 
           <<: *setup_ftl1
       - run:
