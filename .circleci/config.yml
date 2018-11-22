@@ -22,9 +22,9 @@ jobs:
     docker:
       - image: circleci/android:api-28-alpha  # gcloud is baked into this image
     working_directory: ~/project
+    environment:
+      PROJECT_DIR: BasicSample
     steps:
-      - environment:
-          PROJECT_DIR: BasicSample
       - attach_workspace:
           at: .
       - run: 
