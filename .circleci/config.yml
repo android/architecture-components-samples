@@ -56,6 +56,34 @@ jobs:
     environment:
       PROJECT_DIR: BasicRxJavaSampleKotlin
     <<: *test_sample
+  test_github_browser_sample:
+    environment:
+      PROJECT_DIR: GithubBrowserSample
+    <<: *test_sample
+  test_navigation_basic_sample:
+    environment:
+      PROJECT_DIR: NavigationBasicSample
+    <<: *test_sample
+  test_paging_sample:
+    environment:
+      PROJECT_DIR: PagingSample
+    <<: *test_sample
+  test_paging_network_sample:
+    environment:
+      PROJECT_DIR: PagingWithNetworkSample
+    <<: *test_sample
+  test_persistence_content_provider_sample:
+    environment:
+      PROJECT_DIR: PersistenceContentProviderSample
+    <<: *test_sample
+  test_persistence_migrations_sample:
+    environment:
+      PROJECT_DIR: PersistenceMigrationsSample
+    <<: *test_sample
+  test_workmanager_sample:
+    environment:
+      PROJECT_DIR: WorkManagerSample
+    <<: *test_sample
 
 workflows:
   version: 2
@@ -64,3 +92,10 @@ workflows:
       - test_basic_sample
       - test_rx_java_sample
       - test_rx_java_sample_kotlin
+      - test_github_browser_sample
+      - test_navigation_basic_sample
+      - test_paging_sample
+      - test_paging_network_sample
+      - test_persistence_content_provider_sample
+      - test_persistence_migrations_sample
+      - test_workmanager_sample
