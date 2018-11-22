@@ -20,6 +20,8 @@ jobs:
     - image: circleci/android:api-28-alpha  # gcloud is baked into this image
     working_directory: ~/project
     steps:
+    - <<: *setup_ftl1
+    - <<: *setup_ftl2
     - run:
         name: Test $PROJECT_DIR with Firebase Test Lab
         command: >
