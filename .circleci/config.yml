@@ -96,9 +96,9 @@ workflows:
       - test_rx_java_sample
       - test_rx_java_sample_kotlin
       - test_github_browser_sample
-      - test_navigation_basic_sample
+      # no tests - test_navigation_basic_sample
       - test_paging_sample
       - test_paging_network_sample
       - test_persistence_content_provider_sample
-      - test_persistence_migrations_sample
+      # inst tests with flavors - test_persistence_migrations_sample
       - test_workmanager_sample
