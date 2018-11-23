@@ -1,0 +1,104 @@
+version: 2
+
+setup_ftl1: &setup_ftl1
+    name: Store Google Service Account
+    command: echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
+
+setup_ftl2: &setup_ftl2
+    name: Authorize gcloud and set config defaults
+    command: |
+      sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+
+download_results: &download_results
+    name: Install gsutil dependency and copy test results data
+    command: |
+    
+      BUCKETNAME=${PROJECT_DIR:0:29} # limit length
+      sudo pip install -U crcmod
+      sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
+
+test_sample: &test_sample
+    docker:
+      - image: circleci/android:api-28-alpha  # gcloud is baked into this image
+    working_directory: ~/project
+    steps:
+      - checkout
+      - run: 
+          <<: *setup_ftl1
+      - run:
+          <<: *setup_ftl2
+      - run:
+          name: Assemble APKs
+          command: |
+            cd ${PROJECT_DIR}
+            ./gradlew :app:assembleDebug
+            ./gradlew :app:assembleDebugAndroidTest
+            
+      - run:
+          name: Test $PROJECT_DIR with Firebase Test Lab
+          command: |
+            BUCKETNAME=${PROJECT_DIR:0:29} # limit length
+            sudo gcloud firebase test android run \
+              --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
+              --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}
+      - run:
+          <<: *download_results
+
+jobs:
+  test_basic_sample:
+    environment:
+      PROJECT_DIR: BasicSample
+    <<: *test_sample
+  test_rx_java_sample:
+    environment:
+      PROJECT_DIR: BasicRxJavaSample
+    <<: *test_sample
+  test_rx_java_sample_kotlin:
+    environment:
+      PROJECT_DIR: BasicRxJavaSampleKotlin
+    <<: *test_sample
+  test_github_browser_sample:
+    environment:
+      PROJECT_DIR: GithubBrowserSample
+    <<: *test_sample
+  test_navigation_basic_sample:
+    environment:
+      PROJECT_DIR: NavigationBasicSample
+    <<: *test_sample
+  test_paging_sample:
+    environment:
+      PROJECT_DIR: PagingSample
+    <<: *test_sample
+  test_paging_network_sample:
+    environment:
+      PROJECT_DIR: PagingWithNetworkSample
+    <<: *test_sample
+  test_persistence_content_provider_sample:
+    environment:
+      PROJECT_DIR: PersistenceContentProviderSample
+    <<: *test_sample
+  test_persistence_migrations_sample:
+    environment:
+      PROJECT_DIR: PersistenceMigrationsSample
+    <<: *test_sample
+  test_workmanager_sample:
+    environment:
+      PROJECT_DIR: WorkManagerSample
+    <<: *test_sample
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - test_basic_sample
+      - test_rx_java_sample
+      - test_rx_java_sample_kotlin
+      - test_github_browser_sample
+      # no tests - test_navigation_basic_sample
+      - test_paging_sample
+      - test_paging_network_sample
+      - test_persistence_content_provider_sample
+      # inst tests with flavors - test_persistence_migrations_sample
+      - test_workmanager_sample
