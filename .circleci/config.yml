@@ -14,7 +14,7 @@ download_results: &download_results
     name: Install gsutil dependency and copy test results data
     command: |
     
-      BUCKETNAME=${PROJECT_DIR:0:60} # limit length
+      BUCKETNAME=${PROJECT_DIR:0:30} # limit length
       sudo pip install -U crcmod
       sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
 
@@ -38,7 +38,7 @@ test_sample: &test_sample
       - run:
           name: Test $PROJECT_DIR with Firebase Test Lab
           command: |
-            BUCKETNAME=${PROJECT_DIR:0:32} # limit length
+            BUCKETNAME=${PROJECT_DIR:0:30} # limit length
             sudo gcloud firebase test android run \
               --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
               --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
