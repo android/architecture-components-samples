@@ -78,10 +78,10 @@ class SearchFragment : Fragment(), Injectable {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         searchViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(SearchViewModel::class.java)
+        binding.setLifecycleOwner(viewLifecycleOwner)
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
@@ -92,6 +92,7 @@ class SearchFragment : Fragment(), Injectable {
                     SearchFragmentDirections.showRepo(repo.owner.login, repo.name)
             )
         }
+        binding.query = searchViewModel.query
         binding.repoList.adapter = rvAdapter
         adapter = rvAdapter
 
@@ -127,7 +128,6 @@ class SearchFragment : Fragment(), Injectable {
         val query = binding.input.text.toString()
         // Dismiss keyboard
         dismissKeyboard(v.windowToken)
-        binding.query = query
         searchViewModel.setQuery(query)
     }
 
@@ -142,13 +142,12 @@ class SearchFragment : Fragment(), Injectable {
                 }
             }
         })
-        searchViewModel.results.observe(this, Observer { result ->
-            binding.searchResource = result
-            binding.resultCount = result?.data?.size ?: 0
+        binding.searchResult = searchViewModel.results
+        searchViewModel.results.observe(viewLifecycleOwner, Observer { result ->
             adapter.submitList(result?.data)
         })
 
-        searchViewModel.loadMoreStatus.observe(this, Observer { loadingMore ->
+        searchViewModel.loadMoreStatus.observe(viewLifecycleOwner, Observer { loadingMore ->
             if (loadingMore == null) {
                 binding.loadingMore = false
             } else {

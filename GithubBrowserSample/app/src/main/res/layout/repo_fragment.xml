@@ -24,17 +24,17 @@
 
         <import type="com.android.example.github.vo.Resource" />
 
-        <variable
-            name="repo"
-            type="com.android.example.github.vo.Repo" />
+        <import type="androidx.lifecycle.LiveData"/>
+
+        <import type="com.android.example.github.vo.Repo"/>
 
         <variable
-            name="repoResource"
-            type="Resource" />
+            name="repo"
+            type="LiveData&lt;Resource&lt;Repo>>" />
 
         <variable
             name="contributorsStatus"
-            type="com.android.example.github.vo.Status" />
+            type="Status" />
 
         <variable
             name="retryCallback"
@@ -55,11 +55,11 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:visibleGone="@{repo != null}"
-            android:text="@{@string/repo_full_name(repo.owner.login, repo.name)}"
+            app:visibleGone="@{repo.data != null}"
+            android:text="@{@string/repo_full_name(repo.data.owner.login, repo.data.name)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="name of the user" />
+            tools:text="name of the repo" />
 
         <TextView
             android:id="@+id/description"
@@ -69,11 +69,11 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:visibleGone="@{repo != null}"
-            android:text="@{repo.description}"
+            app:visibleGone="@{repo.data != null}"
+            android:text="@{repo.data.description}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name"
-            tools:text="description of the user" />
+            tools:text="description of the repo" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/contributor_list"
@@ -92,7 +92,7 @@
 
         <include
             layout="@layout/loading_state"
-            app:resource="@{repoResource}"
+            app:resource="@{(Resource) repo}"
             app:callback="@{() -> retryCallback.retry()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

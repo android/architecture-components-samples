@@ -33,11 +33,13 @@ import javax.inject.Inject
 @OpenForTesting
 class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : ViewModel() {
 
-    private val query = MutableLiveData<String>()
+    private val _query = MutableLiveData<String>()
     private val nextPageHandler = NextPageHandler(repoRepository)
 
+    val query : LiveData<String> = _query
+
     val results: LiveData<Resource<List<Repo>>> = Transformations
-        .switchMap(query) { search ->
+        .switchMap(_query) { search ->
             if (search.isNullOrBlank()) {
                 AbsentLiveData.create()
             } else {
@@ -50,15 +52,15 @@ class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : View
 
     fun setQuery(originalInput: String) {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim()
-        if (input == query.value) {
+        if (input == _query.value) {
             return
         }
         nextPageHandler.reset()
-        query.value = input
+        _query.value = input
     }
 
     fun loadNextPage() {
-        query.value?.let {
+        _query.value?.let {
             if (it.isNotBlank()) {
                 nextPageHandler.queryNextPage(it)
             }
@@ -66,8 +68,8 @@ class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : View
     }
 
     fun refresh() {
-        query.value?.let {
-            query.value = it
+        _query.value?.let {
+            _query.value = it
         }
     }
 
