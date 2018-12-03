@@ -10,18 +10,18 @@ config_android: &config_android
     TERM: dumb
 
 setup_ftl: &setup_ftl
-    name: Authorize gcloud and set config defaults
-    command: |
-      echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
-      sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-      sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+  name: Authorize gcloud and set config defaults
+  command: |
+    echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
+    sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+    sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
 download_results: &download_results
-    name: Install gsutil dependency and copy test results data
-    command: |
-      BUCKETNAME=${PROJECT_DIR:0:29} # limit length
-      sudo pip install -U crcmod
-      sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
+  name: Install gsutil dependency and copy test results data
+  command: |
+    BUCKETNAME=${PROJECT_DIR:0:29} # limit length
+    sudo pip install -U crcmod
+    sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
 
 test_sample: &test_sample
     <<: *config_android
@@ -44,7 +44,7 @@ test_sample: &test_sample
               --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}
       - run:
-        <<: *download_results
+          <<: *download_results
       - run:
           name: Save test results
           command: |
