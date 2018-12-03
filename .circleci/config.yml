@@ -8,6 +8,7 @@ config_android: &config_android
     JAVA_TOOL_OPTIONS: "-Xmx1024m"
     GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
     TERM: dumb
+    PROJECT_DIR: $PROJECT_DIR
 
 setup_ftl: &setup_ftl
   name: Authorize gcloud and set config defaults
@@ -34,7 +35,6 @@ test_sample: &test_sample
           command: |
             cd ${PROJECT_DIR}
             ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:test :app:lint
-
       - run:
           name: Test $PROJECT_DIR with Firebase Test Lab
           command: |
