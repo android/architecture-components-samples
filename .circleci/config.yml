@@ -58,7 +58,7 @@ test_sample: &test_sample
       - run:
           name: Save test/lint reports
           command: |
-            mkdir -p ~/reports/
+            mkdir -p ~/reports/${PROJECT_DIR}/
             cp -R ./${PROJECT_DIR}/app/build/reports/* ~/reports/${PROJECT_DIR}/
           when: always
       - store_artifacts:
