@@ -29,7 +29,7 @@ test_sample: &test_sample
     <<: *config_android
     steps:
       - checkout
-      <<: *setup_ftl
+      - <<: *setup_ftl
       - run:
           name: Assemble APKs
           command: |
@@ -44,7 +44,7 @@ test_sample: &test_sample
               --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
               --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}
-      <<: *download_results
+      - <<: *download_results
       - run:
           name: Save test results
           command: |
