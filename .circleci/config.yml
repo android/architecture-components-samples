@@ -8,34 +8,33 @@ config_android: &config_android
     JAVA_TOOL_OPTIONS: "-Xmx1024m"
     GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
     TERM: dumb
-    
+
 setup_ftl: &setup_ftl
-  - run:
-      name: Authorize gcloud and set config defaults
-      command: |
-        echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
-        sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-        sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+    name: Authorize gcloud and set config defaults
+    command: |
+      echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
+      sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
 download_results: &download_results
-  - run:
-      name: Install gsutil dependency and copy test results data
-      command: |
-        BUCKETNAME=${PROJECT_DIR:0:29} # limit length
-        sudo pip install -U crcmod
-        sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
+    name: Install gsutil dependency and copy test results data
+    command: |
+      BUCKETNAME=${PROJECT_DIR:0:29} # limit length
+      sudo pip install -U crcmod
+      sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
 
 test_sample: &test_sample
     <<: *config_android
     steps:
       - checkout
-      - <<: *setup_ftl
+      - run:
+          <<: *setup_ftl
       - run:
           name: Assemble APKs
           command: |
             cd ${PROJECT_DIR}
             ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:test :app:lint
-            
+
       - run:
           name: Test $PROJECT_DIR with Firebase Test Lab
           command: |
@@ -44,7 +43,8 @@ test_sample: &test_sample
               --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
               --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}
-      - <<: *download_results
+      - run:
+        <<: *download_results
       - run:
           name: Save test results
           command: |
