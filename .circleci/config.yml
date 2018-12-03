@@ -4,11 +4,6 @@ config_android: &config_android
   docker:
     - image: circleci/android:api-28-alpha
   working_directory: ~/project
-  environment:
-    JAVA_TOOL_OPTIONS: "-Xmx1024m"
-    GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
-    TERM: dumb
-    PROJECT_DIR: $PROJECT_DIR
 
 setup_ftl: &setup_ftl
   name: Authorize gcloud and set config defaults
