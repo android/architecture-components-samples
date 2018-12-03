@@ -3,10 +3,10 @@ version: 2
 config_android: &config_android
   docker:
     - image: circleci/android:api-28-alpha
-    environment:
-      JAVA_TOOL_OPTIONS: "-Xmx1024m"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
-      TERM: dumb
+      environment:
+        JAVA_TOOL_OPTIONS: "-Xmx1024m"
+        GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
+        TERM: dumb
   working_directory: ~/project
 
 setup_ftl: &setup_ftl
