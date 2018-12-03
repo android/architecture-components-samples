@@ -55,9 +55,15 @@ test_sample: &test_sample
       - store_artifacts:
           path: ~/junit
           destination: tests
+      - run:
+          name: Save test/lint reports
+          command: |
+            mkdir -p ~/reports/
+            cp -R ./${PROJECT_DIR}/app/build/reports/* ~/reports/${PROJECT_DIR}/
+          when: always
       - store_artifacts:
-          path: ./${PROJECT_DIR}/app/build/reports
-          destination: reports/${PROJECT_DIR}
+          path: ~/reports/
+          destination: reports
 
 jobs:
   test_basic_sample:
