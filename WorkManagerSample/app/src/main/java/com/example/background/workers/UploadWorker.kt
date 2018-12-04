@@ -22,10 +22,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.work.Data
-import androidx.work.ListenableWorker
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.example.background.Constants
 import com.example.background.imgur.ImgurApi
 
@@ -39,7 +36,7 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters)
         private const val TAG = "UploadWorker"
     }
 
-    override fun doWork(): ListenableWorker.Result {
+    override fun doWork(): Result {
         var imageUriInput: String? = null
         try {
             val args = inputData
@@ -55,9 +52,10 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters)
                 val message = String.format("Request failed %s (%s)", imageUriInput, error)
                 Log.e(TAG, message)
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-                return ListenableWorker.Result.FAILURE
+                return Result.failure()
             } else {
                 val imageResponse = response.body()
+                var outputData = workDataOf()
                 if (imageResponse != null) {
                     val imgurLink = imageResponse.data!!.link
                     // Set the result of the worker by calling setOutputData().
@@ -65,13 +63,13 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters)
                             .putString(Constants.KEY_IMAGE_URI, imgurLink)
                             .build()
                 }
-                return ListenableWorker.Result.SUCCESS
+                return Result.success(outputData)
             }
         } catch (e: Exception) {
             val message = String.format("Failed to upload image with URI %s", imageUriInput)
             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
             Log.e(TAG, message)
-            return ListenableWorker.Result.FAILURE
+            return Result.failure()
         }
 
     }

@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.work.CoroutineWorker
+import androidx.work.Result
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.background.Constants
@@ -51,7 +52,7 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters)
 
     override val coroutineContext: CoroutineDispatcher get() = Dispatchers.IO
 
-    override suspend fun doWork(): Payload {
+    override suspend fun doWork(): Result {
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI)
         try {
             if (TextUtils.isEmpty(resourceUri)) {
@@ -64,13 +65,13 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters)
             val output = applyFilter(bitmap)
             // write bitmap to a file and set the output
             val outputUri = writeBitmapToFile(applicationContext, output)
-            return Payload(Result.SUCCESS, workDataOf(Constants.KEY_IMAGE_URI to outputUri.toString()))
+            return Result.success(workDataOf(Constants.KEY_IMAGE_URI to outputUri.toString()))
         } catch (fileNotFoundException: FileNotFoundException) {
             Log.e(TAG, "Failed to decode input stream", fileNotFoundException)
             throw RuntimeException("Failed to decode input stream", fileNotFoundException)
         } catch (throwable: Throwable) {
             Log.e(TAG, "Error applying filter", throwable)
-            return Payload(Result.FAILURE)
+            return Result.failure()
         }
     }
 
