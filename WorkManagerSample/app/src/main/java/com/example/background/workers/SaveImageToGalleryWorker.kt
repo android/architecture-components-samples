@@ -25,7 +25,7 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import androidx.work.Data
-import androidx.work.ListenableWorker
+import androidx.work.Result
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.background.Constants
@@ -44,7 +44,7 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
         private val DATE_FORMATTER = SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", Locale.getDefault())
     }
 
-    override fun doWork(): ListenableWorker.Result {
+    override fun doWork(): Result {
         val resolver = applicationContext.contentResolver
         try {
             val resourceUri = inputData
@@ -55,18 +55,16 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
                     resolver, bitmap, TITLE, DATE_FORMATTER.format(Date()))
             if (TextUtils.isEmpty(imageUrl)) {
                 Log.e(TAG, "Writing to MediaStore failed")
-                return ListenableWorker.Result.FAILURE
+                return Result.failure()
             }
             // Set the result of the worker by calling setOutputData().
             val output = Data.Builder()
                     .putString(Constants.KEY_IMAGE_URI, imageUrl)
                     .build()
-            outputData = output
-            return ListenableWorker.Result.SUCCESS
+            return Result.success(output)
         } catch (exception: Exception) {
             Log.e(TAG, "Unable to save image to Gallery", exception)
-            return ListenableWorker.Result.FAILURE
+            return Result.failure()
         }
-
     }
 }

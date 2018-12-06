@@ -21,11 +21,10 @@ package com.example.background.workers
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-import androidx.work.ListenableWorker
+import androidx.work.Result
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.background.Constants
-
 import java.io.File
 
 /**
@@ -38,7 +37,7 @@ class CleanupWorker(appContext: Context, workerParams: WorkerParameters)
         private const val TAG = "CleanupWorker"
     }
 
-    override fun doWork(): ListenableWorker.Result {
+    override fun doWork(): Result {
         try {
             val outputDirectory = File(applicationContext.filesDir, Constants.OUTPUT_PATH)
             if (outputDirectory.exists()) {
@@ -53,11 +52,10 @@ class CleanupWorker(appContext: Context, workerParams: WorkerParameters)
                     }
                 }
             }
-            return ListenableWorker.Result.SUCCESS
+            return Result.success()
         } catch (exception: Exception) {
             Log.e(TAG, "Error cleaning up", exception)
-            return ListenableWorker.Result.FAILURE
+            return Result.failure()
         }
-
     }
 }
