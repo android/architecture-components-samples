@@ -10,13 +10,13 @@ import com.example.background.ScriptC_waterColorEffect
 class WaterColorFilterWorker(context: Context, parameters: WorkerParameters)
     : BaseFilterWorker(context, parameters) {
 
-    override fun applyFilter(bitmap: Bitmap): Bitmap {
+    override fun applyFilter(input: Bitmap): Bitmap {
         var rsContext: RenderScript? = null
         try {
             val output = Bitmap
-                    .createBitmap(bitmap.width, bitmap.height, bitmap.config)
+                    .createBitmap(input.width, input.height, input.config)
             rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
-            val inAlloc = Allocation.createFromBitmap(rsContext, bitmap)
+            val inAlloc = Allocation.createFromBitmap(rsContext, input)
             val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)
             // The Renderscript function that generates the water color effect is defined in
             // `src/main/rs/waterColorEffect.rs`. The main idea, is to select a window of the image
@@ -24,8 +24,8 @@ class WaterColorFilterWorker(context: Context, parameters: WorkerParameters)
             // pixels to the one with the dominant pixel value.
             val oilFilterEffect = ScriptC_waterColorEffect(rsContext)
             oilFilterEffect._script = oilFilterEffect
-            oilFilterEffect._width = bitmap.width.toLong()
-            oilFilterEffect._height = bitmap.height.toLong()
+            oilFilterEffect._width = input.width.toLong()
+            oilFilterEffect._height = input.height.toLong()
             oilFilterEffect._in = inAlloc
             oilFilterEffect._out = outAlloc
             oilFilterEffect.invoke_filter()
