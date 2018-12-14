@@ -40,7 +40,7 @@ versions.dexmaker = "2.2.0"
 versions.constraint_layout = "2.0.0-alpha2"
 versions.glide = "4.8.0"
 versions.timber = "4.5.1"
-versions.android_gradle_plugin = '3.2.1'
+versions.android_gradle_plugin = "3.2.0"
 versions.rxjava2 = "2.1.3"
 versions.rx_android = "2.0.1"
 versions.atsl_runner = "1.1.0-alpha4"
@@ -49,7 +49,7 @@ versions.hamcrest = "1.3"
 versions.kotlin = "1.3.0"
 versions.paging = "2.1.0-rc01"
 versions.navigation = "1.0.0-alpha08"
-versions.work = "1.0.0-alpha12"
+versions.work = "1.0.0-alpha13"
 def deps = [:]
 
 def support = [:]

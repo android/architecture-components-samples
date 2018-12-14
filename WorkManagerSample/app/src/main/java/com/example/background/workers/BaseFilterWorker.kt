@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.work.CoroutineWorker
-import androidx.work.Result
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.background.Constants

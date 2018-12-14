@@ -25,7 +25,6 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import androidx.work.Data
-import androidx.work.Result
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.background.Constants
