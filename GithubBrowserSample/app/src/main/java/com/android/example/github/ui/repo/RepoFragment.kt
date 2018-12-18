@@ -91,7 +91,7 @@ class RepoFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         repoViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RepoViewModel::class.java)
-        val params = RepoFragmentArgs.fromBundle(arguments)
+        val params = RepoFragmentArgs.fromBundle(arguments!!)
         repoViewModel.setId(params.owner, params.name)
         binding.setLifecycleOwner(viewLifecycleOwner)
         binding.repo = repoViewModel.repo

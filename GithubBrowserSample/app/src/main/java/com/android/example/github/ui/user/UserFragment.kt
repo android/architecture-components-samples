@@ -74,7 +74,7 @@ class UserFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(UserViewModel::class.java)
-        val params = UserFragmentArgs.fromBundle(arguments)
+        val params = UserFragmentArgs.fromBundle(arguments!!)
         userViewModel.setLogin(params.login)
 
         binding.user = userViewModel.user
