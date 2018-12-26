@@ -16,22 +16,21 @@
 
 package com.android.example.github.ui.user
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.databinding.DataBindingComponent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.android.example.github.AppExecutors
+import com.android.example.github.BaseFragment
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.UserFragmentBinding
-import com.android.example.github.di.Injectable
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
@@ -39,7 +38,7 @@ import com.android.example.github.util.autoCleared
 import javax.inject.Inject
 
 @OpenForTesting
-class UserFragment : Fragment(), Injectable {
+class UserFragment : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject

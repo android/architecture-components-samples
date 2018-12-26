@@ -17,7 +17,9 @@
 package com.android.example.github.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
+import com.android.example.github.GithubApp
 import com.android.example.github.api.GithubService
 import com.android.example.github.db.GithubDb
 import com.android.example.github.db.RepoDao
@@ -31,6 +33,12 @@ import javax.inject.Singleton
 
 @Module(includes = [ViewModelModule::class])
 class AppModule {
+
+    @Provides
+    fun provideApplication(application: GithubApp): Application {
+        return application
+    }
+
     @Singleton
     @Provides
     fun provideGithubService(): GithubService {

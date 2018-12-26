@@ -16,26 +16,21 @@
 
 package com.android.example.github
 
-import android.app.Activity
-import android.app.Application
-import com.android.example.github.di.AppInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import com.android.example.github.di.DaggerAppComponent
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
 import timber.log.Timber
-import javax.inject.Inject
 
-
-class GithubApp : Application(), HasActivityInjector {
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+class GithubApp : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-        AppInjector.init(this)
     }
 
-    override fun activityInjector() = dispatchingAndroidInjector
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        return DaggerAppComponent.builder().create(this)
+    }
 }
