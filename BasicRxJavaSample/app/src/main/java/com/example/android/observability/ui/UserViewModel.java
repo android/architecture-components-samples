@@ -58,7 +58,7 @@ public class UserViewModel extends ViewModel {
      */
     public Completable updateUserName(final String userName) {
         return Completable.fromAction(() -> {
-            // if there's no use, create a new user.
+            // if there's no user, create a new user.
             // if we already have a user, then, since the user object is immutable,
             // create a new user, with the id of the previous user and the updated user name.
             mUser = mUser == null
