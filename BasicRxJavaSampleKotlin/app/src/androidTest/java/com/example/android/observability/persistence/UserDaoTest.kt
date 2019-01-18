@@ -57,7 +57,7 @@ class UserDaoTest {
 
     @Test fun insertAndGetUser() {
         // When inserting a new user in the data source
-        database.userDao().insertUser(USER)
+        database.userDao().insertUser(USER).blockingAwait()
 
         // When subscribing to the emissions of the user
         database.userDao().getUserById(USER.id)
@@ -68,11 +68,11 @@ class UserDaoTest {
 
     @Test fun updateAndGetUser() {
         // Given that we have a user in the data source
-        database.userDao().insertUser(USER)
+        database.userDao().insertUser(USER).blockingAwait()
 
         // When we are updating the name of the user
         val updatedUser = User(USER.id, "new username")
-        database.userDao().insertUser(updatedUser)
+        database.userDao().insertUser(updatedUser).blockingAwait()
 
         // When subscribing to the emissions of the user
         database.userDao().getUserById(USER.id)
@@ -83,7 +83,7 @@ class UserDaoTest {
 
     @Test fun deleteAndGetUser() {
         // Given that we have a user in the data source
-        database.userDao().insertUser(USER)
+        database.userDao().insertUser(USER).blockingAwait()
 
         //When we are deleting all users
         database.userDao().deleteAllUsers()
