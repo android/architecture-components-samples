@@ -17,6 +17,8 @@
 package com.example.android.observability;
 
 import com.example.android.observability.persistence.User;
+
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 /**
@@ -36,7 +38,7 @@ public interface UserDataSource {
      *
      * @param user the user to be inserted or updated.
      */
-    void insertOrUpdateUser(User user);
+    Completable insertOrUpdateUser(User user);
 
     /**
      * Deletes all users from the data source.
