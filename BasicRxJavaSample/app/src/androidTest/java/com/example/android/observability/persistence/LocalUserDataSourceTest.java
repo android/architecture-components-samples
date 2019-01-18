@@ -38,7 +38,7 @@ public class LocalUserDataSourceTest {
     private LocalUserDataSource mDataSource;
 
     @Before
-    public void initDb() throws Exception {
+    public void initDb() {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
         mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
@@ -50,14 +50,14 @@ public class LocalUserDataSourceTest {
     }
 
     @After
-    public void closeDb() throws Exception {
+    public void closeDb() {
         mDatabase.close();
     }
 
     @Test
     public void insertAndGetUser() {
         // When inserting a new user in the data source
-        mDataSource.insertOrUpdateUser(USER);
+        mDataSource.insertOrUpdateUser(USER).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDataSource.getUser()
@@ -73,11 +73,11 @@ public class LocalUserDataSourceTest {
     @Test
     public void updateAndGetUser() {
         // Given that we have a user in the data source
-        mDataSource.insertOrUpdateUser(USER);
+        mDataSource.insertOrUpdateUser(USER).blockingAwait();
 
         // When we are updating the name of the user
         User updatedUser = new User(USER.getId(), "new username");
-        mDataSource.insertOrUpdateUser(updatedUser);
+        mDataSource.insertOrUpdateUser(updatedUser).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDatabase.userDao().getUser()
@@ -93,7 +93,7 @@ public class LocalUserDataSourceTest {
     @Test
     public void deleteAndGetUser() {
         // Given that we have a user in the data source
-        mDataSource.insertOrUpdateUser(USER);
+        mDataSource.insertOrUpdateUser(USER).blockingAwait();
 
         //When we are deleting all users
         mDataSource.deleteAllUsers();

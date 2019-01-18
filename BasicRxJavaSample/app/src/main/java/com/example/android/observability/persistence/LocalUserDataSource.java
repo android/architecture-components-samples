@@ -17,6 +17,8 @@
 package com.example.android.observability.persistence;
 
 import com.example.android.observability.UserDataSource;
+
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 /**
@@ -36,8 +38,8 @@ public class LocalUserDataSource implements UserDataSource {
     }
 
     @Override
-    public void insertOrUpdateUser(User user) {
-        mUserDao.insertUser(user);
+    public Completable insertOrUpdateUser(User user) {
+       return mUserDao.insertUser(user);
     }
 
     @Override
