@@ -73,7 +73,7 @@ class UserFragmentTest {
     private val userData = MutableLiveData<Resource<User>>()
     private val repoListData = MutableLiveData<Resource<List<Repo>>>()
     private val testFragment = TestUserFragment().apply {
-        arguments = UserFragmentArgs.Builder("foo").build().toBundle()
+        arguments = UserFragmentArgs("foo").toBundle()
     }
 
     @Before

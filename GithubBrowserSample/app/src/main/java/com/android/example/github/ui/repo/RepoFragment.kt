@@ -27,6 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
@@ -55,6 +56,7 @@ class RepoFragment : Fragment(), Injectable {
     var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
     var binding by autoCleared<RepoFragmentBinding>()
 
+    private val params by navArgs<RepoFragmentArgs>()
     private var adapter by autoCleared<ContributorAdapter>()
 
     private fun initContributorList(viewModel: RepoViewModel) {
@@ -91,7 +93,6 @@ class RepoFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         repoViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RepoViewModel::class.java)
-        val params = RepoFragmentArgs.fromBundle(arguments!!)
         repoViewModel.setId(params.owner, params.name)
         binding.setLifecycleOwner(viewLifecycleOwner)
         binding.repo = repoViewModel.repo

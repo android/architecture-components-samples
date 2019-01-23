@@ -27,6 +27,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
@@ -49,6 +50,7 @@ class UserFragment : Fragment(), Injectable {
     var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
     private lateinit var userViewModel: UserViewModel
+    private val params by navArgs<UserFragmentArgs>()
     private var adapter by autoCleared<RepoListAdapter>()
 
     override fun onCreateView(
@@ -74,7 +76,6 @@ class UserFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(UserViewModel::class.java)
-        val params = UserFragmentArgs.fromBundle(arguments!!)
         userViewModel.setLogin(params.login)
 
         binding.user = userViewModel.user
