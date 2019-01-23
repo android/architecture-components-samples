@@ -77,7 +77,7 @@ class RepoFragmentTest {
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
 
     private val repoFragment = TestRepoFragment().apply {
-        arguments = RepoFragmentArgs.Builder("a", "b").build().toBundle()
+        arguments = RepoFragmentArgs("a", "b").toBundle()
     }
 
     @Before
