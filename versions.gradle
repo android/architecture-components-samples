@@ -48,7 +48,7 @@ versions.atsl_rules = "1.1.0-alpha4"
 versions.hamcrest = "1.3"
 versions.kotlin = "1.3.0"
 versions.paging = "2.1.0-rc01"
-versions.navigation = "1.0.0-alpha10"
+versions.navigation = "1.0.0-alpha11"
 versions.work = "1.0.0-beta01"
 def deps = [:]
 
