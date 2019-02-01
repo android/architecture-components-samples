@@ -16,10 +16,10 @@
 
 package com.android.example.github.binding
 
-import android.databinding.BindingAdapter
 import android.graphics.drawable.Drawable
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.android.example.github.testing.OpenForTesting
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource

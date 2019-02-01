@@ -16,18 +16,19 @@
 
 package com.android.example.github.ui.user
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingComponent
-import android.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.transition.TransitionInflater
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
@@ -50,6 +51,7 @@ class UserFragment : Fragment(), Injectable {
     var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
     private lateinit var userViewModel: UserViewModel
+    private val params by navArgs<UserFragmentArgs>()
     private var adapter by autoCleared<RepoListAdapter>()
 
     override fun onCreateView(
@@ -74,18 +76,14 @@ class UserFragment : Fragment(), Injectable {
         return dataBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(UserViewModel::class.java)
-        val params = UserFragmentArgs.fromBundle(arguments)
         userViewModel.setLogin(params.login)
         binding.args = params
 
-        userViewModel.user.observe(this, Observer { userResource ->
-            binding.user = userResource?.data
-            binding.userResource = userResource
-        })
+        binding.user = userViewModel.user
+        binding.setLifecycleOwner(viewLifecycleOwner)
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
             appExecutors = appExecutors,
@@ -99,7 +97,7 @@ class UserFragment : Fragment(), Injectable {
     }
 
     private fun initRepoList() {
-        userViewModel.repositories.observe(this, Observer { repos ->
+        userViewModel.repositories.observe(viewLifecycleOwner, Observer { repos ->
             adapter.submitList(repos?.data)
         })
     }

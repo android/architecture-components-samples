@@ -16,7 +16,7 @@
 
 package com.example.android.persistence.migrations;
 
-import android.support.annotation.MainThread;
+import androidx.annotation.MainThread;
 
 /**
  * Callback used in notifying when the user has been updated.

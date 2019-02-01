@@ -17,7 +17,6 @@
 package com.example.android.observability;
 
 import android.content.Context;
-
 import com.example.android.observability.persistence.LocalUserDataSource;
 import com.example.android.observability.persistence.UsersDatabase;
 import com.example.android.observability.ui.ViewModelFactory;

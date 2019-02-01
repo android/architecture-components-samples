@@ -16,8 +16,8 @@
 
 package com.android.example.github.ui.repo
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.Observer
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.android.example.github.repository.RepoRepository
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Contributor

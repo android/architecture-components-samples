@@ -25,17 +25,15 @@ android {
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.background"
-        // RenderScript has 64 bit support starting API 21.
-        renderscriptTargetApi 21
-        renderscriptSupportModeEnabled true
         vectorDrawables {
             useSupportLibrary true
         }
-        minSdkVersion build_versions.min_sdk
+        // Switching to Renderscript support provided by framework.
+        minSdkVersion 18
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -48,7 +46,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.kotlin.stdlib
-    implementation deps.work.runtime
     implementation deps.work.runtime_ktx
     implementation deps.support.app_compat
     implementation deps.support.cardview
@@ -65,4 +62,5 @@ dependencies {
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.work.testing
+    androidTestImplementation deps.arch_core.testing
 }

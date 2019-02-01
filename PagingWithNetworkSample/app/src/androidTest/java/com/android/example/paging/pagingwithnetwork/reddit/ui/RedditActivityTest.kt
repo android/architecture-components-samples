@@ -18,8 +18,9 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.app.Application
 import android.content.Intent
-import android.support.test.InstrumentationRegistry
-import android.support.v7.widget.RecyclerView
+import androidx.arch.core.executor.testing.CountingTaskExecutorRule
+import androidx.test.InstrumentationRegistry
+import androidx.recyclerview.widget.RecyclerView
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
@@ -32,6 +33,7 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -49,6 +51,9 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         @Parameterized.Parameters(name = "{0}")
         fun params() = RedditPostRepository.Type.values()
     }
+
+    @get:Rule
+    var testRule = CountingTaskExecutorRule()
 
     private val postFactory = PostFactory()
     @Before
@@ -78,13 +83,13 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
         assertThat(recyclerView.adapter, notNullValue())
         waitForAdapterChange(recyclerView)
-        assertThat(recyclerView.adapter.itemCount, `is`(3))
+        assertThat(recyclerView.adapter?.itemCount, `is`(3))
     }
 
     private fun waitForAdapterChange(recyclerView: RecyclerView) {
         val latch = CountDownLatch(1)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            recyclerView.adapter.registerAdapterDataObserver(
+            recyclerView.adapter?.registerAdapterDataObserver(
                     object : RecyclerView.AdapterDataObserver() {
                         override fun onChanged() {
                             latch.countDown()
@@ -95,7 +100,8 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
                         }
                     })
         }
-        if (recyclerView.adapter.itemCount > 0) {
+        testRule.drainTasks(1, TimeUnit.SECONDS)
+        if (recyclerView.adapter?.itemCount ?: 0 > 0) {
             return
         }
         assertThat(latch.await(10, TimeUnit.SECONDS), `is`(true))

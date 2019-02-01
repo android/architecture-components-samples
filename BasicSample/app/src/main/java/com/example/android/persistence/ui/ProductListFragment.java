@@ -16,13 +16,16 @@
 
 package com.example.android.persistence.ui;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
+import android.text.Editable;
+import android.view.View.OnClickListener;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,12 +64,24 @@ public class ProductListFragment extends Fragment {
         final ProductListViewModel viewModel =
                 ViewModelProviders.of(this).get(ProductListViewModel.class);
 
-        subscribeUi(viewModel);
+        mBinding.productsSearchBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Editable query = mBinding.productsSearchBox.getText();
+                if (query == null || query.toString().isEmpty()) {
+                    subscribeUi(viewModel.getProducts());
+                } else {
+                    subscribeUi(viewModel.searchProducts("*" + query + "*"));
+                }
+            }
+        });
+
+        subscribeUi(viewModel.getProducts());
     }
 
-    private void subscribeUi(ProductListViewModel viewModel) {
+    private void subscribeUi(LiveData<List<ProductEntity>> liveData) {
         // Update the list when the data changes
-        viewModel.getProducts().observe(this, new Observer<List<ProductEntity>>() {
+        liveData.observe(this, new Observer<List<ProductEntity>>() {
             @Override
             public void onChanged(@Nullable List<ProductEntity> myProducts) {
                 if (myProducts != null) {

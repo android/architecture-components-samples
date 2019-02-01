@@ -16,18 +16,18 @@
 
 package com.android.example.github.ui.user
 
-import android.arch.lifecycle.MutableLiveData
-import android.databinding.DataBindingComponent
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.hasDescendant
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.lifecycle.MutableLiveData
+import androidx.databinding.DataBindingComponent
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
 import androidx.navigation.NavController
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
@@ -39,7 +39,6 @@ import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
-import com.android.example.github.util.matcher
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
@@ -74,7 +73,7 @@ class UserFragmentTest {
     private val userData = MutableLiveData<Resource<User>>()
     private val repoListData = MutableLiveData<Resource<List<Repo>>>()
     private val testFragment = TestUserFragment().apply {
-        arguments = UserFragmentArgs.Builder("foo").build().toBundle()
+        arguments = UserFragmentArgs("foo").toBundle()
     }
 
     @Before
@@ -156,7 +155,7 @@ class UserFragmentTest {
         val selected = repos[1]
         onView(withText(selected.description)).perform(click())
         verify(testFragment.navController).navigate(
-                UserFragmentDirections.showRepo(selected.owner.login, selected.name).matcher()
+                UserFragmentDirections.showRepo(selected.owner.login, selected.name)
         )
     }
 

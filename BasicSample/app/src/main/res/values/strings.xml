@@ -19,7 +19,9 @@
     <string name="no_comments">No comments</string>
     <string name="loading_comments">Loading comments...</string>
     <string name="loading_products">Loading products...</string>
+    <string name="search_products_hint">Search Products...</string>
     <string name="cd_products_list">Products list</string>
     <string name="cd_comments_list">Comments list</string>
     <string name="cd_product_name">Name of the product</string>
+    <string name="cd_search_products">Search products</string>
 </resources>

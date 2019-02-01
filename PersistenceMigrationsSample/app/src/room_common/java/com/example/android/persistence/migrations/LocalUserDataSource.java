@@ -17,8 +17,8 @@
 package com.example.android.persistence.migrations;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 /**
  * Concrete implementation of the {@link LocalUserDataSource} that works with Room.

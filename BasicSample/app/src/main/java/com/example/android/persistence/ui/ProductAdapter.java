@@ -16,10 +16,10 @@
 
 package com.example.android.persistence.ui;
 
-import android.databinding.DataBindingUtil;
-import android.support.annotation.Nullable;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -39,6 +39,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public ProductAdapter(@Nullable ProductClickCallback clickCallback) {
         mProductClickCallback = clickCallback;
+        setHasStableIds(true);
     }
 
     public void setProductList(final List<? extends Product> productList) {
@@ -96,6 +97,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public int getItemCount() {
         return mProductList == null ? 0 : mProductList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mProductList.get(position).getId();
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {

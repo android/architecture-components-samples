@@ -16,27 +16,22 @@
  *
  */
 
-package com.example.background;
+package com.example.background
 
 /**
- * Defines a list of constants used for {@link androidx.work.Worker} names, inputs & outputs.
+ * Defines a list of constants used for [androidx.work.Worker] names, inputs & outputs.
  */
-public final class Constants {
-
+object Constants {
     // The name of the image manipulation work
-    public static final String IMAGE_MANIPULATION_WORK_NAME = "image_manipulation_work";
+    const val IMAGE_MANIPULATION_WORK_NAME = "image_manipulation_work"
 
     // Other keys
-    public static final String OUTPUT_PATH = "demo_filter_outputs";
-    public static final String BASE_URL = "https://api.imgur.com/3/";
-    public static final String KEY_IMAGE_URI = "KEY_IMAGE_URI";
+    const val OUTPUT_PATH = "demo_filter_outputs"
+    const val BASE_URL = "https://api.imgur.com/3/"
+    const val KEY_IMAGE_URI = "KEY_IMAGE_URI"
 
-    public static final String TAG_OUTPUT = "OUTPUT";
+    const val TAG_OUTPUT = "OUTPUT"
 
     // Provide your own clientId to test Imgur uploads.
-    public static final String IMGUR_CLIENT_ID = "";
-
-    private Constants() {
-
-    }
+    const val IMGUR_CLIENT_ID = ""
 }
