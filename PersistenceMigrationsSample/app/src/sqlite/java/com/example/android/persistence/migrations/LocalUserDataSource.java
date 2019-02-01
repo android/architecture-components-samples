@@ -16,18 +16,14 @@
 
 package com.example.android.persistence.migrations;
 
-import static com.example.android.persistence.migrations.UserPersistenceContract.UserEntry
-        .COLUMN_NAME_ENTRY_ID;
-import static com.example.android.persistence.migrations.UserPersistenceContract.UserEntry
-        .COLUMN_NAME_USERNAME;
-import static com.example.android.persistence.migrations.UserPersistenceContract.UserEntry
-        .TABLE_NAME;
-
+import static com.example.android.persistence.migrations.UserPersistenceContract.UserEntry.COLUMN_NAME_ENTRY_ID;
+import static com.example.android.persistence.migrations.UserPersistenceContract.UserEntry.COLUMN_NAME_USERNAME;
+import static com.example.android.persistence.migrations.UserPersistenceContract.UserEntry.TABLE_NAME;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Concrete implementation of the UserDataSource, working directly with SQLite APIs.

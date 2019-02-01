@@ -16,11 +16,11 @@
 
 package com.android.example.github.ui.search
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Transformations
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.android.example.github.repository.RepoRepository
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.util.AbsentLiveData
@@ -33,11 +33,13 @@ import javax.inject.Inject
 @OpenForTesting
 class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : ViewModel() {
 
-    private val query = MutableLiveData<String>()
+    private val _query = MutableLiveData<String>()
     private val nextPageHandler = NextPageHandler(repoRepository)
 
+    val query : LiveData<String> = _query
+
     val results: LiveData<Resource<List<Repo>>> = Transformations
-        .switchMap(query) { search ->
+        .switchMap(_query) { search ->
             if (search.isNullOrBlank()) {
                 AbsentLiveData.create()
             } else {
@@ -50,15 +52,15 @@ class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : View
 
     fun setQuery(originalInput: String) {
         val input = originalInput.toLowerCase(Locale.getDefault()).trim()
-        if (input == query.value) {
+        if (input == _query.value) {
             return
         }
         nextPageHandler.reset()
-        query.value = input
+        _query.value = input
     }
 
     fun loadNextPage() {
-        query.value?.let {
+        _query.value?.let {
             if (it.isNotBlank()) {
                 nextPageHandler.queryNextPage(it)
             }
@@ -66,8 +68,8 @@ class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : View
     }
 
     fun refresh() {
-        query.value?.let {
-            query.value = it
+        _query.value?.let {
+            _query.value = it
         }
     }
 

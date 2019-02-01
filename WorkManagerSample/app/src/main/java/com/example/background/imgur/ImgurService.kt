@@ -16,19 +16,19 @@
  *
  */
 
-package com.example.background.imgur;
+package com.example.background.imgur
 
-import okhttp3.MultipartBody;
-import retrofit2.Call;
-import retrofit2.http.Multipart;
-import retrofit2.http.POST;
-import retrofit2.http.Part;
+import okhttp3.MultipartBody
+import retrofit2.Call
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
 
 /**
- * A {@link retrofit2.Retrofit} interface to the Imgur postImage API.
+ * A [retrofit2.Retrofit] interface to the Imgur postImage API.
  */
-public interface ImgurService {
+interface ImgurService {
     @Multipart
     @POST("image")
-    Call<PostImageResponse> postImage(@Part MultipartBody.Part image);
+    fun postImage(@Part image: MultipartBody.Part): Call<PostImageResponse>
 }

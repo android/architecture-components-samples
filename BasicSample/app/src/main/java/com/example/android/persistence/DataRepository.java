@@ -1,8 +1,7 @@
 package com.example.android.persistence;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import com.example.android.persistence.db.AppDatabase;
 import com.example.android.persistence.db.entity.CommentEntity;
 import com.example.android.persistence.db.entity.ProductEntity;
@@ -55,5 +54,9 @@ public class DataRepository {
 
     public LiveData<List<CommentEntity>> loadComments(final int productId) {
         return mDatabase.commentDao().loadComments(productId);
+    }
+
+    public LiveData<List<ProductEntity>> searchProducts(String query) {
+        return mDatabase.productDao().searchAllProducts(query);
     }
 }

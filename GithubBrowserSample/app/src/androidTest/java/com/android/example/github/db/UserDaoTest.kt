@@ -16,16 +16,22 @@
 
 package com.android.example.github.db
 
-import android.support.test.runner.AndroidJUnit4
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.runner.AndroidJUnit4
 import com.android.example.github.util.LiveDataTestUtil.getValue
 import com.android.example.github.util.TestUtil
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class UserDaoTest : DbTest() {
+
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Test
     fun insertAndLoad() {
         val user = TestUtil.createUser("foo")

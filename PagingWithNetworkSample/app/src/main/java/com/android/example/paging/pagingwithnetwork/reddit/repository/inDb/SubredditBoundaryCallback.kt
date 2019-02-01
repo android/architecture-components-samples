@@ -16,9 +16,9 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
-import android.arch.paging.PagedList
-import android.arch.paging.PagingRequestHelper
-import android.support.annotation.MainThread
+import androidx.paging.PagedList
+import androidx.paging.PagingRequestHelper
+import androidx.annotation.MainThread
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.util.createStatusLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost

@@ -16,7 +16,7 @@
 
 package com.android.example.github.api
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.User

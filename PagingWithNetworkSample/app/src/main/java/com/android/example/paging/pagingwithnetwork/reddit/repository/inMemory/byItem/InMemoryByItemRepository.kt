@@ -16,10 +16,12 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem
 
-import android.arch.lifecycle.Transformations
-import android.arch.paging.LivePagedListBuilder
-import android.arch.paging.PagedList
-import android.support.annotation.MainThread
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import androidx.annotation.MainThread
+import androidx.paging.Config
+import androidx.paging.toLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
@@ -36,25 +38,26 @@ class InMemoryByItemRepository(
     @MainThread
     override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
         val sourceFactory = SubRedditDataSourceFactory(redditApi, subReddit, networkExecutor)
-        val pagedListConfig = PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setInitialLoadSizeHint(pageSize * 2)
-                .setPageSize(pageSize)
-                .build()
-        val pagedList = LivePagedListBuilder(sourceFactory, pagedListConfig)
+
+        // We use toLiveData Kotlin ext. function here, you could also use LivePagedListBuilder
+        val livePagedList = sourceFactory.toLiveData(
+                // we use Config Kotlin ext. function here, could also use PagedList.Config.Builder
+                config = Config(
+                        pageSize = pageSize,
+                        enablePlaceholders = false,
+                        initialLoadSizeHint = pageSize * 2),
                 // provide custom executor for network requests, otherwise it will default to
                 // Arch Components' IO pool which is also used for disk access
-                .setFetchExecutor(networkExecutor)
-                .build()
+                fetchExecutor = networkExecutor)
 
         val refreshState = Transformations.switchMap(sourceFactory.sourceLiveData) {
             it.initialLoad
         }
         return Listing(
-                pagedList = pagedList,
-                networkState = Transformations.switchMap(sourceFactory.sourceLiveData, {
-                    it.networkState
-                }),
+                pagedList = livePagedList,
+                networkState = Transformations.switchMap(sourceFactory.sourceLiveData) {
+                  it.networkState
+                },
                 retry = {
                     sourceFactory.sourceLiveData.value?.retryAllFailed()
                 },

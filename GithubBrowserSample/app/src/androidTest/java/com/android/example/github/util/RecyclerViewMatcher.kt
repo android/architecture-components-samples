@@ -17,7 +17,7 @@
 package com.android.example.github.util
 
 import android.content.res.Resources
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 import org.hamcrest.Description

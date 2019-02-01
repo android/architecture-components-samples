@@ -16,7 +16,7 @@
 
 package com.android.example.github.binding
 
-import android.databinding.BindingAdapter
+import androidx.databinding.BindingAdapter
 import android.view.View
 
 /**

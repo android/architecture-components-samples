@@ -16,11 +16,12 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
-import android.arch.paging.LivePagedListBuilder
-import android.support.annotation.MainThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
+import androidx.annotation.MainThread
+import androidx.paging.toLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
@@ -109,21 +110,21 @@ class DbRedditPostRepository(
                 handleResponse = this::insertResultIntoDb,
                 ioExecutor = ioExecutor,
                 networkPageSize = networkPageSize)
-        // create a data source factory from Room
-        val dataSourceFactory = db.posts().postsBySubreddit(subReddit)
-        val builder = LivePagedListBuilder(dataSourceFactory, pageSize)
-                .setBoundaryCallback(boundaryCallback)
-
         // we are using a mutable live data to trigger refresh requests which eventually calls
         // refresh method and gets a new live data. Each refresh request by the user becomes a newly
         // dispatched data in refreshTrigger
         val refreshTrigger = MutableLiveData<Unit>()
-        val refreshState = Transformations.switchMap(refreshTrigger, {
+        val refreshState = Transformations.switchMap(refreshTrigger) {
             refresh(subReddit)
-        })
+        }
+
+        // We use toLiveData Kotlin extension function here, you could also use LivePagedListBuilder
+        val livePagedList = db.posts().postsBySubreddit(subReddit).toLiveData(
+                pageSize = pageSize,
+                boundaryCallback = boundaryCallback)
 
         return Listing(
-                pagedList = builder.build(),
+                pagedList = livePagedList,
                 networkState = boundaryCallback.networkState,
                 retry = {
                     boundaryCallback.helper.retryAllFailed()
