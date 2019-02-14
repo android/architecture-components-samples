@@ -71,6 +71,7 @@ dependencies {
     implementation deps.support.recyclerview
     implementation deps.support.cardview
     implementation deps.support.design
+    implementation deps.support.core_ktx
     implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime
