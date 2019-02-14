@@ -48,6 +48,7 @@
                 android:adjustViewBounds="false"
                 android:cropToPadding="false"
                 android:scaleType="centerCrop"
+                app:transitionName="@{contributor.login}"
                 app:srcCompat="@android:drawable/btn_star"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="@dimen/default_margin"
