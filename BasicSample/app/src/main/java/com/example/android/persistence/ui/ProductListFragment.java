@@ -40,7 +40,7 @@ import java.util.List;
 
 public class ProductListFragment extends Fragment {
 
-    public static final String TAG = "ProductListViewModel";
+    public static final String TAG = "ProductListFragment";
 
     private ProductAdapter mProductAdapter;
 
