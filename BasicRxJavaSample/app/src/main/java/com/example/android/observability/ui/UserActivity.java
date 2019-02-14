@@ -73,7 +73,7 @@ public class UserActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(userName -> mUserName.setText(userName),
-                        throwable -> Log.e(TAG, "Unable to update username", throwable)));
+                        throwable -> Log.e(TAG, "Unable to get username", throwable)));
     }
 
     @Override
