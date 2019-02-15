@@ -24,7 +24,6 @@
         android:label="SearchFragment" >
         <action
             android:id="@+id/showRepo"
-            destination="@+id/repoFragment"
             app:destination="@id/repoFragment" />
     </fragment>
     <fragment
@@ -50,7 +49,9 @@
             app:argType="string"/>
         <argument
             android:name="avatarUrl"
-            app:argType="string"/>
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/showRepo"
             app:destination="@id/repoFragment" />

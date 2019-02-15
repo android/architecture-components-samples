@@ -107,7 +107,7 @@ class RepoFragment : Fragment(), Injectable {
                     imageView to contributor.login
             )
             navController().navigate(
-                    RepoFragmentDirections.showUser(contributor.login, contributor.avatarUrl ?: ""),
+                    RepoFragmentDirections.showUser(contributor.login, contributor.avatarUrl),
                     extras
             )
         }
