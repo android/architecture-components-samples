@@ -31,6 +31,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigator
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
@@ -50,7 +51,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.mock
@@ -77,7 +80,7 @@ class RepoFragmentTest {
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
 
     private val repoFragment = TestRepoFragment().apply {
-        arguments = RepoFragmentArgs.Builder("a", "b").build().toBundle()
+        arguments = RepoFragmentArgs("a", "b").toBundle()
     }
 
     @Before
@@ -173,7 +176,8 @@ class RepoFragmentTest {
         setContributors("aa", "bb", "cc")
         onView(withText("cc")).perform(click())
         verify(repoFragment.navController).navigate(
-                RepoFragmentDirections.showUser("cc")
+                eq(RepoFragmentDirections.showUser("cc")),
+                any(FragmentNavigator.Extras::class.java)
         )
     }
 

@@ -16,9 +16,10 @@
 
 package com.example.android.observability.ui;
 
-import androidx.lifecycle.ViewModel;
 import com.example.android.observability.UserDataSource;
 import com.example.android.observability.persistence.User;
+
+import androidx.lifecycle.ViewModel;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 

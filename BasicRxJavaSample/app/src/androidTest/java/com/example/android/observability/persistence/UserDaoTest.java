@@ -40,7 +40,7 @@ public class UserDaoTest {
     private UsersDatabase mDatabase;
 
     @Before
-    public void initDb() throws Exception {
+    public void initDb() {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
         mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
@@ -51,7 +51,7 @@ public class UserDaoTest {
     }
 
     @After
-    public void closeDb() throws Exception {
+    public void closeDb() {
         mDatabase.close();
     }
 
@@ -65,7 +65,7 @@ public class UserDaoTest {
     @Test
     public void insertAndGetUser() {
         // When inserting a new user in the data source
-        mDatabase.userDao().insertUser(USER);
+        mDatabase.userDao().insertUser(USER).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDatabase.userDao().getUser()
@@ -81,11 +81,11 @@ public class UserDaoTest {
     @Test
     public void updateAndGetUser() {
         // Given that we have a user in the data source
-        mDatabase.userDao().insertUser(USER);
+        mDatabase.userDao().insertUser(USER).blockingAwait();
 
         // When we are updating the name of the user
         User updatedUser = new User(USER.getId(), "new username");
-        mDatabase.userDao().insertUser(updatedUser);
+        mDatabase.userDao().insertUser(updatedUser).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDatabase.userDao().getUser()
@@ -101,7 +101,7 @@ public class UserDaoTest {
     @Test
     public void deleteAndGetUser() {
         // Given that we have a user in the data source
-        mDatabase.userDao().insertUser(USER);
+        mDatabase.userDao().insertUser(USER).blockingAwait();
 
         //When we are deleting all users
         mDatabase.userDao().deleteAllUsers();
