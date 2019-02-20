@@ -22,7 +22,7 @@
 **/
 ext.deps = [:]
 def versions = [:]
-versions.android_gradle_plugin = "3.3.0"
+versions.android_gradle_plugin = '3.5.0-alpha01'
 versions.apache_commons = "2.5"
 versions.arch_core = "2.0.0"
 versions.atsl_rules = "1.1.0-alpha4"

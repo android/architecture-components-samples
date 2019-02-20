@@ -57,8 +57,8 @@ class UserFragment : Fragment(), Injectable {
 
     var binding by autoCleared<UserFragmentBinding>()
     var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
-
-    private lateinit var userViewModel: UserViewModel
+    @Inject
+    lateinit var userViewModel: UserViewModel
     private val params by navArgs<UserFragmentArgs>()
     private var adapter by autoCleared<RepoListAdapter>()
     private var handler = Handler(Looper.getMainLooper())
@@ -102,8 +102,7 @@ class UserFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        userViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(UserViewModel::class.java)
+
         userViewModel.setLogin(params.login)
         binding.args = params
 

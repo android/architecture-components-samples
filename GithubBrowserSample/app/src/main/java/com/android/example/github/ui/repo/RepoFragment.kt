@@ -49,6 +49,7 @@ class RepoFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
     lateinit var repoViewModel: RepoViewModel
 
     @Inject
@@ -94,8 +95,7 @@ class RepoFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        repoViewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(RepoViewModel::class.java)
+
         val params = RepoFragmentArgs.fromBundle(arguments!!)
         repoViewModel.setId(params.owner, params.name)
         binding.setLifecycleOwner(viewLifecycleOwner)

@@ -61,6 +61,7 @@ class SearchFragment : Fragment(), Injectable {
 
     var adapter by autoCleared<RepoListAdapter>()
 
+    @Inject
     lateinit var searchViewModel: SearchViewModel
 
     override fun onCreateView(
@@ -79,8 +80,7 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        searchViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(SearchViewModel::class.java)
+
         binding.setLifecycleOwner(viewLifecycleOwner)
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
