@@ -8,8 +8,8 @@ A collection of samples using the [Architecture Components](https://developer.an
 - [ViewModels](https://developer.android.com/topic/libraries/architecture/viewmodel)
 - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
 - [Paging](https://developer.android.com/topic/libraries/architecture/paging/)
-- [Navigation (alpha)](https://developer.android.com/topic/libraries/architecture/navigation/)
-- [WorkManager (alpha)](https://developer.android.com/topic/libraries/architecture/workmanager/)
+- [Navigation](https://developer.android.com/topic/libraries/architecture/navigation/)
+- [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager/)
 
 ### Samples
 
@@ -33,10 +33,10 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
   how to use the Paging library with a backend API via Retrofit, in Kotlin.
 
 * **[NavigationBasicSample](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationBasicSample)** - Shows
-  how to use Navigation (alpha) to perform navigation and deep linking in Kotlin.
+  how to use Navigation to perform navigation and deep linking in Kotlin.
   
 * **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
-  how to use WorkManager (alpha) to do background work, in Kotlin.
+  how to use WorkManager to do background work, in Kotlin.
 
 ### Other Architecture Components Samples
 
