@@ -41,7 +41,7 @@ versions.mockito = "2.7.19"
 versions.mockito_all = "1.10.19"
 versions.mockito_android = "2.22.0"
 versions.mockwebserver = "3.8.1"
-versions.navigation = "1.0.0-rc02"
+versions.navigation = "2.0.0-rc02"
 versions.okhttp_logging_interceptor = "3.9.0"
 versions.paging = "2.1.0-rc01"
 versions.retrofit = "2.3.0"
@@ -155,11 +155,11 @@ work.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work"
 deps.work = work
 
 def navigation = [:]
-navigation.runtime = "android.arch.navigation:navigation-runtime:$versions.navigation"
-navigation.runtime_ktx = "android.arch.navigation:navigation-runtime-ktx:$versions.navigation"
-navigation.fragment = "android.arch.navigation:navigation-fragment:$versions.navigation"
-navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$versions.navigation"
-navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
+navigation.runtime = "androidx.navigation:navigation-runtime:$versions.navigation"
+navigation.runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
+navigation.fragment = "androidx.navigation:navigation-fragment:$versions.navigation"
+navigation.fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
+navigation.safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 deps.navigation = navigation
 
 ext.deps = deps
