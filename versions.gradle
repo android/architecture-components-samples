@@ -50,7 +50,7 @@ versions.rx_android = "2.0.1"
 versions.rxjava2 = "2.1.3"
 versions.support = "1.0.0"
 versions.timber = "4.5.1"
-versions.work = "1.0.0"
+versions.work = "2.0.0-rc01"
 
 def deps = [:]
 
@@ -148,10 +148,10 @@ build_versions.build_tools = "28.0.3"
 ext.build_versions = build_versions
 
 def work = [:]
-work.runtime = "android.arch.work:work-runtime:$versions.work"
-work.testing = "android.arch.work:work-testing:$versions.work"
-work.firebase = "android.arch.work:work-firebase:$versions.work"
-work.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work"
+work.runtime = "androidx.work:work-runtime:$versions.work"
+work.testing = "androidx.work:work-testing:$versions.work"
+work.firebase = "androidx.work:work-firebase:$versions.work"
+work.runtime_ktx = "androidx.work:work-runtime-ktx:$versions.work"
 deps.work = work
 
 def navigation = [:]
