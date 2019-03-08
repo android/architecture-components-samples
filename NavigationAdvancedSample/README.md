@@ -13,7 +13,7 @@ Navigation](https://developer.android.com/topic/libraries/architecture/navigatio
  * Deep linking and navigating to a destination should yield the same stack
 
 Check out the
-[UI tests](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationAdvancedSample/app/src/androidTest/java/com/example/android/navigationadvancedsample/BotomNavigatoinTest.kt)
+[UI tests](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationAdvancedSample/app/src/androidTest/java/com/example/android/navigationadvancedsample)
 to learn about specific scenarios.
 
 License
