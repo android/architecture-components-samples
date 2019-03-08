@@ -35,5 +35,13 @@
         android:id="@+id/aboutScreen"
         android:name="com.example.android.navigationadvancedsample.homescreen.About"
         android:label="@string/title_about"
-        tools:layout="@layout/fragment_about"/>
+        tools:layout="@layout/fragment_about">
+        <action
+            android:id="@+id/action_aboutScreen_to_moreAbout"
+            app:destination="@id/moreAbout" />
+    </fragment>
+    <fragment
+        android:id="@+id/moreAbout"
+        android:name="com.example.android.navigationadvancedsample.homescreen.MoreAbout"
+        android:label="MoreAbout" />
 </navigation>

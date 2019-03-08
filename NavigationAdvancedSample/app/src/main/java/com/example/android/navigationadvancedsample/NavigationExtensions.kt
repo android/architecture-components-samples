@@ -125,7 +125,10 @@ fun BottomNavigationView.setupWithNavController(
                 isOnFirstFragment = selectedItemTag == firstFragmentTag
                 selectedNavController.value = selectedFragment.navController
                 true
-            } else {
+            }else {
+                selectedNavController.value?.graph?.startDestination?.let {startDestination ->
+                    selectedNavController.value?.popBackStack(startDestination, false)
+                }
                 false
             }
         }
