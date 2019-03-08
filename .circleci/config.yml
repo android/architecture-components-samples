@@ -86,6 +86,10 @@ jobs:
     environment:
       PROJECT_DIR: NavigationBasicSample
     <<: *test_sample
+  test_navigation_advanced_sample:
+    environment:
+      PROJECT_DIR: NavigationAdvancedSample
+    <<: *test_sample
   test_paging_sample:
     environment:
       PROJECT_DIR: PagingSample
@@ -116,6 +120,7 @@ workflows:
       - test_rx_java_sample_kotlin
       - test_github_browser_sample
       # no tests - test_navigation_basic_sample
+      - test_navigation_advanced_sample
       - test_paging_sample
       - test_paging_network_sample
       - test_persistence_content_provider_sample
