@@ -34,14 +34,12 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
 
 * **[NavigationBasicSample](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationBasicSample)** - Shows
   how to use Navigation to perform navigation and deep linking in Kotlin.
+
+* **[NavigationAdvancedSample](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationAdvancedSample)** - Shows
+  how to handle multiple back stacks with Navigation and a BottomNavigationView.
   
 * **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
   how to use WorkManager to do background work, in Kotlin.
-
-### Other Architecture Components Samples
-
-* **[Architecture Blueprints - todo-mvvm-live](https://github.com/googlesamples/android-architecture/tree/dev-todo-mvvm-live)** - Variant of the to-do app that uses ViewModels, LiveData and Data Binding with an MVVM architecture.
-* **[Architecture Blueprints - todo-mvp](https://github.com/googlesamples/android-architecture/tree/todo-mvp)** - Variant of the to-do app that uses Room as a local data source with an MVP architecture.
 
 
 ### Reporting Issues
