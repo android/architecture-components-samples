@@ -1,3 +1,5 @@
+package com.example.background
+
 /*
  *
  *  * Copyright (C) 2018 The Android Open Source Project
@@ -15,8 +17,6 @@
  *  * limitations under the License.
  *
  */
-
-package com.example.background
 
 
 import android.content.Context
