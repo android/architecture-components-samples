@@ -126,9 +126,15 @@ fun BottomNavigationView.setupWithNavController(
                 selectedNavController.value = selectedFragment.navController
                 true
             }else {
-                selectedNavController.value?.graph?.startDestination?.let {startDestination ->
-                    selectedNavController.value?.popBackStack(startDestination, false)
+                val startDestinationTab = selectedNavController.value?.graph?.startDestination
+                val currentDestinationTab = selectedNavController.value?.currentDestination?.id
+
+                if (startDestinationTab != currentDestinationTab){
+                    startDestinationTab?.let {startDestination ->
+                        selectedNavController.value?.popBackStack(startDestination, false)
+                    }
                 }
+
                 false
             }
         }
