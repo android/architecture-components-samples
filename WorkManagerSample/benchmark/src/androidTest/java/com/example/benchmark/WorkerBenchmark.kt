@@ -61,10 +61,10 @@ class WorkerBenchmark {
     }
 
     @Test
-    fun testWaterColorEffectFilterWorker() {
+    fun testGrayScaleFilterWorker() {
         val worker = createWorker { appContext: Context, _: String,
                                     workerParameters: WorkerParameters ->
-            WaterColorFilterWorker(appContext, workerParameters)
+            GrayScaleFilterWorker(appContext, workerParameters)
         }
 
         val state = benchmarkRule.state
@@ -76,10 +76,10 @@ class WorkerBenchmark {
     }
 
     @Test
-    fun testGrayScaleFilterWorker() {
+    fun testWaterColorEffectFilterWorker() {
         val worker = createWorker { appContext: Context, _: String,
                                     workerParameters: WorkerParameters ->
-            GrayScaleFilterWorker(appContext, workerParameters)
+            WaterColorFilterWorker(appContext, workerParameters)
         }
 
         val state = benchmarkRule.state
