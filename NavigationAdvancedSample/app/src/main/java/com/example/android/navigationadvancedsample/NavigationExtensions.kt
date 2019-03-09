@@ -25,6 +25,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
@@ -129,6 +130,17 @@ fun BottomNavigationView.setupWithNavController(
                 false
             }
         }
+    }
+
+    // Return to the first page when item is re-selected
+    setOnNavigationItemReselectedListener { item ->
+        val tag = graphIdToTagMap[item.itemId]
+        val navFragment = fragmentManager.findFragmentByTag(tag) as NavHostFragment
+        val navController = navFragment.navController
+        val navOption = navOptions {
+            popUpTo = navController.graph.id
+        }
+        navController.navigate(navController.graph.id, null, navOption)
     }
 
     // handle deep link
