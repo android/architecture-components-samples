@@ -52,8 +52,7 @@ class WorkerBenchmark {
             BlurEffectFilterWorker(appContext, workerParameters)
         }
 
-        val state = benchmarkRule.state
-        while (state.keepRunning()) {
+        benchmarkRule.measure {
             val inputStream = inputStreamFor(mContext, JETPACK)
             worker.applyFilter(BitmapFactory.decodeStream(inputStream))
             inputStream?.close()
@@ -67,8 +66,7 @@ class WorkerBenchmark {
             GrayScaleFilterWorker(appContext, workerParameters)
         }
 
-        val state = benchmarkRule.state
-        while (state.keepRunning()) {
+        benchmarkRule.measure {
             val inputStream = inputStreamFor(mContext, JETPACK)
             worker.applyFilter(BitmapFactory.decodeStream(inputStream))
             inputStream?.close()
@@ -82,8 +80,7 @@ class WorkerBenchmark {
             WaterColorFilterWorker(appContext, workerParameters)
         }
 
-        val state = benchmarkRule.state
-        while (state.keepRunning()) {
+        benchmarkRule.measure {
             val inputStream = inputStreamFor(mContext, JETPACK)
             worker.applyFilter(BitmapFactory.decodeStream(inputStream))
             inputStream?.close()
@@ -96,7 +93,8 @@ class WorkerBenchmark {
     ): T {
         lateinit var worker: T
         val workerFactory = object : WorkerFactory() {
-            override fun createWorker(appContext: Context, workerClassName: String, workerParameters: WorkerParameters): ListenableWorker? {
+            override fun createWorker(appContext: Context, workerClassName: String,
+                                      workerParameters: WorkerParameters): ListenableWorker? {
                 worker = createWorkerBlock(appContext, workerClassName, workerParameters)
                 return worker
             }
