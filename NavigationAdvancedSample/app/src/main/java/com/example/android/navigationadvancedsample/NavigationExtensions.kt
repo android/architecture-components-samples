@@ -137,10 +137,7 @@ fun BottomNavigationView.setupWithNavController(
         val tag = graphIdToTagMap[item.itemId]
         val navFragment = fragmentManager.findFragmentByTag(tag) as NavHostFragment
         val navController = navFragment.navController
-        val navOption = navOptions {
-            popUpTo = navController.graph.id
-        }
-        navController.navigate(navController.graph.id, null, navOption)
+        navController.popBackStack(navController.graph.startDestination, false)
     }
 
     // handle deep link
