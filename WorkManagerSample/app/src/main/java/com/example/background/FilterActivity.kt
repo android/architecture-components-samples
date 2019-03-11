@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.example.lib.Constants
 
 /**
  * The [android.app.Activity] where the user picks filters to be applied on an

@@ -16,7 +16,7 @@
  *
  */
 
-package com.example.background
+package com.example.lib
 
 /**
  * Defines a list of constants used for [androidx.work.Worker] names, inputs & outputs.

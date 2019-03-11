@@ -16,15 +16,18 @@
  *
  */
 
-package com.example.background.workers
+package com.example.lib.workers
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.work.*
-import com.example.background.Constants
-import com.example.background.imgur.ImgurApi
+import androidx.work.Data
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
+import com.example.lib.Constants
+import com.example.lib.imgur.ImgurApi
 
 /**
  * Uploads an image to Imgur using the [ImgurApi].
@@ -71,6 +74,5 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters)
             Log.e(TAG, message)
             return Result.failure()
         }
-
     }
 }
