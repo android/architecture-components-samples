@@ -16,7 +16,7 @@
  *
  */
 
-package com.example.background.workers
+package com.example.lib.workers
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -27,7 +27,7 @@ import android.util.Log
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.example.background.Constants
+import com.example.lib.Constants
 import java.text.SimpleDateFormat
 import java.util.*
 
