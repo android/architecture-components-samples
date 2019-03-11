@@ -16,19 +16,30 @@
  *
  */
 
-package com.example.background.imgur
+package com.example.lib.imgur
 
-import okhttp3.MultipartBody
-import retrofit2.Call
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
+import com.google.gson.annotations.SerializedName
 
 /**
- * A [retrofit2.Retrofit] interface to the Imgur postImage API.
+ * The Imgur API post image response.
  */
-interface ImgurService {
-    @Multipart
-    @POST("image")
-    fun postImage(@Part image: MultipartBody.Part): Call<PostImageResponse>
+class PostImageResponse {
+
+    @SerializedName("data")
+    val data: UploadedImage? = null
+
+    @SerializedName("success")
+    val isSuccess: Boolean = false
+
+    @SerializedName("status")
+    val status: Int = 0
+
+    class UploadedImage {
+        @SerializedName("id")
+        val id: String? = null
+
+        @SerializedName("link")
+        val link: String? = null
+    }
+
 }

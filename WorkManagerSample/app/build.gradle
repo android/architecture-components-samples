@@ -23,7 +23,6 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion build_versions.target_sdk
     buildToolsVersion build_versions.build_tools
-
     defaultConfig {
         applicationId "com.example.background"
         vectorDrawables {
@@ -36,7 +35,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled true
@@ -47,6 +45,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':lib')
 
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime_ktx

@@ -16,10 +16,10 @@
  *
  */
 
-package com.example.background.imgur
+package com.example.lib.imgur
 
 import android.net.Uri
-import com.example.background.Constants
+import com.example.lib.Constants
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Retrofit
