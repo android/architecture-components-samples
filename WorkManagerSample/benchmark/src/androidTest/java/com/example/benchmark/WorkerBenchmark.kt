@@ -11,11 +11,12 @@ import androidx.test.runner.AndroidJUnit4
 import androidx.work.*
 import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import com.example.benchmark.workers.BaseFilterWorker
-import com.example.benchmark.workers.BaseFilterWorker.Companion.inputStreamFor
-import com.example.benchmark.workers.BlurEffectFilterWorker
-import com.example.benchmark.workers.GrayScaleFilterWorker
-import com.example.benchmark.workers.WaterColorFilterWorker
+import com.example.lib.Constants
+import com.example.lib.workers.BaseFilterWorker
+import com.example.lib.workers.BaseFilterWorker.Companion.inputStreamFor
+import com.example.lib.workers.BlurEffectFilterWorker
+import com.example.lib.workers.GrayScaleFilterWorker
+import com.example.lib.workers.WaterColorFilterWorker
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
