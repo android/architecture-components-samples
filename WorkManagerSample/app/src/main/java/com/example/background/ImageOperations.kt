@@ -20,8 +20,7 @@ package com.example.background
 
 import android.net.Uri
 import androidx.work.*
-import com.example.lib.Constants
-import com.example.lib.workers.*
+import com.example.background.workers.*
 
 /**
  * Builds and holds WorkContinuation based on supplied filters.

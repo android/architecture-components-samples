@@ -1,4 +1,4 @@
-package com.example.lib.workers
+package com.example.background.workers
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,7 +10,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.lib.Constants
+import com.example.background.Constants
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import java.io.*
