@@ -16,22 +16,30 @@
  *
  */
 
-package com.example.lib
+package com.example.background.imgur
+
+import com.google.gson.annotations.SerializedName
 
 /**
- * Defines a list of constants used for [androidx.work.Worker] names, inputs & outputs.
+ * The Imgur API post image response.
  */
-object Constants {
-    // The name of the image manipulation work
-    const val IMAGE_MANIPULATION_WORK_NAME = "image_manipulation_work"
+class PostImageResponse {
 
-    // Other keys
-    const val OUTPUT_PATH = "demo_filter_outputs"
-    const val BASE_URL = "https://api.imgur.com/3/"
-    const val KEY_IMAGE_URI = "KEY_IMAGE_URI"
+    @SerializedName("data")
+    val data: UploadedImage? = null
 
-    const val TAG_OUTPUT = "OUTPUT"
+    @SerializedName("success")
+    val isSuccess: Boolean = false
 
-    // Provide your own clientId to test Imgur uploads.
-    const val IMGUR_CLIENT_ID = ""
+    @SerializedName("status")
+    val status: Int = 0
+
+    class UploadedImage {
+        @SerializedName("id")
+        val id: String? = null
+
+        @SerializedName("link")
+        val link: String? = null
+    }
+
 }
