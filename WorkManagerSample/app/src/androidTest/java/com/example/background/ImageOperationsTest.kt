@@ -35,10 +35,10 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import com.example.lib.Constants.KEY_IMAGE_URI
-import com.example.lib.Constants.TAG_OUTPUT
-import com.example.lib.workers.BaseFilterWorker
-import com.example.lib.workers.BaseFilterWorker.Companion.inputStreamFor
+import com.example.background.Constants.KEY_IMAGE_URI
+import com.example.background.Constants.TAG_OUTPUT
+import com.example.background.workers.BaseFilterWorker
+import com.example.background.workers.BaseFilterWorker.Companion.inputStreamFor
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule

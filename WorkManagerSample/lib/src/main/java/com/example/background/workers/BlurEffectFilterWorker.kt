@@ -1,4 +1,4 @@
-package com.example.lib.workers
+package com.example.background.workers
 
 import android.content.Context
 import android.graphics.Bitmap

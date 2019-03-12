@@ -16,19 +16,22 @@
  *
  */
 
-package com.example.lib.imgur
-
-import okhttp3.MultipartBody
-import retrofit2.Call
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
+package com.example.background
 
 /**
- * A [retrofit2.Retrofit] interface to the Imgur postImage API.
+ * Defines a list of constants used for [androidx.work.Worker] names, inputs & outputs.
  */
-interface ImgurService {
-    @Multipart
-    @POST("image")
-    fun postImage(@Part image: MultipartBody.Part): Call<PostImageResponse>
+object Constants {
+    // The name of the image manipulation work
+    const val IMAGE_MANIPULATION_WORK_NAME = "image_manipulation_work"
+
+    // Other keys
+    const val OUTPUT_PATH = "demo_filter_outputs"
+    const val BASE_URL = "https://api.imgur.com/3/"
+    const val KEY_IMAGE_URI = "KEY_IMAGE_URI"
+
+    const val TAG_OUTPUT = "OUTPUT"
+
+    // Provide your own clientId to test Imgur uploads.
+    const val IMGUR_CLIENT_ID = ""
 }

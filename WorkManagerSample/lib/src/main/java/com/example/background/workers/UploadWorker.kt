@@ -16,7 +16,7 @@
  *
  */
 
-package com.example.lib.workers
+package com.example.background.workers
 
 import android.content.Context
 import android.net.Uri
@@ -26,8 +26,8 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.lib.Constants
-import com.example.lib.imgur.ImgurApi
+import com.example.background.Constants
+import com.example.background.imgur.ImgurApi
 
 /**
  * Uploads an image to Imgur using the [ImgurApi].
