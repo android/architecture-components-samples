@@ -53,6 +53,7 @@ versions.timber = "4.5.1"
 versions.work = "2.0.0-rc01"
 
 def deps = [:]
+deps.benchmark = "androidx.benchmark:benchmark:1.0.0-alpha01"
 
 def support = [:]
 support.annotations = "androidx.annotation:annotation:$versions.support"
