@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package paging.android.example.com.pagingsample
+package com.example.lib
 
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil

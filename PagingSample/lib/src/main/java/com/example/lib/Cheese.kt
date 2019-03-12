@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package paging.android.example.com.pagingsample
+package com.example.lib
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package paging.android.example.com.pagingsample
+package com.example.lib
 
 import java.util.concurrent.Executors
 
@@ -23,6 +23,6 @@ private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
 /**
  * Utility method to run blocks on a dedicated background thread, used for io/database work.
  */
-fun ioThread(f : () -> Unit) {
+fun ioThread(f: () -> Unit) {
     IO_EXECUTOR.execute(f)
 }
