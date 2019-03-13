@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.lib
+package paging.android.example.com.pagingsample
 
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.lib.Cheese
 
 /**
  * Database Access Object for the Cheese database.

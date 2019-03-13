@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.lib
+package paging.android.example.com.pagingsample
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lib.R
 
 /**
  * A simple ViewHolder that can bind a Cheese item. It also accepts null items since the data may

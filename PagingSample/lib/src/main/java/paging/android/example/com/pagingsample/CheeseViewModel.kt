@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.lib
+package paging.android.example.com.pagingsample
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

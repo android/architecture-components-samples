@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.lib
+package paging.android.example.com.pagingsample
 
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.*

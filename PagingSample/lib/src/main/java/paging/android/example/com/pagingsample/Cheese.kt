@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.lib
+package paging.android.example.com.pagingsample
 
-import java.util.concurrent.Executors
-
-private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 /**
- * Utility method to run blocks on a dedicated background thread, used for io/database work.
+ * Data class that represents our items.
  */
-fun ioThread(f: () -> Unit) {
-    IO_EXECUTOR.execute(f)
-}
+@Entity
+data class Cheese(@PrimaryKey(autoGenerate = true) val id: Int, val name: String)

@@ -24,9 +24,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lib.CheeseAdapter
-import com.example.lib.CheeseViewHolder
-import com.example.lib.CheeseViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
