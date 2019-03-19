@@ -15,11 +15,10 @@
  */
 
 
-
 /**
-* Shared file between builds so that they can all use the same dependencies and
-* maven repositories.
-**/
+ * Shared file between builds so that they can all use the same dependencies and
+ * maven repositories.
+ **/
 ext.deps = [:]
 def versions = [:]
 versions.android_gradle_plugin = '3.3.1'
@@ -27,6 +26,7 @@ versions.apache_commons = "2.5"
 versions.arch_core = "2.0.0"
 versions.atsl_rules = "1.1.0-alpha4"
 versions.atsl_runner = "1.1.0-alpha4"
+versions.benchmark = "1.0.0-alpha01"
 versions.constraint_layout = "2.0.0-alpha2"
 versions.core_ktx = "1.0.0"
 versions.dagger = "2.16"
@@ -53,6 +53,7 @@ versions.timber = "4.5.1"
 versions.work = "2.0.0-rc01"
 
 def deps = [:]
+deps.benchmark = "androidx.benchmark:benchmark:$versions.benchmark"
 
 def support = [:]
 support.annotations = "androidx.annotation:annotation:$versions.support"
