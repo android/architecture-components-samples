@@ -24,8 +24,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.android.example.lib.R
 import com.android.example.paging.pagingwithnetwork.GlideRequests
-import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 
 /**
