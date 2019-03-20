@@ -1,60 +1,51 @@
 package com.example.benchmark
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.paging.PageKeyedDataSource
-import androidx.paging.PagedList
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.android.example.paging.pagingwithnetwork.GlideApp
-import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
+import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
+import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.ui.PostsAdapter
-import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import com.android.example.paging.pagingwithnetwork.reddit.ui.SubRedditViewModel
 import kotlinx.android.synthetic.main.activity_benchmark.*
-import java.util.concurrent.Executors
 
 class BenchmarkActivity : AppCompatActivity() {
+
+    private lateinit var model: SubRedditViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_benchmark)
+        model = getViewModel()
 
         val glide = GlideApp.with(this)
-        val adapter = PostsAdapter(glide) {}
+        val adapter = PostsAdapter(glide) {
+            model.retry()
+        }
         list.adapter = adapter
+        model.posts.observe(this, Observer {
+            adapter.submitList(it)
+        })
+        model.networkState.observe(this, Observer {
+            adapter.setNetworkState(it)
+        })
 
-        val config = PagedList.Config.Builder()
-                .setInitialLoadSizeHint(5)
-                .setPageSize(5)
-                .build()
-
-        val pagedStrings: PagedList<RedditPost> = PagedList.Builder<Int, RedditPost>(MockDataSource(), config)
-                .setInitialKey(0)
-                .setFetchExecutor(Executors.newSingleThreadExecutor())
-                .setNotifyExecutor {
-                    runOnUiThread { it.run() }
-                }
-                .build()
-
-        adapter.submitList(pagedStrings)
-        adapter.setNetworkState(NetworkState.LOADED)
-    }
-}
-
-class MockDataSource : PageKeyedDataSource<Int, RedditPost>() {
-    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, RedditPost>) {
-        callback.onResult((0..5).map { generatePost() }.toList(), 1, 2)
+        model.showSubreddit("androiddev")
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, RedditPost>) {
-        callback.onResult((0..5).map { generatePost() }.toList(), params.key + 1)
-    }
-
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, RedditPost>) {
-        callback.onResult((0..5).map { generatePost() }.toList(), params.key - 1)
-    }
-
-    private fun generatePost(): RedditPost {
-        val title = (0..10).map { (0..100).random() }.joinToString("")
-        return RedditPost("name", title, 1, "author", "androiddev", 0, System.currentTimeMillis(), null, null)
+    private fun getViewModel(): SubRedditViewModel {
+        return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                val repoType = RedditPostRepository.Type.DB
+                val repo = ServiceLocator.instance(this@BenchmarkActivity)
+                        .getRepository(repoType)
+                @Suppress("UNCHECKED_CAST")
+                return SubRedditViewModel(repo) as T
+            }
+        })[SubRedditViewModel::class.java]
     }
 }

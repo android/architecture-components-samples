@@ -23,13 +23,18 @@ import androidx.lifecycle.ViewModel
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 
 class SubRedditViewModel(private val repository: RedditPostRepository) : ViewModel() {
+
+    companion object {
+        val PAGE_SIZE = 30
+    }
+
     private val subredditName = MutableLiveData<String>()
     private val repoResult = map(subredditName) {
-        repository.postsOfSubreddit(it, 30)
+        repository.postsOfSubreddit(it, PAGE_SIZE)
     }
-    val posts = switchMap(repoResult, { it.pagedList })!!
-    val networkState = switchMap(repoResult, { it.networkState })!!
-    val refreshState = switchMap(repoResult, { it.refreshState })!!
+    val posts = switchMap(repoResult) { it.pagedList }!!
+    val networkState = switchMap(repoResult) { it.networkState }!!
+    val refreshState = switchMap(repoResult) { it.refreshState }!!
 
     fun refresh() {
         repoResult.value?.refresh?.invoke()

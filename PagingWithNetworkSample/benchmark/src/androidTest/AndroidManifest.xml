@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.benchmark">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:debuggable="false"
         android:theme="@style/TextAppearance.AppCompat"
