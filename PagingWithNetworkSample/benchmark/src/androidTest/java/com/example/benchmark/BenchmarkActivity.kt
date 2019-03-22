@@ -1,7 +1,6 @@
 package com.example.benchmark
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
@@ -27,6 +26,9 @@ class BenchmarkActivity : AppCompatActivity() {
                 .setPageSize(5)
                 .build()
 
+        // This PagedList is setup to execute on the main thread as the UI benchmarks that use this
+        // PagedList run on the ui thread and posting back and forth between threads can cause
+        // inconsistent results.
         val pagedStrings: PagedList<RedditPost> = PagedList.Builder<Int, RedditPost>(MockDataSource(), config)
                 .setInitialKey(0)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
@@ -42,19 +44,19 @@ class BenchmarkActivity : AppCompatActivity() {
 
 class MockDataSource : PageKeyedDataSource<Int, RedditPost>() {
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, RedditPost>) {
-        callback.onResult((0..5).map { generatePost() }.toList(), 1, 2)
+        callback.onResult(List(5) { generatePost() }.toList(), 1, 2)
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, RedditPost>) {
-        callback.onResult((0..5).map { generatePost() }.toList(), params.key + 1)
+        callback.onResult(List(5) { generatePost() }.toList(), params.key + 1)
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, RedditPost>) {
-        callback.onResult((0..5).map { generatePost() }.toList(), params.key - 1)
+        callback.onResult(List(5) { generatePost() }.toList(), params.key - 1)
     }
 
     private fun generatePost(): RedditPost {
-        val title = (0..10).map { (0..100).random() }.joinToString("")
+        val title = List(10) { (0..100).random() }.joinToString("")
         return RedditPost("name", title, 1, "author", "androiddev", 0, System.currentTimeMillis(), null, null)
     }
 }
