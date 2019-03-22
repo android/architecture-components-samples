@@ -44,6 +44,7 @@ dependencies {
     implementation deps.support.design
     implementation deps.support.core_ktx
     implementation deps.constraint_layout
+    implementation deps.arch_core.runtime
 
     // Navigation
     implementation deps.navigation.runtime_ktx
