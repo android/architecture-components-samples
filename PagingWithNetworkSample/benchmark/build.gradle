@@ -24,28 +24,11 @@ dependencies {
     implementation project(path: ':lib')
 
     implementation deps.support.app_compat
-    implementation deps.support.recyclerview
-    implementation deps.support.cardview
-    implementation deps.support.design
-    implementation deps.room.runtime
-    implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     implementation deps.paging_ktx
-    implementation deps.kotlin.stdlib
-    implementation deps.glide.runtime
 
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.arch_core.testing
     androidTestImplementation deps.benchmark
-
     androidTestImplementation deps.junit
-    androidTestImplementation deps.retrofit.mock
-    androidTestImplementation deps.mockito.core
-    androidTestImplementation deps.mockito.android
-
-    testImplementation deps.junit
-    testImplementation deps.retrofit.mock
-    testImplementation deps.arch_core.testing
-    testImplementation deps.mockito.core
 }
