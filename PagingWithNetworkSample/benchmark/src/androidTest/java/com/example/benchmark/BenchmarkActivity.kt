@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.benchmark
 
 import android.os.Bundle
@@ -26,9 +41,6 @@ class BenchmarkActivity : AppCompatActivity() {
                 .setPageSize(5)
                 .build()
 
-        // This PagedList is setup to execute on the main thread as the UI benchmarks that use this
-        // PagedList run on the ui thread and posting back and forth between threads can cause
-        // inconsistent results.
         val pagedStrings: PagedList<RedditPost> = PagedList.Builder<Int, RedditPost>(MockDataSource(), config)
                 .setInitialKey(0)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
@@ -44,15 +56,15 @@ class BenchmarkActivity : AppCompatActivity() {
 
 class MockDataSource : PageKeyedDataSource<Int, RedditPost>() {
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, RedditPost>) {
-        callback.onResult(List(5) { generatePost() }.toList(), 1, 2)
+        callback.onResult(List(200) { generatePost() }.toList(), -1, 1)
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, RedditPost>) {
-        callback.onResult(List(5) { generatePost() }.toList(), params.key + 1)
+        callback.onResult(List(200) { generatePost() }.toList(), params.key + 1)
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, RedditPost>) {
-        callback.onResult(List(5) { generatePost() }.toList(), params.key - 1)
+        callback.onResult(List(200) { generatePost() }.toList(), params.key - 1)
     }
 
     private fun generatePost(): RedditPost {
