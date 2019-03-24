@@ -24,6 +24,11 @@
     android:orientation="vertical"
     android:id="@+id/root"
     tools:context="com.android.example.paging.pagingwithnetwork.reddit.ui.RedditActivity">
+    <Button
+      android:text="Refresh"
+      android:id="@+id/refresh"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_layout"
         android:layout_width="match_parent"

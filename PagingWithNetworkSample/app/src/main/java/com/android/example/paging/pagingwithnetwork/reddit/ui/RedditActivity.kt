@@ -63,6 +63,9 @@ class RedditActivity : AppCompatActivity() {
         initSearch()
         val subreddit = savedInstanceState?.getString(KEY_SUBREDDIT) ?: DEFAULT_SUBREDDIT
         model.showSubreddit(subreddit)
+        refresh.setOnClickListener {
+            model.refresh()
+        }
     }
 
     private fun getViewModel(): SubRedditViewModel {
