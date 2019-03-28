@@ -16,11 +16,14 @@
 package com.example.benchmark
 
 import androidx.benchmark.BenchmarkRule
+import androidx.benchmark.measureRepeated
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.annotation.UiThreadTest
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import kotlinx.android.synthetic.main.activity_benchmark.*
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,31 +38,24 @@ class PostsAdapterBenchmark {
     @get:Rule
     val activityRule = ActivityTestRule(BenchmarkActivity::class.java)
 
-    @Before
-    fun setup() {
-        activityRule.runOnUiThread {
-            // Ensure surrounding pages are loaded before starting benchmarks.
-            activityRule.activity.list.scrollTo(0, 1000)
-        }
-    }
-
     @UiThreadTest
     @Test
     fun scrollItem() {
-        var position = 1
-        benchmarkRule.measure {
-            activityRule.activity.list.scrollToPosition(position)
-            position += 1
+        val activity = activityRule.activity
+
+        // If RecyclerView has children, the items are attached, bound, and gone through layout.
+        // Ready to benchmark.
+        assertTrue("RecyclerView expected to have children", activity.list.childCount > 0)
+
+        benchmarkRule.measureRepeated {
+            activity.list.scrollByOneItem()
+            runWithTimingDisabled {
+                activity.testExecutor.flush()
+            }
         }
     }
 
-    @UiThreadTest
-    @Test
-    fun scrollPage() {
-        var position = 5
-        benchmarkRule.measure {
-            activityRule.activity.list.scrollToPosition(0)
-            position += 5
-        }
+    fun RecyclerView.scrollByOneItem() {
+        scrollBy(0, getChildAt(childCount - 1).height)
     }
 }
