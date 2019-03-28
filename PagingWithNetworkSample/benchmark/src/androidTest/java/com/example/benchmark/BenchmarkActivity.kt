@@ -24,9 +24,9 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkSta
 import com.android.example.paging.pagingwithnetwork.reddit.ui.PostsAdapter
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import kotlinx.android.synthetic.main.activity_benchmark.*
-import java.util.concurrent.Executors
 
 class BenchmarkActivity : AppCompatActivity() {
+    val testExecutor = TestExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +43,8 @@ class BenchmarkActivity : AppCompatActivity() {
 
         val pagedStrings: PagedList<RedditPost> = PagedList.Builder<Int, RedditPost>(MockDataSource(), config)
                 .setInitialKey(0)
-                .setFetchExecutor(Executors.newSingleThreadExecutor())
-                .setNotifyExecutor {
-                    runOnUiThread { it.run() }
-                }
+                .setFetchExecutor(testExecutor)
+                .setNotifyExecutor(testExecutor)
                 .build()
 
         adapter.submitList(pagedStrings)
