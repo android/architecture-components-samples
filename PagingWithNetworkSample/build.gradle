@@ -18,10 +18,16 @@
 
 buildscript {
     apply from: 'versions.gradle'
+
     addRepos(repositories)
+    repositories {
+        maven { url '../benchmark-repository' }
+    }
+
     dependencies {
         classpath deps.android_gradle_plugin
         classpath deps.kotlin.plugin
+        classpath deps.benchmark_gradle
     }
     repositories {
         google()
@@ -30,6 +36,10 @@ buildscript {
 
 allprojects {
     addRepos(repositories)
+
+    repositories {
+        maven { url '../../benchmark-repository' }
+    }
 }
 
 task clean(type: Delete) {
