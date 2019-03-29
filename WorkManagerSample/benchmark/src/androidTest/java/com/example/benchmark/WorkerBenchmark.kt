@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.benchmark.BenchmarkRule
+import androidx.benchmark.measureRepeated
 import androidx.test.InstrumentationRegistry
 import androidx.test.filters.SmallTest
 import androidx.test.runner.AndroidJUnit4
@@ -45,7 +46,7 @@ class WorkerBenchmark {
             BlurEffectFilterWorker(appContext, workerParameters)
         }
 
-        benchmarkRule.measure {
+        benchmarkRule.measureRepeated {
             val inputStream = inputStreamFor(context, JETPACK)
             worker.applyFilter(BitmapFactory.decodeStream(inputStream))
             inputStream?.close()
@@ -59,7 +60,7 @@ class WorkerBenchmark {
             GrayScaleFilterWorker(appContext, workerParameters)
         }
 
-        benchmarkRule.measure {
+        benchmarkRule.measureRepeated {
             val inputStream = inputStreamFor(context, JETPACK)
             worker.applyFilter(BitmapFactory.decodeStream(inputStream))
             inputStream?.close()
@@ -73,7 +74,7 @@ class WorkerBenchmark {
             WaterColorFilterWorker(appContext, workerParameters)
         }
 
-        benchmarkRule.measure {
+        benchmarkRule.measureRepeated {
             val inputStream = inputStreamFor(context, JETPACK)
             worker.applyFilter(BitmapFactory.decodeStream(inputStream))
             inputStream?.close()
