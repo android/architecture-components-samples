@@ -23,10 +23,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Status.FAILED
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Status.RUNNING
+import com.android.example.lib.R
 
 /**
  * A View Holder that can display a loading or have click action.
