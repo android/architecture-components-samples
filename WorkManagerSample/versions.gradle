@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
+
 /**
  * Shared file between builds so that they can all use the same dependencies and
  * maven repositories.
  **/
 ext.deps = [:]
 def versions = [:]
-versions.android_gradle_plugin = '3.3.1'
+versions.android_gradle_plugin = '3.4.0-rc02'
 versions.apache_commons = "2.5"
 versions.arch_core = "2.0.1"
 versions.atsl_rules = "1.1.1"
 versions.atsl_runner = "1.1.1"
 versions.atsl_junit = "1.1.0"
+versions.benchmark = "1.0.0-alpha01
 versions.constraint_layout = "2.0.0-alpha2"
 versions.core_ktx = "1.0.0"
 versions.dagger = "2.16"
@@ -52,9 +54,11 @@ versions.rxjava2 = "2.1.3"
 versions.support = "1.0.0"
 versions.timber = "4.5.1"
 versions.work = "2.1.0-alpha01"
+ext.versions = versions
 
 def deps = [:]
-deps.benchmark = "androidx.benchmark:benchmark:1.0.0-alpha01"
+deps.benchmark = "androidx.benchmark:benchmark:$versions.benchmark"
+deps.benchmark_gradle = "androidx.benchmark:benchmark-gradle-plugin:$versions.benchmark"
 
 def support = [:]
 support.annotations = "androidx.annotation:annotation:$versions.support"
@@ -181,5 +185,4 @@ def addRepos(RepositoryHandler handler) {
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     handler.maven { url "https://kotlin.bintray.com/kotlinx/" } // For kotlinx-metadata-jvm used by Room 2.1.0 (KT-27991)
 }
-
 ext.addRepos = this.&addRepos
