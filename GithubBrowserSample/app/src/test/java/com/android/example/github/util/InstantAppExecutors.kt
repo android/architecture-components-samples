@@ -17,11 +17,13 @@
 package com.android.example.github.util
 
 import com.android.example.github.AppExecutors
+import kotlinx.coroutines.asCoroutineDispatcher
 
 import java.util.concurrent.Executor
 
-class InstantAppExecutors : AppExecutors(instant, instant, instant) {
+class InstantAppExecutors : AppExecutors(instantDispatcher, instantDispatcher, instantDispatcher) {
     companion object {
         private val instant = Executor { it.run() }
+        private val instantDispatcher = instant.asCoroutineDispatcher()
     }
 }

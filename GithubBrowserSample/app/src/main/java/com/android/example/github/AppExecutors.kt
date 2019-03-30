@@ -18,12 +18,18 @@ package com.android.example.github
 
 import android.os.Handler
 import android.os.Looper
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.asCoroutineDispatcher
 
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Global executor pools for the whole application.
@@ -33,34 +39,43 @@ import javax.inject.Singleton
  */
 @Singleton
 open class AppExecutors(
-    private val diskIO: Executor,
-    private val networkIO: Executor,
-    private val mainThread: Executor
+    val io: CoroutineDispatcher,
+    val default : CoroutineDispatcher,
+    val mainThread: CoroutineDispatcher
 ) {
-
     @Inject
     constructor() : this(
-        Executors.newSingleThreadExecutor(),
-        Executors.newFixedThreadPool(3),
-        MainThreadExecutor()
+        Dispatchers.IO,
+        Dispatchers.Default,
+        Dispatchers.Main
     )
 
+    // temporary fields during migration to coroutines
+    private val diskExecutor = DispatcherExecutor(io)
+    private val networkExecutor = DispatcherExecutor(io)
+    private val mainExecutor = DispatcherExecutor(mainThread)
+
+    @Deprecated("use dispatchers")
     fun diskIO(): Executor {
-        return diskIO
+        return diskExecutor
     }
 
+    @Deprecated("use dispatchers")
     fun networkIO(): Executor {
-        return networkIO
+        return networkExecutor
     }
 
+    @Deprecated("use dispatchers")
     fun mainThread(): Executor {
-        return mainThread
+        return mainExecutor
     }
+}
 
-    private class MainThreadExecutor : Executor {
-        private val mainThreadHandler = Handler(Looper.getMainLooper())
-        override fun execute(command: Runnable) {
-            mainThreadHandler.post(command)
-        }
+/**
+ * Temporary class during migration from executors to Coroutines
+ */
+private class DispatcherExecutor(val dispatcher : CoroutineDispatcher) : Executor {
+    override fun execute(command: java.lang.Runnable) {
+        dispatcher.dispatch(EmptyCoroutineContext, command)
     }
 }
