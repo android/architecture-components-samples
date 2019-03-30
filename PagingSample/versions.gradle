@@ -41,7 +41,6 @@ versions.kotlin = "1.3.20"
 versions.coroutines = "1.1.1"
 versions.lifecycle = "2.1.0-alpha03"
 versions.mockito = "2.25.0"
-versions.mockito = "2.7.19"
 versions.mockito_all = "1.10.19"
 versions.mockito_android = "2.25.0"
 versions.mockwebserver = "3.8.1"
@@ -87,8 +86,8 @@ lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$versions.lifecy
 lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
 lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
 lifecycle.viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
-lifecycle.runtime_eap = "androidx.lifecycle:lifecycle-runtime-eap:$versions.lifecycle_eap"
 lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
+lifecycle.runtime_eap = "androidx.lifecycle:lifecycle-runtime-eap:$versions.lifecycle_eap"
 lifecycle.livedata_eap = "androidx.lifecycle:lifecycle-livedata-eap:$versions.lifecycle_eap"
 deps.lifecycle = lifecycle
 
