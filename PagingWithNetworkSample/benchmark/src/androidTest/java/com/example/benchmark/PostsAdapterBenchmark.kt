@@ -19,9 +19,9 @@ import androidx.benchmark.BenchmarkRule
 import androidx.benchmark.measureRepeated
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.annotation.UiThreadTest
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
 import kotlinx.android.synthetic.main.activity_benchmark.*
 import org.junit.Assert.assertTrue
 import org.junit.Rule
