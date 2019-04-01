@@ -33,4 +33,5 @@ dependencies {
     androidTestImplementation deps.arch_core.testing
     androidTestImplementation deps.benchmark
     androidTestImplementation deps.junit
+    androidTestImplementation deps.junit_androidx
 }
