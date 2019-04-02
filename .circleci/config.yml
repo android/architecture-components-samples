@@ -119,7 +119,7 @@ workflows:
       - test_rx_java_sample
       - test_rx_java_sample_kotlin
       - test_github_browser_sample
-      # no tests - test_navigation_basic_sample
+      - test_navigation_basic_sample
       - test_navigation_advanced_sample
       - test_paging_sample
       - test_paging_network_sample
