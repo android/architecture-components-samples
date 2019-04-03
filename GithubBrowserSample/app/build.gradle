@@ -76,11 +76,13 @@ dependencies {
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime_eap
     implementation deps.lifecycle.livedata_eap
+    implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
     implementation deps.glide.runtime
+    implementation deps.coroutines.android
 
     implementation deps.dagger.runtime
     implementation deps.dagger.android
@@ -99,6 +101,7 @@ dependencies {
     testImplementation deps.mock_web_server
     testImplementation deps.arch_core.testing
     testImplementation deps.mockito.core
+    testImplementation deps.coroutines.test
 
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
