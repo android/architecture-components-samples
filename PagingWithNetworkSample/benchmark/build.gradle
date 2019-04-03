@@ -28,10 +28,10 @@ dependencies {
     implementation deps.support.app_compat
     implementation deps.paging_ktx
 
+    androidTestImplementation deps.atsl.junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.arch_core.testing
     androidTestImplementation deps.benchmark
     androidTestImplementation deps.junit
-    androidTestImplementation deps.junit_androidx
 }
