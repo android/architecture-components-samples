@@ -17,9 +17,11 @@
 package com.android.example.github.api
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.android.example.github.util.ApiResponseCallAdapterFactory
 import com.android.example.github.util.LiveDataCallAdapterFactory
 import com.android.example.github.util.LiveDataTestUtil.getValue
 import com.android.example.github.vo.User
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
@@ -51,6 +53,7 @@ class GithubServiceTest {
         service = Retrofit.Builder()
             .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .build()
             .create(GithubService::class.java)
@@ -64,8 +67,9 @@ class GithubServiceTest {
     @Test
     fun getUser() {
         enqueueResponse("user-yigit.json")
-        val yigit = (getValue(service.getUser("yigit")) as ApiSuccessResponse).body
-
+        val yigit = runBlocking {
+            (service.getUser("yigit") as ApiSuccessResponse).body
+        }
         val request = mockWebServer.takeRequest()
         assertThat(request.path, `is`("/users/yigit"))
 

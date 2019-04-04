@@ -73,7 +73,7 @@ dependencies {
     implementation deps.support.design
     implementation deps.support.core_ktx
     implementation deps.navigation.fragment_ktx
-    implementation deps.room.runtime
+    implementation deps.room.ktx
     implementation deps.lifecycle.runtime_eap
     implementation deps.lifecycle.livedata_eap
     implementation deps.lifecycle.livedata_ktx

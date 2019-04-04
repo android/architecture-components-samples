@@ -38,16 +38,11 @@ class UserRepository @Inject constructor(
 ) {
 
     fun loadUser(login: String): LiveData<Resource<User>> {
-        return object : NetworkBoundResource<User, User>(appExecutors) {
-            override fun saveCallResult(item: User) {
-                userDao.insert(item)
-            }
-
-            override fun shouldFetch(data: User?) = data == null
-
-            override fun loadFromDb() = userDao.findByLogin(login)
-
-            override fun createCall() = githubService.getUser(login)
-        }.asLiveData()
+        return networkBoundResource(
+            saveCallResult = userDao::insert,
+            shouldFetch = { false },
+            fetch = {githubService.getUser(login)},
+            loadFromDb = {userDao.findByLogin(login)}
+        )
     }
 }
