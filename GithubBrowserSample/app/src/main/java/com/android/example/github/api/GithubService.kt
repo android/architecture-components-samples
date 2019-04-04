@@ -21,6 +21,7 @@ import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.User
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -30,7 +31,7 @@ import retrofit2.http.Query
  */
 interface GithubService {
     @GET("users/{login}")
-    fun getUser(@Path("login") login: String): LiveData<ApiResponse<User>>
+    suspend fun getUser(@Path("login") login: String): ApiResponse<User>
 
     @GET("users/{login}/repos")
     fun getRepos(@Path("login") login: String): LiveData<ApiResponse<List<Repo>>>
