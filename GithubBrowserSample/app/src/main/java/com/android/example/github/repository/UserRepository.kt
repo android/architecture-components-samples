@@ -17,7 +17,6 @@
 package com.android.example.github.repository
 
 import androidx.lifecycle.LiveData
-import com.android.example.github.AppExecutors
 import com.android.example.github.api.GithubService
 import com.android.example.github.db.UserDao
 import com.android.example.github.testing.OpenForTesting
@@ -32,7 +31,6 @@ import javax.inject.Singleton
 @OpenForTesting
 @Singleton
 class UserRepository @Inject constructor(
-    private val appExecutors: AppExecutors,
     private val userDao: UserDao,
     private val githubService: GithubService
 ) {
@@ -40,9 +38,9 @@ class UserRepository @Inject constructor(
     fun loadUser(login: String): LiveData<Resource<User>> {
         return networkBoundResource(
             saveCallResult = userDao::insert,
-            shouldFetch = { false },
-            fetch = {githubService.getUser(login)},
-            loadFromDb = {userDao.findByLogin(login)}
+            shouldFetch = { false },// we don't refetch users
+            fetch = { githubService.getUser(login) },
+            loadFromDb = { userDao.findByLogin(login) }
         )
     }
 }

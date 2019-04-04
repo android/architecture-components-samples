@@ -18,19 +18,13 @@ package com.android.example.github.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.android.example.github.api.ApiResponse
 import com.android.example.github.api.FakeGithubService
-import com.android.example.github.api.GithubService
 import com.android.example.github.db.UserDao
-import com.android.example.github.util.ApiUtil
 import com.android.example.github.util.CoroutineTestBase
-import com.android.example.github.util.InstantAppExecutors
 import com.android.example.github.util.TestUtil
-import com.android.example.github.util.mock
 import com.android.example.github.vo.Resource
 import com.android.example.github.vo.User
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -38,11 +32,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.isA
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import retrofit2.Response
@@ -53,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class UserRepositoryTest : CoroutineTestBase() {
     private val userDao = mock(UserDao::class.java)
     private val githubService = spy(FakeGithubService())
-    private val repo = UserRepository(InstantAppExecutors(), userDao, githubService)
+    private val repo = UserRepository(userDao, githubService)
 
     @Rule
     @JvmField
@@ -79,14 +70,12 @@ class UserRepositoryTest : CoroutineTestBase() {
             calledService.set(true)
             ApiResponse.create(Response.success(user))
         }
-        val liveData = repo.loadUser("foo")
-        liveData.addObserver().apply {
+        repo.loadUser("foo").addObserver().apply {
             assertItems(Resource.loading(null))
             reset()
             dbData.value = null
             triggerAllActions()
             assertItems(Resource.success(user))
-
             MatcherAssert.assertThat(calledService.get(), CoreMatchers.`is`(true))
         }
     }
