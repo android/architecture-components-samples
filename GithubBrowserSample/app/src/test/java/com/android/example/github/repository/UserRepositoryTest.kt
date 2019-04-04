@@ -19,27 +19,40 @@ package com.android.example.github.repository
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.android.example.github.api.ApiResponse
+import com.android.example.github.api.FakeGithubService
 import com.android.example.github.api.GithubService
 import com.android.example.github.db.UserDao
 import com.android.example.github.util.ApiUtil
+import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.util.InstantAppExecutors
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Resource
 import com.android.example.github.vo.User
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.isA
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
+import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
+import retrofit2.Response
+import java.util.concurrent.atomic.AtomicBoolean
 
+@ObsoleteCoroutinesApi
 @RunWith(JUnit4::class)
-class UserRepositoryTest {
+class UserRepositoryTest : CoroutineTestBase() {
     private val userDao = mock(UserDao::class.java)
-    private val githubService = mock(GithubService::class.java)
+    private val githubService = spy(FakeGithubService())
     private val repo = UserRepository(InstantAppExecutors(), userDao, githubService)
 
     @Rule
@@ -48,36 +61,49 @@ class UserRepositoryTest {
 
     @Test
     fun loadUser() {
-        repo.loadUser("abc")
+        `when`(userDao!!.findByLogin("abc")).thenReturn(MutableLiveData())
+        repo.loadUser("abc").addObserver()
         verify(userDao).findByLogin("abc")
     }
 
     @Test
     fun goToNetwork() {
         val dbData = MutableLiveData<User>()
-        `when`(userDao!!.findByLogin("foo")).thenReturn(dbData)
         val user = TestUtil.createUser("foo")
-        val call = ApiUtil.successCall(user)
-        `when`(githubService!!.getUser("foo")).thenReturn(call)
-        val observer = mock<Observer<Resource<User>>>()
+        `when`(userDao!!.findByLogin("foo"))
+            .thenReturn(dbData) // first controlled value
+            .thenReturn(MutableLiveData<User>(user)) // then updated value
+            .thenThrow(AssertionError("unexpected call"))
+        val calledService = AtomicBoolean()
+        githubService.getUserImpl = {
+            calledService.set(true)
+            ApiResponse.create(Response.success(user))
+        }
+        val liveData = repo.loadUser("foo")
+        liveData.addObserver().apply {
+            assertItems(Resource.loading(null))
+            reset()
+            dbData.value = null
+            triggerAllActions()
+            assertItems(Resource.success(user))
 
-        repo.loadUser("foo").observeForever(observer)
-        verify(githubService, never()).getUser("foo")
-        val updatedDbData = MutableLiveData<User>()
-        `when`(userDao.findByLogin("foo")).thenReturn(updatedDbData)
-        dbData.value = null
-        verify(githubService).getUser("foo")
+            MatcherAssert.assertThat(calledService.get(), CoreMatchers.`is`(true))
+        }
     }
 
     @Test
     fun dontGoToNetwork() {
-        val dbData = MutableLiveData<User>()
         val user = TestUtil.createUser("foo")
-        dbData.value = user
-        `when`(userDao!!.findByLogin("foo")).thenReturn(dbData)
-        val observer = mock<Observer<Resource<User>>>()
-        repo.loadUser("foo").observeForever(observer)
-        verify(githubService, never()).getUser("foo")
-        verify(observer).onChanged(Resource.success(user))
+        val dbData = MutableLiveData<User>(user)
+        `when`(userDao!!.findByLogin("foo"))
+            .thenReturn(dbData)
+            .thenThrow(AssertionError("unexpected db read call"))
+        repo.loadUser("foo").addObserver().apply {
+            triggerAllActions()
+            assertItems(
+                Resource.loading(null),
+                Resource.success(user)
+            )
+        }
     }
 }

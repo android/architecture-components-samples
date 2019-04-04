@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.squareup.retrofit2</groupId>
+  <artifactId>adapter-java8</artifactId>
+  <version>2.5.2-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20190404.013832</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20190404013832</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>2.5.2-20190404.013832-1</value>
+        <updated>20190404013832</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>2.5.2-20190404.013832-1</value>
+        <updated>20190404013832</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>

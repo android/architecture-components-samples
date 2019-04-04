@@ -22,6 +22,7 @@ import com.android.example.github.api.GithubService
 import com.android.example.github.db.GithubDb
 import com.android.example.github.db.RepoDao
 import com.android.example.github.db.UserDao
+import com.android.example.github.util.ApiResponseCallAdapterFactory
 import com.android.example.github.util.LiveDataCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -38,6 +39,7 @@ class AppModule {
             .baseUrl("https://api.github.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
             .build()
             .create(GithubService::class.java)
     }
