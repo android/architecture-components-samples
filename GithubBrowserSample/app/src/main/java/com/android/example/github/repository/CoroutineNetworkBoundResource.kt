@@ -20,6 +20,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataScope
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
@@ -30,7 +31,9 @@ import com.android.example.github.api.ApiSuccessResponse
 import com.android.example.github.vo.Resource
 import com.android.example.github.vo.Status
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.withContext
 import java.util.concurrent.CancellationException
 
 
@@ -70,30 +73,14 @@ private class CoroutineNetworkBoundResource<ResultType, RequestType>
             yield(Resource.loading(initialValue?.data))
         }
         val dbSource = loadFromDb()
-        val fetchDecision = CompletableDeferred<Boolean>()
-        yieldSource(dbSource.map {
-            if (fetchDecision.isActive) {
-                val shouldFetch = it == null || shouldFetch(it)
-                fetchDecision.complete(shouldFetch)
-                if (shouldFetch) {
-                    // dispatch loading
-                    Resource.loading(it)
-                } else {
-                    // no reason to fetch
-                    Resource.success(it)
-                }
-            } else {
-                if (fetchDecision.getCompleted()) {
-                    Resource.loading(it)
-                } else {
-                    Resource.success(it)
-                }
-            }
-        })
-
-        // now wait until database sends us some value
-        val shouldFetch = fetchDecision.await()
-        if (shouldFetch) {
+        val initialValue = dbSource.await()
+        val willFetch = initialValue == null || shouldFetch(initialValue)
+        if (!willFetch) {
+            // if we won't fetch, just yield existing db values as success
+            yieldSource(dbSource.map {
+                Resource.success(it)
+            })
+        } else {
             doFetch(dbSource, this)
         }
     }
@@ -102,12 +89,17 @@ private class CoroutineNetworkBoundResource<ResultType, RequestType>
         dbSource: LiveData<ResultType>,
         liveDataScope: LiveDataScope<Resource<ResultType>>
     ) {
+        // yield existing values as loading while we fetch
+        liveDataScope.yieldSource(dbSource.map {
+            Resource.loading(it)
+        })
         val response = fetchCatching()
         when (response) {
             is ApiSuccessResponse, is ApiEmptyResponse -> {
                 if (response is ApiSuccessResponse) {
                     val processed = processResponse(response)
                     liveDataScope.clearSource()
+                    // before saving it, disconnect it so that new values comes w/ success
                     saveCallResult(processed)
                 }
                 liveDataScope.yieldSource(loadFromDb().map {
@@ -141,5 +133,20 @@ private class CoroutineNetworkBoundResource<ResultType, RequestType>
      */
     private suspend fun <T> LiveDataScope<T>.clearSource() {
         yieldSource(MutableLiveData<T>())
+    }
+
+    private suspend fun <T> LiveData<T>.await() = withContext(Dispatchers.Main) {
+        val receivedValue = CompletableDeferred<T?>()
+        val observer = Observer<T> {
+            if (receivedValue.isActive){
+                receivedValue.complete(it)
+            }
+        }
+        try {
+            observeForever(observer)
+            return@withContext receivedValue.await()
+        } finally {
+            removeObserver(observer)
+        }
     }
 }
