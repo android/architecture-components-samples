@@ -27,7 +27,8 @@ import retrofit2.Call
  * Designed for tests to fake
  */
 open class FakeGithubService(
-    var getUserImpl: suspend (login: String) -> ApiResponse<User> = notImplemented1()
+    var getUserImpl: suspend (login: String) -> ApiResponse<User> = notImplemented1(),
+    var getRepoImpl: suspend (owner: String, name : String) -> ApiResponse<Repo> = notImplemented2()
 ) : GithubService {
     override suspend fun getUser(login: String) = getUserImpl(login)
 
@@ -35,9 +36,7 @@ open class FakeGithubService(
         TODO("not implemented")
     }
 
-    override fun getRepo(owner: String, name: String): LiveData<ApiResponse<Repo>> {
-        TODO("not implemented")
-    }
+    override suspend fun getRepo(owner: String, name: String) = getRepoImpl(owner, name)
 
     override fun getContributors(
         owner: String,
@@ -61,8 +60,8 @@ open class FakeGithubService(
             }
         }
 
-        private fun <T, R> notImplemented2(): suspend (t: T) -> R {
-            return { t: T ->
+        private fun <T1, T2, R> notImplemented2(): suspend (t1: T1, t2 : T2) -> R {
+            return { t1 : T1, t2 : T2 ->
                 TODO("")
             }
         }

@@ -37,10 +37,10 @@ interface GithubService {
     fun getRepos(@Path("login") login: String): LiveData<ApiResponse<List<Repo>>>
 
     @GET("repos/{owner}/{name}")
-    fun getRepo(
+    suspend fun getRepo(
         @Path("owner") owner: String,
         @Path("name") name: String
-    ): LiveData<ApiResponse<Repo>>
+    ): ApiResponse<Repo>
 
     @GET("repos/{owner}/{name}/contributors")
     fun getContributors(

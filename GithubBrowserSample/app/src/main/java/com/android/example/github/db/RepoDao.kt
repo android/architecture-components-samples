@@ -37,7 +37,7 @@ import java.util.Collections
 abstract class RepoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(vararg repos: Repo)
+    abstract suspend fun insert(repo: Repo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertContributors(contributors: List<Contributor>)

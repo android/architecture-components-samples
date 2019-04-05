@@ -20,12 +20,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.android.example.github.api.ApiResponse
+import com.android.example.github.api.FakeGithubService
 import com.android.example.github.api.GithubService
 import com.android.example.github.api.RepoSearchResponse
 import com.android.example.github.db.GithubDb
 import com.android.example.github.db.RepoDao
 import com.android.example.github.util.AbsentLiveData
 import com.android.example.github.util.ApiUtil.successCall
+import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.util.InstantAppExecutors
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.argumentCaptor
@@ -34,6 +36,7 @@ import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.RepoSearchResult
 import com.android.example.github.vo.Resource
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -48,21 +51,24 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
+import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import retrofit2.Response
+import java.util.concurrent.atomic.AtomicBoolean
 
+@ObsoleteCoroutinesApi
 @RunWith(JUnit4::class)
-class RepoRepositoryTest {
+class RepoRepositoryTest : CoroutineTestBase() {
     private lateinit var repository: RepoRepository
     private val dao = mock(RepoDao::class.java)
-    private val service = mock(GithubService::class.java)
+    private val service = spy(FakeGithubService())
     @Rule
     @JvmField
     val instantExecutorRule = InstantTaskExecutorRule()
 
     @Before
-    fun init() {
+    fun begin() {
         val db = mock(GithubDb::class.java)
         `when`(db.repoDao()).thenReturn(dao)
         `when`(db.runInTransaction(ArgumentMatchers.any())).thenCallRealMethod()
@@ -71,30 +77,34 @@ class RepoRepositoryTest {
 
     @Test
     fun loadRepoFromNetwork() {
-        val dbData = MutableLiveData<Repo>()
+        val dbData = MutableLiveData<Repo?>()
         `when`(dao.load("foo", "bar")).thenReturn(dbData)
 
         val repo = TestUtil.createRepo("foo", "bar", "desc")
-        val call = successCall(repo)
-        `when`(service.getRepo("foo", "bar")).thenReturn(call)
+        val calledService = AtomicBoolean(false)
+        service.getRepoImpl = { owner, name ->
+            check(owner == "foo")
+            check(name == "bar")
+            calledService.set(true)
+            ApiResponse.create(Response.success(repo))
+        }
 
         val data = repository.loadRepo("foo", "bar")
-        verify(dao).load("foo", "bar")
-        verifyNoMoreInteractions(service)
+        data.addObserver().apply {
+            verify(dao).load("foo", "bar")
+            verifyNoMoreInteractions(service)
+            assertItems(Resource.loading(null))
+            val updatedDbData = MutableLiveData<Repo>()
+            `when`(dao.load("foo", "bar")).thenReturn(updatedDbData)
 
-        val observer = mock<Observer<Resource<Repo>>>()
-        data.observeForever(observer)
-        verifyNoMoreInteractions(service)
-        verify(observer).onChanged(Resource.loading(null))
-        val updatedDbData = MutableLiveData<Repo>()
-        `when`(dao.load("foo", "bar")).thenReturn(updatedDbData)
+            dbData.value = null
+            assertThat(calledService.get(), `is`(true))
+            
+            verify(dao).insert(repo)
 
-        dbData.postValue(null)
-        verify(service).getRepo("foo", "bar")
-        verify(dao).insert(repo)
-
-        updatedDbData.postValue(repo)
-        verify(observer).onChanged(Resource.success(repo))
+            updatedDbData.postValue(repo)
+            verify(observer).onChanged(Resource.success(repo))
+        }
     }
 
     @Test
