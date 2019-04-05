@@ -221,6 +221,24 @@ class CoroutineNetworkBoundResourceTest {
         }
     }
 
+    @Test
+    fun removeObserverWhileRunning() {
+        val dbData = MutableLiveData<Foo>()
+        val ld = networkBoundResource<Foo, Foo>(
+            saveCallResult = {throw AssertionError("should not call")},
+            fetch = {throw AssertionError("should not call")},
+            loadFromDb = { dbData }
+        )
+        ld.addObserver().apply {
+            assertItems(Resource.loading(null))
+            assertThat(dbData.hasObservers(), `is`(true))
+            unsubscribe()
+            advanceTimeBy(10_000)
+            assertThat(dbData.hasObservers(), `is`(false))
+            assertItems(Resource.loading(null))
+        }
+    }
+
     private fun triggerAllActions() {
         do {
             testMainContext.triggerActions()
