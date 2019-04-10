@@ -52,6 +52,7 @@ dependencies {
     implementation deps.support.design
     implementation deps.support.v4
     implementation deps.constraint_layout
+    implementation deps.arch_core.runtime
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
     implementation deps.okhttp_logging_interceptor
