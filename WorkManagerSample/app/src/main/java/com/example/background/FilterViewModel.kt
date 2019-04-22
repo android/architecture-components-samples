@@ -18,6 +18,8 @@
 
 package com.example.background
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.work.WorkInfo
@@ -28,8 +30,8 @@ import androidx.work.WorkManager
  *
  * Keeps track of pending image filter operations.
  */
-class FilterViewModel : ViewModel() {
-    private val mWorkManager: WorkManager = WorkManager.getInstance()
+class FilterViewModel(application: Application) : AndroidViewModel(application) {
+    private val mWorkManager: WorkManager = WorkManager.getInstance(application)
 
     internal val outputStatus: LiveData<List<WorkInfo>>
         get() = mWorkManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)

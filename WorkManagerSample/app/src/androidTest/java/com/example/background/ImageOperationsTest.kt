@@ -85,12 +85,12 @@ class ImageOperationsTest {
                 .build()
         // Initialize WorkManager using the WorkManagerTestInitHelper.
         WorkManagerTestInitHelper.initializeTestWorkManager(mTargetContext, mConfiguration)
-        mWorkManager = WorkManager.getInstance()
+        mWorkManager = WorkManager.getInstance(mTargetContext)
     }
 
     @Test
     fun testImageOperations() {
-        val imageOperations = ImageOperations.Builder(IMAGE)
+        val imageOperations = ImageOperations.Builder(mTargetContext, IMAGE)
                 .setApplyGrayScale(true)
                 .build()
 
@@ -125,7 +125,7 @@ class ImageOperationsTest {
     @Test
     @SdkSuppress(maxSdkVersion = 22)
     fun testImageOperationsChain() {
-        val imageOperations = ImageOperations.Builder(IMAGE)
+        val imageOperations = ImageOperations.Builder(mTargetContext, IMAGE)
                 .setApplyWaterColor(true)
                 .setApplyGrayScale(true)
                 .setApplyBlur(true)

@@ -18,6 +18,7 @@
 
 package com.example.background
 
+import android.content.Context
 import android.net.Uri
 import androidx.work.*
 import com.example.background.workers.*
@@ -27,7 +28,7 @@ import com.example.background.workers.*
  */
 internal class ImageOperations private constructor(val continuation: WorkContinuation) {
 
-    internal class Builder(private val mImageUri: Uri) {
+    internal class Builder(private val mContext: Context, private val mImageUri: Uri) {
         private var mApplyWaterColor: Boolean = false
         private var mApplyGrayScale: Boolean = false
         private var mApplyBlur: Boolean = false
@@ -66,7 +67,7 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
          */
         fun build(): ImageOperations {
             var hasInputData = false
-            var continuation = WorkManager.getInstance()
+            var continuation = WorkManager.getInstance(mContext)
                     .beginUniqueWork(Constants.IMAGE_MANIPULATION_WORK_NAME,
                             ExistingWorkPolicy.REPLACE,
                             OneTimeWorkRequest.from(CleanupWorker::class.java))
