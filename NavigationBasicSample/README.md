@@ -1,9 +1,7 @@
 Android Architecture Components Navigation Basic Sample
 ==============================================
 
-### Features
-
-This sample showcases the following features of the Navigation component:
+This sample showcases the following features of the [Navigation component](https://developer.android.com/guide/navigation/):
 
  * Navigating via actions
  * Transitions

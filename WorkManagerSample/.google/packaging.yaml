@@ -27,14 +27,14 @@ status:       PUBLISHED
 # See http://go/sample-categories
 technologies: [Android]
 categories:   [Architecture]
-languages:    [Java]
+languages:    [Kotlin]
 solutions:    [Mobile]
 
 # May be omitted if unpublished
 github:       googlesamples/android-architecture-components
 
 # Values: BEGINNER | INTERMEDIATE | ADVANCED | EXPERT
-level:        BEGINNER
+level:        INTERMEDIATE
 
 # Default: apache2. May be omitted for most samples.
 # Alternatives: apache2-android (for AOSP)
