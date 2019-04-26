@@ -28,7 +28,7 @@ dependencies {
     implementation deps.work.runtime_ktx
 
     androidTestImplementation deps.junit
-    androidTestImplementation deps.atsl.junit
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.benchmark
