@@ -54,7 +54,7 @@ class PostsAdapterBenchmark {
         }
     }
 
-    fun RecyclerView.scrollByOneItem() {
+    private fun RecyclerView.scrollByOneItem() {
         scrollBy(0, getChildAt(childCount - 1).height)
     }
 }
