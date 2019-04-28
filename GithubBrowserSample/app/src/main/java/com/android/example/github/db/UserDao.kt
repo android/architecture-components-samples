@@ -33,4 +33,7 @@ interface UserDao {
 
     @Query("SELECT * FROM user WHERE login = :login")
     fun findByLogin(login: String): LiveData<User>
+
+    @Query("SELECT * FROM user WHERE login = :login")
+    fun getByLogin(login: String) : User?
 }

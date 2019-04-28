@@ -47,7 +47,7 @@ versions.mockwebserver = "3.8.1"
 versions.navigation = "2.1.0-alpha01"
 versions.okhttp_logging_interceptor = "3.9.0"
 versions.paging = "2.1.0-rc01"
-versions.robolectric = "4.2"
+versions.robolectric = "4.3-SNAPSHOT"
 versions.retrofit = "2.5.2-SNAPSHOT"
 versions.room = "2.1.0-alpha06"
 versions.rx_android = "2.0.1"
@@ -190,10 +190,10 @@ deps.navigation = navigation
 ext.deps = deps
 
 def addRepos(RepositoryHandler handler) {
+    handler.maven { url new File(projectDir.getAbsoluteFile(), "../m2repository").getAbsolutePath() }
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     handler.maven { url "https://kotlin.bintray.com/kotlinx/" } // For kotlinx-metadata-jvm used by Room 2.1.0 (KT-27991)
-    handler.maven { url new File(projectDir.getAbsoluteFile(), "../m2repository").getAbsolutePath() }
 }
 ext.addRepos = this.&addRepos

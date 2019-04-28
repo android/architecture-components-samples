@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.robolectric</groupId>
+  <artifactId>plugins-maven-dependency-resolver</artifactId>
+  <versioning>
+    <versions>
+      <version>4.3-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20190405214100</lastUpdated>
+  </versioning>
+</metadata>

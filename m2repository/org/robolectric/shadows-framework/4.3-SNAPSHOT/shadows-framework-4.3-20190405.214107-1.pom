@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.robolectric</groupId>
+  <artifactId>shadows-framework</artifactId>
+  <version>4.3-SNAPSHOT</version>
+  <name>framework</name>
+  <description>An alternative Android testing framework.</description>
+  <url>http://robolectric.org</url>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Christian Williams</name>
+      <email>christianw@google.com</email>
+      <organization>Google Inc.</organization>
+      <organizationUrl>http://google.com</organizationUrl>
+    </developer>
+    <developer>
+      <name>Jonathan Gerrish</name>
+      <email>jongerrish@google.com</email>
+      <organization>Google Inc.</organization>
+      <organizationUrl>http://google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/robolectric/robolectric.git</connection>
+    <developerConnection>scm:git:https://github.com/robolectric/robolectric.git</developerConnection>
+    <url>git@github.com:robolectric/robolectric.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>annotations</artifactId>
+      <version>4.3-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>resources</artifactId>
+      <version>4.3-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>pluginapi</artifactId>
+      <version>4.3-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>utils</artifactId>
+      <version>4.3-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>utils-reflector</artifactId>
+      <version>4.3-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>androidx.test</groupId>
+      <artifactId>monitor</artifactId>
+      <version>1.2.0-alpha03</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.almworks.sqlite4java</groupId>
+      <artifactId>sqlite4java</artifactId>
+      <version>0.282</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>53.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android.apps.common.testing.accessibility.framework</groupId>
+      <artifactId>accessibility-test-framework</artifactId>
+      <version>2.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-annotations</artifactId>
+      <version>28.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

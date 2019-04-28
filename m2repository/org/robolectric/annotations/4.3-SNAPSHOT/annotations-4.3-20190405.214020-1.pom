@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.robolectric</groupId>
+  <artifactId>annotations</artifactId>
+  <version>4.3-SNAPSHOT</version>
+  <name>annotations</name>
+  <description>An alternative Android testing framework.</description>
+  <url>http://robolectric.org</url>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Christian Williams</name>
+      <email>christianw@google.com</email>
+      <organization>Google Inc.</organization>
+      <organizationUrl>http://google.com</organizationUrl>
+    </developer>
+    <developer>
+      <name>Jonathan Gerrish</name>
+      <email>jongerrish@google.com</email>
+      <organization>Google Inc.</organization>
+      <organizationUrl>http://google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/robolectric/robolectric.git</connection>
+    <developerConnection>scm:git:https://github.com/robolectric/robolectric.git</developerConnection>
+    <url>git@github.com:robolectric/robolectric.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>shadowapi</artifactId>
+      <version>4.3-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

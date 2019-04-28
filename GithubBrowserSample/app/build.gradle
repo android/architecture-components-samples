@@ -60,6 +60,11 @@ android {
     lintOptions {
         lintConfig rootProject.file('lint.xml')
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 jacoco {
@@ -102,6 +107,10 @@ dependencies {
     testImplementation deps.arch_core.testing
     testImplementation deps.mockito.core
     testImplementation deps.coroutines.test
+    testImplementation deps.robolectric
+    testImplementation deps.atsl.runner
+    testImplementation deps.atsl.rules
+    testImplementation deps.atsl.ext_junit
 
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
