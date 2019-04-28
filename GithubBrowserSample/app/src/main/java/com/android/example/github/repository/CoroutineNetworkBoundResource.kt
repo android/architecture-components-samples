@@ -70,14 +70,14 @@ private class CoroutineNetworkBoundResource<ResultType, RequestType>
     @ExperimentalCoroutinesApi
     private val result = liveData<Resource<ResultType>> {
         if (initialValue?.status != Status.SUCCESS) {
-            yield(Resource.loading(initialValue?.data))
+            emit(Resource.loading(initialValue?.data))
         }
         val dbSource = loadFromDb()
         val initialValue = dbSource.await()
         val willFetch = initialValue == null || shouldFetch(initialValue)
         if (!willFetch) {
-            // if we won't fetch, just yield existing db values as success
-            yieldSource(dbSource.map {
+            // if we won't fetch, just emit existing db values as success
+            emitSource(dbSource.map {
                 Resource.success(it)
             })
         } else {
@@ -89,8 +89,8 @@ private class CoroutineNetworkBoundResource<ResultType, RequestType>
         dbSource: LiveData<ResultType>,
         liveDataScope: LiveDataScope<Resource<ResultType>>
     ) {
-        // yield existing values as loading while we fetch
-        liveDataScope.yieldSource(dbSource.map {
+        // emit existing values as loading while we fetch
+        val initialSource = liveDataScope.emitSource(dbSource.map {
             Resource.loading(it)
         })
         val response = fetchCatching()
@@ -98,17 +98,17 @@ private class CoroutineNetworkBoundResource<ResultType, RequestType>
             is ApiSuccessResponse, is ApiEmptyResponse -> {
                 if (response is ApiSuccessResponse) {
                     val processed = processResponse(response)
-                    liveDataScope.clearSource()
+                    initialSource.dispose()
                     // before saving it, disconnect it so that new values comes w/ success
                     saveCallResult(processed)
                 }
-                liveDataScope.yieldSource(loadFromDb().map {
+                liveDataScope.emitSource(loadFromDb().map {
                     Resource.success(it)
                 })
             }
             is ApiErrorResponse -> {
                 onFetchFailed?.invoke(response)
-                liveDataScope.yieldSource(dbSource.map {
+                liveDataScope.emitSource(dbSource.map {
                     Resource.error(response.errorMessage, it)
                 })
             }
@@ -126,13 +126,6 @@ private class CoroutineNetworkBoundResource<ResultType, RequestType>
         } catch (ex: Throwable) {
             ApiResponse.create(ex)
         }
-    }
-
-    /**
-     * temporary workaround until we have cancellable yieldSource
-     */
-    private suspend fun <T> LiveDataScope<T>.clearSource() {
-        yieldSource(MutableLiveData<T>())
     }
 
     private suspend fun <T> LiveData<T>.await() = withContext(Dispatchers.Main) {
