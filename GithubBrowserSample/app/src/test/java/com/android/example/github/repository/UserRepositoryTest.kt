@@ -34,7 +34,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
@@ -43,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 @RunWith(JUnit4::class)
 class UserRepositoryTest : CoroutineTestBase() {
     private val userDao = mock(UserDao::class.java)
-    private val githubService = spy(FakeGithubService())
+    private val githubService = FakeGithubService()
     private val repo = UserRepository(userDao, githubService)
 
     @Rule
