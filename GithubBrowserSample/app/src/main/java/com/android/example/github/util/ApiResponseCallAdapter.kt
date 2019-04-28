@@ -63,7 +63,6 @@ internal class ApiResponseCall<T>(
     }
 
     override fun request(): Request = delegate.request()
-
 }
 
 
@@ -97,7 +96,6 @@ class ApiResponseCallAdapterFactory : CallAdapter.Factory() {
         @Suppress("UNCHECKED_CAST")
         return ApiResponseCallAdapter(bodyType, delegate as CallAdapter<Any, Call<Any>>)
     }
-
 }
 
 open class OneArgParameterizedType(
@@ -109,5 +107,4 @@ open class OneArgParameterizedType(
     override fun getOwnerType() = null
 
     override fun getActualTypeArguments() = myTypeArgs
-
 }
