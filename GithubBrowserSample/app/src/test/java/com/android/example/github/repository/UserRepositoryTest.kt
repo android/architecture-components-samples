@@ -38,7 +38,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
-import java.util.concurrent.atomic.AtomicBoolean
 
 @ObsoleteCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
@@ -72,9 +71,11 @@ class UserRepositoryTest : CoroutineTestBase() {
             }
             repo.loadUser("foo").addObserver().apply {
                 calledService.await()
+                triggerAllActions()
                 assertItems(
                     Resource.loading(null),
-                    Resource.success(user))
+                    Resource.success(user)
+                )
             }
             // check it is in the db
             assertThat(userDao.getByLogin("foo"), `is`(user))
