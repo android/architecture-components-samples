@@ -27,10 +27,10 @@ import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.test.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SdkSuppress
 import androidx.test.filters.SmallTest
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
@@ -76,8 +76,8 @@ class ImageOperationsTest {
 
     @Before
     fun setUp() {
-        mContext = InstrumentationRegistry.getContext()
-        mTargetContext = InstrumentationRegistry.getTargetContext()
+        mContext = InstrumentationRegistry.getInstrumentation().context
+        mTargetContext = InstrumentationRegistry.getInstrumentation().targetContext
         mLifeCycleOwner = TestLifeCycleOwner()
         mConfiguration = Configuration.Builder()
                 .setExecutor(SynchronousExecutor())
