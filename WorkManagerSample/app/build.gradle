@@ -61,6 +61,7 @@ dependencies {
     implementation deps.glide.runtime
 
     testImplementation deps.junit
+    androidTestImplementation deps.atsl.junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.espresso.core
