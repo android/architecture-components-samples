@@ -1,7 +1,6 @@
 package com.example.benchmark
 
 import android.graphics.BitmapFactory
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.benchmark.BenchmarkRule
 import androidx.benchmark.measureRepeated
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,9 +25,6 @@ class WorkerBenchmark {
 
     @get:Rule
     val benchmarkRule = BenchmarkRule()
-
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Test
     fun testBlurEffectFilterWorker() {

@@ -34,5 +34,4 @@ dependencies {
     androidTestImplementation deps.benchmark
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.work.testing
-    androidTestImplementation deps.arch_core.testing
 }
