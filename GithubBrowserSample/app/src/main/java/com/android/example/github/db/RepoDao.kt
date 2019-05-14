@@ -40,7 +40,7 @@ abstract class RepoDao {
     abstract suspend fun insert(repos: Repo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertContributors(contributors: List<Contributor>)
+    abstract suspend fun insertContributors(contributors: List<Contributor>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertRepos(repositories: List<Repo>)
@@ -71,7 +71,7 @@ abstract class RepoDao {
     abstract fun insert(result: RepoSearchResult)
 
     @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
-    abstract fun search(query: String): LiveData<RepoSearchResult>
+    abstract fun search(query: String): LiveData<RepoSearchResult?>
 
     fun loadOrdered(repoIds: List<Int>): LiveData<List<Repo>> {
         val order = SparseIntArray()
@@ -92,5 +92,5 @@ abstract class RepoDao {
     protected abstract fun loadById(repoIds: List<Int>): LiveData<List<Repo>>
 
     @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
-    abstract fun findSearchResult(query: String): RepoSearchResult?
+    abstract suspend fun findSearchResult(query: String): RepoSearchResult?
 }

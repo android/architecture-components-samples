@@ -86,8 +86,8 @@ class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : View
             }
     }
 
-    class NextPageHandler(private val repository: RepoRepository) : Observer<Resource<Boolean>> {
-        private var nextPageLiveData: LiveData<Resource<Boolean>>? = null
+    class NextPageHandler(private val repository: RepoRepository) : Observer<Resource<Boolean>?> {
+        private var nextPageLiveData: LiveData<Resource<Boolean>?>? = null
         val loadMoreState = MutableLiveData<LoadMoreState>()
         private var query: String? = null
         private var _hasMore: Boolean = false

@@ -18,11 +18,12 @@ package com.android.example.github.util
 
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineContext
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 
 // Utility class to observe TestCoroutineContext internals until the new TestCoroutineContext
 // APIs are available
 @ObsoleteCoroutinesApi
-fun TestCoroutineContext.isIdle(): Boolean {
+fun TestCoroutineDispatcher.isIdle(): Boolean {
     val queueField = this::class.java
         .getDeclaredField("queue")
     queueField.isAccessible = true
@@ -33,5 +34,5 @@ fun TestCoroutineContext.isIdle(): Boolean {
     val timeField = nextTask::class.java.getDeclaredField("time")
     timeField.isAccessible = true
     val time = timeField.getLong(nextTask)
-    return time > now()
+    return time > this.currentTime
 }

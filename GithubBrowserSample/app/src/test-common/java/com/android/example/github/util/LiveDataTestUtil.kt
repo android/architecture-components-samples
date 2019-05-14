@@ -18,11 +18,18 @@ package com.android.example.github.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 object LiveDataTestUtil {
+    // TODO move to await
+    @Deprecated("use await w/ coroutines")
     fun <T> getValue(liveData: LiveData<T>): T {
         val data = arrayOfNulls<Any>(1)
         val latch = CountDownLatch(1)
@@ -38,5 +45,20 @@ object LiveDataTestUtil {
 
         @Suppress("UNCHECKED_CAST")
         return data[0] as T
+    }
+}
+
+suspend fun <T> LiveData<T>.await() = withContext(Dispatchers.Main) {
+    val receivedValue = CompletableDeferred<T?>()
+    val observer = Observer<T> {
+        if (receivedValue.isActive) {
+            receivedValue.complete(it)
+        }
+    }
+    try {
+        observeForever(observer)
+        return@withContext receivedValue.await()
+    } finally {
+        removeObserver(observer)
     }
 }

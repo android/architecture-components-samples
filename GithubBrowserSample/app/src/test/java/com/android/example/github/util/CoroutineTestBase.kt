@@ -19,9 +19,11 @@ package com.android.example.github.util
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineContext
 import kotlinx.coroutines.test.resetMain
@@ -30,55 +32,24 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import kotlin.coroutines.ContinuationInterceptor
 
 @ObsoleteCoroutinesApi // TestDispatchers
 open class CoroutineTestBase {
-    val testMainContext = TestCoroutineContext("test-main")
-
-    val testBackgroundContext = TestCoroutineContext("test-bg")
-    @Before
-    fun init() {
-        Dispatchers.setMain(testMainContext[ContinuationInterceptor.Key] as CoroutineDispatcher)
-    }
-
-    @After
-    fun check() {
-        triggerAllActions()
-        MatcherAssert.assertThat(testMainContext.exceptions, CoreMatchers.`is`(emptyList()))
-        MatcherAssert.assertThat(testBackgroundContext.exceptions, CoreMatchers.`is`(emptyList()))
-        Dispatchers.resetMain()
-    }
-
-    fun triggerAllActions() {
-        do {
-            testMainContext.triggerActions()
-            testBackgroundContext.triggerActions()
-            val allIdle = listOf(testMainContext, testBackgroundContext).all {
-                it.isIdle()
-            }
-        } while (!allIdle)
-    }
-
-
-    fun <T> runOnMain(block: () -> T): T {
-        return runBlocking {
-            val async = async(Dispatchers.Main) {
-                block()
-            }
-            testMainContext.triggerActions()
-            async.await()
-        }
-    }
-
+    @JvmField
+    @Rule
+    val testExecutors = TestCoroutineAppExecutors()
 
     fun <T> LiveData<T>.addObserver(): CollectingObserver<T> {
-        return runOnMain {
+        return testExecutors.runOnMain {
             val observer = CollectingObserver(this)
             observeForever(observer)
             observer
         }
     }
+
+    fun triggerAllActions() = testExecutors.triggerAllActions()
 
     inner class CollectingObserver<T>(
         private val liveData: LiveData<T>
@@ -92,11 +63,11 @@ open class CoroutineTestBase {
             MatcherAssert.assertThat(items, CoreMatchers.`is`(expected.asList()))
         }
 
-        fun unsubscribe() = runOnMain {
+        fun unsubscribe() = testExecutors.runOnMain {
             liveData.removeObserver(this)
         }
 
-        fun reset() = runOnMain {
+        fun reset() = testExecutors.runOnMain {
             items.clear()
         }
     }

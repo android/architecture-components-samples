@@ -53,7 +53,7 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
         val saved = AtomicReference<Foo>()
         val liveData = networkBoundResource(
             saveCallResult = {
-                withContext(testBackgroundContext) {
+                withContext(testExecutors.defaultContext) {
                     saved.set(it)
                     dbData.postValue(it)
                 }
@@ -193,9 +193,7 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
     }
 
     private fun advanceTimeBy(time: Long) {
-        testMainContext.advanceTimeBy(time)
-        testBackgroundContext.advanceTimeBy(time)
-        triggerAllActions()
+        testExecutors.advanceTimeBy(time)
     }
 
     private data class Foo(var value: Int)

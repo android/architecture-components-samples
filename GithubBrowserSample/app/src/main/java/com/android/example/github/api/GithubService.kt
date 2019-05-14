@@ -43,14 +43,14 @@ interface GithubService {
     ): ApiResponse<Repo>
 
     @GET("repos/{owner}/{name}/contributors")
-    fun getContributors(
+    suspend fun getContributors(
         @Path("owner") owner: String,
         @Path("name") name: String
-    ): LiveData<ApiResponse<List<Contributor>>>
+    ): ApiResponse<List<Contributor>>
 
     @GET("search/repositories")
-    fun searchRepos(@Query("q") query: String): LiveData<ApiResponse<RepoSearchResponse>>
+    suspend fun searchRepos(@Query("q") query: String): ApiResponse<RepoSearchResponse>
 
     @GET("search/repositories")
-    fun searchRepos(@Query("q") query: String, @Query("page") page: Int): Call<RepoSearchResponse>
+    suspend fun searchRepos(@Query("q") query: String, @Query("page") page: Int): ApiResponse<RepoSearchResponse>
 }

@@ -22,33 +22,41 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 class CountingAppExecutors(idleCallback: (() -> Unit)? = null) {
 
-    private val lock = java.lang.Object()
-
+    private val counterLock = ReentrantLock()
+    private val queueEmpty = counterLock.newCondition()
     private var taskCount = 0
 
     val appExecutors: AppExecutors
 
     init {
         val increment: () -> Unit = {
-            synchronized(lock) {
+            counterLock.withLock {
                 taskCount++
             }
         }
         val decrement: () -> Unit = {
-            synchronized(lock) {
-                taskCount--
-                if (taskCount == 0) {
-                    lock.notifyAll()
+            val unlock = counterLock.withLock {
+                taskCount --
+                if(taskCount == 0) {
+                    queueEmpty.signalAll()
+                    true
+                } else {
+                    false
                 }
+
             }
-            idleCallback?.let {
-                if (taskCount == 0) {
+            if (unlock) {
+                idleCallback?.let {
                     it.invoke()
                 }
             }
+
+
         }
         appExecutors = AppExecutors(
             CountingExecutor(increment, decrement).asCoroutineDispatcher(),
@@ -57,21 +65,21 @@ class CountingAppExecutors(idleCallback: (() -> Unit)? = null) {
         )
     }
 
-    fun taskCount() = synchronized(lock) {
+    fun taskCount() = counterLock.withLock {
         taskCount
     }
 
     fun drainTasks(time: Int, timeUnit: TimeUnit) {
         val end = System.currentTimeMillis() + timeUnit.toMillis(time.toLong())
         while (true) {
-            synchronized(lock) {
+            counterLock.withLock {
                 if (taskCount == 0) {
                     return
                 }
                 val now = System.currentTimeMillis()
                 val remaining = end - now
                 if (remaining > 0) {
-                    lock.wait(remaining)
+                    queueEmpty.await(remaining, TimeUnit.MILLISECONDS)
                 } else {
                     throw TimeoutException("could not drain tasks")
                 }
