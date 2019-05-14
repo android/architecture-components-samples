@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.robolectric</groupId>
+  <artifactId>errorprone</artifactId>
+  <version>4.3-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20190405.214023</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20190405214023</lastUpdated>
+  </versioning>
+</metadata>

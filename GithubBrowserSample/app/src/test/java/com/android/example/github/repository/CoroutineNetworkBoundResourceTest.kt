@@ -18,30 +18,18 @@ package com.android.example.github.repository
 
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.android.example.github.api.ApiResponse
-import com.android.example.github.util.isIdle
+import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.vo.Resource
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineContext
-import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.ResponseBody
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,33 +37,16 @@ import org.junit.runners.JUnit4
 import org.junit.runners.Parameterized
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.ContinuationInterceptor
 
 @ObsoleteCoroutinesApi// for test coroutine context
 @ExperimentalCoroutinesApi // for Dispatchers.setMain
 @RunWith(JUnit4::class)
-class CoroutineNetworkBoundResourceTest {
+class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
     @Rule
     @JvmField
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val testMainContext = TestCoroutineContext("test-main")
-
-    private val testBackgroundContext = TestCoroutineContext("test-bg")
-
     private val dbData = MutableLiveData<Foo>()
-
-    @Before
-    fun init() {
-        Dispatchers.setMain(testMainContext[ContinuationInterceptor.Key] as CoroutineDispatcher)
-    }
-
-    @After
-    fun check() {
-        triggerAllActions()
-        assertThat(testMainContext.exceptions, `is`(emptyList()))
-        assertThat(testBackgroundContext.exceptions, `is`(emptyList()))
-    }
 
     @Test
     fun basicFromNetwork() {
@@ -221,16 +192,6 @@ class CoroutineNetworkBoundResourceTest {
         }
     }
 
-    private fun triggerAllActions() {
-        do {
-            testMainContext.triggerActions()
-            testBackgroundContext.triggerActions()
-            val allIdle = listOf(testMainContext, testBackgroundContext).all {
-                it.isIdle()
-            }
-        } while (!allIdle)
-    }
-
     private fun advanceTimeBy(time: Long) {
         testMainContext.advanceTimeBy(time)
         testBackgroundContext.advanceTimeBy(time)
@@ -244,46 +205,6 @@ class CoroutineNetworkBoundResourceTest {
         @JvmStatic
         fun param(): List<Boolean> {
             return arrayListOf(true, false)
-        }
-    }
-
-    private fun <T> runOnMain(block: () -> T): T {
-        return runBlocking {
-            val async = async(Dispatchers.Main) {
-                block()
-            }
-            testMainContext.triggerActions()
-            async.await()
-        }
-    }
-
-
-    private fun <T> LiveData<T>.addObserver(): CollectingObserver<T> {
-        return runOnMain {
-            val observer = CollectingObserver(this)
-            observeForever(observer)
-            observer
-        }
-    }
-
-    inner class CollectingObserver<T>(
-        private val liveData: LiveData<T>
-    ) : Observer<T> {
-        private var items = mutableListOf<T>()
-        override fun onChanged(t: T) {
-            items.add(t)
-        }
-
-        fun assertItems(vararg expected: T) {
-            MatcherAssert.assertThat(items, CoreMatchers.`is`(expected.asList()))
-        }
-
-        fun unsubscribe() = runOnMain {
-            liveData.removeObserver(this)
-        }
-
-        fun reset() = runOnMain {
-            items.clear()
         }
     }
 }
