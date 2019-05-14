@@ -20,6 +20,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.android.example.github.util.ApiResponseCallAdapterFactory
 import com.android.example.github.util.LiveDataCallAdapterFactory
 import com.android.example.github.util.LiveDataTestUtil.getValue
+import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.User
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
@@ -104,8 +105,10 @@ class GithubServiceTest {
     @Test
     fun getContributors() {
         enqueueResponse("contributors.json")
-        val value = getValue(service.getContributors("foo", "bar"))
-        val contributors = (value as ApiSuccessResponse).body
+        val value = runBlocking {
+            service.getContributors("foo", "bar") as ApiSuccessResponse<List<Contributor>>
+        }
+        val contributors = value.body
         assertThat(contributors.size, `is`(3))
         val yigit = contributors[0]
         assertThat(yigit.login, `is`("yigit"))
@@ -124,7 +127,9 @@ class GithubServiceTest {
                 "link" to "$next,$last"
             )
         )
-        val response = getValue(service.searchRepos("foo")) as ApiSuccessResponse
+        val response = runBlocking {
+            service.searchRepos("foo") as ApiSuccessResponse
+        }
 
         assertThat(response, notNullValue())
         assertThat(response.body.total, `is`(41))

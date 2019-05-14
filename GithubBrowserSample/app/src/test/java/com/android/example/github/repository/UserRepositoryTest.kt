@@ -72,7 +72,7 @@ class UserRepositoryTest : CoroutineTestBase() {
             }
             repo.loadUser("foo").addObserver().apply {
                 calledService.await()
-                triggerAllActions()
+                testExecutors.triggerAllActions()
                 assertItems(
                     Resource.loading(null),
                     Resource.success(user)

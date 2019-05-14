@@ -17,28 +17,26 @@
 package com.android.example.github.db
 
 import android.database.sqlite.SQLiteException
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.room.withTransaction
 import androidx.test.runner.AndroidJUnit4
-import com.android.example.github.util.LiveDataTestUtil.getValue
 import com.android.example.github.util.TestUtil
+import com.android.example.github.util.await
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class RepoDaoTest : DbTest() {
-
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
-
     @Test
     fun insertAndRead() {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
-        db.repoDao().insert(repo)
-        val loaded = getValue(db.repoDao().load("foo", "bar"))
+        val loaded = runBlocking {
+            db.repoDao().insert(repo)
+            db.repoDao().load("foo", "bar").await()!!
+        }
         assertThat(loaded, notNullValue())
         assertThat(loaded.name, `is`("bar"))
         assertThat(loaded.description, `is`("desc"))
@@ -50,44 +48,45 @@ class RepoDaoTest : DbTest() {
     fun insertContributorsWithoutRepo() {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         val contributor = TestUtil.createContributor(repo, "c1", 3)
-        try {
-            db.repoDao().insertContributors(listOf(contributor))
-            throw AssertionError("must fail because repo does not exist")
-        } catch (ex: SQLiteException) {
+        runBlocking {
+            try {
+                db.repoDao().insertContributors(listOf(contributor))
+                throw AssertionError("must fail because repo does not exist")
+            } catch (ex: SQLiteException) {
+            }
         }
-
     }
 
     @Test
     fun insertContributors() {
-        val repo = TestUtil.createRepo("foo", "bar", "desc")
-        val c1 = TestUtil.createContributor(repo, "c1", 3)
-        val c2 = TestUtil.createContributor(repo, "c2", 7)
-        db.beginTransaction()
-        try {
-            db.repoDao().insert(repo)
-            db.repoDao().insertContributors(arrayListOf(c1, c2))
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
+        runBlocking {
+            val repo = TestUtil.createRepo("foo", "bar", "desc")
+            val c1 = TestUtil.createContributor(repo, "c1", 3)
+            val c2 = TestUtil.createContributor(repo, "c2", 7)
+            db.withTransaction {
+                db.repoDao().insert(repo)
+                db.repoDao().insertContributors(arrayListOf(c1, c2))
+            }
+            val list = db.repoDao().loadContributors("foo", "bar").await()!!
+            assertThat(list.size, `is`(2))
+            val first = list[0]
+
+            assertThat(first.login, `is`("c2"))
+            assertThat(first.contributions, `is`(7))
+
+            val second = list[1]
+            assertThat(second.login, `is`("c1"))
+            assertThat(second.contributions, `is`(3))
         }
-        val list = getValue(db.repoDao().loadContributors("foo", "bar"))
-        assertThat(list.size, `is`(2))
-        val first = list[0]
-
-        assertThat(first.login, `is`("c2"))
-        assertThat(first.contributions, `is`(7))
-
-        val second = list[1]
-        assertThat(second.login, `is`("c1"))
-        assertThat(second.contributions, `is`(3))
     }
 
     @Test
     fun createIfNotExists_exists() {
-        val repo = TestUtil.createRepo("foo", "bar", "desc")
-        db.repoDao().insert(repo)
-        assertThat(db.repoDao().createRepoIfNotExists(repo), `is`(-1L))
+        runBlocking {
+            val repo = TestUtil.createRepo("foo", "bar", "desc")
+            db.repoDao().insert(repo)
+            assertThat(db.repoDao().createRepoIfNotExists(repo), `is`(-1L))
+        }
     }
 
     @Test
@@ -98,16 +97,18 @@ class RepoDaoTest : DbTest() {
 
     @Test
     fun insertContributorsThenUpdateRepo() {
-        val repo = TestUtil.createRepo("foo", "bar", "desc")
-        db.repoDao().insert(repo)
-        val contributor = TestUtil.createContributor(repo, "aa", 3)
-        db.repoDao().insertContributors(listOf(contributor))
-        var data = db.repoDao().loadContributors("foo", "bar")
-        assertThat(getValue(data).size, `is`(1))
+        runBlocking {
+            val repo = TestUtil.createRepo("foo", "bar", "desc")
+            db.repoDao().insert(repo)
+            val contributor = TestUtil.createContributor(repo, "aa", 3)
+            db.repoDao().insertContributors(listOf(contributor))
+            var data = db.repoDao().loadContributors("foo", "bar")
+            assertThat(data.await()!!.size, `is`(1))
 
-        val update = TestUtil.createRepo("foo", "bar", "desc")
-        db.repoDao().insert(update)
-        data = db.repoDao().loadContributors("foo", "bar")
-        assertThat(getValue(data).size, `is`(1))
+            val update = TestUtil.createRepo("foo", "bar", "desc")
+            db.repoDao().insert(update)
+            data = db.repoDao().loadContributors("foo", "bar")
+            assertThat(data.await()!!.size, `is`(1))
+        }
     }
 }

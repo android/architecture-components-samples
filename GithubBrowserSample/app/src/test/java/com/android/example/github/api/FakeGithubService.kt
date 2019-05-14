@@ -28,8 +28,12 @@ import retrofit2.Call
  */
 open class FakeGithubService(
     var getUserImpl: suspend (login: String) -> ApiResponse<User> = notImplemented1(),
-    var getRepoImpl: suspend (owner: String, name: String) -> ApiResponse<Repo> = notImplemented2()
-) : GithubService {
+    var getRepoImpl: suspend (owner: String, name: String) -> ApiResponse<Repo> = notImplemented2(),
+    var getContributorsImpl: suspend (owner : String, name : String) -> ApiResponse<List<Contributor>> = notImplemented2(),
+    var searchReposImpl : suspend (query : String) -> ApiResponse<RepoSearchResponse> = notImplemented1(),
+    var searchReposPagedImpl : suspend (query : String, page : Int) -> ApiResponse<RepoSearchResponse> = notImplemented2()
+
+    ) : GithubService {
     override suspend fun getUser(login: String) = getUserImpl(login)
 
     override fun getRepos(login: String): LiveData<ApiResponse<List<Repo>>> {
@@ -38,20 +42,14 @@ open class FakeGithubService(
 
     override suspend fun getRepo(owner: String, name: String) = getRepoImpl(owner, name)
 
-    override fun getContributors(
+    override suspend fun getContributors(
         owner: String,
         name: String
-    ): LiveData<ApiResponse<List<Contributor>>> {
-        TODO("not implemented")
-    }
+    ): ApiResponse<List<Contributor>> = getContributorsImpl(owner, name)
 
-    override fun searchRepos(query: String): LiveData<ApiResponse<RepoSearchResponse>> {
-        TODO("not implemented")
-    }
+    override suspend fun searchRepos(query: String) = searchReposImpl(query)
 
-    override fun searchRepos(query: String, page: Int): Call<RepoSearchResponse> {
-        TODO("not implemented")
-    }
+    override suspend fun searchRepos(query: String, page: Int) = searchReposPagedImpl(query, page)
 
     companion object {
         private fun <T, R> notImplemented1(): suspend (t: T) -> R {

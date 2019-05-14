@@ -16,51 +16,36 @@
 
 package com.android.example.github.repository
 
+import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import com.android.example.github.api.ApiResponse
 import com.android.example.github.api.FakeGithubService
-import com.android.example.github.api.GithubService
 import com.android.example.github.api.RepoSearchResponse
 import com.android.example.github.db.GithubDb
 import com.android.example.github.db.RepoDao
-import com.android.example.github.util.AbsentLiveData
-import com.android.example.github.util.ApiUtil.successCall
 import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.util.InstantAppExecutors
 import com.android.example.github.util.TestUtil
-import com.android.example.github.util.argumentCaptor
-import com.android.example.github.util.mock
-import com.android.example.github.vo.Contributor
-import com.android.example.github.vo.Repo
 import com.android.example.github.vo.RepoSearchResult
 import com.android.example.github.vo.Resource
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.anyList
-import org.mockito.Mockito.anyString
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoMoreInteractions
+import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
-import java.util.concurrent.atomic.AtomicBoolean
+import java.io.IOException
 
-@ObsoleteCoroutinesApi
-@RunWith(JUnit4::class)
-class RepoRepositoryTest: CoroutineTestBase() {
+@ExperimentalCoroutinesApi
+@RunWith(RobolectricTestRunner::class)
+class RepoRepositoryTest : CoroutineTestBase() {
     private lateinit var repository: RepoRepository
-    private val dao = mock(RepoDao::class.java)
+    private lateinit var dao: RepoDao
     private val service = FakeGithubService()
     @Rule
     @JvmField
@@ -68,176 +53,132 @@ class RepoRepositoryTest: CoroutineTestBase() {
 
     @Before
     fun begin() {
-        val db = mock(GithubDb::class.java)
-        `when`(db.repoDao()).thenReturn(dao)
-        `when`(db.runInTransaction(ArgumentMatchers.any())).thenCallRealMethod()
+        val app = ApplicationProvider.getApplicationContext<Application>()
+
+        val db = Room.inMemoryDatabaseBuilder(app, GithubDb::class.java)
+            .allowMainThreadQueries()
+            .also {
+                testExecutors.setupRoom(it)
+            }
+            .build()
+        dao = db.repoDao()
         repository = RepoRepository(InstantAppExecutors(), db, dao, service)
     }
 
     @Test
     fun loadRepoFromNetwork() {
-        val dbData = MutableLiveData<Repo>()
-        `when`(dao.load("foo", "bar")).thenReturn(dbData)
-
         val repo = TestUtil.createRepo("foo", "bar", "desc")
-        val calledService = AtomicBoolean(false)
         service.getRepoImpl = { owner, name ->
             check(owner == "foo")
             check(name == "bar")
-            calledService.set(true)
             ApiResponse.create(Response.success(repo))
         }
 
         val data = repository.loadRepo("foo", "bar")
-        data.addObserver().apply {
-            verify(dao).load("foo", "bar")
-            verifyNoMoreInteractions(service)
-            assertItems(Resource.loading(null))
-            val updatedDbData = MutableLiveData<Repo>()
-            `when`(dao.load("foo", "bar")).thenReturn(updatedDbData)
-
-            dbData.value = null
-            assertThat(calledService.get(), `is`(true))
-
-            // TODO
-            //verify(dao).insert(repo)
-
-            updatedDbData.postValue(repo)
-            assertItems(Resource.success(repo))
+        runBlocking {
+            data.addObserver().apply {
+                triggerAllActions()
+                assertItems(
+                    Resource.loading(null),
+                    Resource.success(repo)
+                )
+            }
+        }
+        // check data is inserted into the database
+        dao.load("foo", "bar").addObserver().apply {
+            assertItems(repo)
         }
     }
 
     @Test
     fun loadContributors() {
-        val dbData = MutableLiveData<List<Contributor>>()
-        `when`(dao.loadContributors("foo", "bar")).thenReturn(dbData)
-
-        val data = repository.loadContributors(
-            "foo",
-            "bar"
-        )
-        verify(dao).loadContributors("foo", "bar")
-
-        verify(service, never()).getContributors(anyString(), anyString())
-
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         val contributor = TestUtil.createContributor(repo, "log", 3)
         // network does not send these
         val contributors = listOf(contributor)
-        val call = successCall(contributors)
-        `when`(service.getContributors("foo", "bar"))
-            .thenReturn(call)
-
-        val observer = mock<Observer<Resource<List<Contributor>>>>()
-        data.observeForever(observer)
-
-        verify(observer).onChanged(Resource.loading(null))
-
-        val updatedDbData = MutableLiveData<List<Contributor>>()
-        `when`(dao.loadContributors("foo", "bar")).thenReturn(updatedDbData)
-        dbData.value = emptyList()
-
-        verify(service).getContributors("foo", "bar")
-        val inserted = argumentCaptor<List<Contributor>>()
-        // empty list is a workaround for null capture return
-        verify(dao).insertContributors(inserted.capture() ?: emptyList())
-
-
-        assertThat(inserted.value.size, `is`(1))
-        val first = inserted.value[0]
-        assertThat(first.repoName, `is`("bar"))
-        assertThat(first.repoOwner, `is`("foo"))
-
-        updatedDbData.value = contributors
-        verify(observer).onChanged(Resource.success(contributors))
+        val calledService = CompletableDeferred<Unit>()
+        service.getContributorsImpl = { owner, name ->
+            check(owner == "foo")
+            check(name == "bar")
+            calledService.complete(Unit)
+            ApiResponse.create(Response.success(contributors))
+        }
+        val data = repository.loadContributors(
+            "foo",
+            "bar"
+        )
+        data.addObserver().apply {
+            assertItems(
+                Resource.loading(null),
+                Resource.success(contributors)
+            )
+        }
+        // validate that data is in database
+        dao.loadContributors("foo", "bar").addObserver().apply {
+            assertItems(contributors)
+        }
     }
 
     @Test
     fun searchNextPage_null() {
-        `when`(dao.findSearchResult("foo")).thenReturn(null)
-        val observer = mock<Observer<Resource<Boolean>>>()
-        repository.searchNextPage("foo").observeForever(observer)
-        verify(observer).onChanged(null)
+        repository.searchNextPage("foo").addObserver().apply {
+            assertItems(null)
+        }
     }
 
     @Test
     fun search_fromDb() {
         val ids = arrayListOf(1, 2)
 
-        val observer = mock<Observer<Resource<List<Repo>>>>()
-        val dbSearchResult = MutableLiveData<RepoSearchResult>()
-        val repositories = MutableLiveData<List<Repo>>()
-
-        `when`(dao.search("foo")).thenReturn(dbSearchResult)
-
-        repository.search("foo").observeForever(observer)
-
-        verify(observer).onChanged(Resource.loading(null))
-        verifyNoMoreInteractions(service)
-        reset(observer)
-
         val dbResult = RepoSearchResult("foo", ids, 2, null)
-        `when`(dao.loadOrdered(ids)).thenReturn(repositories)
-
-        dbSearchResult.postValue(dbResult)
-
-        val repoList = arrayListOf<Repo>()
-        repositories.postValue(repoList)
-        verify(observer).onChanged(Resource.success(repoList))
-        verifyNoMoreInteractions(service)
+        dao.insert(dbResult)
+        val repoList = ids.map { id ->
+            TestUtil.createRepo(1, "owner $id", "name $id", "desc $id").also {
+                runBlocking {
+                    dao.insert(it)
+                }
+            }
+        }
+        repository.search("foo").addObserver().apply {
+            assertItems(
+                Resource.loading(null),
+                Resource.success(repoList)
+            )
+        }
     }
 
     @Test
     fun search_fromServer() {
-        val ids = arrayListOf(1, 2)
         val repo1 = TestUtil.createRepo(1, "owner", "repo 1", "desc 1")
         val repo2 = TestUtil.createRepo(2, "owner", "repo 2", "desc 2")
-
-        val observer = mock<Observer<Resource<List<Repo>>>>()
-        val dbSearchResult = MutableLiveData<RepoSearchResult>()
-        val repositories = MutableLiveData<List<Repo>>()
-
-        val repoList = arrayListOf(repo1, repo2)
-        val apiResponse = RepoSearchResponse(2, repoList)
-
-        val callLiveData = MutableLiveData<ApiResponse<RepoSearchResponse>>()
-        `when`(service.searchRepos("foo")).thenReturn(callLiveData)
-
-        `when`(dao.search("foo")).thenReturn(dbSearchResult)
-
-        repository.search("foo").observeForever(observer)
-
-        verify(observer).onChanged(Resource.loading(null))
-        verifyNoMoreInteractions(service)
-        reset(observer)
-
-        `when`(dao.loadOrdered(ids)).thenReturn(repositories)
-        dbSearchResult.postValue(null)
-        verify(dao, never()).loadOrdered(anyList())
-
-        verify(service).searchRepos("foo")
-        val updatedResult = MutableLiveData<RepoSearchResult>()
-        `when`(dao.search("foo")).thenReturn(updatedResult)
-        updatedResult.postValue(RepoSearchResult("foo", ids, 2, null))
-
-        callLiveData.postValue(ApiResponse.create(Response.success(apiResponse)))
-        verify(dao).insertRepos(repoList)
-        repositories.postValue(repoList)
-        verify(observer).onChanged(Resource.success(repoList))
-        verifyNoMoreInteractions(service)
+        service.searchReposImpl = { query ->
+            check(query == "foo")
+            val repoList = arrayListOf(repo1, repo2)
+            ApiResponse.create(
+                Response.success(RepoSearchResponse(2, repoList))
+            )
+        }
+        repository.search("foo").addObserver().apply {
+            assertItems(
+                Resource.loading(null),
+                Resource.success(listOf(repo1, repo2))
+            )
+        }
+        dao.loadRepositories("owner").addObserver().apply {
+            assertItems(listOf(repo1, repo2))
+        }
     }
 
     @Test
     fun search_fromServer_error() {
-        `when`(dao.search("foo")).thenReturn(AbsentLiveData.create())
-        val apiResponse = MutableLiveData<ApiResponse<RepoSearchResponse>>()
-        `when`(service.searchRepos("foo")).thenReturn(apiResponse)
-
-        val observer = mock<Observer<Resource<List<Repo>>>>()
-        repository.search("foo").observeForever(observer)
-        verify(observer).onChanged(Resource.loading(null))
-
-        apiResponse.postValue(ApiResponse.create(Exception("idk")))
-        verify(observer).onChanged(Resource.error("idk", null))
+        service.searchReposImpl = { query ->
+            ApiResponse.create(IOException("idk"))
+        }
+        repository.search("foo").addObserver().apply {
+            assertItems(
+                Resource.loading(null),
+                Resource.error("idk", null)
+            )
+        }
     }
 }

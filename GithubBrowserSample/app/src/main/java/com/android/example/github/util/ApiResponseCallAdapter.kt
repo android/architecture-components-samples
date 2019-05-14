@@ -83,6 +83,10 @@ class ApiResponseCallAdapterFactory : CallAdapter.Factory() {
         annotations: Array<Annotation>,
         retrofit: Retrofit
     ): CallAdapter<*, *>? {
+        // avoid recursion here
+        if (returnType is OneArgParameterizedType) {
+            return null
+        }
         val parameterizedReturn = returnType as? ParameterizedType ?: return null
         if (parameterizedReturn.rawType != Call::class.java) {
             return null

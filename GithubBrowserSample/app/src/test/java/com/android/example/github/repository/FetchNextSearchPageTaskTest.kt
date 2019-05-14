@@ -16,16 +16,21 @@
 
 package com.android.example.github.repository
 
+import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.android.example.github.api.GithubService
+import androidx.lifecycle.LiveData
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import com.android.example.github.api.ApiResponse
+import com.android.example.github.api.FakeGithubService
 import com.android.example.github.api.RepoSearchResponse
 import com.android.example.github.db.GithubDb
 import com.android.example.github.db.RepoDao
+import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.util.TestUtil
-import com.android.example.github.util.mock
 import com.android.example.github.vo.RepoSearchResult
 import com.android.example.github.vo.Resource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.Headers
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -33,58 +38,51 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoMoreInteractions
-import retrofit2.Call
+import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
 import java.io.IOException
 
-@RunWith(JUnit4::class)
-class FetchNextSearchPageTaskTest {
-
+@ExperimentalCoroutinesApi
+@RunWith(RobolectricTestRunner::class)
+class FetchNextSearchPageTaskTest : CoroutineTestBase() {
     @Rule
     @JvmField
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var service: GithubService
+    private val service = FakeGithubService()
 
     private lateinit var db: GithubDb
 
     private lateinit var repoDao: RepoDao
 
-    private lateinit var task: FetchNextSearchPageTask
-
-    private val observer: Observer<Resource<Boolean>> = mock()
+    private lateinit var task: LiveData<Resource<Boolean>?>
 
     @Before
-    fun init() {
-        service = mock(GithubService::class.java)
-        db = mock(GithubDb::class.java)
-        repoDao = mock(RepoDao::class.java)
-        `when`(db.repoDao()).thenReturn(repoDao)
-        task = FetchNextSearchPageTask("foo", service, db)
-        task.liveData.observeForever(observer)
+    fun createSubjects() {
+        val app = ApplicationProvider.getApplicationContext<Application>()
+        db = Room.inMemoryDatabaseBuilder(app, GithubDb::class.java)
+            .allowMainThreadQueries()
+            .also {
+                testExecutors.setupRoom(it)
+            }
+            .build()
+        repoDao = db.repoDao()
+        task = fetchNextSearch("foo", service, db, testExecutors.ioDispatcher)
     }
 
     @Test
     fun withoutResult() {
-        `when`(repoDao.search("foo")).thenReturn(null)
-        task.run()
-        verify(observer).onChanged(null)
-        verifyNoMoreInteractions(observer)
-        verifyNoMoreInteractions(service)
+        task.addObserver().apply {
+            assertItems(null)
+        }
     }
 
     @Test
     fun noNextPage() {
         createDbResult(null)
-        task.run()
-        verify(observer).onChanged(Resource.success(false))
-        verifyNoMoreInteractions(observer)
-        verifyNoMoreInteractions(service)
+        task.addObserver().apply {
+            assertItems(Resource.success(false))
+        }
     }
 
     @Test
@@ -92,11 +90,14 @@ class FetchNextSearchPageTaskTest {
         createDbResult(1)
         val repos = TestUtil.createRepos(10, "a", "b", "c")
         val result = RepoSearchResponse(10, repos)
-        val call = createCall(result, null)
-        `when`(service.searchRepos("foo", 1)).thenReturn(call)
-        task.run()
-        verify(repoDao).insertRepos(repos)
-        verify(observer).onChanged(Resource.success(false))
+        createCall(result, null)
+        task.addObserver().apply {
+            assertItems(Resource.success(false))
+        }
+        // ensure they are in the database
+        repoDao.loadOrdered(repos.map { it.id }).addObserver().apply {
+            assertItems(repos)
+        }
     }
 
     @Test
@@ -105,37 +106,46 @@ class FetchNextSearchPageTaskTest {
         val repos = TestUtil.createRepos(10, "a", "b", "c")
         val result = RepoSearchResponse(10, repos)
         result.nextPage = 2
-        val call = createCall(result, 2)
-        `when`(service.searchRepos("foo", 1)).thenReturn(call)
-        task.run()
-        verify(repoDao).insertRepos(repos)
-        verify(observer).onChanged(Resource.success(true))
+        createCall(result, 2)
+        task.addObserver().apply {
+            assertItems(Resource.success(true))
+        }
+        // ensure they are in the database
+        repoDao.loadOrdered(repos.map { it.id }).addObserver().apply {
+            assertItems(repos)
+        }
     }
 
     @Test
     fun nextPageApiError() {
         createDbResult(1)
-        val call = mock<Call<RepoSearchResponse>>()
-        `when`(call.execute()).thenReturn(
-            Response.error(
-                400, ResponseBody.create(
-                    MediaType.parse("txt"), "bar"
+        service.searchReposPagedImpl = { query, page ->
+            check(query == "foo")
+            check(page == 1)
+            ApiResponse.create(
+                Response.error(
+                    400, ResponseBody.create(
+                        MediaType.parse("txt"), "bar"
+                    )
                 )
             )
-        )
-        `when`(service.searchRepos("foo", 1)).thenReturn(call)
-        task.run()
-        verify(observer)!!.onChanged(Resource.error("bar", true))
+        }
+        task.addObserver().apply {
+            assertItems(Resource.error("bar", true))
+        }
     }
 
     @Test
     fun nextPageIOError() {
         createDbResult(1)
-        val call = mock<Call<RepoSearchResponse>>()
-        `when`(call.execute()).thenThrow(IOException("bar"))
-        `when`(service.searchRepos("foo", 1)).thenReturn(call)
-        task.run()
-        verify(observer)!!.onChanged(Resource.error("bar", true))
+        service.searchReposPagedImpl = { query, page ->
+            check(query == "foo")
+            check(page == 1)
+            throw IOException("bar")
+        }
+        task.addObserver().apply {
+            assertItems(Resource.error("bar", true))
+        }
     }
 
     private fun createDbResult(nextPage: Int?) {
@@ -143,10 +153,10 @@ class FetchNextSearchPageTaskTest {
             "foo", emptyList(),
             0, nextPage
         )
-        `when`(repoDao.findSearchResult("foo")).thenReturn(result)
+        repoDao.insert(result)
     }
 
-    private fun createCall(body: RepoSearchResponse, nextPage: Int?): Call<RepoSearchResponse> {
+    private fun createCall(body: RepoSearchResponse, nextPage: Int?) {
         val headers = if (nextPage == null)
             null
         else
@@ -156,13 +166,19 @@ class FetchNextSearchPageTaskTest {
                     "<https://api.github.com/search/repositories?q=foo&page=" + nextPage
                             + ">; rel=\"next\""
                 )
-        val success = if (headers == null)
+        val response = if (headers == null)
             Response.success(body)
         else
             Response.success(body, headers)
-        val call = mock<Call<RepoSearchResponse>>()
-        `when`(call.execute()).thenReturn(success)
-
-        return call
+        service.searchReposPagedImpl = { query, page ->
+            check(query == "foo") {
+                "query should be foo but it was $query"
+            }
+            val expectedPageArg = nextPage?.let { it - 1 } ?: 1
+            check(page == expectedPageArg) {
+                "next page should be $expectedPageArg but it was $page"
+            }
+            ApiResponse.create(response)
+        }
     }
 }
