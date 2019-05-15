@@ -63,6 +63,7 @@ class FetchNextSearchPageTaskTest {
     fun init() {
         service = mock(GithubService::class.java)
         db = mock(GithubDb::class.java)
+        `when`(db.runInTransaction(any())).thenCallRealMethod()
         repoDao = mock(RepoDao::class.java)
         `when`(db.repoDao()).thenReturn(repoDao)
         task = FetchNextSearchPageTask("foo", service, db)

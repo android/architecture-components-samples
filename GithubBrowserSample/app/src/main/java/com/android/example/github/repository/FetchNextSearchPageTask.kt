@@ -65,13 +65,9 @@ class FetchNextSearchPageTask constructor(
                         query, ids,
                         apiResponse.body.total, apiResponse.nextPage
                     )
-                    try {
-                        db.beginTransaction()
+                    db.runInTransaction {
                         db.repoDao().insert(merged)
                         db.repoDao().insertRepos(apiResponse.body.items)
-                        db.setTransactionSuccessful()
-                    } finally {
-                        db.endTransaction()
                     }
                     Resource.success(apiResponse.nextPage != null)
                 }
