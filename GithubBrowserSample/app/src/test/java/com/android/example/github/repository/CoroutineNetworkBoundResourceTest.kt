@@ -24,7 +24,6 @@ import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.vo.Resource
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -38,7 +37,6 @@ import org.junit.runners.Parameterized
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicReference
 
-@ObsoleteCoroutinesApi// for test coroutine context
 @ExperimentalCoroutinesApi // for Dispatchers.setMain
 @RunWith(JUnit4::class)
 class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
@@ -53,7 +51,7 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
         val saved = AtomicReference<Foo>()
         val liveData = networkBoundResource(
             saveCallResult = {
-                withContext(testBackgroundContext) {
+                withContext(testExecutors.defaultContext) {
                     saved.set(it)
                     dbData.postValue(it)
                 }
@@ -178,8 +176,8 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
     fun removeObserverWhileRunning() {
         val dbData = MutableLiveData<Foo>()
         val ld = networkBoundResource<Foo, Foo>(
-            saveCallResult = {throw AssertionError("should not call")},
-            fetch = {throw AssertionError("should not call")},
+            saveCallResult = { throw AssertionError("should not call") },
+            fetch = { throw AssertionError("should not call") },
             loadFromDb = { dbData }
         )
         ld.addObserver().apply {
@@ -190,12 +188,6 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertThat(dbData.hasObservers(), `is`(false))
             assertItems(Resource.loading(null))
         }
-    }
-
-    private fun advanceTimeBy(time: Long) {
-        testMainContext.advanceTimeBy(time)
-        testBackgroundContext.advanceTimeBy(time)
-        triggerAllActions()
     }
 
     private data class Foo(var value: Int)
