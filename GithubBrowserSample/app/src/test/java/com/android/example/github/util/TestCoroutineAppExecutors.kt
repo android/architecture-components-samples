@@ -39,8 +39,9 @@ class TestCoroutineAppExecutors : TestWatcher() {
     private val roomTransactionExecutor = CountingExecutor()
     private val roomQueryExecutor = CountingExecutor()
 
-    private val allContexts = listOf(mainDispatcher, defaultDispatcher, ioDispatcher)
+    private val dispatchers = listOf(mainDispatcher, defaultDispatcher, ioDispatcher)
     private val executors = listOf(roomTransactionExecutor, roomQueryExecutor)
+
     val appExecutors = AppExecutors(
         mainThread = mainDispatcher,
         default = defaultDispatcher,
@@ -53,7 +54,7 @@ class TestCoroutineAppExecutors : TestWatcher() {
     }
 
     fun advanceTimeBy(time: Long) {
-        allContexts.forEach {
+        dispatchers.forEach {
             it.advanceTimeBy(time)
         }
         triggerAllActions()
@@ -91,11 +92,11 @@ class TestCoroutineAppExecutors : TestWatcher() {
                 it.createSnapshot()
             }
             // trigger all controlled actions
-            allContexts.forEach {
+            dispatchers.forEach {
                 it.advanceUntilIdle()
             }
             // now check if all are idle + executors didn't do any work.
-            val allIdle = allContexts.all {
+            val allIdle = dispatchers.all {
                 it.isIdle()
             } && executors.mapIndexed { index, executor ->
                 executor.wasIdleSince(signatures[index])

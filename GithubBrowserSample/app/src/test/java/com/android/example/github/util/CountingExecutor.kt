@@ -25,7 +25,6 @@ inline class Snapshot(val actionCount : Int)
  * Simple [Executor] that uses a real thread but also counts # of active runnables.
  */
 class CountingExecutor : Executor {
-    private val enqueuedCount = AtomicInteger()
     // # of state changes. This allows ensuring that it was idle between two calls, mainly to
     // know whether anything new was scheduled after we've synced the controlled executors.
     private val actionCount = AtomicInteger()
@@ -43,13 +42,11 @@ class CountingExecutor : Executor {
     fun createSnapshot() = Snapshot(actionCount.get())
 
     override fun execute(command: Runnable) {
-        enqueuedCount.incrementAndGet()
         actionCount.incrementAndGet()
         delegate.submit {
             try {
                 command.run()
             } finally {
-                enqueuedCount.decrementAndGet()
                 actionCount.incrementAndGet()
             }
         }
