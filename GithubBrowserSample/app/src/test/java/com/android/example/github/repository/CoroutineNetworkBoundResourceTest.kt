@@ -51,7 +51,7 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
         val saved = AtomicReference<Foo>()
         val liveData = networkBoundResource(
             saveCallResult = {
-                withContext(testExecutors.defaultContext) {
+                withContext(testExecutors.defaultDispatcher) {
                     saved.set(it)
                     dbData.postValue(it)
                 }

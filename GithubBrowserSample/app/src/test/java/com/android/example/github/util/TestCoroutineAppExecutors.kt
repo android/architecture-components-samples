@@ -33,22 +33,21 @@ import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 class TestCoroutineAppExecutors : TestWatcher() {
-    val mainContext = TestCoroutineDispatcher()
-    val defaultContext = TestCoroutineDispatcher()
-    val ioContext = TestCoroutineDispatcher()
-    // initialized lazily
-    var roomTransactionExecutor = CountingExecutor()
-    var roomQueryExecutor = CountingExecutor()
+    val mainDispatcher = TestCoroutineDispatcher()
+    val defaultDispatcher = TestCoroutineDispatcher()
+    val ioDispatcher = TestCoroutineDispatcher()
+    private val roomTransactionExecutor = CountingExecutor()
+    private val roomQueryExecutor = CountingExecutor()
 
-    private val allContexts = listOf(mainContext, defaultContext, ioContext)
-
+    private val allContexts = listOf(mainDispatcher, defaultDispatcher, ioDispatcher)
+    private val executors = listOf(roomTransactionExecutor, roomQueryExecutor)
     val appExecutors = AppExecutors(
-        mainThread = mainContext,
-        default = defaultContext,
-        io = ioContext
+        mainThread = mainDispatcher,
+        default = defaultDispatcher,
+        io = ioDispatcher
     )
 
-    fun setupRoom(builder : RoomDatabase.Builder<*>) {
+    fun setupRoom(builder: RoomDatabase.Builder<*>) {
         builder.setQueryExecutor(roomQueryExecutor)
         builder.setTransactionExecutor(roomTransactionExecutor)
     }
@@ -62,10 +61,11 @@ class TestCoroutineAppExecutors : TestWatcher() {
 
     override fun starting(description: Description?) {
         super.starting(description)
-        Dispatchers.setMain(mainContext.coroutineDispatcher())
+        Dispatchers.setMain(mainDispatcher.coroutineDispatcher())
     }
 
-    private fun CoroutineContext.coroutineDispatcher() = this[ContinuationInterceptor] as CoroutineDispatcher
+    private fun CoroutineContext.coroutineDispatcher() =
+        this[ContinuationInterceptor] as CoroutineDispatcher
 
     override fun finished(description: Description?) {
         super.finished(description)
@@ -78,8 +78,6 @@ class TestCoroutineAppExecutors : TestWatcher() {
             val async = async(Dispatchers.Main) {
                 block()
             }
-            //TODO which one?
-            // testMainContext.triggerActions()
             triggerAllActions()
             async.await()
         }
@@ -87,13 +85,23 @@ class TestCoroutineAppExecutors : TestWatcher() {
 
     fun triggerAllActions() {
         do {
+            // get current state signatures from Room's executors so that we
+            // know if they execute anything in between
+            val signatures = executors.map {
+                it.createSnapshot()
+            }
+            // trigger all controlled actions
             allContexts.forEach {
                 it.advanceUntilIdle()
             }
+            // now check if all are idle + executors didn't do any work.
             val allIdle = allContexts.all {
                 it.isIdle()
+            } && executors.mapIndexed { index, executor ->
+                executor.wasIdleSince(signatures[index])
+            }.all {
+                it
             }
-        } while (!allIdle || !roomTransactionExecutor.isIdle() ||
-            !roomQueryExecutor.isIdle())
+        } while (!allIdle)
     }
 }
