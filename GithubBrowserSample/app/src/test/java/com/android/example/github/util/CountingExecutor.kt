@@ -25,6 +25,7 @@ inline class Snapshot(val actionCount : Int)
  * Simple [Executor] that uses a real thread but also counts # of active runnables.
  */
 class CountingExecutor : Executor {
+    private val activeCount = AtomicInteger()
     // # of state changes. This allows ensuring that it was idle between two calls, mainly to
     // know whether anything new was scheduled after we've synced the controlled executors.
     private val actionCount = AtomicInteger()
@@ -33,7 +34,7 @@ class CountingExecutor : Executor {
      * Returns true if this Executor didn't have any change (enqueued tasks or finished tasks)
      * between now and the provided [snapshot] which is received from [createSnapshot].
      */
-    fun wasIdleSince(snapshot : Snapshot) = actionCount.get() == snapshot.actionCount
+    fun wasIdleSince(snapshot : Snapshot) = activeCount.get() == 0 && actionCount.get() == snapshot.actionCount
 
     private val delegate by lazy {
         Executors.newSingleThreadExecutor()
@@ -43,10 +44,12 @@ class CountingExecutor : Executor {
 
     override fun execute(command: Runnable) {
         actionCount.incrementAndGet()
+        activeCount.incrementAndGet()
         delegate.submit {
             try {
                 command.run()
             } finally {
+                activeCount.decrementAndGet()
                 actionCount.incrementAndGet()
             }
         }
