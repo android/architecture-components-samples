@@ -28,7 +28,7 @@ import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.util.TestUtil
 import com.android.example.github.vo.Resource
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -39,7 +39,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
 
-@ObsoleteCoroutinesApi
+@ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 class UserRepositoryTest : CoroutineTestBase() {
     private val githubService = FakeGithubService()
@@ -60,6 +60,7 @@ class UserRepositoryTest : CoroutineTestBase() {
         repo = UserRepository(userDao, githubService)
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun goToNetwork() {
         val user = TestUtil.createUser("foo")
@@ -71,7 +72,7 @@ class UserRepositoryTest : CoroutineTestBase() {
             }
             repo.loadUser("foo").addObserver().apply {
                 calledService.await()
-                triggerAllActions()
+                advanceUntilIdle()
                 assertItems(
                     Resource.loading(null),
                     Resource.success(user)

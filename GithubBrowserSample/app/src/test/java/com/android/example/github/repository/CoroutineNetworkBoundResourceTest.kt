@@ -24,7 +24,6 @@ import com.android.example.github.util.CoroutineTestBase
 import com.android.example.github.vo.Resource
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -38,7 +37,6 @@ import org.junit.runners.Parameterized
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicReference
 
-@ObsoleteCoroutinesApi// for test coroutine context
 @ExperimentalCoroutinesApi // for Dispatchers.setMain
 @RunWith(JUnit4::class)
 class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
@@ -53,7 +51,7 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
         val saved = AtomicReference<Foo>()
         val liveData = networkBoundResource(
             saveCallResult = {
-                withContext(testBackgroundContext) {
+                withContext(testExecutors.defaultDispatcher) {
                     saved.set(it)
                     dbData.postValue(it)
                 }
@@ -62,12 +60,12 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             loadFromDb = { dbData }
         )
         val collection = liveData.addObserver()
-        triggerAllActions()
+        advanceUntilIdle()
         collection.assertItems(
             Resource.loading(null)
         )
         dbData.value = null
-        triggerAllActions()
+        advanceUntilIdle()
         assertThat(saved.get(), `is`(Foo(1)))
         collection.assertItems(
             Resource.loading(null),
@@ -86,7 +84,7 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
         )
         dbData.value = null
         liveData.addObserver().apply {
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(
                 Resource.loading(null),
                 Resource.error("error", null)
@@ -106,11 +104,11 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertItems(Resource.loading(null))
             reset()
             dbData.value = Foo(1)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.success(Foo(1)))
             reset()
             dbData.value = Foo(2)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.success(Foo(2)))
         }
     }
@@ -132,11 +130,11 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertItems(Resource.loading(null))
             reset()
             dbData.value = Foo(1)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.loading(Foo(1)))
             reset()
             executeNetwork.complete(Unit)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.error("error", Foo(1)))
             reset()
             dbData.value = Foo(2)
@@ -164,11 +162,11 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertItems(Resource.loading(null))
             reset()
             dbData.value = Foo(1)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.loading(Foo(1)))
             reset()
             executeNetwork.complete(Unit)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.success(Foo(2)))
             assertThat(saved.get(), `is`(Foo(2)))
         }
@@ -178,8 +176,8 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
     fun removeObserverWhileRunning() {
         val dbData = MutableLiveData<Foo>()
         val ld = networkBoundResource<Foo, Foo>(
-            saveCallResult = {throw AssertionError("should not call")},
-            fetch = {throw AssertionError("should not call")},
+            saveCallResult = { throw AssertionError("should not call") },
+            fetch = { throw AssertionError("should not call") },
             loadFromDb = { dbData }
         )
         ld.addObserver().apply {
@@ -190,12 +188,6 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertThat(dbData.hasObservers(), `is`(false))
             assertItems(Resource.loading(null))
         }
-    }
-
-    private fun advanceTimeBy(time: Long) {
-        testMainContext.advanceTimeBy(time)
-        testBackgroundContext.advanceTimeBy(time)
-        triggerAllActions()
     }
 
     private data class Foo(var value: Int)
