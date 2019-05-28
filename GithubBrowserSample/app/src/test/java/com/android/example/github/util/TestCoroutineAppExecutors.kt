@@ -57,7 +57,7 @@ class TestCoroutineAppExecutors : TestWatcher() {
         dispatchers.forEach {
             it.advanceTimeBy(time)
         }
-        triggerAllActions()
+        advanceUntilIdle()
     }
 
     override fun starting(description: Description?) {
@@ -70,7 +70,7 @@ class TestCoroutineAppExecutors : TestWatcher() {
 
     override fun finished(description: Description?) {
         super.finished(description)
-        triggerAllActions()
+        advanceUntilIdle()
         Dispatchers.resetMain()
     }
 
@@ -79,16 +79,16 @@ class TestCoroutineAppExecutors : TestWatcher() {
             val async = async(Dispatchers.Main) {
                 block()
             }
-            triggerAllActions()
+            advanceUntilIdle()
             async.await()
         }
     }
 
-    fun triggerAllActions() {
+    fun advanceUntilIdle() {
         do {
             // get current state signatures from Room's executors so that we
             // know if they execute anything in between
-            val signatures = executors.map {
+            val snapshots = executors.map {
                 it.createSnapshot()
             }
             // trigger all controlled actions
@@ -98,10 +98,8 @@ class TestCoroutineAppExecutors : TestWatcher() {
             // now check if all are idle + executors didn't do any work.
             val allIdle = dispatchers.all {
                 it.isIdle()
-            } && executors.mapIndexed { index, executor ->
-                executor.wasIdleSince(signatures[index])
-            }.all {
-                it
+            } && snapshots.all {
+                it.isStillValid()
             }
         } while (!allIdle)
     }

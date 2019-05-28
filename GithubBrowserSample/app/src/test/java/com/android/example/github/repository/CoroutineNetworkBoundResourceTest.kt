@@ -60,12 +60,12 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             loadFromDb = { dbData }
         )
         val collection = liveData.addObserver()
-        triggerAllActions()
+        advanceUntilIdle()
         collection.assertItems(
             Resource.loading(null)
         )
         dbData.value = null
-        triggerAllActions()
+        advanceUntilIdle()
         assertThat(saved.get(), `is`(Foo(1)))
         collection.assertItems(
             Resource.loading(null),
@@ -84,7 +84,7 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
         )
         dbData.value = null
         liveData.addObserver().apply {
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(
                 Resource.loading(null),
                 Resource.error("error", null)
@@ -104,11 +104,11 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertItems(Resource.loading(null))
             reset()
             dbData.value = Foo(1)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.success(Foo(1)))
             reset()
             dbData.value = Foo(2)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.success(Foo(2)))
         }
     }
@@ -130,11 +130,11 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertItems(Resource.loading(null))
             reset()
             dbData.value = Foo(1)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.loading(Foo(1)))
             reset()
             executeNetwork.complete(Unit)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.error("error", Foo(1)))
             reset()
             dbData.value = Foo(2)
@@ -162,11 +162,11 @@ class CoroutineNetworkBoundResourceTest : CoroutineTestBase() {
             assertItems(Resource.loading(null))
             reset()
             dbData.value = Foo(1)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.loading(Foo(1)))
             reset()
             executeNetwork.complete(Unit)
-            triggerAllActions()
+            advanceUntilIdle()
             assertItems(Resource.success(Foo(2)))
             assertThat(saved.get(), `is`(Foo(2)))
         }

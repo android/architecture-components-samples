@@ -37,7 +37,7 @@ open class CoroutineTestBase {
         }
     }
 
-    fun triggerAllActions() = testExecutors.triggerAllActions()
+    fun advanceUntilIdle() = testExecutors.advanceUntilIdle()
 
     fun advanceTimeBy(time: Long) = testExecutors.advanceTimeBy(time)
 

@@ -17,7 +17,6 @@
 package com.android.example.github.util
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 
 // Utility class to observe TestCoroutineContext internals until the new TestCoroutineContext
