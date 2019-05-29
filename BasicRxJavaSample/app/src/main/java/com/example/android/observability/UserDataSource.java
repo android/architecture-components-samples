@@ -16,6 +16,8 @@
 
 package com.example.android.observability;
 
+import androidx.annotation.NonNull;
+
 import com.example.android.observability.persistence.User;
 
 import io.reactivex.Completable;
@@ -31,6 +33,7 @@ public interface UserDataSource {
      *
      * @return the user from the data source.
      */
+    @NonNull
     Flowable<User> getUser();
 
     /**
@@ -38,6 +41,7 @@ public interface UserDataSource {
      *
      * @param user the user to be inserted or updated.
      */
+    @NonNull
     Completable insertOrUpdateUser(User user);
 
     /**

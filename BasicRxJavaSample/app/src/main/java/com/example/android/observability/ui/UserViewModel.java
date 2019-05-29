@@ -16,10 +16,13 @@
 
 package com.example.android.observability.ui;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModel;
+
 import com.example.android.observability.UserDataSource;
 import com.example.android.observability.persistence.User;
 
-import androidx.lifecycle.ViewModel;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
@@ -28,11 +31,13 @@ import io.reactivex.Flowable;
  */
 public class UserViewModel extends ViewModel {
 
+    @NonNull
     private final UserDataSource mDataSource;
 
+    @Nullable
     private User mUser;
 
-    public UserViewModel(UserDataSource dataSource) {
+    public UserViewModel(@NonNull UserDataSource dataSource) {
         mDataSource = dataSource;
     }
 
@@ -41,6 +46,7 @@ public class UserViewModel extends ViewModel {
      *
      * @return a {@link Flowable} that will emit every time the user name has been updated.
      */
+    @NonNull
     public Flowable<String> getUserName() {
         return mDataSource.getUser()
                 // for every emission of the user, get the user name
@@ -57,7 +63,8 @@ public class UserViewModel extends ViewModel {
      * @param userName the new user name
      * @return a {@link Completable} that completes when the user name is updated
      */
-    public Completable updateUserName(final String userName) {
+    @NonNull
+    public Completable updateUserName(@NonNull final String userName) {
         // if there's no user, create a new user.
         // if we already have a user, then, since the user object is immutable,
         // create a new user, with the id of the previous user and the updated user name.

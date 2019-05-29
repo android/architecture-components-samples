@@ -16,6 +16,8 @@
 
 package com.example.android.observability.persistence;
 
+import androidx.annotation.NonNull;
+
 import com.example.android.observability.UserDataSource;
 
 import io.reactivex.Completable;
@@ -26,20 +28,23 @@ import io.reactivex.Flowable;
  */
 public class LocalUserDataSource implements UserDataSource {
 
+    @NonNull
     private final UserDao mUserDao;
 
-    public LocalUserDataSource(UserDao userDao) {
+    public LocalUserDataSource(@NonNull UserDao userDao) {
         mUserDao = userDao;
     }
 
+    @NonNull
     @Override
     public Flowable<User> getUser() {
         return mUserDao.getUser();
     }
 
+    @NonNull
     @Override
     public Completable insertOrUpdateUser(User user) {
-       return mUserDao.insertUser(user);
+        return mUserDao.insertUser(user);
     }
 
     @Override

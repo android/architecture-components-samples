@@ -16,8 +16,10 @@
 
 package com.example.android.observability.ui;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.example.android.observability.UserDataSource;
 
 /**
@@ -31,9 +33,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         mDataSource = dataSource;
     }
 
+    @NonNull
     @Override
-    public <T extends ViewModel> T create(Class<T> modelClass) {
+    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(UserViewModel.class)) {
+            //noinspection unchecked
             return (T) new UserViewModel(mDataSource);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");

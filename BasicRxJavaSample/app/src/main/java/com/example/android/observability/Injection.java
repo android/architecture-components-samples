@@ -17,6 +17,9 @@
 package com.example.android.observability;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
+
 import com.example.android.observability.persistence.LocalUserDataSource;
 import com.example.android.observability.persistence.UsersDatabase;
 import com.example.android.observability.ui.ViewModelFactory;
@@ -26,12 +29,14 @@ import com.example.android.observability.ui.ViewModelFactory;
  */
 public class Injection {
 
-    public static UserDataSource provideUserDataSource(Context context) {
+    @NonNull
+    private static UserDataSource provideUserDataSource(@NonNull Context context) {
         UsersDatabase database = UsersDatabase.getInstance(context);
         return new LocalUserDataSource(database.userDao());
     }
 
-    public static ViewModelFactory provideViewModelFactory(Context context) {
+    @NonNull
+    public static ViewModelFactory provideViewModelFactory(@NonNull Context context) {
         UserDataSource dataSource = provideUserDataSource(context);
         return new ViewModelFactory(dataSource);
     }

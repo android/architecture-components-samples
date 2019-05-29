@@ -16,10 +16,12 @@
 
 package com.example.android.observability.persistence;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import android.content.Context;
 
 /**
  * The Room database that contains the Users table
@@ -29,9 +31,7 @@ public abstract class UsersDatabase extends RoomDatabase {
 
     private static volatile UsersDatabase INSTANCE;
 
-    public abstract UserDao userDao();
-
-    public static UsersDatabase getInstance(Context context) {
+    public static UsersDatabase getInstance(@NonNull Context context) {
         if (INSTANCE == null) {
             synchronized (UsersDatabase.class) {
                 if (INSTANCE == null) {
@@ -43,5 +43,7 @@ public abstract class UsersDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract UserDao userDao();
 
 }

@@ -16,11 +16,12 @@
 
 package com.example.android.observability.persistence;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.annotation.NonNull;
+
 import java.util.UUID;
 
 /**
@@ -32,27 +33,48 @@ public class User {
     @NonNull
     @PrimaryKey
     @ColumnInfo(name = "userid")
-    private String mId;
+    private final String mId;
 
+    @NonNull
     @ColumnInfo(name = "username")
-    private String mUserName;
+    private final String mUserName;
 
-    @Ignore
-    public User(String userName) {
+    @Ignore// forbid room from using this constructor
+    public User(@NonNull String userName) {
         mId = UUID.randomUUID().toString();
         mUserName = userName;
     }
 
-    public User(String id, String userName) {
+    public User(@NonNull String id, @NonNull String userName) {
         this.mId = id;
         this.mUserName = userName;
     }
 
+    @NonNull
     public String getId() {
         return mId;
     }
 
+    @NonNull
     public String getUserName() {
         return mUserName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (!mId.equals(user.mId)) return false;
+        return mUserName.equals(user.mUserName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mId.hashCode();
+        result = 31 * result + mUserName.hashCode();
+        return result;
     }
 }
