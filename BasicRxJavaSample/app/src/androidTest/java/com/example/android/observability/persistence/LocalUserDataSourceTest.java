@@ -16,9 +16,12 @@
 
 package com.example.android.observability.persistence;
 
+import android.content.Context;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,11 +32,9 @@ import org.junit.Test;
  */
 public class LocalUserDataSourceTest {
 
+    private static final User USER = new User("id", "username");
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
-
-    private static final User USER = new User("id", "username");
-
     private UsersDatabase mDatabase;
     private LocalUserDataSource mDataSource;
 
@@ -41,8 +42,8 @@ public class LocalUserDataSourceTest {
     public void initDb() {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
-        mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
-                UsersDatabase.class)
+        Context context = ApplicationProvider.getApplicationContext();
+        mDatabase = Room.inMemoryDatabaseBuilder(context, UsersDatabase.class)
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()
                 .build();
@@ -63,11 +64,7 @@ public class LocalUserDataSourceTest {
         mDataSource.getUser()
                 .test()
                 // assertValue asserts that there was only one emission of the user
-                .assertValue(user -> {
-                    // The emitted user is the expected one
-                    return user != null && user.getId().equals(USER.getId()) &&
-                            user.getUserName().equals(USER.getUserName());
-                });
+                .assertValue(USER);
     }
 
     @Test

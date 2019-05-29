@@ -16,13 +16,11 @@
 
 package com.example.android.observability;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+
 import com.example.android.observability.persistence.User;
 import com.example.android.observability.ui.UserViewModel;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,6 +32,11 @@ import org.mockito.MockitoAnnotations;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test for {@link UserViewModel}
@@ -61,7 +64,7 @@ public class UserViewModelTest {
     @Test
     public void getUserName_whenNoUserSaved() {
         // Given that the UserDataSource returns an empty list of users
-        when(mDataSource.getUser()).thenReturn(Flowable.<User>empty());
+        when(mDataSource.getUser()).thenReturn(Flowable.empty());
 
         //When getting the user name
         mViewModel.getUserName()
