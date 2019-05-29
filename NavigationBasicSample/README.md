@@ -11,6 +11,8 @@ This sample showcases the following features of the Navigation component:
  * Arguments (profile screen receives a user name)
  * Deep links (`www.example.com/user/{user name}` opens the profile screen)
 
+### Screenshots
+<img src="screenshot.png" height="400" alt="Screenshot"/> 
 
 ### Other Resources
 

@@ -146,13 +146,9 @@ class RepoRepository @Inject constructor(
                     totalCount = item.total,
                     next = item.nextPage
                 )
-                db.beginTransaction()
-                try {
+                db.runInTransaction {
                     repoDao.insertRepos(item.items)
                     repoDao.insert(repoSearchResult)
-                    db.setTransactionSuccessful()
-                } finally {
-                    db.endTransaction()
                 }
             }
 

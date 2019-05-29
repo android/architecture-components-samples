@@ -32,6 +32,7 @@ import com.example.android.contentprovidersample.data.Cheese;
 import com.example.android.contentprovidersample.data.CheeseDao;
 import com.example.android.contentprovidersample.data.SampleDatabase;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 
 /**
@@ -167,24 +168,23 @@ public class SampleContentProvider extends ContentProvider {
         }
     }
 
+    @SuppressWarnings("RedundantThrows") /* This gets propagated up from the Callable */
     @NonNull
     @Override
     public ContentProviderResult[] applyBatch(
-            @NonNull ArrayList<ContentProviderOperation> operations)
+            @NonNull final ArrayList<ContentProviderOperation> operations)
             throws OperationApplicationException {
         final Context context = getContext();
         if (context == null) {
             return new ContentProviderResult[0];
         }
         final SampleDatabase database = SampleDatabase.getInstance(context);
-        database.beginTransaction();
-        try {
-            final ContentProviderResult[] result = super.applyBatch(operations);
-            database.setTransactionSuccessful();
-            return result;
-        } finally {
-            database.endTransaction();
-        }
+        return database.runInTransaction(new Callable<ContentProviderResult[]>() {
+            @Override
+            public ContentProviderResult[] call() throws OperationApplicationException {
+                return SampleContentProvider.super.applyBatch(operations);
+            }
+        });
     }
 
     @Override

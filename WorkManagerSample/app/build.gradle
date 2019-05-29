@@ -45,6 +45,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':lib')
+
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime_ktx
     implementation deps.support.app_compat
@@ -59,6 +61,7 @@ dependencies {
     implementation deps.glide.runtime
 
     testImplementation deps.junit
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.espresso.core

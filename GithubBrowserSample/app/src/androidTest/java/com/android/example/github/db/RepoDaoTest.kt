@@ -63,13 +63,9 @@ class RepoDaoTest : DbTest() {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         val c1 = TestUtil.createContributor(repo, "c1", 3)
         val c2 = TestUtil.createContributor(repo, "c2", 7)
-        db.beginTransaction()
-        try {
+        db.runInTransaction {
             db.repoDao().insert(repo)
             db.repoDao().insertContributors(arrayListOf(c1, c2))
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
         val list = getValue(db.repoDao().loadContributors("foo", "bar"))
         assertThat(list.size, `is`(2))

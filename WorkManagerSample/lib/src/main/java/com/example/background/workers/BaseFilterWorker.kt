@@ -11,8 +11,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.background.Constants
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import java.io.*
 import java.util.*
 
@@ -48,8 +46,6 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters)
             }
         }
     }
-
-    override val coroutineContext: CoroutineDispatcher get() = Dispatchers.IO
 
     override suspend fun doWork(): Result {
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI)

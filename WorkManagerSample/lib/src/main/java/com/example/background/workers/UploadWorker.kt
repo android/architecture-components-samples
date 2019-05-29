@@ -22,7 +22,10 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.work.*
+import androidx.work.Data
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.example.background.Constants
 import com.example.background.imgur.ImgurApi
 
@@ -71,6 +74,5 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters)
             Log.e(TAG, message)
             return Result.failure()
         }
-
     }
 }
