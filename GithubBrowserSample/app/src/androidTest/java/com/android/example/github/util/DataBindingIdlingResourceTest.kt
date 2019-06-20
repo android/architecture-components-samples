@@ -19,7 +19,7 @@ package com.android.example.github.util
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.ViewDataBinding
 import android.os.Bundle
-import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource

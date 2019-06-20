@@ -19,7 +19,7 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 import android.app.Application
 import android.content.Intent
 import androidx.arch.core.executor.testing.CountingTaskExecutorRule
-import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
@@ -62,7 +62,7 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         fakeApi.addPost(postFactory.createRedditPost(DEFAULT_SUBREDDIT))
         fakeApi.addPost(postFactory.createRedditPost(DEFAULT_SUBREDDIT))
         fakeApi.addPost(postFactory.createRedditPost(DEFAULT_SUBREDDIT))
-        val app = InstrumentationRegistry.getTargetContext().applicationContext as Application
+        val app = ApplicationProvider.getApplicationContext()().applicationContext as Application
         // use a controlled service locator w/ fake API
         ServiceLocator.swap(
                 object : DefaultServiceLocator(app = app,
@@ -76,7 +76,7 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     @Throws(InterruptedException::class, TimeoutException::class)
     fun showSomeResults() {
         val intent = RedditActivity.intentFor(
-                context = InstrumentationRegistry.getTargetContext(),
+                context = ApplicationProvider.getApplicationContext()(),
                 type = type)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val activity = InstrumentationRegistry.getInstrumentation().startActivitySync(intent)

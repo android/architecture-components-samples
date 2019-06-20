@@ -19,7 +19,7 @@ package paging.android.example.com.pagingsample;
 import android.app.Activity;
 import androidx.arch.core.executor.testing.CountingTaskExecutorRule;
 import android.content.Intent;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,7 +45,7 @@ public class MainActivityTest {
 
     @Test
     public void showSomeResults() throws InterruptedException, TimeoutException {
-        Intent intent = new Intent(InstrumentationRegistry.getTargetContext(), MainActivity.class);
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext()(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Activity activity = InstrumentationRegistry.getInstrumentation().startActivitySync(intent);
         testRule.drainTasks(10, TimeUnit.SECONDS);
