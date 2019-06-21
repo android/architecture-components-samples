@@ -19,7 +19,7 @@ package com.example.android.contentprovidersample;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import androidx.room.Room;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 import com.example.android.contentprovidersample.data.Cheese;
@@ -41,7 +41,7 @@ public class CheeseTest {
 
     @Before
     public void createDatabase() {
-        mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getTargetContext(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext()(),
                 SampleDatabase.class).build();
     }
 

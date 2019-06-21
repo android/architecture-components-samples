@@ -26,7 +26,7 @@ import androidx.arch.core.executor.testing.CountingTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.annotation.Nullable;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
@@ -54,7 +54,7 @@ public class MainActivityTest {
 
     public MainActivityTest() {
         // delete the database
-        InstrumentationRegistry.getTargetContext().deleteDatabase(AppDatabase.DATABASE_NAME);
+        ApplicationProvider.getApplicationContext().deleteDatabase(AppDatabase.DATABASE_NAME);
     }
 
     @Before
@@ -66,7 +66,7 @@ public class MainActivityTest {
     @Before
     public void waitForDbCreation() throws Throwable {
         final CountDownLatch latch = new CountDownLatch(1);
-        final LiveData<Boolean> databaseCreated = AppDatabase.getInstance(InstrumentationRegistry.getTargetContext(), new AppExecutors()).getDatabaseCreated();
+        final LiveData<Boolean> databaseCreated = AppDatabase.getInstance(ApplicationProvider.getApplicationContext(), new AppExecutors()).getDatabaseCreated();
         mActivityRule.runOnUiThread(new Runnable() {
 
             @Override

@@ -30,7 +30,7 @@ import androidx.room.Room;
 import androidx.room.testing.MigrationTestHelper;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Before;
@@ -67,7 +67,7 @@ public class MigrationTest {
     public void setUp() throws Exception {
         // To test migrations from version 1 of the database, we need to create the database
         // with version 1 using SQLite API
-        mSqliteTestDbHelper = new SqliteTestDbOpenHelper(InstrumentationRegistry.getTargetContext(),
+        mSqliteTestDbHelper = new SqliteTestDbOpenHelper(ApplicationProvider.getApplicationContext()(),
                 TEST_DB_NAME);
         // We're creating the table for every test, to ensure that the table is in the correct state
         SqliteDatabaseTestHelper.createTable(mSqliteTestDbHelper);
@@ -160,7 +160,7 @@ public class MigrationTest {
     }
 
     private UsersDatabase getMigratedRoomDatabase() {
-        UsersDatabase database = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(),
+        UsersDatabase database = Room.databaseBuilder(ApplicationProvider.getApplicationContext()(),
                 UsersDatabase.class, TEST_DB_NAME)
                 .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_1_4)
                 .build();

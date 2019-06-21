@@ -15,7 +15,7 @@
  */
 package com.android.example.github.util
 
-import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import androidx.fragment.app.DialogFragment

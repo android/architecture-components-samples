@@ -18,7 +18,7 @@ package com.example.android.observability.persistence
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.runner.AndroidJUnit4
 import org.junit.After
 import org.junit.Before
@@ -38,7 +38,7 @@ class UserDaoTest {
 
     @Before fun initDb() {
         // using an in-memory database because the information stored here disappears after test
-        database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
+        database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 UsersDatabase::class.java)
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()
