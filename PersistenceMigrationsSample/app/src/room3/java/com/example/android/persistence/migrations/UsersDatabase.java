@@ -16,14 +16,14 @@
 
 package com.example.android.persistence.migrations;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
 import android.content.Context;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 /**
  * The Room database that contains the Users table
@@ -87,8 +87,10 @@ public abstract class UsersDatabase extends RoomDatabase {
             // to do:
             // Create the new table
             database.execSQL(
-                    "CREATE TABLE users_new (userid TEXT, username TEXT, last_update INTEGER,"
-                            + " PRIMARY KEY(userid))");
+                    "CREATE TABLE users_new (userid TEXT NOT NULL,"
+                            + "username TEXT,"
+                            + "last_update INTEGER,"
+                            + "PRIMARY KEY(userid))");
             // Copy the data
             database.execSQL("INSERT INTO users_new (userid, username, last_update) "
                     + "SELECT userid, username, last_update "

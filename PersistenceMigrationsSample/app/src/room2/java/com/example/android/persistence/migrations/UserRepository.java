@@ -45,27 +45,21 @@ public class UserRepository {
         final WeakReference<LoadUserCallback> loadUserCallback = new WeakReference<>(callback);
 
         // request the user on the I/O thread
-        mAppExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                final User user = mUserDataSource.getUser();
-                // notify on the main thread
-                mAppExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        final LoadUserCallback userCallback = loadUserCallback.get();
-                        if (userCallback == null) {
-                            return;
-                        }
-                        if (user == null) {
-                            userCallback.onDataNotAvailable();
-                        } else {
-                            mCachedUser = user;
-                            userCallback.onUserLoaded(mCachedUser);
-                        }
-                    }
-                });
-            }
+        mAppExecutors.diskIO().execute(() -> {
+            final User user = mUserDataSource.getUser();
+            // notify on the main thread
+            mAppExecutors.mainThread().execute(() -> {
+                final LoadUserCallback userCallback = loadUserCallback.get();
+                if (userCallback == null) {
+                    return;
+                }
+                if (user == null) {
+                    userCallback.onDataNotAvailable();
+                } else {
+                    mCachedUser = user;
+                    userCallback.onUserLoaded(mCachedUser);
+                }
+            });
         });
     }
 
@@ -84,22 +78,16 @@ public class UserRepository {
                 : new User(mCachedUser.getId(), userName, date);
 
         // update the user on the I/O thread
-        mAppExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mUserDataSource.insertOrUpdateUser(user);
-                mCachedUser = user;
-                // notify on the main thread
-                mAppExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        UpdateUserCallback userCallback = updateUserCallback.get();
-                        if (userCallback != null) {
-                            userCallback.onUserUpdated(user);
-                        }
-                    }
-                });
-            }
+        mAppExecutors.diskIO().execute(() -> {
+            mUserDataSource.insertOrUpdateUser(user);
+            mCachedUser = user;
+            // notify on the main thread
+            mAppExecutors.mainThread().execute(() -> {
+                UpdateUserCallback userCallback = updateUserCallback.get();
+                if (userCallback != null) {
+                    userCallback.onUserUpdated(user);
+                }
+            });
         });
     }
 }

@@ -16,7 +16,7 @@
 
 package com.example.android.persistence.migrations;
 
-import android.support.annotation.MainThread;
+import androidx.annotation.MainThread;
 
 /**
  * Callback called when the user was loaded from the repository.

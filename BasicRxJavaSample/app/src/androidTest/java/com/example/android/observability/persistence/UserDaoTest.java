@@ -16,18 +16,15 @@
 
 package com.example.android.observability.persistence;
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.persistence.room.Room;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
-
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import io.reactivex.functions.Predicate;
 
 /**
  * Test the implementation of {@link UserDao}
@@ -43,10 +40,10 @@ public class UserDaoTest {
     private UsersDatabase mDatabase;
 
     @Before
-    public void initDb() throws Exception {
+    public void initDb() {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
-        mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 UsersDatabase.class)
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()
@@ -54,7 +51,7 @@ public class UserDaoTest {
     }
 
     @After
-    public void closeDb() throws Exception {
+    public void closeDb() {
         mDatabase.close();
     }
 
@@ -68,49 +65,43 @@ public class UserDaoTest {
     @Test
     public void insertAndGetUser() {
         // When inserting a new user in the data source
-        mDatabase.userDao().insertUser(USER);
+        mDatabase.userDao().insertUser(USER).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDatabase.userDao().getUser()
                 .test()
                 // assertValue asserts that there was only one emission of the user
-                .assertValue(new Predicate<User>() {
-                    @Override
-                    public boolean test(User user) throws Exception {
-                        // The emitted user is the expected one
-                        return user != null && user.getId().equals(USER.getId()) &&
-                                user.getUserName().equals(USER.getUserName());
-                    }
+                .assertValue(user -> {
+                    // The emitted user is the expected one
+                    return user != null && user.getId().equals(USER.getId()) &&
+                            user.getUserName().equals(USER.getUserName());
                 });
     }
 
     @Test
     public void updateAndGetUser() {
         // Given that we have a user in the data source
-        mDatabase.userDao().insertUser(USER);
+        mDatabase.userDao().insertUser(USER).blockingAwait();
 
         // When we are updating the name of the user
         User updatedUser = new User(USER.getId(), "new username");
-        mDatabase.userDao().insertUser(updatedUser);
+        mDatabase.userDao().insertUser(updatedUser).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDatabase.userDao().getUser()
                 .test()
                 // assertValue asserts that there was only one emission of the user
-                .assertValue(new Predicate<User>() {
-                    @Override
-                    public boolean test(User user) throws Exception {
-                        // The emitted user is the expected one
-                        return user != null && user.getId().equals(USER.getId()) &&
-                                user.getUserName().equals("new username");
-                    }
+                .assertValue(user -> {
+                    // The emitted user is the expected one
+                    return user != null && user.getId().equals(USER.getId()) &&
+                            user.getUserName().equals("new username");
                 });
     }
 
     @Test
     public void deleteAndGetUser() {
         // Given that we have a user in the data source
-        mDatabase.userDao().insertUser(USER);
+        mDatabase.userDao().insertUser(USER).blockingAwait();
 
         //When we are deleting all users
         mDatabase.userDao().deleteAllUsers();

@@ -23,7 +23,8 @@ public class SqliteDatabaseTestHelper {
     public static void createTable(SqliteTestDbOpenHelper helper) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS users (userid INTEGER PRIMARY KEY, username TEXT )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS users (userid INTEGER PRIMARY KEY NOT NULL,"
+                + " username TEXT )");
 
         db.close();
     }
