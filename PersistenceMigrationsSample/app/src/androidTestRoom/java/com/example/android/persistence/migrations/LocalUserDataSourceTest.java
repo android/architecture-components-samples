@@ -39,7 +39,7 @@ public class LocalUserDataSourceTest {
     public void initDb() throws Exception {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
-        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext()(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 UsersDatabase.class).build();
         mDataSource = new LocalUserDataSource(mDatabase.userDao());
     }

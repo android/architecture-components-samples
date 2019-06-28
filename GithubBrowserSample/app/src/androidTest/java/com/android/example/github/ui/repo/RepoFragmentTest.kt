@@ -16,6 +16,7 @@
 
 package com.android.example.github.ui.repo
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.databinding.DataBindingComponent
 import androidx.annotation.StringRes
@@ -208,7 +209,7 @@ class RepoFragmentTest {
     }
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {
-        return ApplicationProvider.getApplicationContext()().getString(id, *args)
+        return ApplicationProvider.getApplicationContext<Context>().getString(id, *args)
     }
 
     class TestRepoFragment : RepoFragment() {

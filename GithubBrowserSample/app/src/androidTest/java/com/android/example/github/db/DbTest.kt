@@ -36,7 +36,7 @@ abstract class DbTest {
     @Before
     fun initDb() {
         _db = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext()(),
+            ApplicationProvider.getApplicationContext(),
             GithubDb::class.java
         ).build()
     }
