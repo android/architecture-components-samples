@@ -19,7 +19,6 @@ package com.android.example.github.api
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.android.example.github.util.LiveDataCallAdapterFactory
 import com.android.example.github.util.LiveDataTestUtil.getValue
-import com.android.example.github.vo.User
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Okio
@@ -49,11 +48,11 @@ class GithubServiceTest {
     fun createService() {
         mockWebServer = MockWebServer()
         service = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/"))
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(LiveDataCallAdapterFactory())
-            .build()
-            .create(GithubService::class.java)
+                .baseUrl(mockWebServer.url("/"))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(LiveDataCallAdapterFactory())
+                .build()
+                .create(GithubService::class.java)
     }
 
     @After
@@ -116,9 +115,9 @@ class GithubServiceTest {
         val next = """<https://api.github.com/search/repositories?q=foo&page=2>; rel="next""""
         val last = """<https://api.github.com/search/repositories?q=foo&page=34>; rel="last""""
         enqueueResponse(
-            "search.json", mapOf(
+                "search.json", mapOf(
                 "link" to "$next,$last"
-            )
+        )
         )
         val response = getValue(service.searchRepos("foo")) as ApiSuccessResponse
 
@@ -126,23 +125,23 @@ class GithubServiceTest {
         assertThat(response.body.total, `is`(41))
         assertThat(response.body.items.size, `is`(30))
         assertThat<String>(
-            response.links["next"],
-            `is`("https://api.github.com/search/repositories?q=foo&page=2")
+                response.links["next"],
+                `is`("https://api.github.com/search/repositories?q=foo&page=2")
         )
         assertThat<Int>(response.nextPage, `is`(2))
     }
 
     private fun enqueueResponse(fileName: String, headers: Map<String, String> = emptyMap()) {
         val inputStream = javaClass.classLoader
-            .getResourceAsStream("api-response/$fileName")
+                .getResourceAsStream("api-response/$fileName")
         val source = Okio.buffer(Okio.source(inputStream))
         val mockResponse = MockResponse()
         for ((key, value) in headers) {
             mockResponse.addHeader(key, value)
         }
         mockWebServer.enqueue(
-            mockResponse
-                .setBody(source.readString(Charsets.UTF_8))
+                mockResponse
+                        .setBody(source.readString(Charsets.UTF_8))
         )
     }
 }

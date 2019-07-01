@@ -17,9 +17,8 @@
 package com.android.example.github.util
 
 import android.content.res.Resources
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-
+import androidx.recyclerview.widget.RecyclerView
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -40,7 +39,7 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
             var childView: View? = null
 
             override fun describeTo(description: Description) {
-                var idDescription = Integer.toString(recyclerViewId)
+                var idDescription = recyclerViewId.toString()
                 if (this.resources != null) {
                     idDescription = try {
                         this.resources!!.getResourceName(recyclerViewId)

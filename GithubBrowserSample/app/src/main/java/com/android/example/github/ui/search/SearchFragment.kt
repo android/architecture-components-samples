@@ -82,7 +82,7 @@ class SearchFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         searchViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(SearchViewModel::class.java)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
                 dataBindingComponent = dataBindingComponent,

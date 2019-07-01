@@ -109,7 +109,7 @@ class UserFragment : Fragment(), Injectable {
         binding.args = params
 
         binding.user = userViewModel.user
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         val rvAdapter = RepoListAdapter(
                 dataBindingComponent = dataBindingComponent,
                 appExecutors = appExecutors,

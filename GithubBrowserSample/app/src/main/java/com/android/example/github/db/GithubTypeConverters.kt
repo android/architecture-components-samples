@@ -22,22 +22,21 @@ import timber.log.Timber
 object GithubTypeConverters {
     @TypeConverter
     @JvmStatic
-    fun stringToIntList(data: String?): List<Int>? {
-        return data?.let {
-            it.split(",").map {
-                try {
-                    it.toInt()
-                } catch (ex: NumberFormatException) {
-                    Timber.e(ex, "Cannot convert $it to number")
-                    null
+    fun stringToIntList(data: String?): List<Int>? =
+            data?.let { fullSequence ->
+                fullSequence.split(",").map { subSequence ->
+                    try {
+                        subSequence.toInt()
+                    } catch (ex: NumberFormatException) {
+                        Timber.e(ex, "Cannot convert $subSequence to number")
+                        null
+                    }
                 }
-            }
-        }?.filterNotNull()
-    }
+            }?.filterNotNull()
+
 
     @TypeConverter
     @JvmStatic
-    fun intListToString(ints: List<Int>?): String? {
-        return ints?.joinToString(",")
-    }
+    fun intListToString(ints: List<Int>?): String? =
+            ints?.joinToString(",")
 }
