@@ -49,14 +49,14 @@ import com.bumptech.glide.request.target.Target
 import javax.inject.Inject
 
 @OpenForTesting
-final class UserFragment : Fragment(), Injectable {
+class UserFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var appExecutors: AppExecutors
 
     var binding by autoCleared<UserFragmentBinding>()
-    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
+    lateinit var dataBindingComponent: DataBindingComponent
 
     private lateinit var userViewModel: UserViewModel
     private val params by navArgs<UserFragmentArgs>()
@@ -64,15 +64,16 @@ final class UserFragment : Fragment(), Injectable {
     private var handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
+        dataBindingComponent = FragmentDataBindingComponent(this)
         val dataBinding = DataBindingUtil.inflate<UserFragmentBinding>(
-            inflater,
-            R.layout.user_fragment,
-            container,
-            false,
-            dataBindingComponent
+                inflater,
+                R.layout.user_fragment,
+                container,
+                false,
+                dataBindingComponent
         )
         dataBinding.retryCallback = object : RetryCallback {
             override fun retry() {
@@ -82,7 +83,7 @@ final class UserFragment : Fragment(), Injectable {
         binding = dataBinding
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
         // When the image is loaded, set the image request listener to start the transaction
-        binding.imageRequestListener = object: RequestListener<Drawable> {
+        binding.imageRequestListener = object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                 startPostponedEnterTransition()
                 return false
@@ -103,16 +104,16 @@ final class UserFragment : Fragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(UserViewModel::class.java)
+                .get(UserViewModel::class.java)
         userViewModel.setLogin(params.login)
         binding.args = params
 
         binding.user = userViewModel.user
         binding.setLifecycleOwner(viewLifecycleOwner)
         val rvAdapter = RepoListAdapter(
-            dataBindingComponent = dataBindingComponent,
-            appExecutors = appExecutors,
-            showFullName = false
+                dataBindingComponent = dataBindingComponent,
+                appExecutors = appExecutors,
+                showFullName = false
         ) { repo ->
             navController().navigate(UserFragmentDirections.showRepo(repo.owner.login, repo.name))
         }

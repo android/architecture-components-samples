@@ -44,7 +44,7 @@ import javax.inject.Inject
  * The UI Controller for displaying a Github Repo's information with its contributors.
  */
 @OpenForTesting
-final class RepoFragment : Fragment(), Injectable {
+class RepoFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,7 +55,7 @@ final class RepoFragment : Fragment(), Injectable {
     lateinit var appExecutors: AppExecutors
 
     // mutable for testing
-    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
+    lateinit var dataBindingComponent: DataBindingComponent
     var binding by autoCleared<RepoFragmentBinding>()
 
     private val params by navArgs<RepoFragmentArgs>()
@@ -74,14 +74,15 @@ final class RepoFragment : Fragment(), Injectable {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
+        dataBindingComponent = FragmentDataBindingComponent(this)
         val dataBinding = DataBindingUtil.inflate<RepoFragmentBinding>(
-            inflater,
-            R.layout.repo_fragment,
-            container,
-            false
+                inflater,
+                R.layout.repo_fragment,
+                container,
+                false
         )
         dataBinding.retryCallback = object : RetryCallback {
             override fun retry() {
@@ -101,8 +102,7 @@ final class RepoFragment : Fragment(), Injectable {
         binding.setLifecycleOwner(viewLifecycleOwner)
         binding.repo = repoViewModel.repo
 
-        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) {
-            contributor, imageView ->
+        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor, imageView ->
             val extras = FragmentNavigatorExtras(
                     imageView to contributor.login
             )

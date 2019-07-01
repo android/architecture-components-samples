@@ -47,7 +47,7 @@ import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 @OpenForTesting
-final class SearchFragment : Fragment(), Injectable {
+class SearchFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,7 +55,7 @@ final class SearchFragment : Fragment(), Injectable {
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
+    lateinit var dataBindingComponent: DataBindingComponent
 
     var binding by autoCleared<SearchFragmentBinding>()
 
@@ -64,15 +64,16 @@ final class SearchFragment : Fragment(), Injectable {
     lateinit var searchViewModel: SearchViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
+        dataBindingComponent = FragmentDataBindingComponent(this)
         binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.search_fragment,
-            container,
-            false,
-            dataBindingComponent
+                inflater,
+                R.layout.search_fragment,
+                container,
+                false,
+                dataBindingComponent
         )
 
         return binding.root
@@ -80,13 +81,13 @@ final class SearchFragment : Fragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         searchViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(SearchViewModel::class.java)
+                .get(SearchViewModel::class.java)
         binding.setLifecycleOwner(viewLifecycleOwner)
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
-            dataBindingComponent = dataBindingComponent,
-            appExecutors = appExecutors,
-            showFullName = true
+                dataBindingComponent = dataBindingComponent,
+                appExecutors = appExecutors,
+                showFullName = true
         ) { repo ->
             navController().navigate(
                     SearchFragmentDirections.showRepo(repo.owner.login, repo.name)
