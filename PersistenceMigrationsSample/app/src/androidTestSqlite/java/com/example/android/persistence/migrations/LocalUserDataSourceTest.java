@@ -38,7 +38,7 @@ public class LocalUserDataSourceTest {
 
     @Before
     public void initDb() throws Exception {
-        mDataSource = LocalUserDataSource.getInstance(ApplicationProvider.getApplicationContext()());
+        mDataSource = LocalUserDataSource.getInstance(ApplicationProvider.getApplicationContext());
     }
 
     @After

@@ -69,6 +69,7 @@ dependencies {
     implementation deps.glide.runtime
 
     // Android Testing Support Library's runner and rules
+    androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.arch_core.testing

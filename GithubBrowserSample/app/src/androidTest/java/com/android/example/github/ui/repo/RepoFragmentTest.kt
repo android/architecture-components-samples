@@ -114,9 +114,9 @@ class RepoFragmentTest {
         repoLiveData.postValue(Resource.loading(repo))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(
-            matches(
-                withText(getString(R.string.repo_full_name, "yigit", "foo"))
-            )
+                matches(
+                        withText(getString(R.string.repo_full_name, "yigit", "foo"))
+                )
         )
         onView(withId(R.id.description)).check(matches(withText("foo-bar")))
     }
@@ -127,9 +127,9 @@ class RepoFragmentTest {
         repoLiveData.postValue(Resource.success(repo))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(
-            matches(
-                withText(getString(R.string.repo_full_name, "foo", "bar"))
-            )
+                matches(
+                        withText(getString(R.string.repo_full_name, "foo", "bar"))
+                )
         )
         onView(withId(R.id.description)).check(matches(withText("buzz")))
     }
@@ -151,9 +151,9 @@ class RepoFragmentTest {
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(
-            matches(
-                withText(getString(R.string.repo_full_name, "owner", "name"))
-            )
+                matches(
+                        withText(getString(R.string.repo_full_name, "owner", "name"))
+                )
         )
         onView(withId(R.id.description)).check(matches(withText("desc")))
     }
@@ -162,9 +162,9 @@ class RepoFragmentTest {
     fun testContributors() {
         setContributors("aa", "bb")
         onView(listMatcher().atPosition(0))
-            .check(matches(hasDescendant(withText("aa"))))
+                .check(matches(hasDescendant(withText("aa"))))
         onView(listMatcher().atPosition(1))
-            .check(matches(hasDescendant(withText("bb"))))
+                .check(matches(hasDescendant(withText("bb"))))
     }
 
     private fun listMatcher(): RecyclerViewMatcher {
@@ -199,9 +199,9 @@ class RepoFragmentTest {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         val contributors = names.mapIndexed { index, name ->
             TestUtil.createContributor(
-                repo = repo,
-                login = name,
-                contributions = 100 - index
+                    repo = repo,
+                    login = name,
+                    contributions = 100 - index
             )
         }
         contributorsLiveData.postValue(Resource.success(contributors))
