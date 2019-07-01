@@ -49,7 +49,7 @@ import com.bumptech.glide.request.target.Target
 import javax.inject.Inject
 
 @OpenForTesting
-class UserFragment : Fragment(), Injectable {
+final class UserFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
