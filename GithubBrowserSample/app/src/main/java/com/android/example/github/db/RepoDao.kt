@@ -16,18 +16,17 @@
 
 package com.android.example.github.db
 
+import android.util.SparseIntArray
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import android.util.SparseIntArray
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.RepoSearchResult
-import java.util.Collections
 
 /**
  * Interface for database access on Repo related operations.
@@ -52,7 +51,7 @@ abstract class RepoDao {
     abstract fun load(ownerLogin: String, name: String): LiveData<Repo>
 
     @Query(
-        """
+            """
         SELECT login, avatarUrl, repoName, repoOwner, contributions FROM contributor
         WHERE repoName = :name AND repoOwner = :owner
         ORDER BY contributions DESC"""
@@ -60,7 +59,7 @@ abstract class RepoDao {
     abstract fun loadContributors(owner: String, name: String): LiveData<List<Contributor>>
 
     @Query(
-        """
+            """
         SELECT * FROM Repo
         WHERE owner_login = :owner
         ORDER BY stars DESC"""
@@ -79,12 +78,11 @@ abstract class RepoDao {
             order.put(it.value, it.index)
         }
         return Transformations.map(loadById(repoIds)) { repositories ->
-            Collections.sort(repositories) { r1, r2 ->
+            repositories.sortedWith(Comparator { r1, r2 ->
                 val pos1 = order.get(r1.id)
                 val pos2 = order.get(r2.id)
                 pos1 - pos2
-            }
-            repositories
+            })
         }
     }
 
