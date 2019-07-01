@@ -99,6 +99,7 @@ dependencies {
     testImplementation deps.arch_core.testing
     testImplementation deps.mockito.core
 
+    androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
 

@@ -24,6 +24,7 @@ def versions = [:]
 versions.android_gradle_plugin = '3.4.0'
 versions.apache_commons = "2.5"
 versions.arch_core = "2.0.1"
+versions.atsl_core = "1.1.0"
 versions.atsl_rules = "1.1.1"
 versions.atsl_runner = "1.1.1"
 versions.atsl_junit = "1.1.0"
@@ -117,6 +118,7 @@ espresso.intents = "androidx.test.espresso:espresso-intents:$versions.espresso"
 deps.espresso = espresso
 
 def atsl = [:]
+atsl.core = "androidx.test:core:$versions.atsl_core"
 atsl.ext_junit = "androidx.test.ext:junit:$versions.atsl_junit"
 atsl.runner = "androidx.test:runner:$versions.atsl_runner"
 atsl.rules = "androidx.test:rules:$versions.atsl_rules"
