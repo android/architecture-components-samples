@@ -32,14 +32,14 @@ class ApiResponseTest {
     fun exception() {
         val exception = Exception("foo")
         val (errorMessage) = ApiResponse.create<String>(exception)
-        assertThat<String>(errorMessage, `is`("foo"))
+        assertThat(errorMessage, `is`("foo"))
     }
 
     @Test
     fun success() {
         val apiResponse: ApiSuccessResponse<String> = ApiResponse
             .create<String>(Response.success("foo")) as ApiSuccessResponse<String>
-        assertThat<String>(apiResponse.body, `is`("foo"))
+        assertThat(apiResponse.body, `is`("foo"))
         assertThat<Int>(apiResponse.nextPage, `is`(nullValue()))
     }
 
@@ -76,6 +76,6 @@ class ApiResponseTest {
             ResponseBody.create(MediaType.parse("application/txt"), "blah")
         )
         val (errorMessage) = ApiResponse.create<String>(errorResponse) as ApiErrorResponse<String>
-        assertThat<String>(errorMessage, `is`("blah"))
+        assertThat(errorMessage, `is`("blah"))
     }
 }

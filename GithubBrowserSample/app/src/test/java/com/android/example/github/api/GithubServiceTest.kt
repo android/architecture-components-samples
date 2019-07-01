@@ -69,7 +69,7 @@ class GithubServiceTest {
         val request = mockWebServer.takeRequest()
         assertThat(request.path, `is`("/users/yigit"))
 
-        assertThat<User>(yigit, notNullValue())
+        assertThat(yigit, notNullValue())
         assertThat(yigit.avatarUrl, `is`("https://avatars3.githubusercontent.com/u/89202?v=3"))
         assertThat(yigit.company, `is`("Google"))
         assertThat(yigit.blog, `is`("birbit.com"))

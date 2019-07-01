@@ -28,7 +28,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
 import com.android.example.github.AppExecutors
 import com.android.example.github.R
@@ -58,7 +57,6 @@ class RepoFragment : Fragment(), Injectable {
     lateinit var dataBindingComponent: DataBindingComponent
     var binding by autoCleared<RepoFragmentBinding>()
 
-    private val params by navArgs<RepoFragmentArgs>()
     private var adapter by autoCleared<ContributorAdapter>()
 
     private fun initContributorList(viewModel: RepoViewModel) {
