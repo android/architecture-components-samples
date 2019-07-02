@@ -51,7 +51,7 @@ public class SampleContentProviderTest {
 
     @Before
     public void setUp() {
-        final Context context = ApplicationProvider.getApplicationContext()();
+        final Context context = ApplicationProvider.getApplicationContext();
         SampleDatabase.switchToInMemory(context);
         mContentResolver = context.getContentResolver();
     }

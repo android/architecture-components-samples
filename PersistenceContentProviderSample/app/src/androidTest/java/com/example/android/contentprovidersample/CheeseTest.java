@@ -41,7 +41,7 @@ public class CheeseTest {
 
     @Before
     public void createDatabase() {
-        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext()(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 SampleDatabase.class).build();
     }
 

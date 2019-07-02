@@ -51,6 +51,7 @@ dependencies {
     implementation deps.kotlin.stdlib
 
     // Android Testing Support Library's runner and rules
+    androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.room.testing
