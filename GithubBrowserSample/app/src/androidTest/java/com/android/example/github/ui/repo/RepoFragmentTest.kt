@@ -16,11 +16,13 @@
 
 package com.android.example.github.ui.repo
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingComponent
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigator
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -29,7 +31,6 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.android.example.github.R
@@ -208,7 +209,7 @@ class RepoFragmentTest {
     }
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {
-        return InstrumentationRegistry.getInstrumentation().targetContext.getString(id, *args)
+        return ApplicationProvider.getApplicationContext<Context>().getString(id, *args)
     }
 
     class TestRepoFragment : RepoFragment() {
