@@ -16,20 +16,20 @@
 
 package com.android.example.github.util
 
-import androidx.databinding.DataBindingComponent
-import androidx.databinding.ViewDataBinding
 import android.os.Bundle
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
-import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.R
+import androidx.fragment.app.Fragment
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
 import com.android.example.github.testing.SingleFragmentActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -122,9 +122,9 @@ class DataBindingIdlingResourceTest {
     class TestFragment : Fragment() {
         lateinit var fakeBinding: FakeBinding
         override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+                inflater: LayoutInflater,
+                container: ViewGroup?,
+                savedInstanceState: Bundle?
         ): View {
             val view = View(container!!.context)
             fakeBinding = FakeBinding(view)

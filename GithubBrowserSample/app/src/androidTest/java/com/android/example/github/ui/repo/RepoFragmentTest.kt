@@ -16,10 +16,11 @@
 
 package com.android.example.github.ui.repo
 
-import androidx.lifecycle.MutableLiveData
-import androidx.databinding.DataBindingComponent
 import androidx.annotation.StringRes
-import androidx.test.core.app.ApplicationProvider
+import androidx.databinding.DataBindingComponent
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -28,10 +29,9 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import androidx.navigation.NavController
-import androidx.navigation.fragment.FragmentNavigator
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
@@ -114,9 +114,9 @@ class RepoFragmentTest {
         repoLiveData.postValue(Resource.loading(repo))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(
-            matches(
-                withText(getString(R.string.repo_full_name, "yigit", "foo"))
-            )
+                matches(
+                        withText(getString(R.string.repo_full_name, "yigit", "foo"))
+                )
         )
         onView(withId(R.id.description)).check(matches(withText("foo-bar")))
     }
@@ -127,9 +127,9 @@ class RepoFragmentTest {
         repoLiveData.postValue(Resource.success(repo))
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(
-            matches(
-                withText(getString(R.string.repo_full_name, "foo", "bar"))
-            )
+                matches(
+                        withText(getString(R.string.repo_full_name, "foo", "bar"))
+                )
         )
         onView(withId(R.id.description)).check(matches(withText("buzz")))
     }
@@ -151,9 +151,9 @@ class RepoFragmentTest {
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
         onView(withId(R.id.name)).check(
-            matches(
-                withText(getString(R.string.repo_full_name, "owner", "name"))
-            )
+                matches(
+                        withText(getString(R.string.repo_full_name, "owner", "name"))
+                )
         )
         onView(withId(R.id.description)).check(matches(withText("desc")))
     }
@@ -162,9 +162,9 @@ class RepoFragmentTest {
     fun testContributors() {
         setContributors("aa", "bb")
         onView(listMatcher().atPosition(0))
-            .check(matches(hasDescendant(withText("aa"))))
+                .check(matches(hasDescendant(withText("aa"))))
         onView(listMatcher().atPosition(1))
-            .check(matches(hasDescendant(withText("bb"))))
+                .check(matches(hasDescendant(withText("bb"))))
     }
 
     private fun listMatcher(): RecyclerViewMatcher {
@@ -199,16 +199,16 @@ class RepoFragmentTest {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         val contributors = names.mapIndexed { index, name ->
             TestUtil.createContributor(
-                repo = repo,
-                login = name,
-                contributions = 100 - index
+                    repo = repo,
+                    login = name,
+                    contributions = 100 - index
             )
         }
         contributorsLiveData.postValue(Resource.success(contributors))
     }
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {
-        return ApplicationProvider.getApplicationContext()().getString(id, *args)
+        return InstrumentationRegistry.getInstrumentation().targetContext.getString(id, *args)
     }
 
     class TestRepoFragment : RepoFragment() {
