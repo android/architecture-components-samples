@@ -47,7 +47,7 @@ import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 @OpenForTesting
-final class SearchFragment : Fragment(), Injectable {
+class SearchFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,7 +55,7 @@ final class SearchFragment : Fragment(), Injectable {
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
+    lateinit var dataBindingComponent: DataBindingComponent
 
     var binding by autoCleared<SearchFragmentBinding>()
 
@@ -67,6 +67,7 @@ final class SearchFragment : Fragment(), Injectable {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        dataBindingComponent = FragmentDataBindingComponent(this)
         binding = DataBindingUtil.inflate(
                 inflater,
                 R.layout.search_fragment,
