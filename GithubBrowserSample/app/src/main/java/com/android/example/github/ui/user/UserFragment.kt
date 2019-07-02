@@ -49,7 +49,7 @@ import com.bumptech.glide.request.target.Target
 import javax.inject.Inject
 
 @OpenForTesting
-class UserFragment : Fragment(), Injectable {
+final class UserFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
@@ -64,15 +64,15 @@ class UserFragment : Fragment(), Injectable {
     private var handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val dataBinding = DataBindingUtil.inflate<UserFragmentBinding>(
-            inflater,
-            R.layout.user_fragment,
-            container,
-            false,
-            dataBindingComponent
+                inflater,
+                R.layout.user_fragment,
+                container,
+                false,
+                dataBindingComponent
         )
         dataBinding.retryCallback = object : RetryCallback {
             override fun retry() {
@@ -103,16 +103,16 @@ class UserFragment : Fragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(UserViewModel::class.java)
+                .get(UserViewModel::class.java)
         userViewModel.setLogin(params.login)
         binding.args = params
 
         binding.user = userViewModel.user
         binding.setLifecycleOwner(viewLifecycleOwner)
         val rvAdapter = RepoListAdapter(
-            dataBindingComponent = dataBindingComponent,
-            appExecutors = appExecutors,
-            showFullName = false
+                dataBindingComponent = dataBindingComponent,
+                appExecutors = appExecutors,
+                showFullName = false
         ) { repo ->
             navController().navigate(UserFragmentDirections.showRepo(repo.owner.login, repo.name))
         }
