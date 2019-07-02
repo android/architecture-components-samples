@@ -32,9 +32,9 @@ import java.io.IOException
  * A task that reads the search result in the database and fetches the next page, if it has one.
  */
 class FetchNextSearchPageTask constructor(
-    private val query: String,
-    private val githubService: GithubService,
-    private val db: GithubDb
+        private val query: String,
+        private val githubService: GithubService,
+        private val db: GithubDb
 ) : Runnable {
     private val _liveData = MutableLiveData<Resource<Boolean>>()
     val liveData: LiveData<Resource<Boolean>> = _liveData
@@ -52,8 +52,7 @@ class FetchNextSearchPageTask constructor(
         }
         val newValue = try {
             val response = githubService.searchRepos(query, nextPage).execute()
-            val apiResponse = ApiResponse.create(response)
-            when (apiResponse) {
+            when (val apiResponse = ApiResponse.create(response)) {
                 is ApiSuccessResponse -> {
                     // we merge all repo ids into 1 list so that it is easier to fetch the
                     // result list.
@@ -62,8 +61,8 @@ class FetchNextSearchPageTask constructor(
 
                     ids.addAll(apiResponse.body.items.map { it.id })
                     val merged = RepoSearchResult(
-                        query, ids,
-                        apiResponse.body.total, apiResponse.nextPage
+                            query, ids,
+                            apiResponse.body.total, apiResponse.nextPage
                     )
                     db.runInTransaction {
                         db.repoDao().insert(merged)

@@ -115,7 +115,7 @@ class DataBindingIdlingResourceTest {
         assertThat(idle.await(5, TimeUnit.SECONDS), `is`(true))
     }
 
-    private fun setHasPendingBindings(hasPendingBindings : Boolean) {
+    private fun setHasPendingBindings(hasPendingBindings: Boolean) {
         fragment.fakeBinding.hasPendingBindings.set(hasPendingBindings)
     }
 
@@ -154,19 +154,19 @@ class DataBindingIdlingResourceTest {
     }
 
     private fun isIdle(): Boolean {
-        val task = FutureTask({
+        val task = FutureTask {
             return@FutureTask idlingResource.isIdleNow
-        })
+        }
         InstrumentationRegistry.getInstrumentation().runOnMainSync(task)
         return task.get()
     }
 
     private fun registerIdleCallback(): IdlingResource.ResourceCallback {
-        val task = FutureTask({
+        val task = FutureTask {
             val callback = mock<IdlingResource.ResourceCallback>()
             idlingResource.registerIdleTransitionCallback(callback)
             return@FutureTask callback
-        })
+        }
         InstrumentationRegistry.getInstrumentation().runOnMainSync(task)
         return task.get()
     }
