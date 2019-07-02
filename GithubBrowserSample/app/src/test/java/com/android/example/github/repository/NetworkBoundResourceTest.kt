@@ -138,7 +138,7 @@ class NetworkBoundResourceTest(private val useRealExecutors: Boolean) {
             saved.set(true)
         }
         val body = ResponseBody.create(MediaType.parse("text/html"), "error")
-        handleCreateCall = { ApiUtil.createCall(Response.error<Foo>(500, body)) }
+        handleCreateCall = { ApiUtil.createCall(Response.error(500, body)) }
 
         val observer = mock<Observer<Resource<Foo>>>()
         networkBoundResource.asLiveData().observeForever(observer)
@@ -199,7 +199,7 @@ class NetworkBoundResourceTest(private val useRealExecutors: Boolean) {
         drain()
         verify(observer).onChanged(Resource.loading(dbValue))
 
-        apiResponseLiveData.value = ApiResponse.create(Response.error<Foo>(400, body))
+        apiResponseLiveData.value = ApiResponse.create(Response.error(400, body))
         drain()
         assertThat(saved.get(), `is`(false))
         verify(observer).onChanged(Resource.error("error", dbValue))

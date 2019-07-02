@@ -24,7 +24,7 @@ import java.util.concurrent.TimeoutException
 
 class CountingAppExecutors(idleCallback: (() -> Unit)? = null) {
 
-    private val lock = java.lang.Object()
+    private val lock = Object()
 
     private var taskCount = 0
 
@@ -50,9 +50,9 @@ class CountingAppExecutors(idleCallback: (() -> Unit)? = null) {
             }
         }
         appExecutors = AppExecutors(
-            CountingExecutor(increment, decrement),
-            CountingExecutor(increment, decrement),
-            CountingExecutor(increment, decrement)
+                CountingExecutor(increment, decrement),
+                CountingExecutor(increment, decrement),
+                CountingExecutor(increment, decrement)
         )
     }
 
@@ -79,8 +79,8 @@ class CountingAppExecutors(idleCallback: (() -> Unit)? = null) {
     }
 
     private class CountingExecutor(
-        private val increment: () -> Unit,
-        private val decrement: () -> Unit
+            private val increment: () -> Unit,
+            private val decrement: () -> Unit
     ) : Executor {
 
         private val delegate = Executors.newSingleThreadExecutor()

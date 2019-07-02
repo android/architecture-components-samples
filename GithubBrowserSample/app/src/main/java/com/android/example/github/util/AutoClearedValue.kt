@@ -16,10 +16,10 @@
 
 package com.android.example.github.util
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.fragment.app.Fragment
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -33,6 +33,7 @@ class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Frag
 
     init {
         fragment.lifecycle.addObserver(object : LifecycleObserver {
+            @Suppress("unused")
             @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
             fun onDestroy() {
                 _value = null
@@ -42,7 +43,7 @@ class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Frag
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
         return _value ?: throw IllegalStateException(
-            "should never call auto-cleared-value get when it might not be available"
+                "should never call auto-cleared-value get when it might not be available"
         )
     }
 

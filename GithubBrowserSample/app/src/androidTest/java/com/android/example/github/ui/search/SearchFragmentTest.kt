@@ -16,8 +16,11 @@
 
 package com.android.example.github.ui.search
 
-import androidx.lifecycle.MutableLiveData
+import android.view.KeyEvent
 import androidx.databinding.DataBindingComponent
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressKey
@@ -32,9 +35,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import androidx.recyclerview.widget.RecyclerView
-import android.view.KeyEvent
-import androidx.navigation.NavController
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
@@ -103,8 +103,8 @@ class SearchFragmentTest {
     fun search() {
         onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
         onView(withId(R.id.input)).perform(
-            typeText("foo"),
-            pressKey(KeyEvent.KEYCODE_ENTER)
+                typeText("foo"),
+                pressKey(KeyEvent.KEYCODE_ENTER)
         )
         verify(viewModel).setQuery("foo")
         results.postValue(Resource.loading(null))
@@ -145,7 +145,7 @@ class SearchFragmentTest {
 
     @Test
     fun navigateToRepo() {
-        doNothing().`when`<SearchViewModel>(viewModel).loadNextPage()
+        doNothing().`when`(viewModel).loadNextPage()
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         results.postValue(Resource.success(arrayListOf(repo)))
         onView(withText("desc")).perform(click())
@@ -166,9 +166,9 @@ class SearchFragmentTest {
     fun loadMoreProgressError() {
         loadMoreStatus.postValue(SearchViewModel.LoadMoreState(true, "QQ"))
         onView(withText("QQ")).check(
-            matches(
-                withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
-            )
+                matches(
+                        withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
+                )
         )
     }
 

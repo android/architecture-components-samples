@@ -32,22 +32,22 @@ class ApiResponseTest {
     fun exception() {
         val exception = Exception("foo")
         val (errorMessage) = ApiResponse.create<String>(exception)
-        assertThat<String>(errorMessage, `is`("foo"))
+        assertThat(errorMessage, `is`("foo"))
     }
 
     @Test
     fun success() {
         val apiResponse: ApiSuccessResponse<String> = ApiResponse
-            .create<String>(Response.success("foo")) as ApiSuccessResponse<String>
-        assertThat<String>(apiResponse.body, `is`("foo"))
+                .create<String>(Response.success("foo")) as ApiSuccessResponse<String>
+        assertThat(apiResponse.body, `is`("foo"))
         assertThat<Int>(apiResponse.nextPage, `is`(nullValue()))
     }
 
     @Test
     fun link() {
         val link =
-            "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," +
-                    " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
+                "<https://api.github.com/search/repositories?q=foo&page=2>; rel=\"next\"," +
+                        " <https://api.github.com/search/repositories?q=foo&page=34>; rel=\"last\""
         val headers = okhttp3.Headers.of("link", link)
         val response = ApiResponse.create<String>(Response.success("foo", headers))
         assertThat<Int>((response as ApiSuccessResponse).nextPage, `is`(2))
@@ -72,10 +72,10 @@ class ApiResponseTest {
     @Test
     fun error() {
         val errorResponse = Response.error<String>(
-            400,
-            ResponseBody.create(MediaType.parse("application/txt"), "blah")
+                400,
+                ResponseBody.create(MediaType.parse("application/txt"), "blah")
         )
         val (errorMessage) = ApiResponse.create<String>(errorResponse) as ApiErrorResponse<String>
-        assertThat<String>(errorMessage, `is`("blah"))
+        assertThat(errorMessage, `is`("blah"))
     }
 }
