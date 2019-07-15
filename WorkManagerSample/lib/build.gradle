@@ -17,6 +17,10 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -36,4 +40,3 @@ dependencies {
 
     testImplementation deps.junit
 }
-
