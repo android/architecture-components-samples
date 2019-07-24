@@ -52,7 +52,7 @@ class FakeRedditApi : RedditApi {
     private fun findSubReddit(subreddit: String) =
             model.getOrDefault(subreddit, SubReddit())
 
-    override fun getTop(subreddit: String, limit: Int): Call<RedditApi.ListingResponse> {
+    override suspend fun getTop(subreddit: String, limit: Int): Call<RedditApi.ListingResponse> {
         failureMsg?.let {
             return Calls.failure(IOException(it))
         }
@@ -67,7 +67,7 @@ class FakeRedditApi : RedditApi {
         return Calls.response(response)
     }
 
-    override fun getTopAfter(subreddit: String, after: String, limit: Int)
+    override suspend fun getTopAfter(subreddit: String, after: String, limit: Int)
             : Call<RedditApi.ListingResponse> {
         failureMsg?.let {
             return Calls.failure(IOException(it))
@@ -85,7 +85,7 @@ class FakeRedditApi : RedditApi {
         return Calls.response(response)
     }
 
-    override fun getTopBefore(subreddit: String, before: String, limit: Int)
+    override suspend fun getTopBefore(subreddit: String, before: String, limit: Int)
             : Call<RedditApi.ListingResponse> {
         TODO("the app never uses this so no reason to implement")
     }

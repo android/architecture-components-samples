@@ -17,12 +17,10 @@
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage
 
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PageKeyedDataSource
+import androidx.paging.PagedSource
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import retrofit2.Call
-import retrofit2.Response
 import java.io.IOException
 import java.util.concurrent.Executor
 
@@ -34,10 +32,19 @@ import java.util.concurrent.Executor
 class PageKeyedSubredditDataSource(
         private val redditApi: RedditApi,
         private val subredditName: String,
-        private val retryExecutor: Executor) : PageKeyedDataSource<String, RedditPost>() {
+        private val retryExecutor: Executor
+) : PagedSource<String, RedditPost>() {
+    override val keyProvider = KeyProvider.PageKey<String, RedditPost>()
 
-    // keep a function reference for the retry event
-    private var retry: (() -> Any)? = null
+    override fun isRetryableError(error: Throwable): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun load(params: LoadParams<String>) = when (params.loadType) {
+        LoadType.INITIAL -> loadInitial(params)
+        LoadType.START -> loadBefore()
+        LoadType.END -> loadAfter(params)
+    }
 
     /**
      * There is no sync on the state because paging will always call loadInitial first then wait
@@ -47,82 +54,56 @@ class PageKeyedSubredditDataSource(
 
     val initialLoad = MutableLiveData<NetworkState>()
 
-    fun retryAllFailed() {
-        val prevRetry = retry
-        retry = null
-        prevRetry?.let {
-            retryExecutor.execute {
-                it.invoke()
-            }
+    private fun loadBefore(): LoadResult<String, RedditPost> {
+        // ignored, since we only ever append to our initial load
+        throw NotImplementedError()
+    }
+
+    private suspend fun loadAfter(params: LoadParams<String>): LoadResult<String, RedditPost> {
+        try {
+            networkState.postValue(NetworkState.LOADING)
+            val result = redditApi.getTopAfter(
+                    subreddit = subredditName,
+                    after = params.key!!,
+                    limit = params.loadSize
+            )
+            val data = result.data
+            val items = data.children.map { it.data }
+            networkState.postValue(NetworkState.LOADED)
+            return LoadResult(data = items, offset = 0, counted = false)
+        } catch (e: IOException) {
+            networkState.postValue(NetworkState.error(e.message ?: "unknown err"))
+            throw e
         }
     }
 
-    override fun loadBefore(
-            params: LoadParams<String>,
-            callback: LoadCallback<String, RedditPost>) {
-        // ignored, since we only ever append to our initial load
-    }
-
-    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, RedditPost>) {
-        networkState.postValue(NetworkState.LOADING)
-        redditApi.getTopAfter(subreddit = subredditName,
-                after = params.key,
-                limit = params.requestedLoadSize).enqueue(
-                object : retrofit2.Callback<RedditApi.ListingResponse> {
-                    override fun onFailure(call: Call<RedditApi.ListingResponse>, t: Throwable) {
-                        retry = {
-                            loadAfter(params, callback)
-                        }
-                        networkState.postValue(NetworkState.error(t.message ?: "unknown err"))
-                    }
-
-                    override fun onResponse(
-                            call: Call<RedditApi.ListingResponse>,
-                            response: Response<RedditApi.ListingResponse>) {
-                        if (response.isSuccessful) {
-                            val data = response.body()?.data
-                            val items = data?.children?.map { it.data } ?: emptyList()
-                            retry = null
-                            callback.onResult(items, data?.after)
-                            networkState.postValue(NetworkState.LOADED)
-                        } else {
-                            retry = {
-                                loadAfter(params, callback)
-                            }
-                            networkState.postValue(
-                                    NetworkState.error("error code: ${response.code()}"))
-                        }
-                    }
-                }
-        )
-    }
-
-    override fun loadInitial(
-            params: LoadInitialParams<String>,
-            callback: LoadInitialCallback<String, RedditPost>) {
-        val request = redditApi.getTop(
-                subreddit = subredditName,
-                limit = params.requestedLoadSize
-        )
-        networkState.postValue(NetworkState.LOADING)
-        initialLoad.postValue(NetworkState.LOADING)
-
+    private suspend fun loadInitial(params: LoadParams<String>): LoadResult<String, RedditPost> {
         // triggered by a refresh, we better execute sync
         try {
-            val response = request.execute()
-            val data = response.body()?.data
-            val items = data?.children?.map { it.data } ?: emptyList()
-            retry = null
+            networkState.postValue(NetworkState.LOADING)
+            initialLoad.postValue(NetworkState.LOADING)
+
+            val result = redditApi.getTop(
+                    subreddit = subredditName,
+                    limit = params.loadSize
+            )
+
+            val data = result.data
+            val items = data.children.map { it.data }
             networkState.postValue(NetworkState.LOADED)
             initialLoad.postValue(NetworkState.LOADED)
-            callback.onResult(items, data?.before, data?.after)
+            return LoadResult(
+                    data = items,
+                    nextKey = data.after,
+                    prevKey = data.before,
+                    offset = 0,
+                    counted = false
+            )
         } catch (ioException: IOException) {
-            retry = {
-                loadInitial(params, callback)
-            }
             val error = NetworkState.error(ioException.message ?: "unknown error")
             networkState.postValue(error)
             initialLoad.postValue(error)
+            throw ioException
         }
     }
 }

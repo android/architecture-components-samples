@@ -24,7 +24,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
  * network+db, or network-only
  */
 interface RedditPostRepository {
-    fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost>
+    suspend fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost>
 
     enum class Type {
         IN_MEMORY_BY_ITEM,

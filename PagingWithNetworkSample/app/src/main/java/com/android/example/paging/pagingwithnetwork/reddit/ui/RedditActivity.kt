@@ -70,10 +70,11 @@ class RedditActivity : AppCompatActivity() {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
-                val repo = ServiceLocator.instance(this@RedditActivity)
-                        .getRepository(repoType)
+                val serviceLocator = ServiceLocator.instance(this@RedditActivity)
+                val ioExecutor = serviceLocator.getDiskIOExecutor()
+                val repo = serviceLocator.getRepository(repoType)
                 @Suppress("UNCHECKED_CAST")
-                return SubRedditViewModel(repo) as T
+                return SubRedditViewModel(repo, ioExecutor) as T
             }
         })[SubRedditViewModel::class.java]
     }

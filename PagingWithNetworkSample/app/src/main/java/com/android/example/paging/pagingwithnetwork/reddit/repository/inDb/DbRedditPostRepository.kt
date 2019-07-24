@@ -70,14 +70,21 @@ class DbRedditPostRepository(
      * updated after the database transaction is finished.
      */
     @MainThread
-    private fun refresh(subredditName: String): LiveData<NetworkState> {
+    suspend fun refresh(subredditName: String): LiveData<NetworkState> {
         val networkState = MutableLiveData<NetworkState>()
         networkState.value = NetworkState.LOADING
-        redditApi.getTop(subredditName, networkPageSize).enqueue(
+
+        try {
+            redditApi.getTop(subredditName, networkPageSize)
+        }  catch (t: Throwable) {
+            // retrofit calls this on main thread so safe to call set value
+            networkState.value = NetworkState.error(t.message)
+        }
+
+
+                .enqueue(
                 object : Callback<RedditApi.ListingResponse> {
                     override fun onFailure(call: Call<RedditApi.ListingResponse>, t: Throwable) {
-                        // retrofit calls this on main thread so safe to call set value
-                        networkState.value = NetworkState.error(t.message)
                     }
 
                     override fun onResponse(
@@ -101,7 +108,7 @@ class DbRedditPostRepository(
      * Returns a Listing for the given subreddit.
      */
     @MainThread
-    override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
+    override suspend fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
         // create a boundary callback which will observe when the user reaches to the edges of
         // the list and update the database with extra data.
         val boundaryCallback = SubredditBoundaryCallback(
