@@ -20,11 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 
 class SubRedditViewModel(
@@ -32,20 +28,18 @@ class SubRedditViewModel(
         private val ioExecutor: Executor
 ) : ViewModel() {
     private val subredditName = MutableLiveData<String>()
-    private val repoResult = viewModelScope.launch(ioExecutor.asCoroutineDispatcher()) {
-        map(subredditName) {
-         repository.postsOfSubreddit(it, 30)
-        }
+    private val repoResult = map(subredditName) {
+        repository.postsOfSubreddit(it, 30)
     }
     val posts = switchMap(repoResult) { it.pagedList }
     val networkState = switchMap(repoResult) { it.networkState }
     val refreshState = switchMap(repoResult) { it.refreshState }
 
     fun refresh() {
-        repoResult.cancel()
-        repository.refresh()
+//        repoResult.cancel()
+//        repository.refresh()
         repoResult
-        repoResult.value.refresh.invoke()
+//        repoResult.value.refresh.invoke()
     }
 
     fun showSubreddit(subreddit: String): Boolean {
@@ -58,7 +52,7 @@ class SubRedditViewModel(
 
     fun retry() {
         val listing = repoResult.value
-        listing.retry.invoke()
+//        listing.retry.invoke()
     }
 
     fun currentSubreddit(): String? = subredditName.value

@@ -17,6 +17,7 @@
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage
 
 import androidx.annotation.MainThread
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.toLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
@@ -33,7 +34,12 @@ class InMemoryByPageKeyRepository(private val redditApi: RedditApi,
                                   private val networkExecutor: Executor) : RedditPostRepository {
     @MainThread
     override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
-        val sourceFactory = SubRedditDataSourceFactory(redditApi, subReddit, networkExecutor)
+        val sourceLiveData = MutableLiveData<PageKeyedSubredditDataSource>()
+        val sourceFactory = {
+            val pagedSource = PageKeyedSubredditDataSource(redditApi, subReddit, networkExecutor)
+            sourceLiveData.postValue(pagedSource)
+            pagedSource
+        }
 
         // We use toLiveData Kotlin extension function here, you could also use LivePagedListBuilder
         val livePagedList = sourceFactory.toLiveData(
@@ -42,20 +48,13 @@ class InMemoryByPageKeyRepository(private val redditApi: RedditApi,
                 // Arch Components' IO pool which is also used for disk access
                 fetchExecutor = networkExecutor)
 
-        val refreshState = Transformations.switchMap(sourceFactory.sourceLiveData) {
+        val refreshState = Transformations.switchMap(sourceLiveData) {
             it.initialLoad
         }
         return Listing(
                 pagedList = livePagedList,
-                networkState = Transformations.switchMap(sourceFactory.sourceLiveData) {
-                  it.networkState
-                },
-                retry = {
-                    sourceFactory.sourceLiveData.value?.retryAllFailed()
-                },
-                refresh = {
-                    sourceFactory.sourceLiveData.value?.invalidate()
-                },
+                networkState = Transformations.switchMap(sourceLiveData) { it.networkState },
+                refresh = { sourceLiveData.value?.invalidate() },
                 refreshState = refreshState
         )
     }

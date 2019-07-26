@@ -19,6 +19,7 @@ package com.android.example.paging.pagingwithnetwork.reddit
 import android.app.Application
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import androidx.arch.core.executor.ArchTaskExecutor
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
@@ -69,6 +70,8 @@ interface ServiceLocator {
  * default implementation of ServiceLocator that uses production endpoints.
  */
 open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolean) : ServiceLocator {
+    private val mainThreadExecutor = ArchTaskExecutor.getMainThreadExecutor()
+
     // thread pool used for disk access
     @Suppress("PrivatePropertyName")
     private val DISK_IO = Executors.newSingleThreadExecutor()
@@ -96,6 +99,7 @@ open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolea
             RedditPostRepository.Type.DB -> DbRedditPostRepository(
                     db = db,
                     redditApi = getRedditApi(),
+                    networkExecutor = getNetworkExecutor(),
                     ioExecutor = getDiskIOExecutor())
         }
     }

@@ -16,11 +16,11 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
+import androidx.annotation.MainThread
+import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
-import androidx.annotation.MainThread
 import androidx.paging.toLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
@@ -28,9 +28,10 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
 
 /**
@@ -40,6 +41,7 @@ import java.util.concurrent.Executor
 class DbRedditPostRepository(
         val db: RedditDb,
         private val redditApi: RedditApi,
+        private val networkExecutor: Executor,
         private val ioExecutor: Executor,
         private val networkPageSize: Int = DEFAULT_NETWORK_PAGE_SIZE) : RedditPostRepository {
     companion object {
@@ -70,37 +72,28 @@ class DbRedditPostRepository(
      * updated after the database transaction is finished.
      */
     @MainThread
-    suspend fun refresh(subredditName: String): LiveData<NetworkState> {
-        val networkState = MutableLiveData<NetworkState>()
+    private suspend fun refresh(subredditName: String, networkState: MutableLiveData<NetworkState>): LiveData<NetworkState> {
         networkState.value = NetworkState.LOADING
 
         try {
-            redditApi.getTop(subredditName, networkPageSize)
-        }  catch (t: Throwable) {
-            // retrofit calls this on main thread so safe to call set value
-            networkState.value = NetworkState.error(t.message)
-        }
-
-
-                .enqueue(
-                object : Callback<RedditApi.ListingResponse> {
-                    override fun onFailure(call: Call<RedditApi.ListingResponse>, t: Throwable) {
-                    }
-
-                    override fun onResponse(
-                            call: Call<RedditApi.ListingResponse>,
-                            response: Response<RedditApi.ListingResponse>) {
-                        ioExecutor.execute {
-                            db.runInTransaction {
-                                db.posts().deleteBySubreddit(subredditName)
-                                insertResultIntoDb(subredditName, response.body())
-                            }
-                            // since we are in bg thread now, post the result.
-                            networkState.postValue(NetworkState.LOADED)
-                        }
+            withContext(networkExecutor.asCoroutineDispatcher()) {
+                val result = redditApi.getTop(subredditName, networkPageSize)
+                withContext(ioExecutor.asCoroutineDispatcher()) {
+                    db.runInTransaction {
+                        db.posts().deleteBySubreddit(subredditName)
+                        insertResultIntoDb(subredditName, result)
                     }
                 }
-        )
+            }
+
+            // since we are in bg thread now, post the result.
+            networkState.postValue(NetworkState.LOADED)
+        } catch (t: Throwable) {
+            // retrofit calls this on main thread so safe to call set value
+            networkState.value = NetworkState.error(t.message)
+            throw t
+        }
+
         return networkState
     }
 
@@ -108,36 +101,30 @@ class DbRedditPostRepository(
      * Returns a Listing for the given subreddit.
      */
     @MainThread
-    override suspend fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
-        // create a boundary callback which will observe when the user reaches to the edges of
-        // the list and update the database with extra data.
-        val boundaryCallback = SubredditBoundaryCallback(
-                webservice = redditApi,
-                subredditName = subReddit,
-                handleResponse = this::insertResultIntoDb,
-                ioExecutor = ioExecutor,
-                networkPageSize = networkPageSize)
+    override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
+        val networkState = MutableLiveData<NetworkState>()
+
         // we are using a mutable live data to trigger refresh requests which eventually calls
         // refresh method and gets a new live data. Each refresh request by the user becomes a newly
         // dispatched data in refreshTrigger
         val refreshTrigger = MutableLiveData<Unit>()
         val refreshState = Transformations.switchMap(refreshTrigger) {
-            refresh(subReddit)
+            networkState
+            //            GlobalScope.async(ArchTaskExecutor.getMainThreadExecutor().asCoroutineDispatcher()) {
+//                refresh(subReddit, networkState)
+//            }
         }
 
         // We use toLiveData Kotlin extension function here, you could also use LivePagedListBuilder
-        val livePagedList = db.posts().postsBySubreddit(subReddit).toLiveData(
-                pageSize = pageSize,
-                boundaryCallback = boundaryCallback)
+        val livePagedList = db.posts().postsBySubreddit(subReddit).toLiveData(pageSize)
 
         return Listing(
                 pagedList = livePagedList,
-                networkState = boundaryCallback.networkState,
-                retry = {
-                    boundaryCallback.helper.retryAllFailed()
-                },
+                networkState = networkState,
                 refresh = {
-                    refreshTrigger.value = null
+                    GlobalScope.launch(ArchTaskExecutor.getMainThreadExecutor().asCoroutineDispatcher()) {
+                        refresh(subReddit, networkState)
+                    }
                 },
                 refreshState = refreshState
         )

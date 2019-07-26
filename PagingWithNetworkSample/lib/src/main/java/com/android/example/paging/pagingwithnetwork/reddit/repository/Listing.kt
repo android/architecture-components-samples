@@ -31,6 +31,4 @@ data class Listing<T : Any>(
         // value is importantly only when refresh is requested.
         val refreshState: LiveData<NetworkState>,
         // refreshes the whole data and fetches it from scratch.
-        val refresh: () -> Unit,
-        // retries any failed requests.
-        val retry: () -> Unit)
+        val refresh: suspend () -> Unit)
