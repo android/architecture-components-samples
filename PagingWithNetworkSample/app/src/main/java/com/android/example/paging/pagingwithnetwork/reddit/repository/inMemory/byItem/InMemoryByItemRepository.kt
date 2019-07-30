@@ -54,9 +54,7 @@ class InMemoryByItemRepository(
                 // Arch Components' IO pool which is also used for disk access
                 fetchExecutor = networkExecutor)
 
-        val refreshState = Transformations.switchMap(sourceLiveData) {
-            it.initialLoad
-        }
+        val refreshState = Transformations.switchMap(sourceLiveData) { it.initialLoad }
         return Listing(
                 pagedList = livePagedList,
                 networkState = Transformations.switchMap(sourceLiveData) { it.networkState },

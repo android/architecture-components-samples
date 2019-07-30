@@ -20,7 +20,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 
 class SubRedditViewModel(
@@ -37,9 +40,9 @@ class SubRedditViewModel(
 
     fun refresh() {
 //        repoResult.cancel()
-//        repository.refresh()
-        repoResult
-//        repoResult.value.refresh.invoke()
+        viewModelScope.launch(Dispatchers.Main) {
+            repoResult.value?.refresh?.invoke()
+        }
     }
 
     fun showSubreddit(subreddit: String): Boolean {

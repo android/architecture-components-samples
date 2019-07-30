@@ -36,9 +36,7 @@ class PageKeyedSubredditDataSource(
 ) : PagedSource<String, RedditPost>() {
     override val keyProvider = KeyProvider.PageKey<String, RedditPost>()
 
-    override fun isRetryableError(error: Throwable): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun isRetryableError(error: Throwable) = false
 
     override suspend fun load(params: LoadParams<String>) = when (params.loadType) {
         LoadType.INITIAL -> loadInitial(params)
@@ -70,7 +68,7 @@ class PageKeyedSubredditDataSource(
             val data = result.data
             val items = data.children.map { it.data }
             networkState.postValue(NetworkState.LOADED)
-            return LoadResult(data = items, offset = 0, counted = false)
+            return LoadResult(data = items, offset = 0)
         } catch (e: IOException) {
             networkState.postValue(NetworkState.error(e.message ?: "unknown err"))
             throw e
@@ -96,8 +94,7 @@ class PageKeyedSubredditDataSource(
                     data = items,
                     nextKey = data.after,
                     prevKey = data.before,
-                    offset = 0,
-                    counted = false
+                    offset = 0
             )
         } catch (ioException: IOException) {
             val error = NetworkState.error(ioException.message ?: "unknown error")
