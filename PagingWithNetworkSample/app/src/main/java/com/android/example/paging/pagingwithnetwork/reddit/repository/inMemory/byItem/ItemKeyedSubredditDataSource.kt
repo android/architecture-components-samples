@@ -82,8 +82,7 @@ class ItemKeyedSubredditDataSource(
             networkState.postValue(NetworkState.LOADED)
             return LoadResult(
                     data = response.data.children.map { it.data },
-                    offset = 0,
-                    counted = false
+                    offset = 0
             )
         } catch (e: IOException) {
             // publish the error
@@ -107,7 +106,7 @@ class ItemKeyedSubredditDataSource(
             networkState.postValue(NetworkState.LOADED)
             initialLoad.postValue(NetworkState.LOADED)
 
-            return LoadResult(data = items, offset = 0, counted = false)
+            return LoadResult(data = items, offset = 0)
         } catch (ioException: IOException) {
             val error = NetworkState.error(ioException.message ?: "unknown error")
             networkState.postValue(error)
