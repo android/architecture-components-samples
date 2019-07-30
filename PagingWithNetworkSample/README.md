@@ -55,9 +55,9 @@ in the Paging Library.
 [2]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byItem/InMemoryByItemRepository.kt
 [3]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/db/RedditPostDao.kt
 [4]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inDb/SubredditBoundaryCallback.kt
-[5]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byItem/ItemKeyedSubredditDataSource.kt
+[5]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byItem/ItemKeyedSubredditPagedSource.kt
 [6]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byPage/InMemoryByPageKeyRepository.kt
-[7]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byPage/PageKeyedSubredditDataSource.kt
+[7]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byPage/PageKeyedSubredditPagedSource.kt
 [8]: https://www.reddit.com/dev/api/#listings
 [mockwebserver]: https://github.com/square/okhttp/tree/master/mockwebserver
 [support-lib]: https://developer.android.com/topic/libraries/support-library/index.html

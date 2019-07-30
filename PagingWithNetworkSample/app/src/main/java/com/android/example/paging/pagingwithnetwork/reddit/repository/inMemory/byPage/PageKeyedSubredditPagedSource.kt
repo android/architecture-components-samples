@@ -22,17 +22,15 @@ import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import java.io.IOException
-import java.util.concurrent.Executor
 
 /**
- * A data source that uses the before/after keys returned in page requests.
- * <p>
- * See ItemKeyedSubredditDataSource
+ * A [PagedSource] that uses the before/after keys returned in page requests.
+ *
+ * @see com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem.ItemKeyedSubredditPagedSource
  */
-class PageKeyedSubredditDataSource(
+class PageKeyedSubredditPagedSource(
         private val redditApi: RedditApi,
-        private val subredditName: String,
-        private val retryExecutor: Executor
+        private val subredditName: String
 ) : PagedSource<String, RedditPost>() {
     override val keyProvider = KeyProvider.PageKey<String, RedditPost>()
 
@@ -46,7 +44,10 @@ class PageKeyedSubredditDataSource(
 
     /**
      * There is no sync on the state because paging will always call loadInitial first then wait
-     * for it to return some success value before calling loadAfter.
+     * for it to return some success value before calling loadAfter and we don't support loadBefore
+     * in this example.
+     *
+     * See BoundaryCallback example for a more complete example on syncing multiple network states.
      */
     val networkState = MutableLiveData<NetworkState>()
 
@@ -59,16 +60,18 @@ class PageKeyedSubredditDataSource(
 
     private suspend fun loadAfter(params: LoadParams<String>): LoadResult<String, RedditPost> {
         try {
+            // set network value to loading.
             networkState.postValue(NetworkState.LOADING)
-            val result = redditApi.getTopAfter(
+
+            val response = redditApi.getTopAfter(
                     subreddit = subredditName,
                     after = params.key!!,
                     limit = params.loadSize
             )
-            val data = result.data
-            val items = data.children.map { it.data }
+            val data = response.data.children.map { it.data }
             networkState.postValue(NetworkState.LOADED)
-            return LoadResult(data = items, offset = 0)
+
+            return LoadResult(data = data, offset = 0)
         } catch (e: IOException) {
             networkState.postValue(NetworkState.error(e.message ?: "unknown err"))
             throw e
@@ -78,28 +81,24 @@ class PageKeyedSubredditDataSource(
     private suspend fun loadInitial(params: LoadParams<String>): LoadResult<String, RedditPost> {
         // triggered by a refresh, we better execute sync
         try {
+            // update network states.
+            // we also provide an initial load state to the listeners so that the UI can know when
+            // the very first list is loaded.
             networkState.postValue(NetworkState.LOADING)
             initialLoad.postValue(NetworkState.LOADING)
 
-            val result = redditApi.getTop(
-                    subreddit = subredditName,
-                    limit = params.loadSize
-            )
-
-            val data = result.data
+            val response = redditApi.getTop(subreddit = subredditName, limit = params.loadSize)
+            val data = response.data
             val items = data.children.map { it.data }
             networkState.postValue(NetworkState.LOADED)
             initialLoad.postValue(NetworkState.LOADED)
-            return LoadResult(
-                    data = items,
-                    nextKey = data.after,
-                    prevKey = data.before,
-                    offset = 0
-            )
+
+            return LoadResult(data = items, nextKey = data.after, prevKey = data.before, offset = 0)
         } catch (ioException: IOException) {
             val error = NetworkState.error(ioException.message ?: "unknown error")
             networkState.postValue(error)
             initialLoad.postValue(error)
+
             throw ioException
         }
     }

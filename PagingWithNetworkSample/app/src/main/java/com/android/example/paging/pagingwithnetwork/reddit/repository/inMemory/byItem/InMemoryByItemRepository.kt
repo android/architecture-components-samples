@@ -33,14 +33,15 @@ import java.util.concurrent.Executor
  */
 class InMemoryByItemRepository(
         private val redditApi: RedditApi,
-        private val networkExecutor: Executor) : RedditPostRepository {
+        private val networkExecutor: Executor
+) : RedditPostRepository {
     @MainThread
     override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
-        val sourceLiveData = MutableLiveData<ItemKeyedSubredditDataSource>()
+        val sourceLiveData = MutableLiveData<ItemKeyedSubredditPagedSource>()
         val sourceFactory = {
-            val source = ItemKeyedSubredditDataSource(redditApi, subReddit)
-            sourceLiveData.postValue(source)
-            source
+            val pagedSource = ItemKeyedSubredditPagedSource(redditApi, subReddit)
+            sourceLiveData.postValue(pagedSource)
+            pagedSource
         }
 
         // We use toLiveData Kotlin ext. function here, you could also use LivePagedListBuilder

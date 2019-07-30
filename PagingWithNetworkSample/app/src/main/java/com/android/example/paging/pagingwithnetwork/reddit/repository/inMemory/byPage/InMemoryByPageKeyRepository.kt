@@ -30,13 +30,15 @@ import java.util.concurrent.Executor
  * Repository implementation that returns a Listing that loads data directly from network by using
  * the previous / next page keys returned in the query.
  */
-class InMemoryByPageKeyRepository(private val redditApi: RedditApi,
-                                  private val networkExecutor: Executor) : RedditPostRepository {
+class InMemoryByPageKeyRepository(
+        private val redditApi: RedditApi,
+        private val networkExecutor: Executor
+) : RedditPostRepository {
     @MainThread
     override fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost> {
-        val sourceLiveData = MutableLiveData<PageKeyedSubredditDataSource>()
+        val sourceLiveData = MutableLiveData<PageKeyedSubredditPagedSource>()
         val sourceFactory = {
-            val pagedSource = PageKeyedSubredditDataSource(redditApi, subReddit, networkExecutor)
+            val pagedSource = PageKeyedSubredditPagedSource(redditApi, subReddit)
             sourceLiveData.postValue(pagedSource)
             pagedSource
         }

@@ -24,13 +24,14 @@ import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import java.io.IOException
 
 /**
- * A data source that uses the "name" field of posts as the key for next/prev pages.
- * <p>
+ * A [PagedSource] that uses the "name" field of posts as the key for next/prev pages.
+ *
  * Note that this is not the correct consumption of the Reddit API but rather shown here as an
  * alternative implementation which might be more suitable for your backend.
- * see PageKeyedSubredditDataSource for the other sample.
+ *
+ * @see com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage.PageKeyedSubredditPagedSource
  */
-class ItemKeyedSubredditDataSource(
+class ItemKeyedSubredditPagedSource(
         private val redditApi: RedditApi,
         private val subredditName: String
 ) : PagedSource<String, RedditPost>() {
@@ -55,7 +56,7 @@ class ItemKeyedSubredditDataSource(
      * There is no sync on the state because paging will always call loadInitial first then wait
      * for it to return some success value before calling loadAfter and we don't support loadBefore
      * in this example.
-     * <p>
+     *
      * See BoundaryCallback example for a more complete example on syncing multiple network states.
      */
     val networkState = MutableLiveData<NetworkState>()
@@ -68,22 +69,19 @@ class ItemKeyedSubredditDataSource(
     }
 
     private suspend fun loadAfter(params: LoadParams<String>): LoadResult<String, RedditPost> {
-        // set network value to loading.
-        networkState.postValue(NetworkState.LOADING)
-        // even though we are using async retrofit API here, we could also use sync
-        // it is just different to show that the callback can be called async.
-
         try {
+            // set network value to loading.
+            networkState.postValue(NetworkState.LOADING)
+
             val response = redditApi.getTopAfter(
                     subreddit = subredditName,
                     after = params.key!!,
                     limit = params.loadSize
             )
+            val data = response.data.children.map { it.data }
             networkState.postValue(NetworkState.LOADED)
-            return LoadResult(
-                    data = response.data.children.map { it.data },
-                    offset = 0
-            )
+
+            return LoadResult(data = data, offset = 0)
         } catch (e: IOException) {
             // publish the error
             networkState.postValue(NetworkState.error(e.message ?: "unknown err"))
@@ -94,14 +92,13 @@ class ItemKeyedSubredditDataSource(
     private suspend fun loadInitial(params: LoadParams<String>): LoadResult<String, RedditPost> {
         // triggered by a refresh, we better execute sync
         try {
-            val response = redditApi.getTop(subreddit = subredditName, limit = params.loadSize)
-
             // update network states.
-            // we also provide an initial load state to the listeners so that the UI can know when the
-            // very first list is loaded.
+            // we also provide an initial load state to the listeners so that the UI can know when
+            // the very first list is loaded.
             networkState.postValue(NetworkState.LOADING)
             initialLoad.postValue(NetworkState.LOADING)
 
+            val response = redditApi.getTop(subreddit = subredditName, limit = params.loadSize)
             val items = response.data.children.map { it.data }
             networkState.postValue(NetworkState.LOADED)
             initialLoad.postValue(NetworkState.LOADED)
