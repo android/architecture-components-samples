@@ -17,7 +17,6 @@
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
 import androidx.annotation.MainThread
-import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -28,10 +27,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.util.concurrent.Executor
 
 /**
@@ -72,16 +68,16 @@ class DbRedditPostRepository(
      * updated after the database transaction is finished.
      */
     @MainThread
-    private suspend fun refresh(subredditName: String, networkState: MutableLiveData<NetworkState>): LiveData<NetworkState> {
+    private suspend fun refresh(subReddit: String, networkState: MutableLiveData<NetworkState>): LiveData<NetworkState> {
         networkState.value = NetworkState.LOADING
 
         try {
             withContext(networkExecutor.asCoroutineDispatcher()) {
-                val result = redditApi.getTop(subredditName, networkPageSize)
+                val result = redditApi.getTop(subReddit, networkPageSize)
                 withContext(ioExecutor.asCoroutineDispatcher()) {
                     db.runInTransaction {
-                        db.posts().deleteBySubreddit(subredditName)
-                        insertResultIntoDb(subredditName, result)
+                        db.posts().deleteBySubreddit(subReddit)
+                        insertResultIntoDb(subReddit, result)
                     }
                 }
             }
@@ -109,10 +105,9 @@ class DbRedditPostRepository(
         // dispatched data in refreshTrigger
         val refreshTrigger = MutableLiveData<Unit>()
         val refreshState = Transformations.switchMap(refreshTrigger) {
+            // TODO: What's the best way to pass ViewModelScope here?
+            GlobalScope.launch(Dispatchers.Main) { refresh(subReddit, networkState) }
             networkState
-            //            GlobalScope.async(ArchTaskExecutor.getMainThreadExecutor().asCoroutineDispatcher()) {
-//                refresh(subReddit, networkState)
-//            }
         }
 
         // We use toLiveData Kotlin extension function here, you could also use LivePagedListBuilder
@@ -121,11 +116,7 @@ class DbRedditPostRepository(
         return Listing(
                 pagedList = livePagedList,
                 networkState = networkState,
-                refresh = {
-                    GlobalScope.launch(ArchTaskExecutor.getMainThreadExecutor().asCoroutineDispatcher()) {
-                        refresh(subReddit, networkState)
-                    }
-                },
+                refresh = { refresh(subReddit, networkState) },
                 refreshState = refreshState
         )
     }
