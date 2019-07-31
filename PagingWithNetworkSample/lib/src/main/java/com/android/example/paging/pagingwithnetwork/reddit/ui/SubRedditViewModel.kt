@@ -24,12 +24,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executor
 
-class SubRedditViewModel(
-        private val repository: RedditPostRepository,
-        private val ioExecutor: Executor
-) : ViewModel() {
+class SubRedditViewModel(private val repository: RedditPostRepository) : ViewModel() {
     private val subredditName = MutableLiveData<String>()
     private val repoResult = map(subredditName) {
         repository.postsOfSubreddit(it, 30)
@@ -39,7 +35,6 @@ class SubRedditViewModel(
     val refreshState = switchMap(repoResult) { it.refreshState }
 
     fun refresh() {
-//        repoResult.cancel()
         viewModelScope.launch(Dispatchers.Main) {
             repoResult.value?.refresh?.invoke()
         }
@@ -51,11 +46,6 @@ class SubRedditViewModel(
         }
         subredditName.value = subreddit
         return true
-    }
-
-    fun retry() {
-        val listing = repoResult.value
-//        listing.retry.invoke()
     }
 
     fun currentSubreddit(): String? = subredditName.value

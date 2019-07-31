@@ -16,17 +16,17 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedList
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
@@ -71,19 +71,16 @@ class RedditActivity : AppCompatActivity() {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
                 val serviceLocator = ServiceLocator.instance(this@RedditActivity)
-                val ioExecutor = serviceLocator.getDiskIOExecutor()
                 val repo = serviceLocator.getRepository(repoType)
                 @Suppress("UNCHECKED_CAST")
-                return SubRedditViewModel(repo, ioExecutor) as T
+                return SubRedditViewModel(repo) as T
             }
         })[SubRedditViewModel::class.java]
     }
 
     private fun initAdapter() {
         val glide = GlideApp.with(this)
-        val adapter = PostsAdapter(glide) {
-            model.retry()
-        }
+        val adapter = PostsAdapter(glide) {}
         list.adapter = adapter
         model.posts.observe(this, Observer<PagedList<RedditPost>> {
             adapter.submitList(it)
