@@ -23,7 +23,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.android.navigationadvancedsample.MainFragmentDirections
 import com.example.android.navigationadvancedsample.R
+import com.example.android.navigationadvancedsample.findMainNavController
+import kotlinx.android.synthetic.main.fragment_title.*
 
 /**
  * Shows the main title screen with a button that navigates to [About].
@@ -36,6 +39,10 @@ class Title : Fragment() {
 
         view.findViewById<Button>(R.id.about_btn).setOnClickListener {
             findNavController().navigate(R.id.action_title_to_about)
+        }
+
+        view.findViewById<Button>(R.id.sheet_btn).setOnClickListener {
+            findMainNavController().navigate(MainFragmentDirections.actionBottomSheet("test sheet"))
         }
         return view
     }

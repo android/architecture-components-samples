@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--text size-->
+    <dimen name="edit_text_default">14sp</dimen>
+    <dimen name="button_text_default">16sp</dimen>
+    <dimen name="single_edit_text_default">18sp</dimen>
+    <dimen name="section_title_default">16sp</dimen>
+
+    <!--size-->
+    <dimen name="toolbar_height_default">46dp</dimen>
+    <dimen name="divider_width">0.5dp</dimen>
+    <dimen name="dialog_width_default">270dp</dimen>
+    <dimen name="dialog_button_height_default">50dp</dimen>
+
+    <!--padding margin-->
+    <dimen name="edit_text_padding_default">16dp</dimen>
+    <dimen name="item_padding_default">16dp</dimen>
+    <dimen name="list_bottom_padding">50dp</dimen>
+    <dimen name="list_bottom_top">10dp</dimen>
+    <dimen name="list_section_gap">10dp</dimen>
+</resources>

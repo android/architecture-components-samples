@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_host"
+    app:startDestination="@id/main">
+
+    <fragment
+        android:id="@+id/main"
+        android:label="fragment_main"
+        android:name="com.example.android.navigationadvancedsample.MainFragment"
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/action_bottom_sheet"
+            app:destination="@id/hint_sheet" />
+
+    </fragment>
+
+    <sheet
+        android:id="@+id/hint_sheet"
+        android:name="com.example.android.navigationadvancedsample.sheetscreen.HintSheetFragment"
+        tools:layout="@layout/fragment_hint_sheet">
+
+        <argument
+            android:name="tag"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+
+        <argument
+            android:name="hint"
+            app:argType="string" />
+    </sheet>
+
+
+</navigation>

@@ -1,22 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright 2019, The Android Open Source Project
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#7e53c5</color>
+    <color name="colorPrimary">#5968B0</color>
+    <color name="colorPrimaryDark">#FF5869B5</color>
+    <color name="colorAccent">#5968B0</color>
+
+    <!-- bg -->
+    <color name="bg_delegation_green_item">#1a4dbf73</color>
+    <color name="bg_delegation_red_item">#1ad95757</color>
+    <color name="bg_delegation_green_item_1">#0e4dbf73</color>
+    <color name="bg_delegation_red_item_1">#0ed95757</color>
+    <color name="bg_default">#ffffff</color>
+    <color name="bg_gray">#f5f5f5</color>
+    <color name="bg_page_gray">#F2F3F5</color>
+
+    <color name="white">#ffffff</color>
+    <color name="divider">#E8E8ED</color>
+
+    <color name="widget_blue">#7086E6</color>
+    <color name="widget_green_deposit">#86C266</color>
+    <color name="widget_green">#4DBF73</color>
+    <color name="widget_red">#d95757</color>
+    <color name="widget_trade_empty">#fff5f5f5</color>
+    <color name="widget_dark_green">#28924D</color>
+    <color name="widget_dark_blue">#596FF1</color>
+    <color name="widget_gray">#CFCFD4</color>
+    <color name="widget_white">#FFFFFF</color>
+    <color name="widget_transparent_blue">#4d7086E6</color>
+    <color name="widget_leverage_line">#80ffffff</color>
+    <color name="widget_unselect_text">#CCCCCC</color>
+    <color name="widget_select_text">#FFF</color>
+    <color name="widget_yellow">#f7931a</color>
+    <color name="widget_light_blue">#fff0f2fc</color>
+
+    <!-- depth chart -->
+    <color name="depth_green_transparent">#CFEAD7</color>
+    <color name="depth_green">#6CBC7B</color>
+    <color name="depth_red_transparent">#EDCDCD</color>
+    <color name="depth_red">#CB5F5B</color>
+
+    <!-- text -->
+    <color name="s1">#313238</color>
+    <color name="s2">#D95757</color>
+    <color name="s3">#28292E</color>
+    <color name="s4">#80313238</color>
+    <color name="s5">#7086E6</color>
+    <color name="s6">#33313238</color>
+
+    <!-- chart -->
+    <color name="chart_green">#86C266</color>
+    <color name="chart_red">#E67070</color>
+
+    <!--labels-->
+    <color name="text_status_transaction_failed">#E67070</color>
+    <color name="text_status_transaction_pending">#80313238</color>
+    <color name="text_status_transaction_finished">#86C266</color>
+    <color name="background_status_transaction_failed">#FCF0F0</color>
+    <color name="background_status_transaction_pending">#F5F5F5</color>
+    <color name="background_status_transaction_waiting">#26f7931a</color>
+    <color name="background_status_transaction_finished">#F2F8EF</color>
+    <color name="affiliate_tab_normal">#80313238</color>
+    <color name="affiliate_tab_checked">#7086E6</color>
+
+    <!-- badge -->
+    <color name="text_badge_orange">#fff7931a</color>
+    <color name="text_badge_orange_background">#26f7931a</color>
+    <color name="text_badge_green">#ff4dbf73</color>
+    <color name="text_badge_green_background">#264dbf73</color>
+    <color name="text_badge_grey">#80313238</color>
+    <color name="text_badge_grey_background">#fff5f5f5</color>
+    <color name="text_badge_red">#ffd95757</color>
+    <color name="text_badge_red_background">#26d95757</color>
+
 </resources>

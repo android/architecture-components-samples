@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@drawable/sheet_bg"
+    tools:context=".sheetscreen.HintSheetFragment"
+    tools:layout_gravity="bottom"
+    >
+
+    <TextView
+        android:id="@+id/tvHint"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:lineSpacingExtra="6dp"
+        android:padding="@dimen/item_padding_default"
+        android:textColor="#80313238"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Hint Text"
+        />
+
+    <TextView
+        android:id="@+id/btnConfirm"
+        style="@style/Clickable"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_item_divider_top"
+        android:gravity="center"
+        android:text="Confirm"
+        android:textColor="@color/s5"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

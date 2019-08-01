@@ -32,6 +32,7 @@
     <string name="losses">Losses</string>
     <string name="losses_amount">03</string>
     <string name="about">About</string>
+    <string name="sheet">Sheet</string>
     <string name="welcome">Welcome!</string>
     <string name="about_description">This sample showcases navigation using a Bottom Navigation
     View. The state and back stack of the three different screens are persisted.
