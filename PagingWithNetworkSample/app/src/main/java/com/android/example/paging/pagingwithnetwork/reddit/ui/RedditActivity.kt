@@ -130,7 +130,6 @@ class RedditActivity : AppCompatActivity() {
             if (it.isNotEmpty()) {
                 if (model.showSubreddit(it)) {
                     list.scrollToPosition(0)
-                    (list.adapter as? PostsAdapter)?.submitList(null)
                 }
             }
         }
