@@ -41,6 +41,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     // Robolectric
     testOptions {
@@ -67,7 +70,6 @@ dependencies {
     implementation deps.constraint_layout
     implementation deps.support.core_ktx
 
-    implementation deps.lifecycle.extensions
     implementation deps.lifecycle.viewmodel_ktx
 
     implementation deps.navigation.fragment_ktx

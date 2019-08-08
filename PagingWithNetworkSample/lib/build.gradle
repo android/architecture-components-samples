@@ -32,7 +32,6 @@ dependencies {
     implementation deps.support.design
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     implementation deps.paging_ktx
     implementation deps.kotlin.stdlib
     implementation deps.retrofit.runtime

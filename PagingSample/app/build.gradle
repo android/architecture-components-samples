@@ -38,15 +38,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     implementation deps.support.app_compat
+    implementation deps.support.fragment_runtime_ktx
     implementation deps.support.recyclerview
     implementation deps.support.cardview
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     implementation deps.paging_ktx
     implementation deps.kotlin.stdlib
 

@@ -29,11 +29,10 @@ android {
 dependencies {
     // Support libraries
     implementation deps.support.app_compat
-    implementation deps.support.v4
+    implementation deps.support.fragment_runtime
     implementation deps.support.design
     // Architecture components
     implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     annotationProcessor deps.lifecycle.compiler
     implementation deps.room.runtime
     annotationProcessor deps.room.compiler
@@ -71,7 +70,6 @@ dependencies {
 
     // Resolve conflicts between main and test APK:
     androidTestImplementation deps.support.annotations
-    androidTestImplementation deps.support.v4
     androidTestImplementation deps.support.app_compat
     androidTestImplementation deps.support.design
 }

@@ -22,7 +22,7 @@
     android:orientation="vertical"
     tools:context="com.example.android.navigationadvancedsample.MainActivity">
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"

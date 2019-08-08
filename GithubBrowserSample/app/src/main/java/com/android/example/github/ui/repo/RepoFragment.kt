@@ -16,22 +16,21 @@
 
 package com.android.example.github.ui.repo
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.databinding.DataBindingComponent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import com.android.example.github.AppExecutors
-import javax.inject.Inject
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
+import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.RepoFragmentBinding
@@ -39,6 +38,7 @@ import com.android.example.github.di.Injectable
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
+import javax.inject.Inject
 
 /**
  * The UI Controller for displaying a Github Repo's information with its contributors.
@@ -49,7 +49,9 @@ class RepoFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var repoViewModel: RepoViewModel
+    val repoViewModel: RepoViewModel by viewModels {
+        viewModelFactory
+    }
 
     @Inject
     lateinit var appExecutors: AppExecutors
@@ -94,8 +96,6 @@ class RepoFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        repoViewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(RepoViewModel::class.java)
         val params = RepoFragmentArgs.fromBundle(arguments!!)
         repoViewModel.setId(params.owner, params.name)
         binding.setLifecycleOwner(viewLifecycleOwner)

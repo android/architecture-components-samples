@@ -28,10 +28,10 @@ import android.widget.Button
 import android.widget.Checkable
 import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 
 /**
@@ -40,7 +40,7 @@ import com.bumptech.glide.Glide
  */
 class FilterActivity : AppCompatActivity() {
 
-    private lateinit var mViewModel: FilterViewModel
+    private val mViewModel: FilterViewModel by viewModels()
     private var mImageUri: Uri? = null
     private var mOutputImageUri: Uri? = null
 
@@ -51,8 +51,6 @@ class FilterActivity : AppCompatActivity() {
         // Don't enable upload to Imgur, unless the developer specifies their own clientId.
         val enableUpload = !TextUtils.isEmpty(Constants.IMGUR_CLIENT_ID)
         findViewById<View>(R.id.upload).isEnabled = enableUpload
-
-        mViewModel = ViewModelProviders.of(this).get(FilterViewModel::class.java)
 
         val intent = intent
         val imageUriExtra = intent.getStringExtra(Constants.KEY_IMAGE_URI)

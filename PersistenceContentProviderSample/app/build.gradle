@@ -55,7 +55,6 @@ dependencies {
     implementation deps.support.recyclerview
 
     // App Toolkit
-    implementation deps.lifecycle.extensions
     implementation deps.room.runtime
     annotationProcessor deps.lifecycle.compiler
     annotationProcessor deps.room.compiler

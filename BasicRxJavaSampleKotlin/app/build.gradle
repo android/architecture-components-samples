@@ -37,17 +37,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     // Support libraries
     implementation deps.support.app_compat
-    implementation deps.support.v4
+    implementation deps.support.fragment_runtime_ktx
     implementation deps.support.design
 
     // Architecture components
     implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     kapt deps.lifecycle.compiler
     implementation deps.room.runtime
     kapt deps.room.compiler
@@ -87,7 +93,6 @@ dependencies {
 
     // Resolve conflicts between main and test APK:
     androidTestImplementation deps.support.annotations
-    androidTestImplementation deps.support.v4
     androidTestImplementation deps.support.app_compat
     androidTestImplementation deps.support.design
 }

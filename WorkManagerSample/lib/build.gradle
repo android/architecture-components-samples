@@ -31,7 +31,6 @@ dependencies {
     implementation deps.support.app_compat
     implementation deps.support.cardview
     implementation deps.support.design
-    implementation deps.support.v4
     implementation deps.constraint_layout
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson

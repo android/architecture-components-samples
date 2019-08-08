@@ -16,19 +16,20 @@
 
 package com.example.android.persistence.ui;
 
+import android.os.Bundle;
 import android.text.Editable;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.databinding.DataBindingUtil;
-import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android.persistence.R;
 import com.example.android.persistence.databinding.ListFragmentBinding;
@@ -62,7 +63,7 @@ public class ProductListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final ProductListViewModel viewModel =
-                ViewModelProviders.of(this).get(ProductListViewModel.class);
+                new ViewModelProvider(this).get(ProductListViewModel.class);
 
         mBinding.productsSearchBtn.setOnClickListener(new OnClickListener() {
             @Override
