@@ -29,7 +29,7 @@ versions.atsl_core = "1.1.0"
 versions.atsl_rules = "1.1.1"
 versions.atsl_runner = "1.1.1"
 versions.atsl_junit = "1.1.0"
-versions.benchmark = "1.0.0-alpha02"
+versions.benchmark = "1.0.0-alpha04"
 versions.constraint_layout = "2.0.0-alpha2"
 versions.core_ktx = "1.0.0"
 versions.dagger = "2.16"
@@ -59,7 +59,7 @@ versions.work = "2.1.0"
 ext.versions = versions
 
 def deps = [:]
-deps.benchmark = "androidx.benchmark:benchmark:$versions.benchmark"
+deps.benchmark = "androidx.benchmark:benchmark-junit4:$versions.benchmark"
 deps.benchmark_gradle = "androidx.benchmark:benchmark-gradle-plugin:$versions.benchmark"
 
 def support = [:]
