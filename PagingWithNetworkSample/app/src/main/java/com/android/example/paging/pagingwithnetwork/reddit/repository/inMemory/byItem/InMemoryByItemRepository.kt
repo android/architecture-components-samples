@@ -25,6 +25,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executor
 
 /**
@@ -53,7 +54,7 @@ class InMemoryByItemRepository(
                         initialLoadSizeHint = pageSize * 2),
                 // provide custom executor for network requests, otherwise it will default to
                 // Arch Components' IO pool which is also used for disk access
-                fetchExecutor = networkExecutor)
+                fetchDispatcher = networkExecutor.asCoroutineDispatcher())
 
         val refreshState = Transformations.switchMap(sourceLiveData) { it.initialLoad }
         return Listing(

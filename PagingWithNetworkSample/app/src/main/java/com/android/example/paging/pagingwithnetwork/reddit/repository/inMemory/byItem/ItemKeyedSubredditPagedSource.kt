@@ -17,6 +17,7 @@
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem
 
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PageLoadType
 import androidx.paging.PagedSource
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
@@ -47,9 +48,9 @@ class ItemKeyedSubredditPagedSource(
     override fun isRetryableError(error: Throwable) = true
 
     override suspend fun load(params: LoadParams<String>) = when (params.loadType) {
-        LoadType.INITIAL -> loadInitial(params)
-        LoadType.START -> loadBefore()
-        LoadType.END -> loadAfter(params)
+        PageLoadType.REFRESH -> loadInitial(params)
+        PageLoadType.START -> loadBefore()
+        PageLoadType.END -> loadAfter(params)
     }
 
     /**
@@ -81,7 +82,7 @@ class ItemKeyedSubredditPagedSource(
             val data = response.data.children.map { it.data }
             networkState.postValue(NetworkState.LOADED)
 
-            return LoadResult(data = data, offset = 0)
+            return LoadResult(data = data)
         } catch (e: IOException) {
             // publish the error
             networkState.postValue(NetworkState.error(e.message ?: "unknown err"))
@@ -103,7 +104,7 @@ class ItemKeyedSubredditPagedSource(
             networkState.postValue(NetworkState.LOADED)
             initialLoad.postValue(NetworkState.LOADED)
 
-            return LoadResult(data = items, offset = 0)
+            return LoadResult(data = items)
         } catch (ioException: IOException) {
             val error = NetworkState.error(ioException.message ?: "unknown error")
             networkState.postValue(error)
