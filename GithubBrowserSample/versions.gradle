@@ -21,14 +21,15 @@
  **/
 ext.deps = [:]
 def versions = [:]
+versions.activity = '1.0.0-rc01'
 versions.android_gradle_plugin = '3.4.0'
 versions.apache_commons = "2.5"
 versions.appcompat = "1.1.0-rc01"
 versions.arch_core = "2.0.1"
-versions.atsl_core = "1.1.0"
+versions.atsl_core = "1.2.0"
+versions.atsl_junit = "1.1.1"
 versions.atsl_rules = "1.1.1"
 versions.atsl_runner = "1.1.1"
-versions.atsl_junit = "1.1.0"
 versions.benchmark = "1.0.0-alpha04"
 versions.constraint_layout = "2.0.0-alpha2"
 versions.core_ktx = "1.0.0"
@@ -87,7 +88,12 @@ lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
 lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
 lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
 lifecycle.viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
+lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
 deps.lifecycle = lifecycle
+
+def activity = [:]
+activity.activity_ktx = "androidx.activity:activity-ktx:$versions.activity"
+deps.activity = activity
 
 def arch_core = [:]
 arch_core.runtime = "androidx.arch.core:core-runtime:$versions.arch_core"
@@ -107,7 +113,6 @@ dagger.android = "com.google.dagger:dagger-android:$versions.dagger"
 dagger.android_support = "com.google.dagger:dagger-android-support:$versions.dagger"
 dagger.compiler = "com.google.dagger:dagger-compiler:$versions.dagger"
 dagger.android_support_compiler = "com.google.dagger:dagger-android-processor:$versions.dagger"
-
 deps.dagger = dagger
 
 def espresso = [:]
