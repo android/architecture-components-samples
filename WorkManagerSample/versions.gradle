@@ -185,5 +185,6 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    handler.maven { url 'https://ci.android.com/builds/submitted/5837096/androidx_snapshot/latest/repository' }
 }
 ext.addRepos = this.&addRepos
