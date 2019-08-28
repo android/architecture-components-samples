@@ -76,7 +76,10 @@ dependencies {
     implementation deps.navigation.runtime_ktx
     implementation deps.support.fragment_runtime_ktx
     // "androidx.fragment:fragment-testing" must be scoped to all sourcesets.
-    implementation deps.support.fragment_testing
+    implementation(deps.support.fragment_testing) {
+        // Exclude androidx.test:core while fragment_testing depends on 1.1.0
+        exclude group: 'androidx.test', module: 'core'
+    }
 
     // Espresso and UI Testing
     androidTestImplementation deps.atsl.ext_junit
