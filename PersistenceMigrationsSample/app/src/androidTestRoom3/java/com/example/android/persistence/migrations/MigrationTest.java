@@ -153,7 +153,7 @@ public class MigrationTest {
         UsersDatabase usersDatabase = getMigratedRoomDatabase();
 
         // verify that the data is correct
-        User dbUser = getMigratedRoomDatabase().userDao().getUser();
+        User dbUser = usersDatabase.userDao().getUser();
         assertEquals(dbUser.getId(), USER.getId());
         assertEquals(dbUser.getUserName(), USER.getUserName());
         assertEquals(dbUser.getDate(), USER.getDate());
