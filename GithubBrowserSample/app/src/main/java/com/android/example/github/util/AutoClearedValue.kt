@@ -32,10 +32,22 @@ class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Frag
     private var _value: T? = null
 
     init {
-        fragment.lifecycle.addObserver(object : LifecycleObserver {
+        var observerRegistered = false
+        val viewObserver = object : LifecycleObserver {
             @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
+            fun onDestroyView() {
+                observerRegistered = false
                 _value = null
+            }
+        }
+
+        fragment.lifecycle.addObserver(object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_START)
+            fun onStart() {
+                if (!observerRegistered) {
+                    fragment.viewLifecycleOwner.lifecycle.addObserver(viewObserver)
+                    observerRegistered = true
+                }
             }
         })
     }
