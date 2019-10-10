@@ -31,7 +31,7 @@ languages:    [Java]
 solutions:    [Mobile]
 
 # May be omitted if unpublished
-github:       googlesamples/android-architecture-components
+github:       android/architecture-components-samples
 
 # Values: BEGINNER | INTERMEDIATE | ADVANCED | EXPERT
 level:        INTERMEDIATE
