@@ -27,6 +27,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.Date
@@ -51,7 +52,14 @@ class LiveDataViewModelTest {
     private val fakeDataSource = FakeDataSource()
 
     // Class under test. Uses Dispatchers.Main so that the MainCoroutineRule can control it.
-    private val viewModel = LiveDataViewModel(fakeDataSource)
+    private lateinit var viewModel: LiveDataViewModel
+
+    @Before
+    fun initViewModel() {
+        // Initialize the ViewModel after the [MainCoroutineRule] is applied so that it has the
+        // right test dispatcher.
+        viewModel = LiveDataViewModel(fakeDataSource)
+    }
 
     @Test
     fun getCurrentTime_notEmpty() {
