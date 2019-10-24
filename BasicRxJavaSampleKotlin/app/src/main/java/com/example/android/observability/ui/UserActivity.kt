@@ -32,9 +32,9 @@ import kotlinx.android.synthetic.main.activity_user.*
  */
 class UserActivity : AppCompatActivity() {
 
-    private lateinit var viewModelFactory: ViewModelFactory
+    private val viewModelFactoryProvider = { Injection.provideViewModelFactory(this) }
 
-    private val viewModel: UserViewModel by viewModels()
+    private val viewModel: UserViewModel by viewModels(viewModelFactoryProvider)
 
     private val disposable = CompositeDisposable()
 
@@ -42,7 +42,6 @@ class UserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
-        viewModelFactory = Injection.provideViewModelFactory(this)
         update_user_button.setOnClickListener { updateUserName() }
     }
 
