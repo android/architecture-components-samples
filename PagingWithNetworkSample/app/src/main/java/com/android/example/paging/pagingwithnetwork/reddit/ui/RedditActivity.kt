@@ -27,6 +27,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
@@ -82,7 +84,15 @@ class RedditActivity : AppCompatActivity() {
         }
         list.adapter = adapter
         model.posts.observe(this, Observer<PagedList<RedditPost>> {
-            adapter.submitList(it)
+            adapter.submitList(it) {
+                // Workaround for an issue where RecyclerView incorrectly uses the loading / spinner
+                // item added to the end of the list as an anchor during initial load.
+                val layoutManager = (list.layoutManager as LinearLayoutManager)
+                val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+                if (position != RecyclerView.NO_POSITION) {
+                    list.scrollToPosition(position)
+                }
+            }
         })
         model.networkState.observe(this, Observer {
             adapter.setNetworkState(it)

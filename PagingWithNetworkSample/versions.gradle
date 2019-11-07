@@ -48,7 +48,7 @@ versions.mockito_android = "2.25.0"
 versions.mockwebserver = "3.8.1"
 versions.navigation = "2.2.0-alpha01"
 versions.okhttp_logging_interceptor = "3.9.0"
-versions.paging = "2.1.0-rc01"
+versions.paging = "2.1.0"
 versions.retrofit = "2.3.0"
 versions.robolectric = "4.2"
 versions.room = "2.1.0-alpha06"
@@ -189,5 +189,6 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    handler.maven { url '/usr/local/google/home/dustinlam/google/androidx-paging-release/out/host/gradle/frameworks/support/build/support_repo' }
 }
 ext.addRepos = this.&addRepos
