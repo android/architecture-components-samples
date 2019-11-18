@@ -189,6 +189,5 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    handler.maven { url '/usr/local/google/home/dustinlam/google/androidx-paging-release/out/host/gradle/frameworks/support/build/support_repo' }
 }
 ext.addRepos = this.&addRepos
