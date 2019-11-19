@@ -16,8 +16,8 @@ import com.bumptech.glide.request.RequestOptions
 /**
  * Created by Santanu 😁 on 2019-11-19.
  */
-class RvUsersAdzapter(private var _activity: Activity) :
-    RecyclerView.Adapter<RvUsersAdzapter.UsersViewHolder>() {
+class RvUsersAdapter(private var _activity: Activity) :
+    RecyclerView.Adapter<RvUsersAdapter.UsersViewHolder>() {
     private val _usersList: MutableList<User> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder =
@@ -28,7 +28,6 @@ class RvUsersAdzapter(private var _activity: Activity) :
                 false
             )
         )
-
 
     override fun getItemCount(): Int =
         _usersList.size

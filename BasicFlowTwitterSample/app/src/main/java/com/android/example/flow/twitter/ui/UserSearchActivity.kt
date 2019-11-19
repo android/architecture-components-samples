@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModelLazy
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.example.flow.twitter.R
 import com.android.example.flow.twitter.data.models.User
-import com.android.example.flow.twitter.ui.adapters.RvUsersAdzapter
+import com.android.example.flow.twitter.data.preferences.PreferencesManager
+import com.android.example.flow.twitter.ui.adapters.RvCachedQueries
+import com.android.example.flow.twitter.ui.adapters.RvUsersAdapter
 import com.android.example.flow.twitter.viewModels.UserSearchViewModel
 import com.android.example.flow.twitter.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_search.*
@@ -20,9 +22,16 @@ class UserSearchActivity : AppCompatActivity() {
     private val _viewModel: UserSearchViewModel by ViewModelLazy(
         UserSearchViewModel::class,
         { viewModelStore },
-        { ViewModelFactory() })
+        { ViewModelFactory(PreferencesManager(this)) })
 
-    private lateinit var _rvUsersAdapter: RvUsersAdzapter
+    private lateinit var _rvUsersAdapter: RvUsersAdapter
+
+    private lateinit var _rvQueriesAdapter: RvCachedQueries
+
+    private val submitCachedQuery = { query: String ->
+        svUser.setQuery(query, false)
+        submitQuery(query)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,14 +40,21 @@ class UserSearchActivity : AppCompatActivity() {
         // to open the searchView default and make it clicked
         svUser.findViewById<View>(R.id.search_button).performClick()
         subscribeToQueryTextChange()
-        setUpRecyclerView()
+        setUpRecyclerViews()
         observeUsersLiveData()
+        observeTextChangeLiveData()
     }
 
-    private fun setUpRecyclerView() {
-        _rvUsersAdapter = RvUsersAdzapter(this)
+    private fun setUpRecyclerViews() {
+        // users list recyclerView
+        _rvUsersAdapter = RvUsersAdapter(this)
         rvUsers.layoutManager = LinearLayoutManager(this)
         rvUsers.adapter = _rvUsersAdapter
+
+        // cached queries recyclerView
+        _rvQueriesAdapter = RvCachedQueries(submitCachedQuery)
+        rvSearchOverlay.layoutManager = LinearLayoutManager(this)
+        rvSearchOverlay.adapter = _rvQueriesAdapter
     }
 
     /**
@@ -70,19 +86,53 @@ class UserSearchActivity : AppCompatActivity() {
     }
 
     /**
+     * This shows the previous search history
+     */
+    private fun observeTextChangeLiveData() {
+        _viewModel.textChangeLiveData.observe(this, Observer {
+            it?.let {
+                if (it.isNotEmpty()) {
+                    showSearchOverlay(it)
+                } else {
+                    hideSearchOverlay()
+                }
+            } ?: kotlin.run {
+                hideSearchOverlay()
+            }
+        })
+    }
+
+    private fun hideSearchOverlay() {
+        rvSearchOverlay.visibility = View.GONE
+        vOverlay.visibility = View.GONE
+    }
+
+    private fun showSearchOverlay(it: List<String>) {
+        rvSearchOverlay.visibility = View.VISIBLE
+        vOverlay.visibility = View.VISIBLE
+        _rvQueriesAdapter.updateList(it)
+    }
+
+    /**
      * Observe the text submit query of searchView
      */
     private fun subscribeToQueryTextChange() {
         svUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                _viewModel.getUsers(query.toString()) // the api is called
-                progress.visibility = View.VISIBLE
+                submitQuery(query!!)
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                _viewModel.setTextChange(newText.toString())
                 return true
             }
         })
+    }
+
+    private fun submitQuery(query: String) {
+        _viewModel.getUsers(query) // the api is called
+        progress.visibility = View.VISIBLE
+        hideSearchOverlay()
     }
 }

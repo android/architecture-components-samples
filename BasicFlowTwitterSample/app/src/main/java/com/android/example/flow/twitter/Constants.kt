@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit
  */
 class Constants {
     companion object {
+        const val QUERIES: String = "queriesSet"
+        const val PREFS: String = "twitterPrefs"
         val consumerKey = "nDlWnChz9pVSZBgLsL6JTuEkz"
         val accessToken = "1195684525637955584-qBIvzaRjwaxhZUhwh8De1NU9Vv1kDR"
         val consumerSecret = "EU640BporNu4NaZWInU28vsq5fpcuxlTw3iKtX7i7lEPJtWW3f"
