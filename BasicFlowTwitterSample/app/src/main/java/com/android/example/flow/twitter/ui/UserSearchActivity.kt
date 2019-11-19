@@ -51,6 +51,7 @@ class UserSearchActivity : AppCompatActivity() {
             } ?: kotlin.run {
                 handleData(it.data!!)
             }
+            progress.visibility = View.GONE
         })
     }
 
@@ -74,7 +75,8 @@ class UserSearchActivity : AppCompatActivity() {
     private fun subscribeToQueryTextChange() {
         svUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                _viewModel.getUsers(query.toString())
+                _viewModel.getUsers(query.toString()) // the api is called
+                progress.visibility = View.VISIBLE
                 return true
             }
 
