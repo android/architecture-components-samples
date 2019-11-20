@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:drawablePadding="5dp"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/selectable_background"
     android:drawableStart="@drawable/search"
     android:drawableLeft="@drawable/search"
     android:drawableEnd="@drawable/history"
