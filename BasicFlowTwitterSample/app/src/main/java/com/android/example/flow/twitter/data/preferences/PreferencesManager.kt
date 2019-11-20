@@ -11,11 +11,14 @@ import com.android.example.flow.twitter.Constants
 class PreferencesManager(context: Context) {
     private val sharedPreferencesManager: SharedPreferences =
         context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE)
-    private val editor: SharedPreferences.Editor = sharedPreferencesManager.edit()
+    private val editor = sharedPreferencesManager.edit()
 
     fun storeQuery(query: String) {
-        val storedQueries = getAllQueries()
-        storedQueries.add(query)
+        val storedQueries = mutableSetOf<String>()
+        storedQueries.apply {
+            addAll(getAllQueries())
+            add(query)
+        }
         editor.putStringSet(Constants.QUERIES, storedQueries).apply()
     }
 

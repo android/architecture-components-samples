@@ -1,14 +1,17 @@
 package com.android.example.flow.twitter.ui.adapters
 
 import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.android.example.flow.twitter.Constants
 import com.android.example.flow.twitter.R
 import com.android.example.flow.twitter.data.models.User
+import com.android.example.flow.twitter.ui.TweetsActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
@@ -63,6 +66,12 @@ class RvUsersAdapter(private var _activity: Activity) :
                 .load(user.profileImage)
                 .apply(options)
                 .into(_ivUser)
+
+            itemView.setOnClickListener {
+                val intent = Intent(_activity, TweetsActivity::class.java)
+                intent.putExtra(Constants.SCREEN_NAME, user.screenName)
+                _activity.startActivity(intent)
+            }
         }
     }
 }

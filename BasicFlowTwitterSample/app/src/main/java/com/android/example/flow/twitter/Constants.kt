@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
  */
 class Constants {
     companion object {
+        const val SCREEN_NAME = "screenName"
         const val QUERIES: String = "queriesSet"
         const val PREFS: String = "twitterPrefs"
         val consumerKey = "nDlWnChz9pVSZBgLsL6JTuEkz"

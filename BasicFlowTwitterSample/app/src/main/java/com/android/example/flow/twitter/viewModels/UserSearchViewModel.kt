@@ -10,12 +10,10 @@ import com.android.example.flow.twitter.data.repository.SearchUserRepository
 /**
  * Created by Santanu 😁 on 2019-11-17.
  */
-class UserSearchViewModel(private var preferencesManager: PreferencesManager) : ViewModel() {
-
-    /**
-     * Member variable for repository
-     */
-    private val _searchUserRepository = SearchUserRepository()
+class UserSearchViewModel(
+    private var preferencesManager: PreferencesManager,
+    private val _searchUserRepository: SearchUserRepository
+) : ViewModel() {
 
     /**
      * When this mutable LiveData is observed internally by the LiveData observed in the activity

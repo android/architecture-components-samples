@@ -46,7 +46,7 @@ class OAuth1aParameters(
     private val timestamp: String
         get() {
             val secondsFromEpoch = System.currentTimeMillis() / 1000
-            return java.lang.Long.toString(secondsFromEpoch)
+            return secondsFromEpoch.toString()
         }
 
     private val signingKey: String
@@ -160,8 +160,8 @@ class OAuth1aParameters(
     }
 
     companion object {
-        private val VERSION = "1.0"
-        private val SIGNATURE_METHOD = "HMAC-SHA1"
+        private const val VERSION = "1.0"
+        private const val SIGNATURE_METHOD = "HMAC-SHA1"
 
         /**
          * Secure random number generator to sign requests.
