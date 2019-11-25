@@ -39,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
@@ -47,6 +48,9 @@ import java.util.concurrent.TimeoutException
  */
 @RunWith(Parameterized::class)
 class RedditActivityTest(private val type: RedditPostRepository.Type) {
+    val testNetworkExecutor = TestExecutor()
+    val testIOExecutor = TestExecutor()
+
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -69,6 +73,8 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
                 object : DefaultServiceLocator(app = app,
                         useInMemoryDb = true) {
                     override fun getRedditApi(): RedditApi = fakeApi
+                    override fun getNetworkExecutor(): Executor = testNetworkExecutor
+                    override fun getDiskIOExecutor(): Executor = testIOExecutor
                 }
         )
     }
@@ -105,6 +111,15 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         if (recyclerView.adapter?.itemCount ?: 0 > 0) {
             return
         }
+        executeAllTasks()
         assertThat(latch.await(10, TimeUnit.SECONDS), `is`(true))
     }
+
+    private fun executeAllTasks() {
+        while (testNetworkExecutor.queue.isNotEmpty() || testIOExecutor.queue.isNotEmpty()) {
+            testNetworkExecutor.executeAll()
+            testIOExecutor.executeAll()
+        }
+    }
 }
+
