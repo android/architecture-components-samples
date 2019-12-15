@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BasicFlowTwitterSample</string>
+    <string name="search_user">Search user...</string>
+</resources>
