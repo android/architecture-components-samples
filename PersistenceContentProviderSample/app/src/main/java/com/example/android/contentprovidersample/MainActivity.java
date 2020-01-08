@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mCheeseAdapter = new CheeseAdapter();
         list.setAdapter(mCheeseAdapter);
 
-        getSupportLoaderManager().initLoader(LOADER_CHEESES, null, mLoaderCallbacks);
+        LoaderManager.getInstance(this).initLoader(LOADER_CHEESES, null, mLoaderCallbacks);
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> mLoaderCallbacks =
