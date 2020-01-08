@@ -87,7 +87,8 @@ public class ProductViewModel extends AndroidViewModel {
         }
 
         @Override
-        public <T extends ViewModel> T create(Class<T> modelClass) {
+        @NonNull
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             //noinspection unchecked
             return (T) new ProductViewModel(mApplication, mRepository, mProductId);
         }

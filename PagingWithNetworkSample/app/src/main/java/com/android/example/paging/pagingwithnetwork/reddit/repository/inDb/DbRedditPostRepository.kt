@@ -16,11 +16,10 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
-import androidx.annotation.MainThread
 import androidx.paging.toLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb

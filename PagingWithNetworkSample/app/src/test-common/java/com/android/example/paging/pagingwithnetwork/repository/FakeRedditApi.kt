@@ -21,6 +21,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import retrofit2.Call
 import retrofit2.mock.Calls
 import java.io.IOException
+import kotlin.math.min
 
 /**
  * implements the RedditApi with controllable requests
@@ -93,14 +94,14 @@ class FakeRedditApi : RedditApi {
     private class SubReddit(val items: MutableList<RedditPost> = arrayListOf()) {
         fun findPosts(limit: Int, after: String?): List<RedditPost> {
             if (after == null) {
-                return items.subList(0, Math.min(items.size, limit))
+                return items.subList(0, min(items.size, limit))
             }
             val index = items.indexOfFirst { it.name == after }
             if (index == -1) {
                 return emptyList()
             }
             val startPos = index + 1
-            return items.subList(startPos, Math.min(items.size, startPos + limit))
+            return items.subList(startPos, min(items.size, startPos + limit))
         }
     }
 }

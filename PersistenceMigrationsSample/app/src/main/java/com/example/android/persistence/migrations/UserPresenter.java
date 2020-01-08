@@ -24,15 +24,15 @@ import androidx.annotation.Nullable;
  */
 public class UserPresenter {
 
-    private UserRepository mDataSource;
+    private final UserRepository mDataSource;
 
     @Nullable
     private UserView mView;
 
-    private LoadUserCallback mLoadUserCallback;
-    private UpdateUserCallback mUpdateUserCallback;
+    private final LoadUserCallback mLoadUserCallback;
+    private final UpdateUserCallback mUpdateUserCallback;
 
-    public UserPresenter(UserRepository dataSource, UserView view) {
+    public UserPresenter(UserRepository dataSource, @Nullable UserView view) {
         mDataSource = dataSource;
         mView = view;
 

@@ -31,8 +31,8 @@ import android.view.ViewGroup
  * If you want to use your own Adapter base class, try using a PagedListAdapterHelper inside your
  * adapter instead.
  *
- * @see android.arch.paging.PagedListAdapter
- * @see android.arch.paging.AsyncPagedListDiffer
+ * @see androidx.paging.PagedListAdapter
+ * @see androidx.paging.AsyncPagedListDiffer
  */
 class CheeseAdapter : PagedListAdapter<Cheese, CheeseViewHolder>(diffCallback) {
     override fun onBindViewHolder(holder: CheeseViewHolder, position: Int) {
@@ -51,7 +51,7 @@ class CheeseAdapter : PagedListAdapter<Cheese, CheeseViewHolder>(diffCallback) {
          * detect there's only a single item difference from before, so it only needs to animate and
          * rebind a single view.
          *
-         * @see android.support.v7.util.DiffUtil
+         * @see DiffUtil
          */
         private val diffCallback = object : DiffUtil.ItemCallback<Cheese>() {
             override fun areItemsTheSame(oldItem: Cheese, newItem: Cheese): Boolean =

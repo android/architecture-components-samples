@@ -21,20 +21,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android.persistence.R;
 import com.example.android.persistence.databinding.ProductFragmentBinding;
-import com.example.android.persistence.db.entity.CommentEntity;
-import com.example.android.persistence.db.entity.ProductEntity;
-import com.example.android.persistence.model.Comment;
 import com.example.android.persistence.viewmodel.ProductViewModel;
-
-import java.util.List;
 
 public class ProductFragment extends Fragment {
 
@@ -46,7 +41,7 @@ public class ProductFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         // Inflate this data binding layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.product_fragment, container, false);
@@ -57,12 +52,8 @@ public class ProductFragment extends Fragment {
         return mBinding.getRoot();
     }
 
-    private final CommentClickCallback mCommentClickCallback = new CommentClickCallback() {
-        @Override
-        public void onClick(Comment comment) {
-            // no-op
-
-        }
+    private final CommentClickCallback mCommentClickCallback = comment -> {
+        // no-op
     };
 
     @Override
@@ -70,7 +61,7 @@ public class ProductFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         ProductViewModel.Factory factory = new ProductViewModel.Factory(
-                requireActivity().getApplication(), getArguments().getInt(KEY_PRODUCT_ID));
+                requireActivity().getApplication(), requireArguments().getInt(KEY_PRODUCT_ID));
 
         final ProductViewModel model = new ViewModelProvider(this, factory)
                 .get(ProductViewModel.class);
@@ -83,23 +74,15 @@ public class ProductFragment extends Fragment {
     private void subscribeToModel(final ProductViewModel model) {
 
         // Observe product data
-        model.getObservableProduct().observe(getViewLifecycleOwner(), new Observer<ProductEntity>() {
-            @Override
-            public void onChanged(@Nullable ProductEntity productEntity) {
-                model.setProduct(productEntity);
-            }
-        });
+        model.getObservableProduct().observe(getViewLifecycleOwner(), model::setProduct);
 
         // Observe comments
-        model.getComments().observe(getViewLifecycleOwner(), new Observer<List<CommentEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<CommentEntity> commentEntities) {
-                if (commentEntities != null) {
-                    mBinding.setIsLoading(false);
-                    mCommentAdapter.setCommentList(commentEntities);
-                } else {
-                    mBinding.setIsLoading(true);
-                }
+        model.getComments().observe(getViewLifecycleOwner(), commentEntities -> {
+            if (commentEntities != null) {
+                mBinding.setIsLoading(false);
+                mCommentAdapter.setCommentList(commentEntities);
+            } else {
+                mBinding.setIsLoading(true);
             }
         });
     }

@@ -44,14 +44,14 @@ public class UserRepositoryTest {
     private ArgumentCaptor<User> mUserArgumentCaptor;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mUserRepository = new UserRepository(new SingleExecutors(), mUserDataSource);
     }
 
     @Test
-    public void getUserWithUserInDataSource() throws Exception {
+    public void getUserWithUserInDataSource() {
         //Given a callback for loading the user
         LoadUserCallback callback = mock(LoadUserCallback.class);
         // And user in the data source
@@ -67,7 +67,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void getUserWithNoUserInDataSource() throws Exception {
+    public void getUserWithNoUserInDataSource() {
         //Given a callback for loading the user
         LoadUserCallback callback = mock(LoadUserCallback.class);
         // And no user in the data source
@@ -83,7 +83,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void updateUserName() throws Exception {
+    public void updateUserName() {
         // Given a callback for updating the username
         UpdateUserCallback callback = mock(UpdateUserCallback.class);
 

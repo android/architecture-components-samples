@@ -24,7 +24,7 @@ import android.content.Context
  * Singleton database object. Note that for a real app, you should probably use a Dependency
  * Injection framework or Service Locator to create the singleton database.
  */
-@Database(entities = arrayOf(Cheese::class), version = 1)
+@Database(entities = [Cheese::class], version = 1)
 abstract class CheeseDb : RoomDatabase() {
     abstract fun cheeseDao(): CheeseDao
 
@@ -188,4 +188,4 @@ private val CHEESE_DATA = arrayListOf(
         "Washed Rind Cheese (Australian)", "Waterloo", "Weichkaese", "Wellington",
         "Wensleydale", "White Stilton", "Whitestone Farmhouse", "Wigmore", "Woodside Cabecou",
         "Xanadu", "Xynotyro", "Yarg Cornish", "Yarra Valley Pyramid", "Yorkshire Blue",
-        "Zamorano", "Zanetti Grana Padano", "Zanetti Parmigiano Reggiano");
+        "Zamorano", "Zanetti Grana Padano", "Zanetti Parmigiano Reggiano")

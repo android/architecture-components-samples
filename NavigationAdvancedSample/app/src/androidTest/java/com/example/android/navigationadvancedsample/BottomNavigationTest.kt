@@ -17,7 +17,6 @@
 package com.example.android.navigationadvancedsample
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.NoActivityResumedException
@@ -29,8 +28,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
-import junit.framework.Assert.fail
 import org.hamcrest.CoreMatchers.allOf
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 
@@ -64,7 +63,7 @@ class BottomNavigationTest {
         // From the 2nd or 3rd screens, back takes you to the 1st.
         openThirdScreen()
 
-        Espresso.pressBack()
+        pressBack()
 
         assertFirstScreen()
     }
@@ -74,7 +73,7 @@ class BottomNavigationTest {
         // From the first screen, back finishes the activity
         assertFirstScreen()
 
-        Espresso.pressBack() // This should throw NoActivityResumedException
+        pressBack() // This should throw NoActivityResumedException
 
         fail() // If it doesn't throw
     }

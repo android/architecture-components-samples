@@ -61,7 +61,7 @@ public class UserViewModelTest {
     @Test
     public void getUserName_whenNoUserSaved() {
         // Given that the UserDataSource returns an empty list of users
-        when(mDataSource.getUser()).thenReturn(Flowable.<User>empty());
+        when(mDataSource.getUser()).thenReturn(Flowable.empty());
 
         //When getting the user name
         mViewModel.getUserName()

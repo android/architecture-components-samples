@@ -81,7 +81,7 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         initRecyclerView()
         val rvAdapter = RepoListAdapter(
             dataBindingComponent = dataBindingComponent,
