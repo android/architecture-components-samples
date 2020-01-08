@@ -82,7 +82,7 @@ public class ProductListFragment extends Fragment {
 
     private void subscribeUi(LiveData<List<ProductEntity>> liveData) {
         // Update the list when the data changes
-        liveData.observe(this, new Observer<List<ProductEntity>>() {
+        liveData.observe(getViewLifecycleOwner(), new Observer<List<ProductEntity>>() {
             @Override
             public void onChanged(@Nullable List<ProductEntity> myProducts) {
                 if (myProducts != null) {
