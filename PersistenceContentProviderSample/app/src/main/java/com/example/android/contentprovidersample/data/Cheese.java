@@ -16,6 +16,8 @@
 
 package com.example.android.contentprovidersample.data;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -53,12 +55,13 @@ public class Cheese {
      * @param values A {@link ContentValues} that at least contain {@link #COLUMN_NAME}.
      * @return A newly created {@link Cheese} instance.
      */
-    public static Cheese fromContentValues(ContentValues values) {
+    @NonNull
+    public static Cheese fromContentValues(@Nullable ContentValues values) {
         final Cheese cheese = new Cheese();
-        if (values.containsKey(COLUMN_ID)) {
+        if (values != null && values.containsKey(COLUMN_ID)) {
             cheese.id = values.getAsLong(COLUMN_ID);
         }
-        if (values.containsKey(COLUMN_NAME)) {
+        if (values != null && values.containsKey(COLUMN_NAME)) {
             cheese.name = values.getAsString(COLUMN_NAME);
         }
         return cheese;

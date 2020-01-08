@@ -154,19 +154,19 @@ class DataBindingIdlingResourceTest {
     }
 
     private fun isIdle(): Boolean {
-        val task = FutureTask<Boolean>({
+        val task = FutureTask<Boolean> {
             return@FutureTask idlingResource.isIdleNow
-        })
+        }
         InstrumentationRegistry.getInstrumentation().runOnMainSync(task)
         return task.get()
     }
 
     private fun registerIdleCallback(): IdlingResource.ResourceCallback {
-        val task = FutureTask<IdlingResource.ResourceCallback>({
+        val task = FutureTask<IdlingResource.ResourceCallback> {
             val callback = mock<IdlingResource.ResourceCallback>()
             idlingResource.registerIdleTransitionCallback(callback)
             return@FutureTask callback
-        })
+        }
         InstrumentationRegistry.getInstrumentation().runOnMainSync(task)
         return task.get()
     }

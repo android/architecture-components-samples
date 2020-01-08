@@ -27,7 +27,7 @@ public class LocalUserDataSource implements UserDataSource {
 
     private static volatile LocalUserDataSource INSTANCE;
 
-    private UserDao mUserDao;
+    private final UserDao mUserDao;
 
     @VisibleForTesting
     LocalUserDataSource(UserDao userDao) {

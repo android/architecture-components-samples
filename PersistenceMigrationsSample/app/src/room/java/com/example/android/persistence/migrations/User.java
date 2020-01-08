@@ -30,10 +30,10 @@ public class User {
 
     @PrimaryKey
     @ColumnInfo(name = "userid")
-    private int mId;
+    private final int mId;
 
     @ColumnInfo(name = "username")
-    private String mUserName;
+    private final String mUserName;
 
     @Ignore
     public User(String userName) {

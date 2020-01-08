@@ -16,10 +16,13 @@
 
 package com.example.android.persistence.ui;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -28,7 +31,6 @@ import com.example.android.persistence.model.Comment;
 import com.example.android.persistence.R;
 
 import java.util.List;
-import java.util.Objects;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
@@ -71,7 +73,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                     return old.getId() == comment.getId()
                             && old.getPostedAt() == comment.getPostedAt()
                             && old.getProductId() == comment.getProductId()
-                            && Objects.equals(old.getText(), comment.getText());
+                            && TextUtils.equals(old.getText(), comment.getText());
                 }
             });
             mCommentList = comments;
@@ -80,7 +82,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     @Override
-    public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         CommentItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.comment_item,
                         parent, false);
@@ -89,7 +92,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     @Override
-    public void onBindViewHolder(CommentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         holder.binding.setComment(mCommentList.get(position));
         holder.binding.executePendingBindings();
     }

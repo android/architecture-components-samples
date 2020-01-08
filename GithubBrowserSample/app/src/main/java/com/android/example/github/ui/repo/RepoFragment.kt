@@ -96,9 +96,8 @@ class RepoFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val params = RepoFragmentArgs.fromBundle(arguments!!)
         repoViewModel.setId(params.owner, params.name)
-        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.repo = repoViewModel.repo
 
         val adapter = ContributorAdapter(dataBindingComponent, appExecutors) {
@@ -114,7 +113,7 @@ class RepoFragment : Fragment(), Injectable {
         this.adapter = adapter
         binding.contributorList.adapter = adapter
         postponeEnterTransition()
-        binding.contributorList.getViewTreeObserver()
+        binding.contributorList.viewTreeObserver
                 .addOnPreDrawListener {
                     startPostponedEnterTransition()
                     true
