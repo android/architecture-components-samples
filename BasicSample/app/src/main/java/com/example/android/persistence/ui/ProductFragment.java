@@ -87,6 +87,13 @@ public class ProductFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        mBinding = null;
+        mCommentAdapter = null;
+        super.onDestroyView();
+    }
+
     /** Creates product fragment for specific product ID */
     public static ProductFragment forProduct(int productId) {
         ProductFragment fragment = new ProductFragment();

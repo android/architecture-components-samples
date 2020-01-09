@@ -90,6 +90,13 @@ public class ProductListFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        mBinding = null;
+        mProductAdapter = null;
+        super.onDestroyView();
+    }
+
     private final ProductClickCallback mProductClickCallback = product -> {
         if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
             ((MainActivity) requireActivity()).show(product);
