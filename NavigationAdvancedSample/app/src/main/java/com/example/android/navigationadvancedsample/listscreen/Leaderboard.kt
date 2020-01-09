@@ -33,17 +33,14 @@ import com.example.android.navigationadvancedsample.R
  */
 class Leaderboard : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_leaderboard, container, false)
 
-        viewAdapter = MyAdapter(Array(10) { "Person ${it + 1}" })
+        val viewAdapter = MyAdapter(Array(10) { "Person ${it + 1}" })
 
-        recyclerView = view.findViewById<RecyclerView>(R.id.leaderboard_list).apply {
+        view.findViewById<RecyclerView>(R.id.leaderboard_list).run {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)

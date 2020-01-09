@@ -46,9 +46,14 @@ class SingleFragmentActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun replaceFragment(fragment: Fragment) {
+    fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = false) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
+            .apply {
+                if (addToBackStack) {
+                    addToBackStack(null)
+                }
+            }
             .commit()
     }
 }
