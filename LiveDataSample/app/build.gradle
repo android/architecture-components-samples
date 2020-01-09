@@ -70,6 +70,5 @@ dependencies {
     androidTestImplementation deps.espresso.contrib
     androidTestImplementation deps.arch_core.testing
 
-    ext.coroutinesVersion = '1.2.1'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    testImplementation deps.coroutines.test
 }
