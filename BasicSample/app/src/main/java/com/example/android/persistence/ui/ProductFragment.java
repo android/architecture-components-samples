@@ -57,9 +57,7 @@ public class ProductFragment extends Fragment {
     };
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ProductViewModel.Factory factory = new ProductViewModel.Factory(
                 requireActivity().getApplication(), requireArguments().getInt(KEY_PRODUCT_ID));
 
