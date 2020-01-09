@@ -17,7 +17,7 @@
 package com.android.example.github.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.switchMap
 import com.android.example.github.AppExecutors
 import com.android.example.github.api.ApiSuccessResponse
 import com.android.example.github.api.GithubService
@@ -155,7 +155,7 @@ class RepoRepository @Inject constructor(
             override fun shouldFetch(data: List<Repo>?) = data == null
 
             override fun loadFromDb(): LiveData<List<Repo>> {
-                return Transformations.switchMap(repoDao.search(query)) { searchData ->
+                return repoDao.search(query).switchMap { searchData ->
                     if (searchData == null) {
                         AbsentLiveData.create()
                     } else {

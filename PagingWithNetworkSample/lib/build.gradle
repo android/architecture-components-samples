@@ -17,6 +17,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -31,6 +38,7 @@ dependencies {
     implementation deps.support.cardview
     implementation deps.support.design
     implementation deps.room.runtime
+    implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.runtime
     implementation deps.paging_ktx
     implementation deps.kotlin.stdlib

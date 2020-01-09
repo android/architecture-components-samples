@@ -17,7 +17,7 @@
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.switchMap
 import androidx.paging.toLiveData
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.Listing
@@ -42,12 +42,12 @@ class InMemoryByPageKeyRepository(private val redditApi: RedditApi,
                 // Arch Components' IO pool which is also used for disk access
                 fetchExecutor = networkExecutor)
 
-        val refreshState = Transformations.switchMap(sourceFactory.sourceLiveData) {
+        val refreshState = sourceFactory.sourceLiveData.switchMap {
             it.initialLoad
         }
         return Listing(
                 pagedList = livePagedList,
-                networkState = Transformations.switchMap(sourceFactory.sourceLiveData) {
+                networkState = sourceFactory.sourceLiveData.switchMap {
                   it.networkState
                 },
                 retry = {

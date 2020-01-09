@@ -17,19 +17,19 @@
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations.map
-import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 
 class SubRedditViewModel(private val repository: RedditPostRepository) : ViewModel() {
     private val subredditName = MutableLiveData<String>()
-    private val repoResult = map(subredditName) {
+    private val repoResult = subredditName.map {
         repository.postsOfSubreddit(it, 30)
     }
-    val posts = switchMap(repoResult, { it.pagedList })!!
-    val networkState = switchMap(repoResult, { it.networkState })!!
-    val refreshState = switchMap(repoResult, { it.refreshState })!!
+    val posts = repoResult.switchMap { it.pagedList }
+    val networkState = repoResult.switchMap { it.networkState }
+    val refreshState = repoResult.switchMap { it.refreshState }
 
     fun refresh() {
         repoResult.value?.refresh?.invoke()
@@ -44,7 +44,7 @@ class SubRedditViewModel(private val repository: RedditPostRepository) : ViewMod
     }
 
     fun retry() {
-        val listing = repoResult?.value
+        val listing = repoResult.value
         listing?.retry?.invoke()
     }
 

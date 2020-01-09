@@ -77,6 +77,7 @@ dependencies {
     implementation deps.support.core_ktx
     implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
+    implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.runtime
     implementation deps.lifecycle.java8
     implementation deps.retrofit.runtime

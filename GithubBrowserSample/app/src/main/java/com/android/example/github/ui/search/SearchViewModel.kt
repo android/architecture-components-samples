@@ -19,8 +19,8 @@ package com.android.example.github.ui.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.android.example.github.repository.RepoRepository
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.util.AbsentLiveData
@@ -38,14 +38,13 @@ class SearchViewModel @Inject constructor(repoRepository: RepoRepository) : View
 
     val query : LiveData<String> = _query
 
-    val results: LiveData<Resource<List<Repo>>> = Transformations
-        .switchMap(_query) { search ->
-            if (search.isNullOrBlank()) {
-                AbsentLiveData.create()
-            } else {
-                repoRepository.search(search)
-            }
+    val results: LiveData<Resource<List<Repo>>> = _query.switchMap { search ->
+        if (search.isBlank()) {
+            AbsentLiveData.create()
+        } else {
+            repoRepository.search(search)
         }
+    }
 
     val loadMoreStatus: LiveData<LoadMoreState>
         get() = nextPageHandler.loadMoreState
