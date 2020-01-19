@@ -11,7 +11,7 @@ A collection of samples using the [Architecture Components](https://developer.an
 - [Navigation](https://developer.android.com/topic/libraries/architecture/navigation/)
 - [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager/)
 
-### Samples
+## Samples
 
 * **[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
 
@@ -42,7 +42,7 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
   how to use WorkManager to do background work, in Kotlin.
 
 
-### Reporting Issues
+## Reporting Issues
 
 You can report an [Issue](https://github.com/googlesamples/android-architecture-components/issues) on the samples using this repository. If you find an issue with the Architecture Components, report it using the [Architecture Components Issue Tracker](https://issuetracker.google.com/issues/new?component=197448&template=878802)
 
