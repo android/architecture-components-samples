@@ -64,54 +64,51 @@ versions.timber = "4.7.1"
 versions.work = "2.2.0"
 ext.versions = versions
 
+def build_versions = [:]
+build_versions.min_sdk = 14
+build_versions.target_sdk = 28
+build_versions.build_tools = "28.0.3"
+ext.build_versions = build_versions
+
 def deps = [:]
-deps.benchmark = "androidx.benchmark:benchmark-junit4:$versions.benchmark"
-deps.benchmark_gradle = "androidx.benchmark:benchmark-gradle-plugin:$versions.benchmark"
-
-deps.annotations = "androidx.annotation:annotation:$versions.annotations"
-deps.app_compat = "androidx.appcompat:appcompat:$versions.appcompat"
-deps.recyclerview = "androidx.recyclerview:recyclerview:$versions.recyclerview"
-deps.cardview = "androidx.cardview:cardview:$versions.cardview"
-deps.material = "com.google.android.material:material:$versions.material"
-deps.core_utils = "androidx.legacy:legacy-support-core-utils:$versions.core_utils"
-deps.core_ktx = "androidx.core:core-ktx:$versions.core_ktx"
-
-def fragment = [:]
-fragment.runtime = "androidx.fragment:fragment:${versions.fragment}"
-fragment.runtime_ktx = "androidx.fragment:fragment-ktx:${versions.fragment}"
-fragment.testing = "androidx.fragment:fragment-testing:${versions.fragment}"
-deps.fragment = fragment
-
-def room = [:]
-room.runtime = "androidx.room:room-runtime:$versions.room"
-room.compiler = "androidx.room:room-compiler:$versions.room"
-room.rxjava2 = "androidx.room:room-rxjava2:$versions.room"
-room.testing = "androidx.room:room-testing:$versions.room"
-deps.room = room
-
-def lifecycle = [:]
-lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
-lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
-lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
-lifecycle.viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
-lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
-deps.lifecycle = lifecycle
 
 def activity = [:]
 activity.activity_ktx = "androidx.activity:activity-ktx:$versions.activity"
 deps.activity = activity
+
+deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
+
+deps.annotations = "androidx.annotation:annotation:$versions.annotations"
+
+deps.app_compat = "androidx.appcompat:appcompat:$versions.appcompat"
 
 def arch_core = [:]
 arch_core.runtime = "androidx.arch.core:core-runtime:$versions.arch_core"
 arch_core.testing = "androidx.arch.core:core-testing:$versions.arch_core"
 deps.arch_core = arch_core
 
-def retrofit = [:]
-retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
-retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
-retrofit.mock = "com.squareup.retrofit2:retrofit-mock:$versions.retrofit"
-deps.retrofit = retrofit
-deps.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${versions.okhttp_logging_interceptor}"
+def atsl = [:]
+atsl.core = "androidx.test:core:$versions.atsl_core"
+atsl.ext_junit = "androidx.test.ext:junit:$versions.atsl_junit"
+atsl.runner = "androidx.test:runner:$versions.atsl_runner"
+atsl.rules = "androidx.test:rules:$versions.atsl_rules"
+deps.atsl = atsl
+
+deps.benchmark = "androidx.benchmark:benchmark-junit4:$versions.benchmark"
+deps.benchmark_gradle = "androidx.benchmark:benchmark-gradle-plugin:$versions.benchmark"
+
+deps.cardview = "androidx.cardview:cardview:$versions.cardview"
+
+deps.constraint_layout = "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
+
+deps.core_ktx = "androidx.core:core-ktx:$versions.core_ktx"
+
+deps.core_utils = "androidx.legacy:legacy-support-core-utils:$versions.core_utils"
+
+def coroutines = [:]
+coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
+coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines"
+deps.coroutines = coroutines
 
 def dagger = [:]
 dagger.runtime = "com.google.dagger:dagger:$versions.dagger"
@@ -121,24 +118,28 @@ dagger.compiler = "com.google.dagger:dagger-compiler:$versions.dagger"
 dagger.android_support_compiler = "com.google.dagger:dagger-android-processor:$versions.dagger"
 deps.dagger = dagger
 
+deps.dexmaker = "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
+
 def espresso = [:]
 espresso.core = "androidx.test.espresso:espresso-core:$versions.espresso"
 espresso.contrib = "androidx.test.espresso:espresso-contrib:$versions.espresso"
 espresso.intents = "androidx.test.espresso:espresso-intents:$versions.espresso"
 deps.espresso = espresso
 
-def atsl = [:]
-atsl.core = "androidx.test:core:$versions.atsl_core"
-atsl.ext_junit = "androidx.test.ext:junit:$versions.atsl_junit"
-atsl.runner = "androidx.test:runner:$versions.atsl_runner"
-atsl.rules = "androidx.test:rules:$versions.atsl_rules"
-deps.atsl = atsl
+def fragment = [:]
+fragment.runtime = "androidx.fragment:fragment:${versions.fragment}"
+fragment.runtime_ktx = "androidx.fragment:fragment-ktx:${versions.fragment}"
+fragment.testing = "androidx.fragment:fragment-testing:${versions.fragment}"
+deps.fragment = fragment
 
-def mockito = [:]
-mockito.core = "org.mockito:mockito-core:$versions.mockito"
-mockito.all = "org.mockito:mockito-all:$versions.mockito_all"
-mockito.android = "org.mockito:mockito-android:$versions.mockito_android"
-deps.mockito = mockito
+def glide = [:]
+glide.runtime = "com.github.bumptech.glide:glide:$versions.glide"
+glide.compiler = "com.github.bumptech.glide:compiler:$versions.glide"
+deps.glide = glide
+
+deps.hamcrest = "org.hamcrest:hamcrest-all:$versions.hamcrest"
+
+deps.junit = "junit:junit:$versions.junit"
 
 def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
@@ -147,41 +148,23 @@ kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
 deps.kotlin = kotlin
 
-def coroutines = [:]
-coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
-coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines"
-deps.coroutines = coroutines
+def lifecycle = [:]
+lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
+lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
+lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
+lifecycle.viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
+lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
+deps.lifecycle = lifecycle
 
-deps.paging_ktx = "androidx.paging:paging-runtime-ktx:$versions.paging"
+deps.material = "com.google.android.material:material:$versions.material"
 
-def glide = [:]
-glide.runtime = "com.github.bumptech.glide:glide:$versions.glide"
-glide.compiler = "com.github.bumptech.glide:compiler:$versions.glide"
-deps.glide = glide
-deps.dexmaker = "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
-deps.constraint_layout = "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
-deps.timber = "com.jakewharton.timber:timber:$versions.timber"
-deps.junit = "junit:junit:$versions.junit"
+def mockito = [:]
+mockito.core = "org.mockito:mockito-core:$versions.mockito"
+mockito.all = "org.mockito:mockito-all:$versions.mockito_all"
+mockito.android = "org.mockito:mockito-android:$versions.mockito_android"
+deps.mockito = mockito
+
 deps.mock_web_server = "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
-deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
-deps.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
-deps.hamcrest = "org.hamcrest:hamcrest-all:$versions.hamcrest"
-deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
-deps.robolectric = "org.robolectric:robolectric:$versions.robolectric"
-ext.deps = deps
-
-def build_versions = [:]
-build_versions.min_sdk = 14
-build_versions.target_sdk = 28
-build_versions.build_tools = "28.0.3"
-ext.build_versions = build_versions
-
-def work = [:]
-work.runtime = "androidx.work:work-runtime:$versions.work"
-work.testing = "androidx.work:work-testing:$versions.work"
-work.firebase = "androidx.work:work-firebase:$versions.work"
-work.runtime_ktx = "androidx.work:work-runtime-ktx:$versions.work"
-deps.work = work
 
 def navigation = [:]
 navigation.runtime = "androidx.navigation:navigation-runtime:$versions.navigation"
@@ -192,6 +175,40 @@ navigation.ui = "androidx.navigation:navigation-ui:$versions.navigation"
 navigation.ui_ktx = "androidx.navigation:navigation-ui-ktx:$versions.navigation"
 navigation.safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 deps.navigation = navigation
+
+deps.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${versions.okhttp_logging_interceptor}"
+
+deps.paging_ktx = "androidx.paging:paging-runtime-ktx:$versions.paging"
+
+deps.recyclerview = "androidx.recyclerview:recyclerview:$versions.recyclerview"
+
+def retrofit = [:]
+retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
+retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+retrofit.mock = "com.squareup.retrofit2:retrofit-mock:$versions.retrofit"
+deps.retrofit = retrofit
+
+deps.robolectric = "org.robolectric:robolectric:$versions.robolectric"
+
+def room = [:]
+room.runtime = "androidx.room:room-runtime:$versions.room"
+room.compiler = "androidx.room:room-compiler:$versions.room"
+room.rxjava2 = "androidx.room:room-rxjava2:$versions.room"
+room.testing = "androidx.room:room-testing:$versions.room"
+deps.room = room
+
+deps.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
+
+deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
+
+deps.timber = "com.jakewharton.timber:timber:$versions.timber"
+
+def work = [:]
+work.runtime = "androidx.work:work-runtime:$versions.work"
+work.testing = "androidx.work:work-testing:$versions.work"
+work.firebase = "androidx.work:work-firebase:$versions.work"
+work.runtime_ktx = "androidx.work:work-runtime-ktx:$versions.work"
+deps.work = work
 
 ext.deps = deps
 
