@@ -56,7 +56,7 @@ versions.room = "2.2.3"
 versions.rx_android = "2.0.1"
 versions.rxjava2 = "2.1.3"
 versions.support = "1.0.0"
-versions.timber = "4.5.1"
+versions.timber = "4.7.1"
 versions.work = "2.2.0"
 ext.versions = versions
 
