@@ -68,18 +68,19 @@ def deps = [:]
 deps.benchmark = "androidx.benchmark:benchmark-junit4:$versions.benchmark"
 deps.benchmark_gradle = "androidx.benchmark:benchmark-gradle-plugin:$versions.benchmark"
 
-def support = [:]
-support.annotations = "androidx.annotation:annotation:$versions.annotations"
-support.app_compat = "androidx.appcompat:appcompat:$versions.appcompat"
-support.recyclerview = "androidx.recyclerview:recyclerview:$versions.recyclerview"
-support.cardview = "androidx.cardview:cardview:$versions.cardview"
-support.design = "com.google.android.material:material:$versions.material"
-support.core_utils = "androidx.legacy:legacy-support-core-utils:$versions.core_utils"
-support.core_ktx = "androidx.core:core-ktx:$versions.core_ktx"
-support.fragment_runtime = "androidx.fragment:fragment:${versions.fragment}"
-support.fragment_runtime_ktx = "androidx.fragment:fragment-ktx:${versions.fragment}"
-support.fragment_testing = "androidx.fragment:fragment-testing:${versions.fragment}"
-deps.support = support
+deps.annotations = "androidx.annotation:annotation:$versions.annotations"
+deps.app_compat = "androidx.appcompat:appcompat:$versions.appcompat"
+deps.recyclerview = "androidx.recyclerview:recyclerview:$versions.recyclerview"
+deps.cardview = "androidx.cardview:cardview:$versions.cardview"
+deps.material = "com.google.android.material:material:$versions.material"
+deps.core_utils = "androidx.legacy:legacy-support-core-utils:$versions.core_utils"
+deps.core_ktx = "androidx.core:core-ktx:$versions.core_ktx"
+
+def fragment = [:]
+fragment.runtime = "androidx.fragment:fragment:${versions.fragment}"
+fragment.runtime_ktx = "androidx.fragment:fragment-ktx:${versions.fragment}"
+fragment.testing = "androidx.fragment:fragment-testing:${versions.fragment}"
+deps.fragment = fragment
 
 def room = [:]
 room.runtime = "androidx.room:room-runtime:$versions.room"

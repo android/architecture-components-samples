@@ -65,18 +65,18 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation deps.kotlin.stdlib
-    implementation deps.support.app_compat
-    implementation deps.support.design
+    implementation deps.app_compat
+    implementation deps.material
     implementation deps.constraint_layout
-    implementation deps.support.core_ktx
+    implementation deps.core_ktx
 
     implementation deps.lifecycle.viewmodel_ktx
 
     implementation deps.navigation.fragment_ktx
     implementation deps.navigation.runtime_ktx
-    implementation deps.support.fragment_runtime_ktx
+    implementation deps.fragment.runtime_ktx
     // "androidx.fragment:fragment-testing" must be scoped to all sourcesets.
-    implementation(deps.support.fragment_testing) {
+    implementation(deps.fragment.testing) {
         // Exclude androidx.test:core while fragment_testing depends on 1.1.0
         exclude group: 'androidx.test', module: 'core'
     }

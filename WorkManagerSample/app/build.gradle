@@ -52,10 +52,10 @@ dependencies {
 
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime_ktx
-    implementation deps.support.app_compat
-    implementation deps.support.cardview
-    implementation deps.support.design
-    implementation deps.support.fragment_runtime_ktx
+    implementation deps.app_compat
+    implementation deps.cardview
+    implementation deps.material
+    implementation deps.fragment.runtime_ktx
     implementation deps.constraint_layout
     implementation deps.arch_core.runtime
     implementation deps.retrofit.runtime

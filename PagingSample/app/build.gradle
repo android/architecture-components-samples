@@ -48,10 +48,10 @@ android {
 }
 
 dependencies {
-    implementation deps.support.app_compat
-    implementation deps.support.fragment_runtime_ktx
-    implementation deps.support.recyclerview
-    implementation deps.support.cardview
+    implementation deps.app_compat
+    implementation deps.fragment.runtime_ktx
+    implementation deps.recyclerview
+    implementation deps.cardview
     implementation deps.room.runtime
     implementation deps.lifecycle.runtime
     implementation deps.paging_ktx

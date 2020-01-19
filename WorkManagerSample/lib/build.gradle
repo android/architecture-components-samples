@@ -28,9 +28,9 @@ dependencies {
 
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime_ktx
-    implementation deps.support.app_compat
-    implementation deps.support.cardview
-    implementation deps.support.design
+    implementation deps.app_compat
+    implementation deps.cardview
+    implementation deps.material
     implementation deps.constraint_layout
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson

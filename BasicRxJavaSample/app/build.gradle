@@ -27,10 +27,9 @@ android {
 }
 
 dependencies {
-    // Support libraries
-    implementation deps.support.app_compat
-    implementation deps.support.fragment_runtime
-    implementation deps.support.design
+    implementation deps.app_compat
+    implementation deps.fragment.runtime
+    implementation deps.material
     // Architecture components
     implementation deps.lifecycle.runtime
     annotationProcessor deps.lifecycle.compiler
@@ -49,8 +48,8 @@ dependencies {
     testImplementation deps.mockito.all
 
     // Resolve conflicts between main and local unit tests
-    testImplementation deps.support.annotations
-    testImplementation deps.support.core_utils
+    testImplementation deps.annotations
+    testImplementation deps.core_utils
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation deps.atsl.ext_junit
@@ -70,7 +69,7 @@ dependencies {
     androidTestImplementation deps.espresso.intents
 
     // Resolve conflicts between main and test APK:
-    androidTestImplementation deps.support.annotations
-    androidTestImplementation deps.support.app_compat
-    androidTestImplementation deps.support.design
+    androidTestImplementation deps.annotations
+    androidTestImplementation deps.app_compat
+    androidTestImplementation deps.material
 }

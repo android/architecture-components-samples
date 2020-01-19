@@ -70,11 +70,11 @@ jacoco {
 }
 
 dependencies {
-    implementation deps.support.app_compat
-    implementation deps.support.recyclerview
-    implementation deps.support.cardview
-    implementation deps.support.design
-    implementation deps.support.core_ktx
+    implementation deps.app_compat
+    implementation deps.recyclerview
+    implementation deps.cardview
+    implementation deps.material
+    implementation deps.core_ktx
     implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
     implementation deps.lifecycle.livedata_ktx
@@ -107,10 +107,10 @@ dependencies {
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
 
-    androidTestImplementation deps.support.app_compat
-    androidTestImplementation deps.support.recyclerview
-    androidTestImplementation deps.support.cardview
-    androidTestImplementation deps.support.design
+    androidTestImplementation deps.app_compat
+    androidTestImplementation deps.recyclerview
+    androidTestImplementation deps.cardview
+    androidTestImplementation deps.material
 
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.espresso.contrib

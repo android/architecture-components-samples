@@ -47,10 +47,9 @@ android {
 }
 
 dependencies {
-    // Support libraries
-    implementation deps.support.app_compat
-    implementation deps.support.fragment_runtime_ktx
-    implementation deps.support.design
+    implementation deps.app_compat
+    implementation deps.fragment.runtime_ktx
+    implementation deps.material
 
     // Architecture components
     implementation deps.lifecycle.runtime
@@ -63,7 +62,6 @@ dependencies {
     implementation deps.rx_android
     implementation deps.rxjava2
 
-    // kotlin
     // Kotlin
     implementation deps.kotlin.stdlib
 
@@ -93,7 +91,7 @@ dependencies {
     androidTestImplementation deps.espresso.intents
 
     // Resolve conflicts between main and test APK:
-    androidTestImplementation deps.support.annotations
-    androidTestImplementation deps.support.app_compat
-    androidTestImplementation deps.support.design
+    androidTestImplementation deps.annotations
+    androidTestImplementation deps.app_compat
+    androidTestImplementation deps.material
 }

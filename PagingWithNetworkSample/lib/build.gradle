@@ -33,10 +33,10 @@ dependencies {
     kapt deps.glide.compiler
 
     implementation deps.constraint_layout
-    implementation deps.support.app_compat
-    implementation deps.support.recyclerview
-    implementation deps.support.cardview
-    implementation deps.support.design
+    implementation deps.app_compat
+    implementation deps.recyclerview
+    implementation deps.cardview
+    implementation deps.material
     implementation deps.room.runtime
     implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.runtime

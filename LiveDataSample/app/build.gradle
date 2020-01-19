@@ -50,9 +50,9 @@ android {
 }
 
 dependencies {
-    implementation deps.support.app_compat
-    implementation deps.support.design
-    implementation deps.support.core_ktx
+    implementation deps.app_compat
+    implementation deps.material
+    implementation deps.core_ktx
     implementation deps.lifecycle.runtime
     implementation deps.lifecycle.viewmodel_ktx
     implementation deps.lifecycle.livedata_ktx

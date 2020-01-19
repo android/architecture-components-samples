@@ -51,11 +51,9 @@ dependencies {
     androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.ext_junit
 
-    // Support Libraries
-    implementation deps.support.app_compat
-    implementation deps.support.recyclerview
+    implementation deps.app_compat
+    implementation deps.recyclerview
 
-    // App Toolkit
     implementation deps.room.runtime
     annotationProcessor deps.lifecycle.compiler
     annotationProcessor deps.room.compiler

@@ -36,7 +36,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':lib')
 
-    implementation deps.support.app_compat
+    implementation deps.app_compat
     implementation deps.paging_ktx
 
     androidTestImplementation deps.atsl.ext_junit
