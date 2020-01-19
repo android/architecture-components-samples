@@ -23,7 +23,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.postDelayed
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -46,6 +45,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @OpenForTesting
@@ -63,7 +63,6 @@ class UserFragment : Fragment(), Injectable {
     }
     private val params by navArgs<UserFragmentArgs>()
     private var adapter by autoCleared<RepoListAdapter>()
-    private var handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -95,11 +94,8 @@ class UserFragment : Fragment(), Injectable {
                 return false
             }
         }
-        // Animation Watchdog - Make sure we don't wait longer than a second for the Glide image
-        handler.postDelayed(1000) {
-            startPostponedEnterTransition()
-        }
-        postponeEnterTransition()
+        // Make sure we don't wait longer than a second for the image request
+        postponeEnterTransition(1, TimeUnit.SECONDS)
         return dataBinding.root
     }
 
