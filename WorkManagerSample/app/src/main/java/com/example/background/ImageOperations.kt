@@ -117,6 +117,13 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
                 continuation = continuation.then(upload)
             }
             return ImageOperations(continuation)
+
+        }
+
+        private fun requestRepetiveTask() {
+            val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.MINUTES) {
+
+            }
         }
 
         private fun createInputData(): Data {

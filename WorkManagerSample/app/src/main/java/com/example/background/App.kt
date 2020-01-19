@@ -13,5 +13,10 @@ class App : Application(), Configuration.Provider {
             Configuration.Builder()
                     .setMinimumLoggingLevel(Log.VERBOSE)
                     .build()
+
+    val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(1,TimeUnit.MINUTES)
+            .build()
+    WorkManager.getInstance(this).enqueue(workRequest)
 }
 
