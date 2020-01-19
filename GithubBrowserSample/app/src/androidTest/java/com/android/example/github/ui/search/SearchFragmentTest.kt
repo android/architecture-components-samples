@@ -16,8 +16,13 @@
 
 package com.android.example.github.ui.search
 
-import androidx.lifecycle.MutableLiveData
+import android.view.KeyEvent
+import android.view.View
 import androidx.databinding.DataBindingComponent
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressKey
@@ -32,9 +37,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import androidx.recyclerview.widget.RecyclerView
-import android.view.KeyEvent
-import androidx.navigation.NavController
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
@@ -76,9 +78,10 @@ class SearchFragmentTest {
 
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
     private lateinit var viewModel: SearchViewModel
+    private val navController = mock<NavController>()
     private val results = MutableLiveData<Resource<List<Repo>>>()
     private val loadMoreStatus = MutableLiveData<SearchViewModel.LoadMoreState>()
-    private val searchFragment = TestSearchFragment()
+    private val searchFragment = SearchFragment()
 
     @Before
     fun init() {
@@ -95,6 +98,9 @@ class SearchFragmentTest {
                 return mockBindingAdapter
             }
         }
+        Navigation.setViewNavController(
+                activityRule.activity.findViewById<View>(R.id.container),
+                navController)
         activityRule.activity.setFragment(searchFragment)
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
@@ -149,7 +155,7 @@ class SearchFragmentTest {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         results.postValue(Resource.success(arrayListOf(repo)))
         onView(withText("desc")).perform(click())
-        verify(searchFragment.navController).navigate(
+        verify(navController).navigate(
                 SearchFragmentDirections.showRepo("foo", "bar")
         )
     }
@@ -174,10 +180,5 @@ class SearchFragmentTest {
 
     private fun listMatcher(): RecyclerViewMatcher {
         return RecyclerViewMatcher(R.id.repo_list)
-    }
-
-    class TestSearchFragment : SearchFragment() {
-        val navController = mock<NavController>()
-        override fun navController() = navController
     }
 }

@@ -39,14 +39,12 @@ import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.SearchFragmentBinding
 import com.android.example.github.di.Injectable
-import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
-@OpenForTesting
 class SearchFragment : Fragment(), Injectable {
 
     @Inject
@@ -88,7 +86,7 @@ class SearchFragment : Fragment(), Injectable {
             appExecutors = appExecutors,
             showFullName = true
         ) { repo ->
-            navController().navigate(
+            findNavController().navigate(
                     SearchFragmentDirections.showRepo(repo.owner.login, repo.name)
             )
         }
@@ -164,9 +162,4 @@ class SearchFragment : Fragment(), Injectable {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(windowToken, 0)
     }
-
-    /**
-     * Created to be able to override in tests
-     */
-    fun navController() = findNavController()
 }

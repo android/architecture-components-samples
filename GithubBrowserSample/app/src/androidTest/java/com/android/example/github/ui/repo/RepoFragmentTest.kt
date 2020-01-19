@@ -17,9 +17,13 @@
 package com.android.example.github.ui.repo
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
-import androidx.databinding.DataBindingComponent
+import android.view.View
 import androidx.annotation.StringRes
+import androidx.databinding.DataBindingComponent
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -31,8 +35,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import androidx.navigation.NavController
-import androidx.navigation.fragment.FragmentNavigator
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
@@ -75,12 +77,13 @@ class RepoFragmentTest {
     @JvmField
     val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
 
+    private val navController = mock<NavController>()
     private val repoLiveData = MutableLiveData<Resource<Repo>>()
     private val contributorsLiveData = MutableLiveData<Resource<List<Contributor>>>()
     private lateinit var viewModel: RepoViewModel
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
 
-    private val repoFragment = TestRepoFragment().apply {
+    private val repoFragment = RepoFragment().apply {
         arguments = RepoFragmentArgs("a", "b").toBundle()
     }
 
@@ -98,6 +101,9 @@ class RepoFragmentTest {
                 return mockBindingAdapter
             }
         }
+        Navigation.setViewNavController(
+                activityRule.activity.findViewById<View>(R.id.container),
+                navController)
         activityRule.activity.setFragment(repoFragment)
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
@@ -176,7 +182,7 @@ class RepoFragmentTest {
     fun testContributorClick() {
         setContributors("aa", "bb", "cc")
         onView(withText("cc")).perform(click())
-        verify(repoFragment.navController).navigate(
+        verify(navController).navigate(
                 eq(RepoFragmentDirections.showUser("cc")),
                 any(FragmentNavigator.Extras::class.java)
         )
@@ -210,10 +216,5 @@ class RepoFragmentTest {
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {
         return ApplicationProvider.getApplicationContext<Context>().getString(id, *args)
-    }
-
-    class TestRepoFragment : RepoFragment() {
-        val navController = mock<NavController>()
-        override fun navController() = navController
     }
 }

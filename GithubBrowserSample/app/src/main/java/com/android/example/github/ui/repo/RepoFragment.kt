@@ -36,7 +36,6 @@ import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.RepoFragmentBinding
 import com.android.example.github.di.Injectable
-import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
 import javax.inject.Inject
@@ -44,7 +43,6 @@ import javax.inject.Inject
 /**
  * The UI Controller for displaying a Github Repo's information with its contributors.
  */
-@OpenForTesting
 class RepoFragment : Fragment(), Injectable {
 
     @Inject
@@ -106,7 +104,7 @@ class RepoFragment : Fragment(), Injectable {
             val extras = FragmentNavigatorExtras(
                     imageView to contributor.login
             )
-            navController().navigate(
+            findNavController().navigate(
                     RepoFragmentDirections.showUser(contributor.login, contributor.avatarUrl),
                     extras
             )
@@ -119,9 +117,4 @@ class RepoFragment : Fragment(), Injectable {
         }
         initContributorList(repoViewModel)
     }
-
-    /**
-     * Created to be able to override in tests
-     */
-    fun navController() = findNavController()
 }

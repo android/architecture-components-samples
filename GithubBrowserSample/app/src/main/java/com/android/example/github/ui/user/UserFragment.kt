@@ -18,8 +18,6 @@ package com.android.example.github.ui.user
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +35,6 @@ import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.UserFragmentBinding
 import com.android.example.github.di.Injectable
-import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
@@ -48,7 +45,6 @@ import com.bumptech.glide.request.target.Target
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@OpenForTesting
 class UserFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,7 +106,7 @@ class UserFragment : Fragment(), Injectable {
             appExecutors = appExecutors,
             showFullName = false
         ) { repo ->
-            navController().navigate(UserFragmentDirections.showRepo(repo.owner.login, repo.name))
+            findNavController().navigate(UserFragmentDirections.showRepo(repo.owner.login, repo.name))
         }
         binding.repoList.adapter = rvAdapter
         this.adapter = rvAdapter
@@ -122,9 +118,4 @@ class UserFragment : Fragment(), Injectable {
             adapter.submitList(repos?.data)
         })
     }
-
-    /**
-     * Created to be able to override in tests
-     */
-    fun navController() = findNavController()
 }
