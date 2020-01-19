@@ -53,6 +53,7 @@ dependencies {
     testImplementation deps.support.core_utils
 
     // Android Testing Support Library's runner and rules
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.room.testing

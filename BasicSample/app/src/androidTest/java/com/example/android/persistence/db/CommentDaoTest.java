@@ -30,7 +30,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import android.database.sqlite.SQLiteConstraintException;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.android.persistence.LiveDataTestUtil;
 import com.example.android.persistence.db.dao.CommentDao;
 import com.example.android.persistence.db.dao.ProductDao;

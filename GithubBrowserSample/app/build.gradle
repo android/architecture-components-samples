@@ -103,6 +103,7 @@ dependencies {
     testImplementation deps.mockito.core
 
     androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
 
