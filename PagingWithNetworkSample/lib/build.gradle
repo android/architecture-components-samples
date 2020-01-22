@@ -34,6 +34,7 @@ dependencies {
 
     implementation deps.constraint_layout
     implementation deps.app_compat
+    implementation deps.activity.activity_ktx
     implementation deps.recyclerview
     implementation deps.cardview
     implementation deps.material

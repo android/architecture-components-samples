@@ -16,15 +16,28 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 
-class SubRedditViewModel(private val repository: RedditPostRepository) : ViewModel() {
-    private val subredditName = MutableLiveData<String>()
-    private val repoResult = subredditName.map {
+class SubRedditViewModel(
+        private val repository: RedditPostRepository,
+        private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    companion object {
+        const val KEY_SUBREDDIT = "subreddit"
+        const val DEFAULT_SUBREDDIT = "androiddev"
+    }
+
+    init {
+        if (!savedStateHandle.contains(KEY_SUBREDDIT)) {
+            savedStateHandle.set(KEY_SUBREDDIT, DEFAULT_SUBREDDIT)
+        }
+    }
+
+    private val repoResult = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT).map {
         repository.postsOfSubreddit(it, 30)
     }
     val posts = repoResult.switchMap { it.pagedList }
@@ -36,10 +49,10 @@ class SubRedditViewModel(private val repository: RedditPostRepository) : ViewMod
     }
 
     fun showSubreddit(subreddit: String): Boolean {
-        if (subredditName.value == subreddit) {
+        if (savedStateHandle.get<String>(KEY_SUBREDDIT) == subreddit) {
             return false
         }
-        subredditName.value = subreddit
+        savedStateHandle.set(KEY_SUBREDDIT, subreddit)
         return true
     }
 
@@ -47,6 +60,4 @@ class SubRedditViewModel(private val repository: RedditPostRepository) : ViewMod
         val listing = repoResult.value
         listing?.retry?.invoke()
     }
-
-    fun currentSubreddit(): String? = subredditName.value
 }
