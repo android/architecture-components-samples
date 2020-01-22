@@ -19,11 +19,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion build_versions.target_sdk
     defaultConfig {
         applicationId "com.android.example.viewbindingsample"
         minSdkVersion build_versions.min_sdk
-        targetSdkVersion 29
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
