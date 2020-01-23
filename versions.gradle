@@ -51,7 +51,7 @@ versions.mockito = "2.25.0"
 versions.mockito_all = "1.10.19"
 versions.mockito_android = "2.25.0"
 versions.mockwebserver = "3.8.1"
-versions.navigation = "2.2.0"
+versions.navigation = "2.3.0-SNAPSHOT"
 versions.okhttp_logging_interceptor = "3.9.0"
 versions.paging = "2.1.0"
 versions.recyclerview = "1.0.0"
@@ -61,6 +61,7 @@ versions.room = "2.2.3"
 versions.rx_android = "2.0.1"
 versions.rxjava2 = "2.1.3"
 versions.timber = "4.7.1"
+versions.truth = "1.0.1"
 versions.work = "2.2.0"
 ext.versions = versions
 
@@ -171,6 +172,7 @@ navigation.runtime = "androidx.navigation:navigation-runtime:$versions.navigatio
 navigation.runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
 navigation.fragment = "androidx.navigation:navigation-fragment:$versions.navigation"
 navigation.fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
+navigation.testing = "androidx.navigation:navigation-testing:$versions.navigation"
 navigation.ui = "androidx.navigation:navigation-ui:$versions.navigation"
 navigation.ui_ktx = "androidx.navigation:navigation-ui-ktx:$versions.navigation"
 navigation.safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
@@ -203,6 +205,8 @@ deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
 
 deps.timber = "com.jakewharton.timber:timber:$versions.timber"
 
+deps.truth = "com.google.truth:truth:$versions.truth"
+
 def work = [:]
 work.runtime = "androidx.work:work-runtime:$versions.work"
 work.testing = "androidx.work:work-testing:$versions.work"
@@ -216,5 +220,7 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    // TODO: remove once navigation 2.3.0 is released on maven.
+    handler.maven { url 'https://ci.android.com/builds/submitted/6140607/androidx_snapshot/latest/repository/'}
 }
 ext.addRepos = this.&addRepos

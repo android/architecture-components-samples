@@ -16,17 +16,23 @@
 
 package com.example.android.navigationsample;
 
+import androidx.fragment.app.testing.FragmentScenario;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.testing.TestNavHostController;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.fragment.app.testing.FragmentScenario;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -55,5 +61,37 @@ public class TitleScreenTestJava {
         // Verify that performing a click prompts the correct Navigation action
         onView(withId(R.id.play_btn)).perform(click());
         verify(mockNavController).navigate(R.id.action_title_screen_to_register);
+    }
+
+    @Test
+    public void navigationToRegisterTest() {
+        // Create a TestNavHostController
+        TestNavHostController navController = new TestNavHostController(ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.navigation);
+
+        // Navigate to Register fragment
+        navController.navigate(R.id.action_title_screen_to_register);
+
+        // Verify that back stack is correct
+        List<NavBackStackEntry> backStack = navController.getBackStack();
+        assertThat(backStack).hasSize(3);
+        assertThat(backStack.get(2).getDestination().getId()).isEqualTo(R.id.register);
+        assertThat(backStack.get(1).getDestination().getId()).isEqualTo(R.id.title_screen);
+    }
+
+    @Test
+    public void navigationToLeaderboardTest() {
+        // Create a TestNavHostController
+        TestNavHostController navController = new TestNavHostController(ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.navigation);
+
+        // Navigate to Register fragment
+        navController.navigate(R.id.action_title_screen_to_leaderboard);
+
+        // Verify that back stack is correct
+        List<NavBackStackEntry> backStack = navController.getBackStack();
+        assertThat(backStack).hasSize(3);
+        assertThat(backStack.get(2).getDestination().getId()).isEqualTo(R.id.leaderboard);
+        assertThat(backStack.get(1).getDestination().getId()).isEqualTo(R.id.title_screen);
     }
 }
