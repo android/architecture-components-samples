@@ -20,5 +20,6 @@
     <string name="hello_activity">Hello from activity</string>
     <string name="hello_blank_fragment">Hello from fragment</string>
     <string name="hello_from_vb_activity">Hello from Biew Binding (activity)</string>
-    <string name="hello_from_vb_fragment">Hello from View Binding (fragment)</string>
+    <string name="hello_from_vb_bindfragment">Hello from View Binding (InflateFragment)</string>
+    <string name="hello_from_vb_inflatefragment">Hello from View Binding (BindFragment)</string>
 </resources>
