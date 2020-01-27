@@ -16,13 +16,14 @@
 
 package com.example.android.observability.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android.observability.Injection;
 import com.example.android.persistence.R;
@@ -61,7 +62,7 @@ public class UserActivity extends AppCompatActivity {
         mUpdateButton = findViewById(R.id.update_user);
 
         mViewModelFactory = Injection.provideViewModelFactory(this);
-        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(UserViewModel.class);
+        mViewModel = new ViewModelProvider(this, mViewModelFactory).get(UserViewModel.class);
         mUpdateButton.setOnClickListener(v -> updateUserName());
     }
 
@@ -75,7 +76,7 @@ public class UserActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(userName -> mUserName.setText(userName),
-                        throwable -> Log.e(TAG, "Unable to update username", throwable)));
+                        throwable -> Log.e(TAG, "Unable to get username", throwable)));
     }
 
     @Override

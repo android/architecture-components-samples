@@ -16,8 +16,8 @@
 
 package com.android.example.github.repository
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.Observer
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.android.example.github.api.GithubService
 import com.android.example.github.api.RepoSearchResponse
 import com.android.example.github.db.GithubDb
@@ -34,6 +34,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -63,6 +64,7 @@ class FetchNextSearchPageTaskTest {
     fun init() {
         service = mock(GithubService::class.java)
         db = mock(GithubDb::class.java)
+        `when`(db.runInTransaction(any())).thenCallRealMethod()
         repoDao = mock(RepoDao::class.java)
         `when`(db.repoDao()).thenReturn(repoDao)
         task = FetchNextSearchPageTask("foo", service, db)

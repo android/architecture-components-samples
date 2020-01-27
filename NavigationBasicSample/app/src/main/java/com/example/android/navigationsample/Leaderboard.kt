@@ -17,10 +17,8 @@
 package com.example.android.navigationsample
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,24 +32,20 @@ import androidx.navigation.Navigation
  */
 class Leaderboard : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_leaderboard, container, false)
 
-        viewAdapter = MyAdapter(arrayOf("Flo", "Ly", "Jo"))
+        val viewAdapter = MyAdapter(arrayOf("Flo", "Ly", "Jo"))
 
-        recyclerView = view.findViewById<RecyclerView>(R.id.leaderboard_list).apply {
+        view.findViewById<RecyclerView>(R.id.leaderboard_list).run {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
 
             // specify an viewAdapter (see also next example)
             adapter = viewAdapter
-
         }
         return view
     }

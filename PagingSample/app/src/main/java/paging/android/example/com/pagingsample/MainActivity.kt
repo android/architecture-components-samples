@@ -16,15 +16,14 @@
 
 package paging.android.example.com.pagingsample
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.KeyEvent
-import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -34,9 +33,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  * is updated automatically using paging components.
  */
 class MainActivity : AppCompatActivity() {
-    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProviders.of(this).get(CheeseViewModel::class.java)
-    }
+    private val viewModel by viewModels<CheeseViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +63,8 @@ class MainActivity : AppCompatActivity() {
 
             // When an item is swiped, remove the item via the view model. The list item will be
             // automatically removed in response, because the adapter is observing the live list.
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
-                (viewHolder as? CheeseViewHolder)?.cheese?.let {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                (viewHolder as CheeseViewHolder).cheese?.let {
                     viewModel.remove(it)
                 }
             }
@@ -88,20 +85,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         // when the user taps the "Done" button in the on screen keyboard, save the item.
-        inputText.setOnEditorActionListener({ _, actionId, _ ->
+        inputText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 addCheese()
                 return@setOnEditorActionListener true
             }
             false // action that isn't DONE occurred - ignore
-        })
+        }
         // When the user clicks on the button, or presses enter, save the item.
-        inputText.setOnKeyListener({ _, keyCode, event ->
+        inputText.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 addCheese()
                 return@setOnKeyListener true
             }
             false // event that isn't DOWN or ENTER occurred - ignore
-        })
+        }
     }
 }

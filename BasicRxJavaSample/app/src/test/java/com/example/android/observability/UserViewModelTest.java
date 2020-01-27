@@ -17,14 +17,12 @@
 package com.example.android.observability;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import com.example.android.observability.persistence.User;
 import com.example.android.observability.ui.UserViewModel;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,6 +32,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 /**
@@ -53,16 +52,16 @@ public class UserViewModelTest {
     private UserViewModel mViewModel;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mViewModel = new UserViewModel(mDataSource);
     }
 
     @Test
-    public void getUserName_whenNoUserSaved() throws InterruptedException {
+    public void getUserName_whenNoUserSaved() {
         // Given that the UserDataSource returns an empty list of users
-        when(mDataSource.getUser()).thenReturn(Flowable.<User>empty());
+        when(mDataSource.getUser()).thenReturn(Flowable.empty());
 
         //When getting the user name
         mViewModel.getUserName()
@@ -72,7 +71,7 @@ public class UserViewModelTest {
     }
 
     @Test
-    public void getUserName_whenUserSaved() throws InterruptedException {
+    public void getUserName_whenUserSaved() {
         // Given that the UserDataSource returns a user
         User user = new User("user name");
         when(mDataSource.getUser()).thenReturn(Flowable.just(user));
@@ -86,6 +85,9 @@ public class UserViewModelTest {
 
     @Test
     public void updateUserName_updatesNameInDataSource() {
+        // Given that a completable is returned when inserting a user
+        when(mDataSource.insertOrUpdateUser(any())).thenReturn(Completable.complete());
+
         // When updating the user name
         mViewModel.updateUserName("new user name")
                 .test()

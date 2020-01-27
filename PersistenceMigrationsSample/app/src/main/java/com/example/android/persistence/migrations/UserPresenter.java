@@ -16,7 +16,7 @@
 
 package com.example.android.persistence.migrations;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Listens for users's actions from the UI {@link UserActivity}, retrieves the data and updates
@@ -24,15 +24,15 @@ import android.support.annotation.Nullable;
  */
 public class UserPresenter {
 
-    private UserRepository mDataSource;
+    private final UserRepository mDataSource;
 
     @Nullable
     private UserView mView;
 
-    private LoadUserCallback mLoadUserCallback;
-    private UpdateUserCallback mUpdateUserCallback;
+    private final LoadUserCallback mLoadUserCallback;
+    private final UpdateUserCallback mUpdateUserCallback;
 
-    public UserPresenter(UserRepository dataSource, UserView view) {
+    public UserPresenter(UserRepository dataSource, @Nullable UserView view) {
         mDataSource = dataSource;
         mView = view;
 

@@ -47,7 +47,7 @@ public class UserPresenterTest {
     private UserPresenter mPresenter;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mPresenter = new UserPresenter(mUserRepository, mView);

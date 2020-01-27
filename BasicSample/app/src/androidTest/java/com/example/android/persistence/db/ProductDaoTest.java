@@ -23,12 +23,10 @@ import static junit.framework.Assert.assertTrue;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.persistence.room.Room;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
-
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.android.persistence.LiveDataTestUtil;
 import com.example.android.persistence.db.dao.ProductDao;
 import com.example.android.persistence.db.entity.ProductEntity;
@@ -58,7 +56,7 @@ public class ProductDaoTest {
     public void initDb() throws Exception {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
-        mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 AppDatabase.class)
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()

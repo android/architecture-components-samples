@@ -16,8 +16,6 @@
 
 package com.example.android.persistence.migrations;
 
-import android.support.annotation.NonNull;
-
 import java.util.concurrent.Executor;
 
 /**
@@ -27,7 +25,7 @@ import java.util.concurrent.Executor;
  * android.arch.core:core-testing to your build.gradle file.
  */
 public class SingleExecutors extends AppExecutors {
-    private static Executor instant = command -> command.run();
+    private static final Executor instant = Runnable::run;
 
     public SingleExecutors() {
         super(instant, instant, instant);

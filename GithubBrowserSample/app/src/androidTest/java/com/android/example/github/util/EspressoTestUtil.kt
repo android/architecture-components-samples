@@ -18,10 +18,10 @@ package com.android.example.github.util
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.test.rule.ActivityTestRule
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
+import androidx.test.rule.ActivityTestRule
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar

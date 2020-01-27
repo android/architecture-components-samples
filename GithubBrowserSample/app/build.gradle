@@ -20,7 +20,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-allopen'
-apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
@@ -53,6 +53,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     sourceSets {
         androidTest.java.srcDirs += "src/test-common/java"
         test.java.srcDirs += "src/test-common/java"
@@ -67,14 +70,16 @@ jacoco {
 }
 
 dependencies {
-    implementation deps.support.app_compat
-    implementation deps.support.recyclerview
-    implementation deps.support.cardview
-    implementation deps.support.design
+    implementation deps.app_compat
+    implementation deps.recyclerview
+    implementation deps.cardview
+    implementation deps.material
+    implementation deps.core_ktx
+    implementation deps.transition
     implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
+    implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
@@ -95,32 +100,25 @@ dependencies {
 
     testImplementation deps.junit
     testImplementation deps.mock_web_server
-    testImplementation(deps.arch_core.testing, {
-        exclude group: 'com.android.support', module: 'support-compat'
-        exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'com.android.support', module: 'support-core-utils'
-    })
+    testImplementation deps.arch_core.testing
     testImplementation deps.mockito.core
 
-    androidTestImplementation deps.navigation.testing_ktx
-    androidTestImplementation deps.support.app_compat
-    androidTestImplementation deps.support.recyclerview
-    androidTestImplementation deps.support.cardview
-    androidTestImplementation deps.support.design
+    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
 
-    androidTestImplementation(deps.espresso.core, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    })
-    androidTestImplementation(deps.espresso.contrib, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    })
+    androidTestImplementation deps.app_compat
+    androidTestImplementation deps.recyclerview
+    androidTestImplementation deps.cardview
+    androidTestImplementation deps.material
 
-    androidTestImplementation(deps.arch_core.testing, {
-    })
-    androidTestImplementation deps.dexmaker
-    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
+
+    androidTestImplementation deps.arch_core.testing
+    androidTestImplementation deps.mockito.core
+    androidTestImplementation deps.mockito.android
 }
 
 task fullCoverageReport(type: JacocoReport) {

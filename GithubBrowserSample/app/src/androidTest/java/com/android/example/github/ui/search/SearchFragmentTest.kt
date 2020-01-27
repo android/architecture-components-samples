@@ -16,35 +16,37 @@
 
 package com.android.example.github.ui.search
 
-import android.arch.lifecycle.MutableLiveData
-import android.databinding.DataBindingComponent
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.action.ViewActions.pressKey
-import android.support.test.espresso.action.ViewActions.typeText
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.contrib.RecyclerViewActions
-import android.support.test.espresso.matcher.ViewMatchers
-import android.support.test.espresso.matcher.ViewMatchers.hasDescendant
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
-import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
+import android.view.View
+import androidx.databinding.DataBindingComponent
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressKey
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
 import com.android.example.github.testing.SingleFragmentActivity
 import com.android.example.github.util.CountingAppExecutorsRule
+import com.android.example.github.util.DataBindingIdlingResourceRule
 import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
-import com.android.example.github.util.matcher
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
@@ -70,12 +72,16 @@ class SearchFragmentTest {
     @Rule
     @JvmField
     val countingAppExecutors = CountingAppExecutorsRule()
+    @Rule
+    @JvmField
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
 
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
     private lateinit var viewModel: SearchViewModel
+    private val navController = mock<NavController>()
     private val results = MutableLiveData<Resource<List<Repo>>>()
     private val loadMoreStatus = MutableLiveData<SearchViewModel.LoadMoreState>()
-    private val searchFragment = TestSearchFragment()
+    private val searchFragment = SearchFragment()
 
     @Before
     fun init() {
@@ -92,6 +98,9 @@ class SearchFragmentTest {
                 return mockBindingAdapter
             }
         }
+        Navigation.setViewNavController(
+                activityRule.activity.findViewById<View>(R.id.container),
+                navController)
         activityRule.activity.setFragment(searchFragment)
         EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
@@ -146,8 +155,8 @@ class SearchFragmentTest {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         results.postValue(Resource.success(arrayListOf(repo)))
         onView(withText("desc")).perform(click())
-        verify(searchFragment.navController).navigate(
-                SearchFragmentDirections.showRepo("foo", "bar").matcher()
+        verify(navController).navigate(
+                SearchFragmentDirections.showRepo("foo", "bar")
         )
     }
 
@@ -171,10 +180,5 @@ class SearchFragmentTest {
 
     private fun listMatcher(): RecyclerViewMatcher {
         return RecyclerViewMatcher(R.id.repo_list)
-    }
-
-    class TestSearchFragment : SearchFragment() {
-        val navController = mock<NavController>()
-        override fun navController() = navController
     }
 }

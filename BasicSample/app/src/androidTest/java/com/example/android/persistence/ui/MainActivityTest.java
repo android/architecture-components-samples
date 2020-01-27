@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.example.android.persistence.ui;
 
-
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-
-import static org.hamcrest.core.IsNot.not;
-
-import android.arch.core.executor.testing.CountingTaskExecutorRule;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.matcher.ViewMatchers;
-import android.support.test.rule.ActivityTestRule;
+import androidx.annotation.Nullable;
+import androidx.arch.core.executor.testing.CountingTaskExecutorRule;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.rule.ActivityTestRule;
 
 import com.example.android.persistence.AppExecutors;
 import com.example.android.persistence.EspressoTestUtil;
@@ -50,6 +39,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.IsNot.not;
+
 public class MainActivityTest {
 
     @Rule
@@ -61,7 +58,7 @@ public class MainActivityTest {
 
     public MainActivityTest() {
         // delete the database
-        InstrumentationRegistry.getTargetContext().deleteDatabase(AppDatabase.DATABASE_NAME);
+        ApplicationProvider.getApplicationContext().deleteDatabase(AppDatabase.DATABASE_NAME);
     }
 
     @Before
@@ -73,13 +70,13 @@ public class MainActivityTest {
     @Before
     public void waitForDbCreation() throws Throwable {
         final CountDownLatch latch = new CountDownLatch(1);
-        final LiveData<Boolean> databaseCreated = AppDatabase.getInstance(
-                InstrumentationRegistry.getTargetContext(), new AppExecutors())
-                .getDatabaseCreated();
+        final LiveData<Boolean> databaseCreated = AppDatabase.getInstance(ApplicationProvider.getApplicationContext(), new AppExecutors()).getDatabaseCreated();
         mActivityRule.runOnUiThread(new Runnable() {
+
             @Override
             public void run() {
                 databaseCreated.observeForever(new Observer<Boolean>() {
+
                     @Override
                     public void onChanged(@Nullable Boolean aBoolean) {
                         if (Boolean.TRUE.equals(aBoolean)) {

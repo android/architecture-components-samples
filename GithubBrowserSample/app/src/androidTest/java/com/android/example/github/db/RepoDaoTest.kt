@@ -17,17 +17,23 @@
 package com.android.example.github.db
 
 import android.database.sqlite.SQLiteException
-import android.support.test.runner.AndroidJUnit4
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.example.github.util.LiveDataTestUtil.getValue
 import com.android.example.github.util.TestUtil
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class RepoDaoTest : DbTest() {
+
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Test
     fun insertAndRead() {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
@@ -57,13 +63,9 @@ class RepoDaoTest : DbTest() {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         val c1 = TestUtil.createContributor(repo, "c1", 3)
         val c2 = TestUtil.createContributor(repo, "c2", 7)
-        db.beginTransaction()
-        try {
+        db.runInTransaction {
             db.repoDao().insert(repo)
             db.repoDao().insertContributors(arrayListOf(c1, c2))
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
         val list = getValue(db.repoDao().loadContributors("foo", "bar"))
         assertThat(list.size, `is`(2))

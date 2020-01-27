@@ -18,12 +18,10 @@ package com.example.android.contentprovidersample;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import android.arch.persistence.room.Room;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
-
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 import com.example.android.contentprovidersample.data.Cheese;
 import com.example.android.contentprovidersample.data.SampleDatabase;
 
@@ -31,8 +29,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -43,12 +39,12 @@ public class CheeseTest {
 
     @Before
     public void createDatabase() {
-        mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getTargetContext(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 SampleDatabase.class).build();
     }
 
     @After
-    public void closeDatabase() throws IOException {
+    public void closeDatabase() {
         mDatabase.close();
     }
 

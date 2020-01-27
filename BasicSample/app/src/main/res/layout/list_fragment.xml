@@ -16,7 +16,7 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -30,6 +30,29 @@
         android:background="@color/cardview_light_background"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/item_horizontal_margin"
+            android:layout_marginEnd="@dimen/item_horizontal_margin"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/products_search_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/search_products_hint"/>
+
+            <ImageButton
+                android:id="@+id/products_search_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/cd_search_products"
+                app:srcCompat="@drawable/ic_search_black_24dp"/>
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/loading_tv"
             android:layout_width="match_parent"
@@ -39,7 +62,7 @@
             android:textAlignment="center"
             app:visibleGone="@{isLoading}"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/products_list"
             android:contentDescription="@string/cd_products_list"
             android:layout_width="match_parent"

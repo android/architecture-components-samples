@@ -19,26 +19,41 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.android.example.github.vo.Status" />
 
+        <import type="com.android.example.github.vo.Resource" />
+
+        <import type="androidx.lifecycle.LiveData"/>
+        <import type="com.android.example.github.vo.User"/>
+        <import type="com.bumptech.glide.request.RequestListener"/>
+        <import type="android.graphics.drawable.Drawable"/>
         <variable
-            name="user"
-            type="com.android.example.github.vo.User" />
+            name="args"
+            type="com.android.example.github.ui.user.UserFragmentArgs" />
 
         <variable
             name="userResource"
             type="com.android.example.github.vo.Resource" />
 
         <variable
+            name="user"
+            type="LiveData&lt;Resource&lt;User>>" />
+
+        <variable
             name="retryCallback"
             type="com.android.example.github.ui.common.RetryCallback" />
+
+        <variable
+            name="imageRequestListener"
+            type="com.bumptech.glide.request.RequestListener&lt;Drawable>" />
+
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            app:visibleGone="@{user != null}"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +65,9 @@
 
             <ImageView
                 android:layout_width="@dimen/photo_size"
-                app:imageUrl="@{user.avatarUrl}"
+                app:imageUrl="@{user.data.avatarUrl ?? args.avatarUrl}"
+                app:imageRequestListener="@{imageRequestListener}"
+                app:transitionName="@{args.login}"
                 android:layout_height="@dimen/photo_size"
                 android:id="@+id/avatar"
                 android:contentDescription="@string/a11y_user_photo"
@@ -60,7 +77,8 @@
                 tools:layout_editor_absoluteX="8dp" />
 
             <TextView
-                android:text="@{user.name ?? user.login}"
+                app:visibleGone="@{user.data != null}"
+                android:text="@{user.data.name ?? user.data.login}"
                 android:contentDescription="@string/a11y_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,7 +91,7 @@
                 android:layout_marginLeft="@dimen/default_margin" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
@@ -90,7 +108,7 @@
 
         <include
             layout="@layout/loading_state"
-            app:resource="@{userResource}"
+            app:resource="@{(Resource) user}"
             app:callback="@{() -> retryCallback.retry()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,5 +120,5 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

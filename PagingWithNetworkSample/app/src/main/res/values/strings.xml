@@ -16,7 +16,6 @@
 
 <resources>
     <string name="app_name">PagingWithNetwork</string>
-    <string name="post_subtitle">Submitted by %s</string>
     <string name="retry">Retry</string>
     <string name="search_hint">Subreddit Name</string>
     <string name="default_subreddit">androiddev</string>

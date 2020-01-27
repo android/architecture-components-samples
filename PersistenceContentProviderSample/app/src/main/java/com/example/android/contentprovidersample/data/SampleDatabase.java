@@ -16,12 +16,11 @@
 
 package com.example.android.contentprovidersample.data;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 import android.content.Context;
-import android.support.annotation.VisibleForTesting;
-
+import androidx.annotation.VisibleForTesting;
 
 /**
  * The Room database.
@@ -70,17 +69,16 @@ public abstract class SampleDatabase extends RoomDatabase {
      */
     private void populateInitialData() {
         if (cheese().count() == 0) {
-            Cheese cheese = new Cheese();
-            beginTransaction();
-            try {
-                for (int i = 0; i < Cheese.CHEESES.length; i++) {
-                    cheese.name = Cheese.CHEESES[i];
-                    cheese().insert(cheese);
+            runInTransaction(new Runnable() {
+                @Override
+                public void run() {
+                    Cheese cheese = new Cheese();
+                    for (int i = 0; i < Cheese.CHEESES.length; i++) {
+                        cheese.name = Cheese.CHEESES[i];
+                        cheese().insert(cheese);
+                    }
                 }
-                setTransactionSuccessful();
-            } finally {
-                endTransaction();
-            }
+            });
         }
     }
 

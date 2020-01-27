@@ -25,7 +25,7 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Write out the current schema of Room
         javaCompileOptions {
@@ -48,13 +48,12 @@ dependencies {
     androidTestImplementation(deps.espresso.core, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
 
-    // Support Libraries
-    implementation deps.support.app_compat
-    implementation deps.support.recyclerview
+    implementation deps.app_compat
+    implementation deps.recyclerview
 
-    // App Toolkit
-    implementation deps.lifecycle.extensions
     implementation deps.room.runtime
     annotationProcessor deps.lifecycle.compiler
     annotationProcessor deps.room.compiler

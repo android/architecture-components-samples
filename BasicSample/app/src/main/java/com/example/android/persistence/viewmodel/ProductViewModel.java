@@ -17,12 +17,12 @@
 package com.example.android.persistence.viewmodel;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.databinding.ObservableField;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.databinding.ObservableField;
+import androidx.annotation.NonNull;
 
 import com.example.android.persistence.BasicApp;
 import com.example.android.persistence.DataRepository;
@@ -87,7 +87,8 @@ public class ProductViewModel extends AndroidViewModel {
         }
 
         @Override
-        public <T extends ViewModel> T create(Class<T> modelClass) {
+        @NonNull
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             //noinspection unchecked
             return (T) new ProductViewModel(mApplication, mRepository, mProductId);
         }

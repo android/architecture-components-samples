@@ -25,16 +25,15 @@ android {
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.background"
-        renderscriptTargetApi 8
-        renderscriptSupportModeEnabled true
         vectorDrawables {
             useSupportLibrary true
         }
-        minSdkVersion build_versions.min_sdk
+        // Switching to Renderscript support provided by framework.
+        minSdkVersion 18
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -42,26 +41,33 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':lib')
+
     implementation deps.kotlin.stdlib
-    implementation deps.work.runtime
     implementation deps.work.runtime_ktx
-    implementation deps.support.app_compat
-    implementation deps.support.cardview
-    implementation deps.support.design
-    implementation deps.support.v4
+    implementation deps.app_compat
+    implementation deps.cardview
+    implementation deps.material
+    implementation deps.fragment.runtime_ktx
     implementation deps.constraint_layout
+    implementation deps.arch_core.runtime
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
     implementation deps.okhttp_logging_interceptor
     implementation deps.glide.runtime
 
     testImplementation deps.junit
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.work.testing
+    androidTestImplementation deps.arch_core.testing
 }

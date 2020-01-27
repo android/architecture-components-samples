@@ -18,7 +18,7 @@ The database is created using Room and has one entity: a `User`. Room generates 
 runtime.
 
 Queries are executed in the `UserDao` class. The user retrieval is done via an observable query implemented using a
-`Flowable`. Every time the user data is updated, the Flowable object will emit automatically, allowing to update the UI
+`Flowable`. Every time the user data is updated, the Flowable object will emit automatically, allowing it to update the UI
 based on the latest data. The Flowable will emit only when the query result contains at least a row. When there is no
 data to match the query, the Flowable will not emit.
 
@@ -27,7 +27,7 @@ data to match the query, the Flowable will not emit.
 The app has a main Activity that displays the data.
 The Activity works with a ViewModel to do the following:
 * subscribe to the emissions of the user name and updates the UI every time there is a new user name emitted
-* notify the ViewModel when the pressed the "Update" and passes the new user name.
+* notify the ViewModel when the user pressed the "Update" button and passes the new user name.
 The ViewModel works with the data source to get and save the data.
 
 Room guarantees that the observable query will be triggered on a background thread. In the Activity, the Flowable events

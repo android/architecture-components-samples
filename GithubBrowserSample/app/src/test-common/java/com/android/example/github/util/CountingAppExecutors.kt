@@ -24,7 +24,7 @@ import java.util.concurrent.TimeoutException
 
 class CountingAppExecutors(idleCallback: (() -> Unit)? = null) {
 
-    private val lock = java.lang.Object()
+    private val lock = Object()
 
     private var taskCount = 0
 

@@ -16,17 +16,20 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.arch.paging.PagedList
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
@@ -42,8 +45,6 @@ import kotlinx.android.synthetic.main.activity_reddit.*
  */
 class RedditActivity : AppCompatActivity() {
     companion object {
-        const val KEY_SUBREDDIT = "subreddit"
-        const val DEFAULT_SUBREDDIT = "androiddev"
         const val KEY_REPOSITORY_TYPE = "repository_type"
         fun intentFor(context: Context, type: RedditPostRepository.Type): Intent {
             val intent = Intent(context, RedditActivity::class.java)
@@ -52,30 +53,29 @@ class RedditActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var model: SubRedditViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reddit)
-        model = getViewModel()
-        initAdapter()
-        initSwipeToRefresh()
-        initSearch()
-        val subreddit = savedInstanceState?.getString(KEY_SUBREDDIT) ?: DEFAULT_SUBREDDIT
-        model.showSubreddit(subreddit)
-    }
-
-    private fun getViewModel(): SubRedditViewModel {
-        return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    private val model: SubRedditViewModel by viewModels {
+        object : AbstractSavedStateViewModelFactory(this, null) {
+            override fun <T : ViewModel?> create(
+                    key: String,
+                    modelClass: Class<T>,
+                    handle: SavedStateHandle
+            ): T {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
                 val repo = ServiceLocator.instance(this@RedditActivity)
                         .getRepository(repoType)
                 @Suppress("UNCHECKED_CAST")
-                return SubRedditViewModel(repo) as T
+                return SubRedditViewModel(repo, handle) as T
             }
-        })[SubRedditViewModel::class.java]
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_reddit)
+        initAdapter()
+        initSwipeToRefresh()
+        initSearch()
     }
 
     private fun initAdapter() {
@@ -85,7 +85,15 @@ class RedditActivity : AppCompatActivity() {
         }
         list.adapter = adapter
         model.posts.observe(this, Observer<PagedList<RedditPost>> {
-            adapter.submitList(it)
+            adapter.submitList(it) {
+                // Workaround for an issue where RecyclerView incorrectly uses the loading / spinner
+                // item added to the end of the list as an anchor during initial load.
+                val layoutManager = (list.layoutManager as LinearLayoutManager)
+                val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+                if (position != RecyclerView.NO_POSITION) {
+                    list.scrollToPosition(position)
+                }
+            }
         })
         model.networkState.observe(this, Observer {
             adapter.setNetworkState(it)
@@ -101,28 +109,23 @@ class RedditActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(KEY_SUBREDDIT, model.currentSubreddit())
-    }
-
     private fun initSearch() {
-        input.setOnEditorActionListener({ _, actionId, _ ->
+        input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 updatedSubredditFromInput()
                 true
             } else {
                 false
             }
-        })
-        input.setOnKeyListener({ _, keyCode, event ->
+        }
+        input.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 updatedSubredditFromInput()
                 true
             } else {
                 false
             }
-        })
+        }
     }
 
     private fun updatedSubredditFromInput() {

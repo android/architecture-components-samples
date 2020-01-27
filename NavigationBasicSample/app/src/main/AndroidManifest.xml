@@ -16,6 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.android.navigationsample">
 
     <application
@@ -24,23 +25,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.example.android.navigationsample.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- TODO: This intent filter will be unnecessary in the future. -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"/>
-                <data android:scheme="http"/>
-                <data android:host="www.example.com"/>
-                <data android:pathPrefix="/user/"/>
-            </intent-filter>
+            <!-- This is added to handle a deep link -->
+            <nav-graph android:value="@navigation/navigation" />
         </activity>
     </application>
 

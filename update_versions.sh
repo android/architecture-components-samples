@@ -6,6 +6,20 @@ do
   p=$(dirname "${line}");
   echo "Copying versions.gradle -> ${p}";
   cp versions.gradle "$p"
-  sed -i 's/.*\[ADMIN\].*//' $p/versions.gradle
+
+  # remove the "ADMIN" line from the samples themselves
+  extraArg=""
+  if [[ $OSTYPE == darwin* ]]; then
+    # The macOS version of sed requires the backup file extension
+    # to be specified. Linux requires it not to be.
+    extraArg=".bak"
+  fi
+  sed -i $extraArg 's/.*\[ADMIN\].*//' $p/versions.gradle
+
   cp gradle-wrapper.properties "$p/gradle/wrapper/."
 done
+# Remove the generated backup files
+echo "Removing backup files"
+
+# ignore output saying backups not found
+find . -name '*.bak' | xargs rm 2> /dev/null

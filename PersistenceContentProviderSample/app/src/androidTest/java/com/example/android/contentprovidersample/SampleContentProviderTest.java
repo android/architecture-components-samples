@@ -29,10 +29,9 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
-
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 import com.example.android.contentprovidersample.data.Cheese;
 import com.example.android.contentprovidersample.data.SampleDatabase;
 import com.example.android.contentprovidersample.provider.SampleContentProvider;
@@ -52,7 +51,7 @@ public class SampleContentProviderTest {
 
     @Before
     public void setUp() {
-        final Context context = InstrumentationRegistry.getTargetContext();
+        final Context context = ApplicationProvider.getApplicationContext();
         SampleDatabase.switchToInMemory(context);
         mContentResolver = context.getContentResolver();
     }
