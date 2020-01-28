@@ -118,7 +118,11 @@
             tools:layout="@layout/fragment_results_winner">
         <action android:id="@+id/action_results_winner_to_leaderboard"
                 app:destination="@id/leaderboard"
-                app:popUpTo="@id/title_screen"/>
+                app:popUpTo="@id/title_screen"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"
+                app:enterAnim="@anim/slide_in_left"
+                app:exitAnim="@anim/slide_out_right"/>
         <action android:id="@+id/action_results_winner_to_match"
                 app:popUpTo="@id/match"/>
     </fragment>
