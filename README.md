@@ -9,6 +9,7 @@ A collection of samples using the [Architecture Components](https://developer.an
 - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
 - [Paging](https://developer.android.com/topic/libraries/architecture/paging/)
 - [Navigation](https://developer.android.com/topic/libraries/architecture/navigation/)
+- [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
 - [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager/)
 
 ### Samples
@@ -37,7 +38,9 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
 
 * **[NavigationAdvancedSample](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationAdvancedSample)** - Shows
   how to handle multiple back stacks with Navigation and a BottomNavigationView.
-  
+
+* **[ViewBindingSample](https://github.com/googlesamples/android-architecture-components/tree/master/ViewBindingSample)** - Shows how to use view bindings in an activity and in fragments.
+
 * **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
   how to use WorkManager to do background work, in Kotlin.
 
