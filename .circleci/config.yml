@@ -114,6 +114,10 @@ jobs:
     environment:
       PROJECT_DIR: WorkManagerSample
     <<: *test_sample
+  test_viewbinding_sample:
+    environment:
+      PROJECT_DIR: ViewBindingSample
+    <<: *test_sample
 
 workflows:
   version: 2
@@ -131,3 +135,4 @@ workflows:
       - test_persistence_content_provider_sample
       # inst tests with flavors - test_persistence_migrations_sample
       - test_workmanager_sample
+      - test_viewbinding_sample
