@@ -40,6 +40,7 @@ public class DataGenerator {
             "is the best sold product on Mêlée Island", "is \uD83D\uDCAF", "is ❤️", "is fine"};
     private static final String[] COMMENTS = new String[]{
             "Comment 1", "Comment 2", "Comment 3", "Comment 4", "Comment 5", "Comment 6"};
+    private static final Integer[] QUANTITY = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     public static List<ProductEntity> generateProducts() {
         List<ProductEntity> products = new ArrayList<>(FIRST.length * SECOND.length);
@@ -51,6 +52,7 @@ public class DataGenerator {
                 product.setDescription(product.getName() + " " + DESCRIPTION[j]);
                 product.setPrice(rnd.nextInt(240));
                 product.setId(FIRST.length * i + j + 1);
+                product.setQuantity(QUANTITY.length * i + j + 1);
                 products.add(product);
             }
         }
