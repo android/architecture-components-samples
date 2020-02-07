@@ -37,7 +37,7 @@ import com.example.android.persistence.db.entity.ProductEntity;
 import com.example.android.persistence.db.entity.ProductFtsEntity;
 import java.util.List;
 
-@Database(entities = {ProductEntity.class, ProductFtsEntity.class, CommentEntity.class}, version = 2)
+@Database(entities = {ProductEntity.class, ProductFtsEntity.class, CommentEntity.class}, version = 3)
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -92,6 +92,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     }
                 })
             .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
             .build();
     }
 
@@ -140,4 +141,13 @@ public abstract class AppDatabase extends RoomDatabase {
 
         }
     };
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `products` ADD COLUMN `quantity` INTEGER Not Null DEFAULT 4");
+
+        }
+    };
+
 }

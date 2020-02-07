@@ -73,7 +73,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     return newProduct.getId() == oldProduct.getId()
                             && TextUtils.equals(newProduct.getDescription(), oldProduct.getDescription())
                             && TextUtils.equals(newProduct.getName(), oldProduct.getName())
-                            && newProduct.getPrice() == oldProduct.getPrice();
+                            && newProduct.getPrice() == oldProduct.getPrice()
+                            && newProduct.getQuantity() == oldProduct.getQuantity();
                 }
             });
             mProductList = productList;

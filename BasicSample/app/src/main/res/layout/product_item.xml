@@ -52,13 +52,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="5dp"
-                android:text="@{@string/product_price(product.price)}"/>
+                android:text="@{@string/product_price(product.price)}"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentRight="true" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name"
-                android:text="@{product.description}"/>
+                android:text="@{product.description}"
+                android:id="@+id/description"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:text="@{@string/product_quantity(product.quantity)}"/>
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
