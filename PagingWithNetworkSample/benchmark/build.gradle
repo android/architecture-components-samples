@@ -10,7 +10,7 @@ apply plugin: 'androidx.benchmark'
 
 android {
     compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
+
     defaultConfig {
         multiDexEnabled true
         minSdkVersion build_versions.min_sdk

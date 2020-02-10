@@ -28,7 +28,7 @@ allOpen {
 }
 android {
     compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
+
     defaultConfig {
         applicationId "com.android.example.github"
         minSdkVersion build_versions.min_sdk

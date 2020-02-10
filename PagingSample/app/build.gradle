@@ -23,7 +23,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
+
     defaultConfig {
         applicationId "paging.android.example.com.pagingsample"
         minSdkVersion build_versions.min_sdk
