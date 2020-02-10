@@ -30,10 +30,6 @@ test_sample: &test_sample
       - run:
           <<: *setup_ftl
       - run:
-          name: Fix Renderscript compilation
-          command: |
-            sudo apt-get install libncurses5
-      - run:
           name: Assemble APKs
           command: |
             cd ${PROJECT_DIR}

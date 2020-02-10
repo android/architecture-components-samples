@@ -30,7 +30,9 @@ android {
         }
         // Switching to Renderscript support provided by framework.
         minSdkVersion 18
-        targetSdkVersion build_versions.target_sdk
+        // Target API 28 to avoid Renderscript compilation errors on CircleCI
+        //noinspection OldTargetApi
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
