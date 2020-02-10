@@ -32,7 +32,7 @@ test_sample: &test_sample
       - run:
           name: Fix Renderscript compilation
           command: |
-            sudo apt-get install lib32ncurses5 lib32stdc++6 lib32z1
+            sudo apt-get install libncurses5
       - run:
           name: Assemble APKs
           command: |
