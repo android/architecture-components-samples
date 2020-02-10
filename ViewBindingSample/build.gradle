@@ -19,8 +19,7 @@ buildscript {
     apply from: 'versions.gradle'
     addRepos(repositories)
     dependencies {
-        // View Binding works on AS 3.6+
-        classpath "com.android.tools.build:gradle:3.6.0-rc01"
+        classpath deps.android_gradle_plugin
         classpath deps.kotlin.plugin
         classpath deps.kotlin.allopen
         // NOTE: Do not place your application dependencies here; they belong
