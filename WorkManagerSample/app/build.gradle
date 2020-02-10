@@ -21,8 +21,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    // Compile with API 28 to avoid Renderscript compilation errors on CircleCI
-    compileSdkVersion 28
+    compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.background"
@@ -31,9 +30,7 @@ android {
         }
         // Switching to Renderscript support provided by framework.
         minSdkVersion 18
-        // Target API 28 to avoid Renderscript compilation errors on CircleCI
-        //noinspection OldTargetApi
-        targetSdkVersion 28
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
