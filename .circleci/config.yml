@@ -30,6 +30,10 @@ test_sample: &test_sample
       - run:
           <<: *setup_ftl
       - run:
+          name: Fix Renderscript compilation
+          command: |
+            sudo apt-get install lib32ncurses5 lib32stdc++6 lib32z1
+      - run:
           name: Assemble APKs
           command: |
             cd ${PROJECT_DIR}
