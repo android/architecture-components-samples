@@ -28,6 +28,7 @@
 
     <TextView
         android:id="@+id/game_title"
+        android:gravity="center_horizontal"
         android:layout_width="368dp"
         android:layout_height="81dp"
         android:layout_marginStart="8dp"
