@@ -21,7 +21,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion build_versions.compile_sdk
+    // Compile with API 28 to avoid Renderscript compilation errors on CircleCI
+    compileSdkVersion 28
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.background"
