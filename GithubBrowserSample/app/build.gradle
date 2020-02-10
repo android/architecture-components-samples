@@ -27,7 +27,7 @@ allOpen {
     annotation 'com.android.example.github.testing.OpenClass'
 }
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.android.example.github"
