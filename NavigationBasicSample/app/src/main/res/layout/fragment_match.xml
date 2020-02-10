@@ -74,6 +74,7 @@
 
     <TextView
         android:id="@+id/textView"
+        android:gravity="center_horizontal"
         android:layout_width="59dp"
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
