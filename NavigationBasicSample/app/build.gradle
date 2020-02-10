@@ -58,6 +58,7 @@ android {
         }
         test {
             java.srcDirs += "src/uiTest/java"
+            resources.srcDirs += 'src/uiTest/resources'
         }
     }
 }
