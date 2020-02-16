@@ -97,4 +97,7 @@ dependencies {
     testImplementation deps.espresso.core
     testImplementation deps.espresso.contrib
     testImplementation deps.espresso.intents
+
+    androidTestImplementation deps.navigation.testing
+    androidTestImplementation deps.truth
 }
