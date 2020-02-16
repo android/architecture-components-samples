@@ -221,7 +221,5 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    // TODO: remove once navigation 2.3.0 is released on maven.
-    handler.maven { url 'https://ci.android.com/builds/submitted/6140607/androidx_snapshot/latest/repository/'}
 }
 ext.addRepos = this.&addRepos
