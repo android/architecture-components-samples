@@ -27,7 +27,7 @@ allOpen {
     annotation 'com.android.example.github.testing.OpenClass'
 }
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.android.example.github"
@@ -75,6 +75,7 @@ dependencies {
     implementation deps.cardview
     implementation deps.material
     implementation deps.core_ktx
+    implementation deps.transition
     implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
     implementation deps.lifecycle.livedata_ktx

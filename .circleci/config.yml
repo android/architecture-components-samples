@@ -2,7 +2,7 @@ version: 2
 
 config_android: &config_android
   docker:
-    - image: circleci/android:api-28-alpha
+    - image: circleci/android:api-29
       environment:
         JAVA_TOOL_OPTIONS: "-Xmx1024m"
         GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
@@ -114,6 +114,10 @@ jobs:
     environment:
       PROJECT_DIR: WorkManagerSample
     <<: *test_sample
+  test_viewbinding_sample:
+    environment:
+      PROJECT_DIR: ViewBindingSample
+    <<: *test_sample
 
 workflows:
   version: 2
@@ -130,4 +134,5 @@ workflows:
       # flaky, deprecated - test_paging_network_sample
       - test_persistence_content_provider_sample
       # inst tests with flavors - test_persistence_migrations_sample
-      - test_workmanager_sample
+      # temporarily disabled due to #804 - test_workmanager_sample
+      - test_viewbinding_sample

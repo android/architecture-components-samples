@@ -133,7 +133,7 @@ class GithubServiceTest {
     }
 
     private fun enqueueResponse(fileName: String, headers: Map<String, String> = emptyMap()) {
-        val inputStream = javaClass.classLoader
+        val inputStream = javaClass.classLoader!!
             .getResourceAsStream("api-response/$fileName")
         val source = Okio.buffer(Okio.source(inputStream))
         val mockResponse = MockResponse()

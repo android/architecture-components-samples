@@ -65,11 +65,7 @@ public class ProductListFragment extends Fragment {
 
         mBinding.productsSearchBtn.setOnClickListener(v -> {
             Editable query = mBinding.productsSearchBox.getText();
-            if (query == null || query.toString().isEmpty()) {
-                subscribeUi(viewModel.getProducts());
-            } else {
-                subscribeUi(viewModel.searchProducts("*" + query + "*"));
-            }
+            viewModel.setQuery(query);
         });
 
         subscribeUi(viewModel.getProducts());

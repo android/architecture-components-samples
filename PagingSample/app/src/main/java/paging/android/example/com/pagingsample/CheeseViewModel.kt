@@ -41,7 +41,7 @@ class CheeseViewModel(app: Application) : AndroidViewModel(app) {
              * user scrolling on a large device is expected to scroll through items more quickly
              * than a small device, such as when the large device uses a grid layout of items.
              */
-            pageSize = 30,
+            pageSize = 60,
 
             /**
              * If placeholders are enabled, PagedList will report the full size but some items might

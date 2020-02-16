@@ -19,7 +19,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     defaultConfig {
         applicationId "com.example.android.navigationadvancedsample"
         minSdkVersion build_versions.min_sdk
