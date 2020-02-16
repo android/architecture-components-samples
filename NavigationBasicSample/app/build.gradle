@@ -88,6 +88,8 @@ dependencies {
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.espresso.contrib
     androidTestImplementation deps.espresso.intents
+    androidTestImplementation deps.navigation.testing
+    androidTestImplementation deps.truth
 
     // Host-side tests
     testImplementation deps.atsl.ext_junit
@@ -97,7 +99,6 @@ dependencies {
     testImplementation deps.espresso.core
     testImplementation deps.espresso.contrib
     testImplementation deps.espresso.intents
-
-    androidTestImplementation deps.navigation.testing
-    androidTestImplementation deps.truth
+    testImplementation deps.navigation.testing
+    testImplementation deps.truth
 }
