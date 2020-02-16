@@ -45,11 +45,7 @@ dependencies {
     testImplementation deps.junit
     testImplementation deps.hamcrest
     testImplementation deps.arch_core.testing
-    testImplementation deps.mockito.all
-
-    // Resolve conflicts between main and local unit tests
-    testImplementation deps.annotations
-    testImplementation deps.core_utils
+    testImplementation deps.mockito.core
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation deps.atsl.ext_junit
