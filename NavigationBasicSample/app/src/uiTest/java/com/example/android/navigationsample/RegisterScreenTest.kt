@@ -1,7 +1,12 @@
 package com.example.android.navigationsample
 
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -11,17 +16,25 @@ import org.junit.runner.RunWith
 class RegisterScreenTest {
 
     @Test
-    fun navTest() {
-        val navController = TestNavHostController(ApplicationProvider.getApplicationContext()).apply {
+    fun testNavigateToMatch() {
+        val navController = TestNavHostController(
+                ApplicationProvider.getApplicationContext()).apply {
             setGraph(R.navigation.navigation)
             setCurrentDestination(R.id.register)
         }
 
-        navController.navigate(R.id.action_register_to_match)
+        // Create a graphical FragmentScenario for the Register fragment
+        val registerScenario = launchFragmentInContainer<Register>()
+
+        // Set the NavController property on the fragment
+        registerScenario.onFragment { fragment ->
+            Navigation.setViewNavController(fragment.requireView(), navController)
+        }
+
+        onView(withId(R.id.signup_btn)).perform(click())
 
         val backStack = navController.backStack
-        assertThat(backStack).hasSize(4)
-        assertThat(backStack[3].destination.id).isEqualTo(R.id.match)
-        assertThat(backStack[2].destination.id).isEqualTo(R.id.register)
+        val currentDestination = backStack.last()
+        assertThat(currentDestination.destination.id).isEqualTo(R.id.match)
     }
 }
