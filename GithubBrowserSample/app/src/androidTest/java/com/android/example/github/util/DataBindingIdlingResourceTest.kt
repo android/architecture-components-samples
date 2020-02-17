@@ -20,22 +20,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.R
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.testing.FragmentScenario
+import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
-import com.android.example.github.testing.SingleFragmentActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.never
@@ -47,17 +47,14 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @RunWith(AndroidJUnit4::class)
 class DataBindingIdlingResourceTest {
-    @Rule
-    @JvmField
-    val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
-
-    private val idlingResource = DataBindingIdlingResource(activityRule)
-    private val fragment = TestFragment()
+    private val idlingResource = DataBindingIdlingResource()
+    private lateinit var scenario: FragmentScenario<TestFragment>
 
     @Before
     fun init() {
+        scenario = launchFragmentInContainer<TestFragment>()
+        idlingResource.monitorFragment(scenario)
         IdlingRegistry.getInstance().register(idlingResource)
-        activityRule.activity.replaceFragment(fragment)
         Espresso.onIdle()
     }
 
@@ -91,6 +88,12 @@ class DataBindingIdlingResourceTest {
     }
 
     @Test
+    fun notIdleChild() {
+        setHasPendingChildBindings(true)
+        assertThat(isIdle(), `is`(false))
+    }
+
+    @Test
     fun callback_becomeIdle() {
         setHasPendingBindings(true)
         val callback = registerIdleCallback()
@@ -116,18 +119,31 @@ class DataBindingIdlingResourceTest {
     }
 
     private fun setHasPendingBindings(hasPendingBindings : Boolean) {
-        fragment.fakeBinding.hasPendingBindings.set(hasPendingBindings)
+        scenario.onFragment { fragment ->
+            fragment.fakeBinding.hasPendingBindings.set(hasPendingBindings)
+        }
+    }
+
+    private fun setHasPendingChildBindings(hasPendingBindings : Boolean) {
+        scenario.onFragment { fragment ->
+            fragment.childFakeBinding.hasPendingBindings.set(hasPendingBindings)
+        }
     }
 
     class TestFragment : Fragment() {
         lateinit var fakeBinding: FakeBinding
+        lateinit var childFakeBinding: FakeBinding
+
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View {
-            val view = View(container!!.context)
+            val view = FrameLayout(requireContext())
             fakeBinding = FakeBinding(view)
+            val child = View(requireContext())
+            childFakeBinding = FakeBinding(child)
+            view.addView(child)
             return view
         }
     }

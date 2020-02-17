@@ -17,9 +17,9 @@
 package com.android.example.github.ui.repo
 
 import android.content.Context
-import android.view.View
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingComponent
+import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -34,17 +34,15 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
-import com.android.example.github.testing.SingleFragmentActivity
 import com.android.example.github.util.CountingAppExecutorsRule
 import com.android.example.github.util.DataBindingIdlingResourceRule
-import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
+import com.android.example.github.util.disableProgressBarAnimations
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
@@ -66,26 +64,19 @@ import org.mockito.Mockito.verify
 class RepoFragmentTest {
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
-    @Rule
-    @JvmField
     val executorRule = TaskExecutorWithIdlingResourceRule()
     @Rule
     @JvmField
     val countingAppExecutors = CountingAppExecutorsRule()
     @Rule
     @JvmField
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule()
 
     private val navController = mock<NavController>()
     private val repoLiveData = MutableLiveData<Resource<Repo>>()
     private val contributorsLiveData = MutableLiveData<Resource<List<Contributor>>>()
     private lateinit var viewModel: RepoViewModel
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
-
-    private val repoFragment = RepoFragment().apply {
-        arguments = RepoFragmentArgs("a", "b").toBundle()
-    }
 
     @Before
     fun init() {
@@ -94,18 +85,23 @@ class RepoFragmentTest {
         doNothing().`when`(viewModel).setId(anyString(), anyString())
         `when`(viewModel.repo).thenReturn(repoLiveData)
         `when`(viewModel.contributors).thenReturn(contributorsLiveData)
-        repoFragment.appExecutors = countingAppExecutors.appExecutors
-        repoFragment.viewModelFactory = ViewModelUtil.createFor(viewModel)
-        repoFragment.dataBindingComponent = object : DataBindingComponent {
-            override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
-                return mockBindingAdapter
+        val scenario = launchFragmentInContainer(
+                RepoFragmentArgs("a", "b").toBundle()) {
+            RepoFragment().apply {
+                appExecutors = countingAppExecutors.appExecutors
+                viewModelFactory = ViewModelUtil.createFor(viewModel)
+                dataBindingComponent = object : DataBindingComponent {
+                    override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
+                        return mockBindingAdapter
+                    }
+                }
             }
         }
-        Navigation.setViewNavController(
-                activityRule.activity.findViewById<View>(R.id.container),
-                navController)
-        activityRule.activity.setFragment(repoFragment)
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
+        dataBindingIdlingResourceRule.monitorFragment(scenario)
+        scenario.onFragment { fragment ->
+            Navigation.setViewNavController(fragment.requireView(), navController)
+            fragment.disableProgressBarAnimations()
+        }
     }
 
     @Test

@@ -76,6 +76,7 @@ dependencies {
     implementation deps.material
     implementation deps.core_ktx
     implementation deps.transition
+    implementation deps.fragment.testing
     implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
     implementation deps.lifecycle.livedata_ktx
