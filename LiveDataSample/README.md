@@ -10,8 +10,7 @@ This sample showcases the following Architecture Components:
 
 And the following artifacts:
 
-* [androidx.lifecycle.lifecycle-livedata-ktx](https://developer.android.com/jetpack/androidx/releases/lifecycle) -
-currently using its alpha version.
+* [androidx.lifecycle.lifecycle-livedata-ktx](https://developer.android.com/jetpack/androidx/releases/lifecycle)
 
 This project shows how to integrate them with Kotlin's coroutines using the `liveData` builder. 
 

@@ -39,6 +39,9 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
 * **[NavigationAdvancedSample](https://github.com/googlesamples/android-architecture-components/tree/master/NavigationAdvancedSample)** - Shows
   how to handle multiple back stacks with Navigation and a BottomNavigationView.
 
+* **[LiveDataSample](https://github.com/googlesamples/android-architecture-components/tree/master/LiveDataSample)** - Shows
+  how to integrate Kotlin coroutines with Architecture Components such as `LiveData`.
+
 * **[ViewBindingSample](https://github.com/googlesamples/android-architecture-components/tree/master/ViewBindingSample)** - Shows how to use view bindings in an activity and in fragments.
 
 * **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
