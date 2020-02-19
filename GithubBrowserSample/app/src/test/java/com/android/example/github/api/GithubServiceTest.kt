@@ -18,7 +18,7 @@ package com.android.example.github.api
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.android.example.github.util.LiveDataCallAdapterFactory
-import com.android.example.github.util.LiveDataTestUtil.getValue
+import com.android.example.github.util.getOrAwaitValue
 import com.android.example.github.vo.User
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -64,7 +64,7 @@ class GithubServiceTest {
     @Test
     fun getUser() {
         enqueueResponse("user-yigit.json")
-        val yigit = (getValue(service.getUser("yigit")) as ApiSuccessResponse).body
+        val yigit = (service.getUser("yigit").getOrAwaitValue() as ApiSuccessResponse).body
 
         val request = mockWebServer.takeRequest()
         assertThat(request.path, `is`("/users/yigit"))
@@ -78,7 +78,7 @@ class GithubServiceTest {
     @Test
     fun getRepos() {
         enqueueResponse("repos-yigit.json")
-        val repos = (getValue(service.getRepos("yigit")) as ApiSuccessResponse).body
+        val repos = (service.getRepos("yigit").getOrAwaitValue() as ApiSuccessResponse).body
 
         val request = mockWebServer.takeRequest()
         assertThat(request.path, `is`("/users/yigit/repos"))
@@ -100,7 +100,7 @@ class GithubServiceTest {
     @Test
     fun getContributors() {
         enqueueResponse("contributors.json")
-        val value = getValue(service.getContributors("foo", "bar"))
+        val value = service.getContributors("foo", "bar").getOrAwaitValue()
         val contributors = (value as ApiSuccessResponse).body
         assertThat(contributors.size, `is`(3))
         val yigit = contributors[0]
@@ -120,7 +120,7 @@ class GithubServiceTest {
                 "link" to "$next,$last"
             )
         )
-        val response = getValue(service.searchRepos("foo")) as ApiSuccessResponse
+        val response = service.searchRepos("foo").getOrAwaitValue() as ApiSuccessResponse
 
         assertThat(response, notNullValue())
         assertThat(response.body.total, `is`(41))
