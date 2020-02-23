@@ -75,7 +75,7 @@ public class ProductFragment extends Fragment {
         model.getComments().observe(getViewLifecycleOwner(), commentEntities -> {
             if (commentEntities != null) {
                 mBinding.setIsLoading(false);
-                mCommentAdapter.setCommentList(commentEntities);
+                mCommentAdapter.submitList(commentEntities);
             } else {
                 mBinding.setIsLoading(true);
             }
