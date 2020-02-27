@@ -16,9 +16,9 @@
 
 package paging.android.example.com.pagingsample
 
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 
 /**
  * A simple PagedListAdapter that binds Cheese items into CardViews.
@@ -34,7 +34,7 @@ import android.view.ViewGroup
  * @see androidx.paging.PagedListAdapter
  * @see androidx.paging.AsyncPagedListDiffer
  */
-class CheeseAdapter : PagedListAdapter<Cheese, CheeseViewHolder>(diffCallback) {
+class CheeseAdapter : PagingDataAdapter<Cheese, CheeseViewHolder>(diffCallback) {
     override fun onBindViewHolder(holder: CheeseViewHolder, position: Int) {
         holder.bindTo(getItem(position))
     }

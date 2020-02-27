@@ -18,8 +18,6 @@ package com.android.example.paging.pagingwithnetwork.repository
 
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import retrofit2.Call
-import retrofit2.mock.Calls
 import java.io.IOException
 import kotlin.math.min
 
@@ -53,41 +51,45 @@ class FakeRedditApi : RedditApi {
     private fun findSubReddit(subreddit: String) =
             model.getOrDefault(subreddit, SubReddit())
 
-    override fun getTop(subreddit: String, limit: Int): Call<RedditApi.ListingResponse> {
+    override suspend fun getTop(subreddit: String, limit: Int): RedditApi.ListingResponse {
         failureMsg?.let {
-            return Calls.failure(IOException(it))
+            throw IOException(it)
         }
         val items = findPosts(subreddit, limit)
         val after = items.lastOrNull()?.data?.name
-        val response = RedditApi.ListingResponse(
+        return RedditApi.ListingResponse(
                 RedditApi.ListingData(children = items,
                         after = after,
                         before = null
                 )
         )
-        return Calls.response(response)
     }
 
-    override fun getTopAfter(subreddit: String, after: String, limit: Int)
-            : Call<RedditApi.ListingResponse> {
+    override suspend fun getTopAfter(
+            subreddit: String,
+            after: String,
+            limit: Int
+    ): RedditApi.ListingResponse {
         failureMsg?.let {
-            return Calls.failure(IOException(it))
+            throw IOException(it)
         }
         val items = findPosts(subreddit = subreddit,
                 limit = limit,
                 after = after)
         val responseAfter = items.lastOrNull()?.data?.name
-        val response = RedditApi.ListingResponse(
+        return RedditApi.ListingResponse(
                 RedditApi.ListingData(children = items,
                         after = responseAfter,
                         before = null
                 )
         )
-        return Calls.response(response)
     }
 
-    override fun getTopBefore(subreddit: String, before: String, limit: Int)
-            : Call<RedditApi.ListingResponse> {
+    override suspend fun getTopBefore(
+            subreddit: String,
+            before: String,
+            limit: Int
+    ): RedditApi.ListingResponse {
         TODO("the app never uses this so no reason to implement")
     }
 

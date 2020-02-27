@@ -18,9 +18,11 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.asFlow
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 
 class SubRedditViewModel(
         private val repository: RedditPostRepository,
@@ -37,16 +39,12 @@ class SubRedditViewModel(
         }
     }
 
-    private val repoResult = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT).map {
-        repository.postsOfSubreddit(it, 30)
-    }
-    val posts = repoResult.switchMap { it.pagedList }
-    val networkState = repoResult.switchMap { it.networkState }
-    val refreshState = repoResult.switchMap { it.refreshState }
+    private val repoResult = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
+            .asFlow()
+            .map { repository.postsOfSubreddit(it, 30) }
 
-    fun refresh() {
-        repoResult.value?.refresh?.invoke()
-    }
+    @UseExperimental(ExperimentalCoroutinesApi::class)
+    val posts = repoResult.flatMapLatest { it }
 
     fun showSubreddit(subreddit: String): Boolean {
         if (savedStateHandle.get<String>(KEY_SUBREDDIT) == subreddit) {
@@ -54,10 +52,5 @@ class SubRedditViewModel(
         }
         savedStateHandle.set(KEY_SUBREDDIT, subreddit)
         return true
-    }
-
-    fun retry() {
-        val listing = repoResult.value
-        listing?.retry?.invoke()
     }
 }

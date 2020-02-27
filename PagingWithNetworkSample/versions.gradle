@@ -52,9 +52,9 @@ versions.mockito_android = "2.25.0"
 versions.mockwebserver = "3.8.1"
 versions.navigation = "2.3.0-alpha01"
 versions.okhttp_logging_interceptor = "3.9.0"
-versions.paging = "2.1.1"
+versions.paging = "3.0.0-SNAPSHOT"
 versions.recyclerview = "1.0.0"
-versions.retrofit = "2.3.0"
+versions.retrofit = "2.6.0"
 versions.robolectric = "4.2"
 versions.room = "2.2.3"
 versions.rx_android = "2.0.1"
@@ -148,6 +148,8 @@ kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
 deps.kotlin = kotlin
 
+deps.paging_ktx = "androidx.paging:paging-runtime:$versions.paging"
+
 def lifecycle = [:]
 lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
 lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
@@ -221,5 +223,6 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    handler.maven { url 'https://ci.android.com/builds/submitted/6236589/androidx_snapshot/latest/repository/' }
 }
 ext.addRepos = this.&addRepos

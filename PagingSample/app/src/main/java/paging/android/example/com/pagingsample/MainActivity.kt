@@ -21,10 +21,12 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * Shows a list of Cheeses, with swipe-to-delete, and an input field at the top to add.
@@ -45,7 +47,9 @@ class MainActivity : AppCompatActivity() {
 
         // Subscribe the adapter to the ViewModel, so the items in the adapter are refreshed
         // when the list changes
-        viewModel.allCheeses.observe(this, Observer(adapter::submitList))
+        lifecycleScope.launch {
+            viewModel.allCheeses.collectLatest { adapter.presentData(it) }
+        }
 
         initAddButtonListener()
         initSwipeToDelete()

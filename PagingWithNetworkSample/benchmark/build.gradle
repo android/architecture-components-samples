@@ -41,7 +41,7 @@ dependencies {
     implementation project(path: ':lib')
 
     implementation deps.app_compat
-    implementation deps.paging_ktx
+    implementation deps.paging_runtime
 
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner

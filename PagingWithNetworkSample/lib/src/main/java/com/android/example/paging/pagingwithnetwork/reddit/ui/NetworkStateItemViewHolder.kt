@@ -16,38 +16,43 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.ui
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.android.example.paging.pagingwithnetwork.reddit.repository.NetworkState
-import com.android.example.paging.pagingwithnetwork.reddit.repository.Status.FAILED
-import com.android.example.paging.pagingwithnetwork.reddit.repository.Status.RUNNING
+import androidx.paging.LoadState
+import androidx.paging.LoadState.Error
+import androidx.paging.LoadState.Loading
+import androidx.recyclerview.widget.RecyclerView
 import com.android.example.lib.R
 
 /**
  * A View Holder that can display a loading or have click action.
  * It is used to show the network state of paging.
  */
-class NetworkStateItemViewHolder(view: View,
-                                 private val retryCallback: () -> Unit)
-    : RecyclerView.ViewHolder(view) {
+class NetworkStateItemViewHolder(
+        view: View,
+        private val retryCallback: () -> Unit
+) : RecyclerView.ViewHolder(view) {
     private val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
     private val retry = view.findViewById<Button>(R.id.retry_button)
     private val errorMsg = view.findViewById<TextView>(R.id.error_msg)
+
     init {
         retry.setOnClickListener {
             retryCallback()
         }
     }
-    fun bindTo(networkState: NetworkState?) {
-        progressBar.visibility = toVisibility(networkState?.status == RUNNING)
-        retry.visibility = toVisibility(networkState?.status == FAILED)
-        errorMsg.visibility = toVisibility(networkState?.msg != null)
-        errorMsg.text = networkState?.msg
+
+    fun bindTo(loadState: LoadState) {
+        progressBar.visibility = toVisibility(loadState == Loading)
+        retry.visibility = toVisibility(loadState is Error)
+        errorMsg.visibility = toVisibility(
+                loadState is Error && !loadState.error.message.isNullOrBlank()
+        )
+        errorMsg.text = if (loadState is Error) loadState.error.message else null
     }
 
     companion object {
@@ -57,7 +62,7 @@ class NetworkStateItemViewHolder(view: View,
             return NetworkStateItemViewHolder(view, retryCallback)
         }
 
-        fun toVisibility(constraint : Boolean): Int {
+        fun toVisibility(constraint: Boolean): Int {
             return if (constraint) {
                 View.VISIBLE
             } else {

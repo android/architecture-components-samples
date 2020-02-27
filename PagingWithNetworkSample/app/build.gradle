@@ -69,7 +69,7 @@ dependencies {
     implementation deps.room.runtime
     implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.runtime
-    implementation deps.paging_ktx
+    implementation deps.paging_runtime
     implementation deps.kotlin.stdlib
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson

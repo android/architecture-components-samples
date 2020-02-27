@@ -25,8 +25,8 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
 import com.android.example.paging.pagingwithnetwork.reddit.repository.inDb.DbRedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem.InMemoryByItemRepository
 import com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage.InMemoryByPageKeyRepository
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Super simplified service locator implementation to allow us to replace default implementations
@@ -58,9 +58,9 @@ interface ServiceLocator {
 
     fun getRepository(type: RedditPostRepository.Type): RedditPostRepository
 
-    fun getNetworkExecutor(): Executor
+    fun getNetworkDispatcher(): CoroutineDispatcher
 
-    fun getDiskIOExecutor(): Executor
+    fun getDiskIODispatcher(): CoroutineDispatcher
 
     fun getRedditApi(): RedditApi
 }
@@ -71,11 +71,11 @@ interface ServiceLocator {
 open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolean) : ServiceLocator {
     // thread pool used for disk access
     @Suppress("PrivatePropertyName")
-    private val DISK_IO = Executors.newSingleThreadExecutor()
+    private val DISK_IO = Dispatchers.IO
 
     // thread pool used for network requests
     @Suppress("PrivatePropertyName")
-    private val NETWORK_IO = Executors.newFixedThreadPool(5)
+    private val NETWORK_IO = Dispatchers.IO
 
     private val db by lazy {
         RedditDb.create(app, useInMemoryDb)
@@ -89,20 +89,22 @@ open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolea
         return when (type) {
             RedditPostRepository.Type.IN_MEMORY_BY_ITEM -> InMemoryByItemRepository(
                     redditApi = getRedditApi(),
-                    networkExecutor = getNetworkExecutor())
+                    networkDispatcher = getNetworkDispatcher()
+            )
             RedditPostRepository.Type.IN_MEMORY_BY_PAGE -> InMemoryByPageKeyRepository(
                     redditApi = getRedditApi(),
-                    networkExecutor = getNetworkExecutor())
+                    networkDispatcher = getNetworkDispatcher()
+            )
             RedditPostRepository.Type.DB -> DbRedditPostRepository(
                     db = db,
-                    redditApi = getRedditApi(),
-                    ioExecutor = getDiskIOExecutor())
+                    ioDispatcher = getDiskIODispatcher()
+            )
         }
     }
 
-    override fun getNetworkExecutor(): Executor = NETWORK_IO
+    override fun getNetworkDispatcher(): CoroutineDispatcher = NETWORK_IO
 
-    override fun getDiskIOExecutor(): Executor = DISK_IO
+    override fun getDiskIODispatcher(): CoroutineDispatcher = DISK_IO
 
     override fun getRedditApi(): RedditApi = api
 }
