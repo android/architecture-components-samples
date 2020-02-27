@@ -34,7 +34,7 @@ data class RedditPost(
         val score: Int,
         @SerializedName("author")
         val author: String,
-        @SerializedName("subreddit") // this seems mutable but fine for a demo
+        @SerializedName("subreddit") // technically mutable but fine for a demo
         @ColumnInfo(collate = ColumnInfo.NOCASE)
         val subreddit: String,
         @SerializedName("num_comments")

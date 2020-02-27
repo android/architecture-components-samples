@@ -26,20 +26,19 @@ This sample, implemented in the [InMemoryByItemRepository][2] class, demonstrate
 set up a Repository that will directly page in from the network and will use the `key` from
 the previous item to find the request parameters for the next page.
 
-[ItemKeyedSubredditDataSource][5]: The data source that uses the `key` in items
-(`name` in Reddit API) to find the next page. It extends from the `ItemKeyedDataSource` class
+[ItemKeyedSubredditPagingSource][5]: The data source that uses the `key` in items
+(`name` in Reddit API) to find the next page. It extends from the `PagingSource` class
 in the Paging Library.
 
 ## Paging Using Next Tokens From The Previous Query
 This sample, implemented in the [InMemoryByPageKeyRepository][6] class, demonstrates how to
 utilize the `before` and `after` keys in the response to discover the next page. (This is
 the intended use of the Reddit API but this sample still provides
-[ItemKeyedSubredditDataSource][5] to serve as an example if the backend does not provide
+[ItemKeyedSubredditPagingSource][5] to serve as an example if the backend does not provide
 before/after links)
 
-[PageKeyedSubredditDataSource][7]: The data source that uses the `after` and `before` fields
-in the API request response. It extends from the `PageKeyedDataSource` class
-in the Paging Library.
+[PageKeyedSubredditPagingSource][7]: The data source that uses the `after` and `before` fields
+in the API request response. It extends from the `PagingSource` class in the Paging Library.
 
 
 ### Libraries
@@ -55,9 +54,9 @@ in the Paging Library.
 [2]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byItem/InMemoryByItemRepository.kt
 [3]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/db/RedditPostDao.kt
 [4]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inDb/SubredditBoundaryCallback.kt
-[5]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byItem/ItemKeyedSubredditDataSource.kt
+[5]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byItem/ItemKeyedSubredditPagingSource.kt
 [6]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byPage/InMemoryByPageKeyRepository.kt
-[7]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byPage/PageKeyedSubredditDataSource.kt
+[7]: app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/repository/inMemory/byPage/PageKeyedSubredditPagingSource.kt
 [8]: https://www.reddit.com/dev/api/#listings
 [mockwebserver]: https://github.com/square/okhttp/tree/master/mockwebserver
 [support-lib]: https://developer.android.com/topic/libraries/support-library/index.html
