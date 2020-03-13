@@ -58,8 +58,6 @@ interface ServiceLocator {
 
     fun getRepository(type: RedditPostRepository.Type): RedditPostRepository
 
-    fun getNetworkDispatcher(): CoroutineDispatcher
-
     fun getDiskIODispatcher(): CoroutineDispatcher
 
     fun getRedditApi(): RedditApi
@@ -73,10 +71,6 @@ open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolea
     @Suppress("PrivatePropertyName")
     private val DISK_IO = Dispatchers.IO
 
-    // thread pool used for network requests
-    @Suppress("PrivatePropertyName")
-    private val NETWORK_IO = Dispatchers.IO
-
     private val db by lazy {
         RedditDb.create(app, useInMemoryDb)
     }
@@ -88,12 +82,10 @@ open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolea
     override fun getRepository(type: RedditPostRepository.Type): RedditPostRepository {
         return when (type) {
             RedditPostRepository.Type.IN_MEMORY_BY_ITEM -> InMemoryByItemRepository(
-                    redditApi = getRedditApi(),
-                    networkDispatcher = getNetworkDispatcher()
+                    redditApi = getRedditApi()
             )
             RedditPostRepository.Type.IN_MEMORY_BY_PAGE -> InMemoryByPageKeyRepository(
-                    redditApi = getRedditApi(),
-                    networkDispatcher = getNetworkDispatcher()
+                    redditApi = getRedditApi()
             )
             RedditPostRepository.Type.DB -> DbRedditPostRepository(
                     db = db,
@@ -101,8 +93,6 @@ open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolea
             )
         }
     }
-
-    override fun getNetworkDispatcher(): CoroutineDispatcher = NETWORK_IO
 
     override fun getDiskIODispatcher(): CoroutineDispatcher = DISK_IO
 

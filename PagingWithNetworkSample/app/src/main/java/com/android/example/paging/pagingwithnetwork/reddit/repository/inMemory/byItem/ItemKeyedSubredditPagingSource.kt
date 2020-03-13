@@ -23,8 +23,6 @@ import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 /**
@@ -37,20 +35,17 @@ import java.io.IOException
  */
 class ItemKeyedSubredditPagingSource(
         private val redditApi: RedditApi,
-        private val subredditName: String,
-        private val networkDispatcher: CoroutineDispatcher
+        private val subredditName: String
 ) : PagingSource<String, RedditPost>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditPost> {
         return try {
-            val items = withContext(networkDispatcher) {
-                redditApi.getTop(
-                        subreddit = subredditName,
-                        after = if (params.loadType == END) params.key else null,
-                        before = if (params.loadType == START) params.key else null,
-                        limit = params.loadSize
-                ).data.children.map { it.data }
-            }
+            val items = redditApi.getTop(
+                    subreddit = subredditName,
+                    after = if (params.loadType == END) params.key else null,
+                    before = if (params.loadType == START) params.key else null,
+                    limit = params.loadSize
+            ).data.children.map { it.data }
 
             Page(
                     data = items,

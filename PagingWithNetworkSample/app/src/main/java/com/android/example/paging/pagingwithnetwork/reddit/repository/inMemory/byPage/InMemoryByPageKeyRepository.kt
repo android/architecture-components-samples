@@ -20,23 +20,18 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingDataFlow
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
-import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Repository implementation that loads data directly from network by using the previous / next page
  * keys returned in the query.
  */
-class InMemoryByPageKeyRepository(
-        private val redditApi: RedditApi,
-        private val networkDispatcher: CoroutineDispatcher
-) : RedditPostRepository {
+class InMemoryByPageKeyRepository( private val redditApi: RedditApi ) : RedditPostRepository {
     override fun postsOfSubreddit(subReddit: String, pageSize: Int) = PagingDataFlow(
             PagingConfig(pageSize)
     ) {
         PageKeyedSubredditPagingSource(
                 redditApi = redditApi,
-                subredditName = subReddit,
-                networkDispatcher = networkDispatcher
+                subredditName = subReddit
         )
     }
 }

@@ -18,6 +18,8 @@ package com.android.example.paging.pagingwithnetwork.repository
 
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import retrofit2.http.Path
+import retrofit2.http.Query
 import java.io.IOException
 import kotlin.math.min
 
@@ -35,14 +37,11 @@ class FakeRedditApi : RedditApi {
         subreddit.items.add(post)
     }
 
-    fun clear() {
-        model.clear()
-    }
-
     private fun findPosts(
             subreddit: String,
             limit: Int,
-            after: String? = null): List<RedditApi.RedditChildrenResponse> {
+            after: String? = null
+    ): List<RedditApi.RedditChildrenResponse> {
         val subReddit = findSubReddit(subreddit)
         val posts = subReddit.findPosts(limit, after)
         return posts.map { RedditApi.RedditChildrenResponse(it.copy()) }
@@ -51,46 +50,24 @@ class FakeRedditApi : RedditApi {
     private fun findSubReddit(subreddit: String) =
             model.getOrDefault(subreddit, SubReddit())
 
-    override suspend fun getTop(subreddit: String, limit: Int): RedditApi.ListingResponse {
+    override suspend fun getTop(
+            @Path("subreddit") subreddit: String,
+            @Query("limit") limit: Int,
+            @Query("after") after: String?,
+            @Query("before") before: String?
+    ): RedditApi.ListingResponse {
         failureMsg?.let {
             throw IOException(it)
         }
         val items = findPosts(subreddit, limit)
         val after = items.lastOrNull()?.data?.name
         return RedditApi.ListingResponse(
-                RedditApi.ListingData(children = items,
+                RedditApi.ListingData(
+                        children = items,
                         after = after,
                         before = null
                 )
         )
-    }
-
-    override suspend fun getTopAfter(
-            subreddit: String,
-            after: String,
-            limit: Int
-    ): RedditApi.ListingResponse {
-        failureMsg?.let {
-            throw IOException(it)
-        }
-        val items = findPosts(subreddit = subreddit,
-                limit = limit,
-                after = after)
-        val responseAfter = items.lastOrNull()?.data?.name
-        return RedditApi.ListingResponse(
-                RedditApi.ListingData(children = items,
-                        after = responseAfter,
-                        before = null
-                )
-        )
-    }
-
-    override suspend fun getTopBefore(
-            subreddit: String,
-            before: String,
-            limit: Int
-    ): RedditApi.ListingResponse {
-        TODO("the app never uses this so no reason to implement")
     }
 
     private class SubReddit(val items: MutableList<RedditPost> = arrayListOf()) {

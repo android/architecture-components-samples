@@ -148,7 +148,7 @@ kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
 deps.kotlin = kotlin
 
-deps.paging_ktx = "androidx.paging:paging-runtime:$versions.paging"
+deps.paging_runtime = "androidx.paging:paging-runtime:$versions.paging"
 
 def lifecycle = [:]
 lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
@@ -181,7 +181,7 @@ deps.navigation = navigation
 
 deps.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${versions.okhttp_logging_interceptor}"
 
-deps.paging_ktx = "androidx.paging:paging-runtime-ktx:$versions.paging"
+deps.paging_runtime = "androidx.paging:paging-runtime-ktx:$versions.paging"
 
 deps.recyclerview = "androidx.recyclerview:recyclerview:$versions.recyclerview"
 
@@ -223,6 +223,6 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    handler.maven { url 'https://ci.android.com/builds/submitted/6236589/androidx_snapshot/latest/repository/' }
+    handler.maven { url 'https://androidx-dev-prod.appspot.com/snapshots/builds/6290274/artifacts/repository' }
 }
 ext.addRepos = this.&addRepos

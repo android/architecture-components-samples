@@ -220,6 +220,6 @@ ext.deps = deps
 def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
-    handler.maven { url 'https://ci.android.com/builds/submitted/6236589/androidx_snapshot/latest/repository/' }
+    handler.maven { url 'https://androidx-dev-prod.appspot.com/snapshots/builds/6290274/artifacts/repository' }
 }
 ext.addRepos = this.&addRepos
