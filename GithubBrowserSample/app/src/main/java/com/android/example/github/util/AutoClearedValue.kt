@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.observe
+import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -28,26 +29,38 @@ import kotlin.reflect.KProperty
  *
  * Accessing this variable while the fragment's view is destroyed will throw NPE.
  */
-class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Fragment, T> {
+class AutoClearedValue<T : Any>(
+        private val fragment: Fragment,
+        private val beforeDispose: (T.() -> Unit)? = null
+) : ReadWriteProperty<Fragment, T>, DefaultLifecycleObserver {
+
     private var _value: T? = null
 
-    init {
-        fragment.lifecycle.addObserver(object: DefaultLifecycleObserver {
-            override fun onCreate(owner: LifecycleOwner) {
-                fragment.viewLifecycleOwnerLiveData.observe(fragment) { viewLifecycleOwner ->
-                    viewLifecycleOwner?.lifecycle?.addObserver(object: DefaultLifecycleObserver {
-                        override fun onDestroy(owner: LifecycleOwner) {
-                            _value = null
-                        }
-                    })
+    private val viewLifecycleObserver: DefaultLifecycleObserver =
+            object : DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    disposeValue()
                 }
             }
-        })
+
+    private fun disposeValue() {
+        _value?.let { beforeDispose?.invoke(it) }
+        _value = null
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        fragment.viewLifecycleOwnerLiveData.observe(fragment) { viewLifecycleOwner ->
+            viewLifecycleOwner?.lifecycle?.addObserver(viewLifecycleObserver)
+        }
+    }
+
+    init {
+        fragment.lifecycle.addObserver(this)
     }
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
         return _value ?: throw IllegalStateException(
-            "should never call auto-cleared-value get when it might not be available"
+                "should never call auto-cleared-value get when it might not be available"
         )
     }
 
@@ -59,4 +72,14 @@ class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Frag
 /**
  * Creates an [AutoClearedValue] associated with this fragment.
  */
-fun <T : Any> Fragment.autoCleared() = AutoClearedValue<T>(this)
+fun <T : Any> Fragment.autoCleared(disposeAction: (T.() -> Unit)? = null): AutoClearedValue<T> =
+        AutoClearedValue(this, disposeAction)
+
+
+inline fun <reified T : ViewBinding> safeBind(t: T, bind: T.() -> Unit) {
+    try {
+        bind(t)
+    } catch (e: IllegalStateException) {
+        e.printStackTrace()
+    }
+}
