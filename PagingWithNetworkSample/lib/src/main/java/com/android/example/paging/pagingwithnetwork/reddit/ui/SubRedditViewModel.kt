@@ -39,12 +39,11 @@ class SubRedditViewModel(
         }
     }
 
-    private val repoResult = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
+    @UseExperimental(ExperimentalCoroutinesApi::class)
+    val posts = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
             .asFlow()
             .map { repository.postsOfSubreddit(it, 30) }
-
-    @UseExperimental(ExperimentalCoroutinesApi::class)
-    val posts = repoResult.flatMapLatest { it }
+            .flatMapLatest { it }
 
     fun showSubreddit(subreddit: String): Boolean {
         if (savedStateHandle.get<String>(KEY_SUBREDDIT) == subreddit) {
