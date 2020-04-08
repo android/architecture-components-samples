@@ -27,6 +27,7 @@ android {
             isDefault = true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'benchmark-proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
