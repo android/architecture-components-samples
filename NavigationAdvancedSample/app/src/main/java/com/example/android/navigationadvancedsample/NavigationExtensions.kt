@@ -248,3 +248,35 @@ private fun FragmentManager.isOnBackStack(backStackName: String): Boolean {
 }
 
 private fun getFragmentTag(index: Int) = "bottomNavigation#$index"
+
+fun BottomNavigationView.navigateDeeplink(
+        navGraphIds: List<Int>,
+        fragmentManager: FragmentManager,
+        containerId: Int,
+        uri: Uri) {
+    navGraphIds.forEachIndexed { index, navGraphId ->
+        val fragmentTag = getFragmentTag(index)
+
+        // Find or create the Navigation host fragment
+        val navHostFragment = obtainNavHostFragment(
+                fragmentManager,
+                fragmentTag,
+                navGraphId,
+                containerId
+        )
+        // Handle deeplink
+        val canHandleDeeplink = navHostFragment.navController.graph.hasDeepLink(uri)
+
+        if (canHandleDeeplink) {
+            if (selectedItemId != navHostFragment.navController.graph.id) {
+                selectedItemId = navHostFragment.navController.graph.id
+            }
+            navHostFragment.lifecycleScope.launchWhenResumed {
+                // Wait for fragment to restore state from backStack
+                // otherwise navigate will be ignored
+                // Ignoring navigate() call: FragmentManager has already saved its state
+                navHostFragment.navController.navigate(uri)
+            }
+        }
+    }
+}
