@@ -25,8 +25,6 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
 import com.android.example.paging.pagingwithnetwork.reddit.repository.inDb.DbRedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem.InMemoryByItemRepository
 import com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage.InMemoryByPageKeyRepository
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 /**
  * Super simplified service locator implementation to allow us to replace default implementations
@@ -58,8 +56,6 @@ interface ServiceLocator {
 
     fun getRepository(type: RedditPostRepository.Type): RedditPostRepository
 
-    fun getDiskIODispatcher(): CoroutineDispatcher
-
     fun getRedditApi(): RedditApi
 }
 
@@ -67,10 +63,6 @@ interface ServiceLocator {
  * default implementation of ServiceLocator that uses production endpoints.
  */
 open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolean) : ServiceLocator {
-    // thread pool used for disk access
-    @Suppress("PrivatePropertyName")
-    private val DISK_IO = Dispatchers.IO
-
     private val db by lazy {
         RedditDb.create(app, useInMemoryDb)
     }
@@ -87,14 +79,9 @@ open class DefaultServiceLocator(val app: Application, val useInMemoryDb: Boolea
             RedditPostRepository.Type.IN_MEMORY_BY_PAGE -> InMemoryByPageKeyRepository(
                     redditApi = getRedditApi()
             )
-            RedditPostRepository.Type.DB -> DbRedditPostRepository(
-                    db = db,
-                    ioDispatcher = getDiskIODispatcher()
-            )
+            RedditPostRepository.Type.DB -> DbRedditPostRepository(db = db)
         }
     }
-
-    override fun getDiskIODispatcher(): CoroutineDispatcher = DISK_IO
 
     override fun getRedditApi(): RedditApi = api
 }

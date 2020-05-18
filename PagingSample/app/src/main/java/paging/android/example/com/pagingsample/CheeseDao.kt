@@ -16,7 +16,7 @@
 
 package paging.android.example.com.pagingsample
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -32,7 +32,7 @@ interface CheeseDao {
      * it back to UI via ViewModel.
      */
     @Query("SELECT * FROM Cheese ORDER BY name COLLATE NOCASE ASC")
-    fun allCheesesByName(): DataSource.Factory<Int, Cheese>
+    fun allCheesesByName(): PagingSource<Int, Cheese>
 
     @Insert
     fun insert(cheeses: List<Cheese>)

@@ -16,9 +16,10 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem
 
-import androidx.paging.LoadType.END
-import androidx.paging.LoadType.START
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
+import androidx.paging.PagingSource.LoadParams.Append
+import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
@@ -42,8 +43,8 @@ class ItemKeyedSubredditPagingSource(
         return try {
             val items = redditApi.getTop(
                     subreddit = subredditName,
-                    after = if (params.loadType == END) params.key else null,
-                    before = if (params.loadType == START) params.key else null,
+                    after = if (params is Append) params.key else null,
+                    before = if (params is Prepend) params.key else null,
                     limit = params.loadSize
             ).data.children.map { it.data }
 
@@ -57,12 +58,15 @@ class ItemKeyedSubredditPagingSource(
         }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
     override fun getRefreshKey(state: PagingState<String, RedditPost>): String? {
         /**
          * The name field is a unique identifier for post items.
          * (no it is not the title of the post :) )
          * https://www.reddit.com/dev/api
          */
-        return state.closestItemToPosition(state.anchorPosition).name
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestItemToPosition(anchorPosition)?.name
+        }
     }
 }

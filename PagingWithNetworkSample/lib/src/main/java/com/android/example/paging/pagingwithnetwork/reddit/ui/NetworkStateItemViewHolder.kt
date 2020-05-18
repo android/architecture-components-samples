@@ -47,7 +47,7 @@ class NetworkStateItemViewHolder(
     }
 
     fun bindTo(loadState: LoadState) {
-        progressBar.visibility = toVisibility(loadState == Loading)
+        progressBar.visibility = toVisibility(loadState is Loading)
         retry.visibility = toVisibility(loadState is Error)
         errorMsg.visibility = toVisibility(!(loadState as? Error)?.error?.message.isNullOrBlank())
         errorMsg.text = (loadState as? Error)?.error?.message

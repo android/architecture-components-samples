@@ -16,26 +16,22 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
+import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingDataFlow
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
-import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Repository implementation that uses a database PagedList + a boundary callback to return a
  * listing that loads in pages.
  */
-class DbRedditPostRepository(
-        val db: RedditDb,
-        private val ioDispatcher: CoroutineDispatcher
-) : RedditPostRepository {
+class DbRedditPostRepository(val db: RedditDb) : RedditPostRepository {
     /**
      * Returns a Listing for the given [subReddit].
      */
-    override fun postsOfSubreddit(subReddit: String, pageSize: Int) = PagingDataFlow(
-            config = PagingConfig(pageSize),
-            pagingSourceFactory = db.posts().postsBySubreddit(subReddit)
-                    .asPagingSourceFactory(ioDispatcher)
-    )
+    override fun postsOfSubreddit(subReddit: String, pageSize: Int) = Pager(
+            config = PagingConfig(pageSize)
+    ) {
+        db.posts().postsBySubreddit(subReddit)
+    }.flow
 }

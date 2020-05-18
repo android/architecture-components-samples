@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -48,7 +49,8 @@ class MainActivity : AppCompatActivity() {
         // Subscribe the adapter to the ViewModel, so the items in the adapter are refreshed
         // when the list changes
         lifecycleScope.launch {
-            viewModel.allCheeses.collectLatest { adapter.presentData(it) }
+            @OptIn(ExperimentalCoroutinesApi::class)
+            viewModel.allCheeses.collectLatest { adapter.submitData(it) }
         }
 
         initAddButtonListener()

@@ -39,7 +39,7 @@ class SubRedditViewModel(
         }
     }
 
-    @UseExperimental(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val posts = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
             .asFlow()
             .map { repository.postsOfSubreddit(it, 30) }

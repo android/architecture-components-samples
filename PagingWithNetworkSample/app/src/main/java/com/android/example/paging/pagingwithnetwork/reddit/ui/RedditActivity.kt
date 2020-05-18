@@ -36,7 +36,6 @@ import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import kotlinx.android.synthetic.main.activity_reddit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -82,7 +81,7 @@ class RedditActivity : AppCompatActivity() {
         initSearch()
     }
 
-    @UseExperimental(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun initAdapter() {
         val glide = GlideApp.with(this)
         adapter = PostsAdapter(glide)
@@ -93,13 +92,13 @@ class RedditActivity : AppCompatActivity() {
 
         adapter.addLoadStateListener { loadType: LoadType, loadState: LoadState ->
             if (loadType == LoadType.REFRESH) {
-                swipe_refresh.isRefreshing = loadState == LoadState.Loading
+                swipe_refresh.isRefreshing = loadState is LoadState.Loading
             }
         }
 
         lifecycleScope.launch {
             model.posts.collectLatest {
-                adapter.presentData(it)
+                adapter.submitData(it)
             }
         }
     }

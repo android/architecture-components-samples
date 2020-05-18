@@ -16,13 +16,12 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage
 
-import androidx.paging.LoadType.END
-import androidx.paging.LoadType.START
 import androidx.paging.PagingSource
+import androidx.paging.PagingSource.LoadParams.Append
+import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingSource.LoadResult.Page
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import kotlinx.coroutines.CoroutineDispatcher
 import java.io.IOException
 
 /**
@@ -38,8 +37,8 @@ class PageKeyedSubredditPagingSource(
         return try {
             val data = redditApi.getTop(
                     subreddit = subredditName,
-                    after = if (params.loadType == END) params.key else null,
-                    before = if (params.loadType == START) params.key else null,
+                    after = if (params is Append) params.key else null,
+                    before = if (params is Prepend) params.key else null,
                     limit = params.loadSize
             ).data
 

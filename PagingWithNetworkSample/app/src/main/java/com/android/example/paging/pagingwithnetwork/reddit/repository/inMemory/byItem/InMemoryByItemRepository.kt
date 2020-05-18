@@ -16,8 +16,8 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem
 
+import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingDataFlow
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 
@@ -26,7 +26,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
  * as the key to discover prev/next pages.
  */
 class InMemoryByItemRepository(private val redditApi: RedditApi) : RedditPostRepository {
-    override fun postsOfSubreddit(subReddit: String, pageSize: Int) = PagingDataFlow(
+    override fun postsOfSubreddit(subReddit: String, pageSize: Int) = Pager(
             PagingConfig(
                     pageSize = pageSize,
                     enablePlaceholders = false
@@ -36,5 +36,5 @@ class InMemoryByItemRepository(private val redditApi: RedditApi) : RedditPostRep
                 redditApi = redditApi,
                 subredditName = subReddit
         )
-    }
+    }.flow
 }
