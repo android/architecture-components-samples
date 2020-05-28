@@ -31,7 +31,7 @@ versions.atsl_core = "1.2.0"
 versions.atsl_junit = "1.1.1"
 versions.atsl_rules = "1.2.0"
 versions.atsl_runner = "1.2.0"
-versions.benchmark = "1.0.0"
+versions.benchmark = "1.1.0-alpha01"
 versions.cardview = "1.0.0"
 versions.constraint_layout = "2.0.0-alpha2"
 versions.core_ktx = "1.1.0"
@@ -222,5 +222,6 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+
 }
 ext.addRepos = this.&addRepos
