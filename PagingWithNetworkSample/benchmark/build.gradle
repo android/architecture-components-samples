@@ -17,7 +17,14 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.benchmark.junit4.AndroidBenchmarkRunner"
+
+        // Set this argument to capture profiling information, instead of measuring performance.
+        // Can be one of:
+        //   * None
+        //   * Sampled
+        //   * Method
+        // See full descriptions of available options at: d.android.com/benchmark#profiling
+        testInstrumentationRunnerArgument 'androidx.benchmark.profiling.mode', 'none'
     }
 
     testBuildType = "release"
@@ -30,6 +37,12 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 
     kotlinOptions {
         jvmTarget = "1.8"

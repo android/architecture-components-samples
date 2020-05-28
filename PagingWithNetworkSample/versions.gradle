@@ -22,7 +22,7 @@
 ext.deps = [:]
 def versions = [:]
 versions.activity = '1.1.0'
-versions.android_gradle_plugin = '3.6.2'
+versions.android_gradle_plugin = '4.1.0-alpha08'
 versions.annotations = "1.0.0"
 versions.apache_commons = "2.5"
 versions.appcompat = "1.2.0-alpha02"
@@ -31,7 +31,7 @@ versions.atsl_core = "1.2.0"
 versions.atsl_junit = "1.1.1"
 versions.atsl_rules = "1.2.0"
 versions.atsl_runner = "1.2.0"
-versions.benchmark = "1.0.0"
+versions.benchmark = "1.1.0-SNAPSHOT"
 versions.cardview = "1.0.0"
 versions.constraint_layout = "2.0.0-alpha2"
 versions.core_ktx = "1.1.0"
@@ -221,5 +221,6 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    handler.maven { url 'https://androidx.dev/snapshots/builds/6533451/artifacts/repository' }
 }
 ext.addRepos = this.&addRepos
