@@ -19,8 +19,6 @@
 package com.example.background
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -32,6 +30,8 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.registerForActivityResult
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -68,10 +68,7 @@ class SelectImageActivity : AppCompatActivity() {
         requestPermissionsIfNecessary()
 
         findViewById<View>(R.id.selectImage).setOnClickListener {
-            val chooseIntent = Intent(
-                    Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(chooseIntent, REQUEST_CODE_IMAGE)
+            showGallery()
         }
 
         findViewById<View>(R.id.selectStockImage).setOnClickListener {
@@ -80,21 +77,15 @@ class SelectImageActivity : AppCompatActivity() {
         }
     }
 
+    private fun showGallery(){
+        registerForActivityResult(PickContract()) { imageUri ->
+            handleImageRequestResult(imageUri)
+        }.launch(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(KEY_PERMISSIONS_REQUEST_COUNT, mPermissionRequestCount)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_IMAGE -> handleImageRequestResult(data)
-                else -> Log.d(TAG, "Unknown request code.")
-            }
-        } else {
-            Log.e(TAG, String.format("Unexpected Result code %s", resultCode))
-        }
     }
 
     override fun onRequestPermissionsResult(
@@ -131,22 +122,10 @@ class SelectImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleImageRequestResult(data: Intent?) {
-        // Get the imageUri the user picked, from the Intent.ACTION_PICK result.
-        var imageUri: Uri? = null
-        // Use clip data if SDK_INT >= 16
-        if (Build.VERSION.SDK_INT >= 16 && data!!.clipData != null) {
-            imageUri = data.clipData!!.getItemAt(0).uri
-        } else if (data!!.data != null) {
-            // fallback to getData() on the intent.
-            imageUri = data.data
-        }
-
-        if (imageUri == null) {
-            Log.e(TAG, "Invalid input image Uri.")
-            return
-        }
-        startActivity(FilterActivity.newIntent(this, imageUri))
+    private fun handleImageRequestResult(imageUri: Uri?) {
+        imageUri?.let {
+            startActivity(FilterActivity.newIntent(this, it))
+        } ?: Log.e(TAG, "Invalid input image Uri.")
     }
 
     private fun checkAllPermissions(): Boolean {
