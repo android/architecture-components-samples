@@ -43,7 +43,7 @@ versions.fragment = "1.2.1"
 versions.glide = "4.8.0"
 versions.hamcrest = "1.3"
 versions.junit = "4.12"
-versions.kotlin = "1.3.72"
+versions.kotlin = "1.3.61"
 versions.lifecycle = "2.2.0"
 versions.material = "1.0.0"
 versions.mockito = "2.25.0"
@@ -52,11 +52,11 @@ versions.mockito_android = "2.25.0"
 versions.mockwebserver = "3.8.1"
 versions.navigation = "2.3.0-alpha01"
 versions.okhttp_logging_interceptor = "3.9.0"
-versions.paging = "3.0.0-SNAPSHOT"
+versions.paging = "3.0.0-alpha01"
 versions.recyclerview = "1.0.0"
-versions.retrofit = "2.6.0"
+versions.retrofit = "2.3.0"
 versions.robolectric = "4.2"
-versions.room = "2.3.0-SNAPSHOT"
+versions.room = "2.2.3"
 versions.rx_android = "2.0.1"
 versions.rxjava2 = "2.1.3"
 versions.timber = "4.7.1"
@@ -148,8 +148,6 @@ kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
 deps.kotlin = kotlin
 
-deps.paging_runtime = "androidx.paging:paging-runtime:$versions.paging"
-
 def lifecycle = [:]
 lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
 lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
@@ -181,7 +179,7 @@ deps.navigation = navigation
 
 deps.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${versions.okhttp_logging_interceptor}"
 
-deps.paging_runtime = "androidx.paging:paging-runtime-ktx:$versions.paging"
+deps.paging_runtime = "androidx.paging:paging-runtime:$versions.paging"
 
 deps.recyclerview = "androidx.recyclerview:recyclerview:$versions.recyclerview"
 
@@ -223,6 +221,5 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    handler.maven { url 'https://androidx-dev-prod.appspot.com/snapshots/builds/6506724/artifacts/repository' }
 }
 ext.addRepos = this.&addRepos
