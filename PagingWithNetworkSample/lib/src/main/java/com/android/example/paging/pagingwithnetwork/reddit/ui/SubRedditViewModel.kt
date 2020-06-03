@@ -19,9 +19,13 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
+import androidx.paging.PagingData
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
+import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 
 class SubRedditViewModel(
     private val repository: RedditPostRepository,
@@ -38,10 +42,15 @@ class SubRedditViewModel(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val posts = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
-        .asFlow()
-        .flatMapLatest { repository.postsOfSubreddit(it, 30) }
+    private val clearListCh = Channel<Unit>(Channel.CONFLATED)
+
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val posts = flowOf(
+        clearListCh.consumeAsFlow().map { PagingData.empty<RedditPost>() },
+        savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
+            .asFlow()
+            .flatMapLatest { repository.postsOfSubreddit(it, 30) }
+    ).flattenMerge(2)
 
     fun shouldShowSubreddit(
         subreddit: String
@@ -49,6 +58,8 @@ class SubRedditViewModel(
 
     fun showSubreddit(subreddit: String) {
         if (!shouldShowSubreddit(subreddit)) return
+
+        clearListCh.offer(Unit)
 
         savedStateHandle.set(KEY_SUBREDDIT, subreddit)
     }
