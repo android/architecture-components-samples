@@ -41,5 +41,4 @@ class PostImageResponse {
         @SerializedName("link")
         val link: String? = null
     }
-
 }

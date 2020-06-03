@@ -20,8 +20,19 @@ package com.example.background
 
 import android.content.Context
 import android.net.Uri
-import androidx.work.*
-import com.example.background.workers.*
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkContinuation
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.example.background.workers.BlurEffectFilterWorker
+import com.example.background.workers.CleanupWorker
+import com.example.background.workers.GrayScaleFilterWorker
+import com.example.background.workers.SaveImageToGalleryWorker
+import com.example.background.workers.UploadWorker
+import com.example.background.workers.WaterColorFilterWorker
 
 /**
  * Builds and holds WorkContinuation based on supplied filters.
@@ -68,15 +79,17 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
         fun build(): ImageOperations {
             var hasInputData = false
             var continuation = WorkManager.getInstance(mContext)
-                    .beginUniqueWork(Constants.IMAGE_MANIPULATION_WORK_NAME,
-                            ExistingWorkPolicy.REPLACE,
-                            OneTimeWorkRequest.from(CleanupWorker::class.java))
+                .beginUniqueWork(
+                    Constants.IMAGE_MANIPULATION_WORK_NAME,
+                    ExistingWorkPolicy.REPLACE,
+                    OneTimeWorkRequest.from(CleanupWorker::class.java)
+                )
 
             if (mApplyWaterColor) {
 
                 val waterColor = OneTimeWorkRequestBuilder<WaterColorFilterWorker>()
-                        .setInputData(createInputData())
-                        .build()
+                    .setInputData(createInputData())
+                    .build()
                 continuation = continuation.then(waterColor)
                 hasInputData = true
             }
@@ -103,17 +116,17 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
 
             if (mApplySave) {
                 val save = OneTimeWorkRequestBuilder<SaveImageToGalleryWorker>()
-                        .setInputData(createInputData())
-                        .addTag(Constants.TAG_OUTPUT)
-                        .build()
+                    .setInputData(createInputData())
+                    .addTag(Constants.TAG_OUTPUT)
+                    .build()
                 continuation = continuation.then(save)
             }
 
             if (mApplyUpload) {
                 val upload = OneTimeWorkRequestBuilder<UploadWorker>()
-                        .setInputData(createInputData())
-                        .addTag(Constants.TAG_OUTPUT)
-                        .build()
+                    .setInputData(createInputData())
+                    .addTag(Constants.TAG_OUTPUT)
+                    .build()
                 continuation = continuation.then(upload)
             }
             return ImageOperations(continuation)

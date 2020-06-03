@@ -32,8 +32,8 @@ import com.example.background.imgur.ImgurApi
 /**
  * Uploads an image to Imgur using the [ImgurApi].
  */
-class UploadWorker(appContext: Context, workerParams: WorkerParameters)
-    : Worker(appContext, workerParams) {
+class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
+    Worker(appContext, workerParams) {
 
     companion object {
         private const val TAG = "UploadWorker"
@@ -63,8 +63,8 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters)
                     val imgurLink = imageResponse.data!!.link
                     // Set the result of the worker by calling setOutputData().
                     outputData = Data.Builder()
-                            .putString(Constants.KEY_IMAGE_URI, imgurLink)
-                            .build()
+                        .putString(Constants.KEY_IMAGE_URI, imgurLink)
+                        .build()
                 }
                 return Result.success(outputData)
             }
