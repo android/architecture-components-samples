@@ -17,7 +17,6 @@
 package com.example.background.workers
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -35,24 +34,28 @@ class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
     }
 
     override fun doWork(): Result {
-        try {
-            val outputDirectory = File(applicationContext.filesDir, Constants.OUTPUT_PATH)
-            if (outputDirectory.exists()) {
-                val entries = outputDirectory.listFiles()
-                if (entries != null && entries.isNotEmpty()) {
-                    for (entry in entries) {
-                        val name = entry.name
-                        if (!TextUtils.isEmpty(name) && name.endsWith(".png")) {
-                            val deleted = entry.delete()
-                            Log.i(TAG, String.format("Deleted %s - %s", name, deleted))
-                        }
+        return try {
+            cleanupDirectory()
+            Result.success()
+        } catch (exception: Exception) {
+            Log.e(TAG, "Error cleaning up", exception)
+            Result.failure()
+        }
+    }
+
+    private fun cleanupDirectory() {
+        val outputDirectory = File(applicationContext.filesDir, Constants.OUTPUT_PATH)
+        if (outputDirectory.exists()) {
+            val entries = outputDirectory.listFiles()
+            if (!entries.isNullOrEmpty()) {
+                for (entry in entries) {
+                    val name = entry.name
+                    if (name.isNotEmpty() && name.endsWith(".png")) {
+                        val deleted = entry.delete()
+                        Log.i(TAG, "Deleted $name - $deleted")
                     }
                 }
             }
-            return Result.success()
-        } catch (exception: Exception) {
-            Log.e(TAG, "Error cleaning up", exception)
-            return Result.failure()
         }
     }
 }

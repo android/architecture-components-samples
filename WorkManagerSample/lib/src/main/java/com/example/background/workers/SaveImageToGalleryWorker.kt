@@ -45,26 +45,24 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
 
     override fun doWork(): Result {
         val resolver = applicationContext.contentResolver
-        try {
-            val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI)
-            val bitmap = BitmapFactory.decodeStream(
-                resolver.openInputStream(Uri.parse(resourceUri))
-            )
+        return try {
+            val resourceUri = Uri.parse(inputData.getString(Constants.KEY_IMAGE_URI))
+            val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(resourceUri))
             val imageUrl = MediaStore.Images.Media.insertImage(
                 resolver, bitmap, TITLE, DATE_FORMATTER.format(Date())
             )
-            if (TextUtils.isEmpty(imageUrl)) {
+            if (imageUrl.isEmpty()) {
                 Log.e(TAG, "Writing to MediaStore failed")
-                return Result.failure()
+                Result.failure()
             }
             // Set the result of the worker by calling setOutputData().
             val output = Data.Builder()
                 .putString(Constants.KEY_IMAGE_URI, imageUrl)
                 .build()
-            return Result.success(output)
+            Result.success(output)
         } catch (exception: Exception) {
             Log.e(TAG, "Unable to save image to Gallery", exception)
-            return Result.failure()
+            Result.failure()
         }
     }
 }

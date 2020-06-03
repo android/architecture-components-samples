@@ -39,7 +39,7 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
 
     override fun doWork(): Result {
         var imageUriInput: String? = null
-        try {
+        return try {
             val args = inputData
             imageUriInput = args.getString(Constants.KEY_IMAGE_URI)
             val imageUri = Uri.parse(imageUriInput)
@@ -50,10 +50,8 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
             if (!response.isSuccessful) {
                 val errorBody = response.errorBody()
                 val error = errorBody?.string()
-                val message = String.format("Request failed %s (%s)", imageUriInput, error)
-                Log.e(TAG, message)
-                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-                return Result.failure()
+                toastAndLog("Request failed $imageUriInput ($error)")
+                Result.failure()
             } else {
                 val imageResponse = response.body()
                 var outputData = workDataOf()
@@ -64,13 +62,16 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
                         .putString(Constants.KEY_IMAGE_URI, imgurLink)
                         .build()
                 }
-                return Result.success(outputData)
+                Result.success(outputData)
             }
         } catch (e: Exception) {
-            val message = String.format("Failed to upload image with URI %s", imageUriInput)
-            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-            Log.e(TAG, message)
-            return Result.failure()
+            toastAndLog("Failed to upload image with URI $imageUriInput")
+            Result.failure()
         }
+    }
+
+    private fun toastAndLog(message: String) {
+        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+        Log.e(TAG, message)
     }
 }

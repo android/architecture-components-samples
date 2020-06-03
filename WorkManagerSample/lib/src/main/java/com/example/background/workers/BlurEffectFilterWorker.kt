@@ -29,8 +29,7 @@ class BlurEffectFilterWorker(context: Context, parameters: WorkerParameters) :
 
     override fun applyFilter(input: Bitmap): Bitmap {
         var rsContext: RenderScript? = null
-        try {
-            val output = Bitmap.createBitmap(input.width, input.height, input.config)
+        return try {
             // Create a RenderScript context.
             rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
 
@@ -44,9 +43,10 @@ class BlurEffectFilterWorker(context: Context, parameters: WorkerParameters) :
             theIntrinsic.setInput(inAlloc)
             theIntrinsic.forEach(outAlloc)
 
-            // Copy to the output input from the allocation.
-            outAlloc.copyTo(output)
-            return output
+            Bitmap.createBitmap(input.width, input.height, input.config).apply {
+                // Copy to the output input from the allocation.
+                outAlloc.copyTo(this)
+            }
         } finally {
             rsContext?.finish()
         }

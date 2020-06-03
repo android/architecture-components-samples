@@ -28,8 +28,7 @@ class WaterColorFilterWorker(context: Context, parameters: WorkerParameters) :
 
     override fun applyFilter(input: Bitmap): Bitmap {
         var rsContext: RenderScript? = null
-        try {
-            val output = Bitmap.createBitmap(input.width, input.height, input.config)
+        return try {
             rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
             val inAlloc = Allocation.createFromBitmap(rsContext, input)
             val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)
@@ -37,15 +36,17 @@ class WaterColorFilterWorker(context: Context, parameters: WorkerParameters) :
             // `src/main/rs/waterColorEffect.rs`. The main idea, is to select a window of the image
             // and then find the most dominant pixel value. Then we set the r, g, b, channels of the
             // pixels to the one with the dominant pixel value.
-            val oilFilterEffect = ScriptC_waterColorEffect(rsContext)
-            oilFilterEffect._script = oilFilterEffect
-            oilFilterEffect._width = input.width.toLong()
-            oilFilterEffect._height = input.height.toLong()
-            oilFilterEffect._in = inAlloc
-            oilFilterEffect._out = outAlloc
-            oilFilterEffect.invoke_filter()
-            outAlloc.copyTo(output)
-            return output
+            ScriptC_waterColorEffect(rsContext).run {
+                _script = this
+                _width = input.width.toLong()
+                _height = input.height.toLong()
+                _in = inAlloc
+                _out = outAlloc
+                invoke_filter()
+            }
+            Bitmap.createBitmap(input.width, input.height, input.config).apply {
+                outAlloc.copyTo(this)
+            }
         } finally {
             rsContext?.finish()
         }

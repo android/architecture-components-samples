@@ -49,7 +49,6 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
          * @return the [InputStream] for the resourceUri.
          */
         @VisibleForTesting
-        @Throws(IOException::class)
         fun inputStreamFor(
             context: Context,
             resourceUri: String
@@ -100,7 +99,6 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
      * @param bitmap the [Bitmap] which needs to be written to the files directory.
      * @return a [Uri] to the output [Bitmap].
      */
-    @Throws(FileNotFoundException::class)
     private fun writeBitmapToFile(
         applicationContext: Context,
         bitmap: Bitmap

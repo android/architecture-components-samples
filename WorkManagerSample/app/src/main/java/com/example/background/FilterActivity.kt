@@ -47,10 +47,9 @@ class FilterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_processing)
 
         // Don't enable upload to Imgur, unless the developer specifies their own clientId.
-        val enableUpload = !TextUtils.isEmpty(Constants.IMGUR_CLIENT_ID)
+        val enableUpload = Constants.IMGUR_CLIENT_ID.isNotEmpty()
         findViewById<View>(R.id.upload).isEnabled = enableUpload
 
-        val intent = intent
         val imageUriExtra = intent.getStringExtra(Constants.KEY_IMAGE_URI)
         if (!TextUtils.isEmpty(imageUriExtra)) {
             mImageUri = Uri.parse(imageUriExtra)
@@ -114,7 +113,7 @@ class FilterActivity : AppCompatActivity() {
                 val outputData = info.outputData
                 val outputImageUri = outputData.getString(Constants.KEY_IMAGE_URI)
 
-                if (!TextUtils.isEmpty(outputImageUri)) {
+                if (!outputImageUri.isNullOrEmpty()) {
                     mOutputImageUri = Uri.parse(outputImageUri)
                     output.visibility = View.VISIBLE
                 }
@@ -136,10 +135,9 @@ class FilterActivity : AppCompatActivity() {
          * @param imageUri the input image [Uri].
          * @return the instance of [Intent].
          */
-        internal fun newIntent(context: Context, imageUri: Uri): Intent {
-            val intent = Intent(context, FilterActivity::class.java)
-            intent.putExtra(Constants.KEY_IMAGE_URI, imageUri.toString())
-            return intent
-        }
+        internal fun newIntent(context: Context, imageUri: Uri) =
+            Intent(context, FilterActivity::class.java).putExtra(
+                Constants.KEY_IMAGE_URI, imageUri.toString()
+            )
     }
 }

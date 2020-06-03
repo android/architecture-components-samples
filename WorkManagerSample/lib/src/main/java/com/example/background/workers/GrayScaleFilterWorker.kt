@@ -28,8 +28,7 @@ class GrayScaleFilterWorker(context: Context, parameters: WorkerParameters) :
 
     override fun applyFilter(input: Bitmap): Bitmap {
         var rsContext: RenderScript? = null
-        try {
-            val output = Bitmap.createBitmap(input.width, input.height, input.config)
+        return try {
             rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
             val inAlloc = Allocation.createFromBitmap(rsContext, input)
             val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)
@@ -37,15 +36,18 @@ class GrayScaleFilterWorker(context: Context, parameters: WorkerParameters) :
             // `src/main/rs/grayscale.rs`. We compute a new pixel value for every pixel which is
             // out = (r + g + b) / 3 where r, g, b are the red, green and blue channels in the
             // input image.
-            val grayscale = ScriptC_grayscale(rsContext)
-            grayscale._script = grayscale
-            grayscale._width = input.width.toLong()
-            grayscale._height = input.height.toLong()
-            grayscale._in = inAlloc
-            grayscale._out = outAlloc
-            grayscale.invoke_filter()
-            outAlloc.copyTo(output)
-            return output
+            ScriptC_grayscale(rsContext).run {
+                _script = this
+                _width = input.width.toLong()
+                _height = input.height.toLong()
+                _in = inAlloc
+                _out = outAlloc
+                invoke_filter()
+            }
+
+            Bitmap.createBitmap(input.width, input.height, input.config).apply {
+                outAlloc.copyTo(this)
+            }
         } finally {
             rsContext?.finish()
         }
