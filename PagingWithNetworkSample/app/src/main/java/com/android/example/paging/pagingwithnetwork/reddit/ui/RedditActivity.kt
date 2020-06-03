@@ -57,14 +57,14 @@ class RedditActivity : AppCompatActivity() {
     private val model: SubRedditViewModel by viewModels {
         object : AbstractSavedStateViewModelFactory(this, null) {
             override fun <T : ViewModel?> create(
-                    key: String,
-                    modelClass: Class<T>,
-                    handle: SavedStateHandle
+                key: String,
+                modelClass: Class<T>,
+                handle: SavedStateHandle
             ): T {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
                 val repo = ServiceLocator.instance(this@RedditActivity)
-                        .getRepository(repoType)
+                    .getRepository(repoType)
                 @Suppress("UNCHECKED_CAST")
                 return SubRedditViewModel(repo, handle) as T
             }
@@ -85,8 +85,8 @@ class RedditActivity : AppCompatActivity() {
         val glide = GlideApp.with(this)
         adapter = PostsAdapter(glide)
         list.adapter = adapter.withLoadStateHeaderAndFooter(
-                header = PostsLoadStateAdapter(adapter),
-                footer = PostsLoadStateAdapter(adapter)
+            header = PostsLoadStateAdapter(adapter),
+            footer = PostsLoadStateAdapter(adapter)
         )
 
         lifecycleScope.launch {

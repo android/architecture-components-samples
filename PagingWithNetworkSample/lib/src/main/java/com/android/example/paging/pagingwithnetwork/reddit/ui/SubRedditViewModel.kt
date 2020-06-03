@@ -22,11 +22,10 @@ import androidx.lifecycle.asFlow
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 
 class SubRedditViewModel(
-        private val repository: RedditPostRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: RedditPostRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     companion object {
         const val KEY_SUBREDDIT = "subreddit"
@@ -41,9 +40,8 @@ class SubRedditViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val posts = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
-            .asFlow()
-            .map { repository.postsOfSubreddit(it, 30) }
-            .flatMapLatest { it }
+        .asFlow()
+        .flatMapLatest { repository.postsOfSubreddit(it, 30) }
 
     fun showSubreddit(subreddit: String): Boolean {
         if (savedStateHandle.get<String>(KEY_SUBREDDIT) == subreddit) {

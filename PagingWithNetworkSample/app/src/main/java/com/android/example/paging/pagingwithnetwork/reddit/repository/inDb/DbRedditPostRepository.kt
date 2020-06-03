@@ -16,8 +16,8 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
+import androidx.paging.*
+import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 
@@ -25,12 +25,16 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
  * Repository implementation that uses a database PagedList + a boundary callback to return a
  * listing that loads in pages.
  */
-class DbRedditPostRepository(val db: RedditDb) : RedditPostRepository {
+class DbRedditPostRepository(
+    val db: RedditDb,
+    val redditApi: RedditApi
+) : RedditPostRepository {
     /**
      * Returns a Listing for the given [subReddit].
      */
     override fun postsOfSubreddit(subReddit: String, pageSize: Int) = Pager(
-            config = PagingConfig(pageSize)
+        config = PagingConfig(pageSize),
+        remoteMediator = ItemKeyedRemoteMediator(db, redditApi, subReddit)
     ) {
         db.posts().postsBySubreddit(subReddit)
     }.flow
