@@ -18,15 +18,15 @@ package com.example.benchmark
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadType
+import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingDataFlow
 import androidx.paging.PagingSource
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.reddit.ui.PostsAdapter
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import kotlinx.android.synthetic.main.activity_benchmark.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class BenchmarkActivity : AppCompatActivity() {
@@ -41,17 +41,18 @@ class BenchmarkActivity : AppCompatActivity() {
         list.adapter = adapter
 
         val config = PagingConfig(
-                pageSize = 5,
-                initialLoadSize = 5
+            pageSize = 5,
+            initialLoadSize = 5
         )
 
-        val pagingDataFlow = PagingDataFlow(config, 0) {
+        val pager = Pager(config, 0) {
             MockPagingSource()
         }
 
         lifecycleScope.launch {
-            pagingDataFlow.collect {
-                adapter.presentData(it)
+            @OptIn(ExperimentalCoroutinesApi::class)
+            pager.flow.collectLatest {
+                adapter.submitData(it)
             }
         }
     }
@@ -65,16 +66,6 @@ class MockPagingSource : PagingSource<Int, RedditPost>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RedditPost> {
         val key = params.key ?: 0
-        return when (params.loadType) {
-            LoadType.REFRESH -> {
-                LoadResult.Page(List(200) { generatePost() }.toList(), -1, 1)
-            }
-            LoadType.START -> {
-                LoadResult.Page(List(200) { generatePost() }.toList(), key - 1, key + 1)
-            }
-            LoadType.END -> {
-                LoadResult.Page(List(200) { generatePost() }.toList(), key - 1, key + 1)
-            }
-        }
+        return LoadResult.Page(List(200) { generatePost() }.toList(), key - 1, key + 1)
     }
 }
