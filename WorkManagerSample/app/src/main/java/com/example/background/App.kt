@@ -14,4 +14,3 @@ class App : Application(), Configuration.Provider {
                     .setMinimumLoggingLevel(Log.VERBOSE)
                     .build()
 }
-

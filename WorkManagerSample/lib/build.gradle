@@ -24,7 +24,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime_ktx

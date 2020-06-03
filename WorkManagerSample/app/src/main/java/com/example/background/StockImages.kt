@@ -19,7 +19,7 @@
 package com.example.background
 
 import android.net.Uri
-import java.util.*
+import java.util.Random
 
 /**
  * Helps produce a random stock image [Uri].

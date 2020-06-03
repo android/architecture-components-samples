@@ -37,7 +37,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
+import java.util.ArrayList
 
 /**
  * Helps select an image for the [FilterActivity] and handles permission requests.
@@ -69,14 +69,18 @@ class SelectImageActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.selectImage).setOnClickListener {
             val chooseIntent = Intent(
-                    Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            )
             startActivityForResult(chooseIntent, REQUEST_CODE_IMAGE)
         }
 
         findViewById<View>(R.id.selectStockImage).setOnClickListener {
-            startActivity(FilterActivity.newIntent(
-                    this@SelectImageActivity, StockImages.randomStockImage()))
+            startActivity(
+                FilterActivity.newIntent(
+                    this@SelectImageActivity, StockImages.randomStockImage()
+                )
+            )
         }
     }
 
@@ -98,9 +102,10 @@ class SelectImageActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray) {
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Check if permissions were granted after a permissions request flow.
@@ -117,14 +122,16 @@ class SelectImageActivity : AppCompatActivity() {
             if (mPermissionRequestCount < MAX_NUMBER_REQUEST_PERMISSIONS) {
                 mPermissionRequestCount += 1
                 ActivityCompat.requestPermissions(
-                        this,
-                        sPermissions.toTypedArray(),
-                        REQUEST_CODE_PERMISSIONS)
+                    this,
+                    sPermissions.toTypedArray(),
+                    REQUEST_CODE_PERMISSIONS
+                )
             } else {
                 Snackbar.make(
-                        findViewById(R.id.coordinatorLayout),
-                        R.string.set_permissions_in_settings,
-                        Snackbar.LENGTH_INDEFINITE).show()
+                    findViewById(R.id.coordinatorLayout),
+                    R.string.set_permissions_in_settings,
+                    Snackbar.LENGTH_INDEFINITE
+                ).show()
 
                 findViewById<View>(R.id.selectImage).isEnabled = false
             }
@@ -153,7 +160,8 @@ class SelectImageActivity : AppCompatActivity() {
         var hasPermissions = true
         for (permission in sPermissions) {
             hasPermissions = hasPermissions and (ContextCompat.checkSelfPermission(
-                    this, permission) == PackageManager.PERMISSION_GRANTED)
+                this, permission
+            ) == PackageManager.PERMISSION_GRANTED)
         }
         return hasPermissions
     }

@@ -11,11 +11,15 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.background.Constants
-import java.io.*
-import java.util.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.util.UUID
 
-abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters)
-    : CoroutineWorker(context, parameters) {
+abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) :
+    CoroutineWorker(context, parameters) {
 
     companion object {
         const val TAG = "BaseFilterWorker"
@@ -24,15 +28,16 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters)
         /**
          * Creates an input stream which can be used to read the given `resourceUri`.
          *
-         * @param context     the application [Context].
+         * @param context the application [Context].
          * @param resourceUri the [String] resourceUri.
          * @return the [InputStream] for the resourceUri.
          */
         @VisibleForTesting
         @Throws(IOException::class)
         fun inputStreamFor(
-                context: Context,
-                resourceUri: String): InputStream? {
+            context: Context,
+            resourceUri: String
+        ): InputStream? {
 
             // If the resourceUri is an Android asset URI, then use AssetManager to get a handle to
             // the input stream. (Stock Images are Asset URIs).
@@ -76,14 +81,14 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters)
      * Writes a given [Bitmap] to the [Context.getFilesDir] directory.
      *
      * @param applicationContext the application [Context].
-     * @param bitmap             the [Bitmap] which needs to be written to the files
-     * directory.
+     * @param bitmap the [Bitmap] which needs to be written to the files directory.
      * @return a [Uri] to the output [Bitmap].
      */
     @Throws(FileNotFoundException::class)
     private fun writeBitmapToFile(
-            applicationContext: Context,
-            bitmap: Bitmap): Uri {
+        applicationContext: Context,
+        bitmap: Bitmap
+    ): Uri {
 
         // Bitmaps are being written to a temporary directory. This is so they can serve as inputs
         // for workers downstream, via Worker chaining.
@@ -103,7 +108,6 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters)
                     out.close()
                 } catch (ignore: IOException) {
                 }
-
             }
         }
         return Uri.fromFile(outputFile)

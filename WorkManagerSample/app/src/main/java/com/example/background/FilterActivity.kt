@@ -68,12 +68,12 @@ class FilterActivity : AppCompatActivity() {
             val upload = isChecked(R.id.upload)
 
             val imageOperations = ImageOperations.Builder(applicationContext, mImageUri!!)
-                    .setApplyWaterColor(applyWaterColor)
-                    .setApplyGrayScale(applyGrayScale)
-                    .setApplyBlur(applyBlur)
-                    .setApplySave(save)
-                    .setApplyUpload(upload)
-                    .build()
+                .setApplyWaterColor(applyWaterColor)
+                .setApplyGrayScale(applyGrayScale)
+                .setApplyBlur(applyBlur)
+                .setApplySave(save)
+                .setApplyUpload(upload)
+                .build()
 
             mViewModel.apply(imageOperations)
         }
@@ -134,7 +134,7 @@ class FilterActivity : AppCompatActivity() {
         /**
          * Creates a new intent which can be used to start [FilterActivity].
          *
-         * @param context  the application [Context].
+         * @param context the application [Context].
          * @param imageUri the input image [Uri].
          * @return the instance of [Intent].
          */

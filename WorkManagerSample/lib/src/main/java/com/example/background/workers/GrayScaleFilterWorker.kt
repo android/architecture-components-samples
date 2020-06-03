@@ -7,14 +7,13 @@ import android.renderscript.RenderScript
 import androidx.work.WorkerParameters
 import com.example.background.ScriptC_grayscale
 
-class GrayScaleFilterWorker(context: Context, parameters: WorkerParameters)
-    : BaseFilterWorker(context, parameters) {
+class GrayScaleFilterWorker(context: Context, parameters: WorkerParameters) :
+    BaseFilterWorker(context, parameters) {
 
     override fun applyFilter(input: Bitmap): Bitmap {
         var rsContext: RenderScript? = null
         try {
-            val output = Bitmap
-                    .createBitmap(input.width, input.height, input.config)
+            val output = Bitmap.createBitmap(input.width, input.height, input.config)
             rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
             val inAlloc = Allocation.createFromBitmap(rsContext, input)
             val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)

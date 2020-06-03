@@ -29,8 +29,8 @@ import java.io.File
 /**
  * Cleans up temporary files from the output folder.
  */
-class CleanupWorker(appContext: Context, workerParams: WorkerParameters)
-    : Worker(appContext, workerParams) {
+class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
+    Worker(appContext, workerParams) {
 
     companion object {
         private const val TAG = "CleanupWorker"
