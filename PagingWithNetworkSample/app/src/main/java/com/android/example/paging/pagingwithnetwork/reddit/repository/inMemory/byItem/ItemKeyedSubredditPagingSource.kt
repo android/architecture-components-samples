@@ -24,6 +24,7 @@ import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import retrofit2.HttpException
 import java.io.IOException
 
 /**
@@ -54,6 +55,8 @@ class ItemKeyedSubredditPagingSource(
                     nextKey = items.lastOrNull()?.name
             )
         } catch (e: IOException) {
+            LoadResult.Error(e)
+        } catch (e: HttpException) {
             LoadResult.Error(e)
         }
     }

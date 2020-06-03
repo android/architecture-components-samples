@@ -10,6 +10,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditPostDao
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import retrofit2.HttpException
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
@@ -52,6 +53,8 @@ class ItemKeyedRemoteMediator(
 
             return MediatorResult.Success(endOfPaginationReached = items.isEmpty())
         } catch (e: IOException) {
+            return MediatorResult.Error(e)
+        } catch (e: HttpException) {
             return MediatorResult.Error(e)
         }
     }

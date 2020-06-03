@@ -22,6 +22,7 @@ import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingSource.LoadResult.Page
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import retrofit2.HttpException
 import java.io.IOException
 
 /**
@@ -48,6 +49,8 @@ class PageKeyedSubredditPagingSource(
                     nextKey = data.after
             )
         } catch (e: IOException) {
+            LoadResult.Error(e)
+        } catch (e: HttpException) {
             LoadResult.Error(e)
         }
     }
