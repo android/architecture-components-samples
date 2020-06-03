@@ -98,7 +98,7 @@ class RedditActivity : AppCompatActivity() {
         lifecycleScope.launch {
             @OptIn(ExperimentalCoroutinesApi::class)
             model.posts.collectLatest {
-                adapter.submitData(lifecycle, it)
+                adapter.submitData(it)
             }
         }
     }
