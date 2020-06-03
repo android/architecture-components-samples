@@ -43,11 +43,13 @@ class SubRedditViewModel(
         .asFlow()
         .flatMapLatest { repository.postsOfSubreddit(it, 30) }
 
-    fun showSubreddit(subreddit: String): Boolean {
-        if (savedStateHandle.get<String>(KEY_SUBREDDIT) == subreddit) {
-            return false
-        }
+    fun shouldShowSubreddit(
+        subreddit: String
+    ) = savedStateHandle.get<String>(KEY_SUBREDDIT) != subreddit
+
+    fun showSubreddit(subreddit: String) {
+        if (!shouldShowSubreddit(subreddit)) return
+
         savedStateHandle.set(KEY_SUBREDDIT, subreddit)
-        return true
     }
 }

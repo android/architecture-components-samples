@@ -98,7 +98,7 @@ class RedditActivity : AppCompatActivity() {
         lifecycleScope.launch {
             @OptIn(ExperimentalCoroutinesApi::class)
             model.posts.collectLatest {
-                adapter.submitData(it)
+                adapter.submitData(lifecycle, it)
             }
         }
     }
@@ -128,9 +128,10 @@ class RedditActivity : AppCompatActivity() {
 
     private fun updatedSubredditFromInput() {
         input.text.trim().toString().let {
-            if (it.isNotEmpty() && model.showSubreddit(it)) {
-                list.scrollToPosition(0)
+            if (it.isNotBlank() && model.shouldShowSubreddit(it)) {
                 adapter.submitData(lifecycle, PagingData.empty())
+                model.showSubreddit(it)
+                list.scrollToPosition(0)
             }
         }
     }
