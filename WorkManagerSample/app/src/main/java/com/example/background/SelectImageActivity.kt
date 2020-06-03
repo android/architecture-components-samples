@@ -34,7 +34,11 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.background.databinding.ActivitySelectBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_select.credits
+import kotlinx.android.synthetic.main.activity_select.selectImage
+import kotlinx.android.synthetic.main.activity_select.selectStockImage
 import java.util.ArrayList
 
 /**
@@ -49,9 +53,11 @@ class SelectImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select)
+        ActivitySelectBinding.inflate(layoutInflater).run {
+            setContentView(root)
+        }
+
         // Show stock image credits.
-        val credits = findViewById<TextView>(R.id.credits)
         credits.text = fromHtml(getString(R.string.credits))
         // Enable link following.
         credits.movementMethod = LinkMovementMethod.getInstance()
@@ -65,7 +71,7 @@ class SelectImageActivity : AppCompatActivity() {
 
         requestPermissionsIfNecessary()
 
-        findViewById<View>(R.id.selectImage).setOnClickListener {
+        selectImage.setOnClickListener {
             val chooseIntent = Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -73,7 +79,7 @@ class SelectImageActivity : AppCompatActivity() {
             startActivityForResult(chooseIntent, REQUEST_CODE_IMAGE)
         }
 
-        findViewById<View>(R.id.selectStockImage).setOnClickListener {
+        selectStockImage.setOnClickListener {
             startActivity(
                 FilterActivity.newIntent(
                     this@SelectImageActivity, StockImages.randomStockImage()
