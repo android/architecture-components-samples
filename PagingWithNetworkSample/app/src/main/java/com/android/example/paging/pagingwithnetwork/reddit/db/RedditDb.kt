@@ -16,17 +16,18 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.db
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import android.content.Context
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPostPageKey
 
 /**
  * Database schema used by the DbRedditPostRepository
  */
 @Database(
-        entities = [RedditPost::class],
+        entities = [RedditPost::class, RedditPostPageKey::class],
         version = 1,
         exportSchema = false
 )

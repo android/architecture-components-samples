@@ -16,7 +16,8 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inDb
 
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.db.RedditDb
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
@@ -34,7 +35,7 @@ class DbRedditPostRepository(
      */
     override fun postsOfSubreddit(subReddit: String, pageSize: Int) = Pager(
         config = PagingConfig(pageSize),
-        remoteMediator = ItemKeyedRemoteMediator(db, redditApi, subReddit)
+        remoteMediator = PageKeyedRemoteMediator(db, redditApi, subReddit)
     ) {
         db.posts().postsBySubreddit(subReddit)
     }.flow
