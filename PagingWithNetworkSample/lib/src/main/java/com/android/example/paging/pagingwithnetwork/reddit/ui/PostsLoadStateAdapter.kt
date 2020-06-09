@@ -11,7 +11,10 @@ class PostsLoadStateAdapter(
         holder.bindTo(loadState)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): NetworkStateItemViewHolder {
-        return NetworkStateItemViewHolder.create(parent) { adapter.retry() }
+    override fun onCreateViewHolder(
+            parent: ViewGroup,
+            loadState: LoadState
+    ): NetworkStateItemViewHolder {
+        return NetworkStateItemViewHolder(parent) { adapter.retry() }
     }
 }
