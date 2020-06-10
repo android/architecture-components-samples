@@ -18,13 +18,18 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.asFlow
+import androidx.paging.PagingData
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
+import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 
 class SubRedditViewModel(
-        private val repository: RedditPostRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val repository: RedditPostRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     companion object {
         const val KEY_SUBREDDIT = "subreddit"
@@ -37,27 +42,25 @@ class SubRedditViewModel(
         }
     }
 
-    private val repoResult = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT).map {
-        repository.postsOfSubreddit(it, 30)
-    }
-    val posts = repoResult.switchMap { it.pagedList }
-    val networkState = repoResult.switchMap { it.networkState }
-    val refreshState = repoResult.switchMap { it.refreshState }
+    private val clearListCh = Channel<Unit>(Channel.CONFLATED)
 
-    fun refresh() {
-        repoResult.value?.refresh?.invoke()
-    }
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val posts = flowOf(
+        clearListCh.consumeAsFlow().map { PagingData.empty<RedditPost>() },
+        savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
+            .asFlow()
+            .flatMapLatest { repository.postsOfSubreddit(it, 30) }
+    ).flattenMerge(2)
 
-    fun showSubreddit(subreddit: String): Boolean {
-        if (savedStateHandle.get<String>(KEY_SUBREDDIT) == subreddit) {
-            return false
-        }
+    fun shouldShowSubreddit(
+        subreddit: String
+    ) = savedStateHandle.get<String>(KEY_SUBREDDIT) != subreddit
+
+    fun showSubreddit(subreddit: String) {
+        if (!shouldShowSubreddit(subreddit)) return
+
+        clearListCh.offer(Unit)
+
         savedStateHandle.set(KEY_SUBREDDIT, subreddit)
-        return true
-    }
-
-    fun retry() {
-        val listing = repoResult.value
-        listing?.retry?.invoke()
     }
 }

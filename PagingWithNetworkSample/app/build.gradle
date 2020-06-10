@@ -45,6 +45,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
     sourceSets {
         androidTest.java.srcDirs += "src/test-common/java"
@@ -67,9 +68,10 @@ dependencies {
     implementation deps.cardview
     implementation deps.material
     implementation deps.room.runtime
+    implementation deps.room.ktx
     implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.runtime
-    implementation deps.paging_ktx
+    implementation deps.paging_runtime
     implementation deps.kotlin.stdlib
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson

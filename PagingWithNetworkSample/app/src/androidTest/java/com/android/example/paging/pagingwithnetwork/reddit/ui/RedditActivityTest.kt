@@ -27,6 +27,8 @@ import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
+import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository.Type.IN_MEMORY_BY_ITEM
+import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository.Type.IN_MEMORY_BY_PAGE
 import com.android.example.paging.pagingwithnetwork.reddit.ui.SubRedditViewModel.Companion.DEFAULT_SUBREDDIT
 import com.android.example.paging.pagingwithnetwork.repository.FakeRedditApi
 import com.android.example.paging.pagingwithnetwork.repository.PostFactory
@@ -50,7 +52,7 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
-        fun params() = RedditPostRepository.Type.values()
+        fun params() = arrayOf(IN_MEMORY_BY_ITEM, IN_MEMORY_BY_PAGE)
     }
 
     @get:Rule
@@ -66,8 +68,7 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         val app = ApplicationProvider.getApplicationContext<Application>()
         // use a controlled service locator w/ fake API
         ServiceLocator.swap(
-                object : DefaultServiceLocator(app = app,
-                        useInMemoryDb = true) {
+                object : DefaultServiceLocator(app = app, useInMemoryDb = true) {
                     override fun getRedditApi(): RedditApi = fakeApi
                 }
         )
@@ -78,7 +79,8 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     fun showSomeResults() {
         val intent = RedditActivity.intentFor(
                 context = ApplicationProvider.getApplicationContext(),
-                type = type)
+                type = type
+        )
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val activity = InstrumentationRegistry.getInstrumentation().startActivitySync(intent)
         val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
