@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import android.widget.Checkable
 import android.widget.ImageView
@@ -30,11 +29,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.background.databinding.ActivityProcessingBinding
-import kotlinx.android.synthetic.main.activity_processing.cancel
-import kotlinx.android.synthetic.main.activity_processing.go
-import kotlinx.android.synthetic.main.activity_processing.output
-import kotlinx.android.synthetic.main.activity_processing.progressBar
-import kotlinx.android.synthetic.main.activity_processing.upload
 
 /**
  * The [android.app.Activity] where the user picks filters to be applied on an
@@ -48,13 +42,13 @@ class FilterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityProcessingBinding.inflate(layoutInflater).run {
+        val binding = ActivityProcessingBinding.inflate(layoutInflater).apply {
             setContentView(root)
         }
 
         // Don't enable upload to Imgur, unless the developer specifies their own clientId.
         val enableUpload = Constants.IMGUR_CLIENT_ID.isNotEmpty()
-        upload.isEnabled = enableUpload
+        binding.upload.isEnabled = enableUpload
 
         val imageUriExtra = intent.getStringExtra(Constants.KEY_IMAGE_URI)
         if (!imageUriExtra.isNullOrEmpty()) {
@@ -63,7 +57,7 @@ class FilterActivity : AppCompatActivity() {
             Glide.with(this).load(mImageUri).into(imageView)
         }
 
-        go.setOnClickListener {
+        binding.go.setOnClickListener {
             val applyWaterColor = isChecked(R.id.filter_watercolor)
             val applyGrayScale = isChecked(R.id.filter_grayscale)
             val applyBlur = isChecked(R.id.filter_blur)
@@ -81,7 +75,7 @@ class FilterActivity : AppCompatActivity() {
             mViewModel.apply(imageOperations)
         }
 
-        output.setOnClickListener {
+        binding.output.setOnClickListener {
             if (mOutputImageUri != null) {
                 val actionView = Intent(Intent.ACTION_VIEW, mOutputImageUri)
                 if (actionView.resolveActivity(packageManager) != null) {
@@ -90,7 +84,7 @@ class FilterActivity : AppCompatActivity() {
             }
         }
 
-        cancel.setOnClickListener { mViewModel.cancel() }
+        binding.cancel.setOnClickListener { mViewModel.cancel() }
 
         // Check to see if we have output.
         mViewModel.outputStatus.observe(this, Observer { listOfInfos ->
@@ -103,21 +97,25 @@ class FilterActivity : AppCompatActivity() {
             val info = listOfInfos[0]
             val finished = info.state.isFinished
             if (!finished) {
-                progressBar.visibility = View.VISIBLE
-                cancel.visibility = View.VISIBLE
-                go.visibility = View.GONE
-                output.visibility = View.GONE
+                with(binding) {
+                    progressBar.visibility = View.VISIBLE
+                    cancel.visibility = View.VISIBLE
+                    go.visibility = View.GONE
+                    output.visibility = View.GONE
+                }
             } else {
-                progressBar.visibility = View.GONE
-                cancel.visibility = View.GONE
-                go.visibility = View.VISIBLE
+                with(binding) {
+                    progressBar.visibility = View.GONE
+                    cancel.visibility = View.GONE
+                    go.visibility = View.VISIBLE
+                }
 
                 val outputData = info.outputData
                 val outputImageUri = outputData.getString(Constants.KEY_IMAGE_URI)
 
                 if (!outputImageUri.isNullOrEmpty()) {
                     mOutputImageUri = Uri.parse(outputImageUri)
-                    output.visibility = View.VISIBLE
+                    binding.output.visibility = View.VISIBLE
                 }
             }
         })

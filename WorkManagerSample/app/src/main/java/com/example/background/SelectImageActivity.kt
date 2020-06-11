@@ -29,16 +29,12 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.background.databinding.ActivitySelectBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_select.credits
-import kotlinx.android.synthetic.main.activity_select.selectImage
-import kotlinx.android.synthetic.main.activity_select.selectStockImage
 import java.util.ArrayList
 
 /**
@@ -53,14 +49,16 @@ class SelectImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivitySelectBinding.inflate(layoutInflater).run {
+        val binding = ActivitySelectBinding.inflate(layoutInflater).apply {
             setContentView(root)
         }
 
-        // Show stock image credits.
-        credits.text = fromHtml(getString(R.string.credits))
-        // Enable link following.
-        credits.movementMethod = LinkMovementMethod.getInstance()
+        with(binding) {
+            // Show stock image credits.
+            credits.text = fromHtml(getString(R.string.credits))
+            // Enable link following.
+            credits.movementMethod = LinkMovementMethod.getInstance()
+        }
 
         // We keep track of the number of times we requested for permissions.
         // If the user did not want to grant permissions twice - show a Snackbar and don't
@@ -71,7 +69,7 @@ class SelectImageActivity : AppCompatActivity() {
 
         requestPermissionsIfNecessary()
 
-        selectImage.setOnClickListener {
+        binding.selectImage.setOnClickListener {
             val chooseIntent = Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -79,7 +77,7 @@ class SelectImageActivity : AppCompatActivity() {
             startActivityForResult(chooseIntent, REQUEST_CODE_IMAGE)
         }
 
-        selectStockImage.setOnClickListener {
+        binding.selectStockImage.setOnClickListener {
             startActivity(
                 FilterActivity.newIntent(
                     this@SelectImageActivity, StockImages.randomStockImage()
