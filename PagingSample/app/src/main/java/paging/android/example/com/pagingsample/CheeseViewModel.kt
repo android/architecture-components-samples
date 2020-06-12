@@ -30,8 +30,8 @@ class CheeseViewModel(app: Application) : AndroidViewModel(app) {
     private val dao = CheeseDb.get(app).cheeseDao()
 
     /**
-     * We use the Kotlin API to construct a [Flow]<[PagingData]>. Java developers should use the
-     * Java API: `PagingDataFlow.create`
+     * We use the Kotlin [Flow] property available on [Pager]. Java developers should use the
+     * RxJava or LiveData extension properties available in `PagingRx` and `PagingLiveData`.
      */
     val allCheeses = Pager(
         PagingConfig(
