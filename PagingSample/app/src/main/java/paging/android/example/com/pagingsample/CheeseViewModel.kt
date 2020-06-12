@@ -31,7 +31,7 @@ class CheeseViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * We use the Kotlin [Flow] property available on [Pager]. Java developers should use the
-     * RxJava or LiveData extension properties available in [RxPaging] and [PagingLiveData].
+     * RxJava or LiveData extension properties available in `PagingRx` and `PagingLiveData`.
      */
     val allCheeses = Pager(
         PagingConfig(
