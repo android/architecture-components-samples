@@ -60,7 +60,7 @@ class ImgurApi private constructor() {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
             val headers = request.headers().newBuilder()
-                .add("Authorization", "Client-ID " + Constants.IMGUR_CLIENT_ID)
+                .add("Authorization", "Client-ID ${Constants.IMGUR_CLIENT_ID}")
                 .build()
             val authenticatedRequest = request.newBuilder().headers(headers).build()
             return chain.proceed(authenticatedRequest)

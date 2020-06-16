@@ -22,7 +22,7 @@ buildscript {
     addRepos(repositories)
 
     dependencies {
-        classpath deps.android_gradle_plugin
+        classpath "com.android.tools.build:gradle:${versions.android_gradle_plugin}"
         classpath deps.kotlin.plugin
         classpath deps.benchmark_gradle
     }

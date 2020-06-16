@@ -37,36 +37,6 @@ import java.util.UUID
 abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
 
-    companion object {
-        const val TAG = "BaseFilterWorker"
-        const val ASSET_PREFIX = "file:///android_asset/"
-
-        /**
-         * Creates an input stream which can be used to read the given `resourceUri`.
-         *
-         * @param context the application [Context].
-         * @param resourceUri the [String] resourceUri.
-         * @return the [InputStream] for the resourceUri.
-         */
-        @VisibleForTesting
-        fun inputStreamFor(
-            context: Context,
-            resourceUri: String
-        ): InputStream? {
-
-            // If the resourceUri is an Android asset URI, then use AssetManager to get a handle to
-            // the input stream. (Stock Images are Asset URIs).
-            return if (resourceUri.startsWith(ASSET_PREFIX)) {
-                val assetManager = context.resources.assets
-                assetManager.open(resourceUri.substring(ASSET_PREFIX.length))
-            } else {
-                // Not an Android asset Uri. Use a ContentResolver to get a handle to the input stream.
-                val resolver = context.contentResolver
-                resolver.openInputStream(Uri.parse(resourceUri))
-            }
-        }
-    }
-
     override suspend fun doWork(): Result {
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI)
         try {
@@ -106,7 +76,7 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
 
         // Bitmaps are being written to a temporary directory. This is so they can serve as inputs
         // for workers downstream, via Worker chaining.
-        val name = String.format("filter-output-%s.png", UUID.randomUUID().toString())
+        val name = "filter-output-${UUID.randomUUID()}.png"
         val outputDir = File(applicationContext.filesDir, Constants.OUTPUT_PATH)
         if (!outputDir.exists()) {
             outputDir.mkdirs() // should succeed
@@ -125,5 +95,35 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
             }
         }
         return Uri.fromFile(outputFile)
+    }
+
+    companion object {
+        const val TAG = "BaseFilterWorker"
+        const val ASSET_PREFIX = "file:///android_asset/"
+
+        /**
+         * Creates an input stream which can be used to read the given `resourceUri`.
+         *
+         * @param context the application [Context].
+         * @param resourceUri the [String] resourceUri.
+         * @return the [InputStream] for the resourceUri.
+         */
+        @VisibleForTesting
+        fun inputStreamFor(
+            context: Context,
+            resourceUri: String
+        ): InputStream? {
+
+            // If the resourceUri is an Android asset URI, then use AssetManager to get a handle to
+            // the input stream. (Stock Images are Asset URIs).
+            return if (resourceUri.startsWith(ASSET_PREFIX)) {
+                val assetManager = context.resources.assets
+                assetManager.open(resourceUri.substring(ASSET_PREFIX.length))
+            } else {
+                // Not an Android asset Uri. Use a ContentResolver to get a handle to the input stream.
+                val resolver = context.contentResolver
+                resolver.openInputStream(Uri.parse(resourceUri))
+            }
+        }
     }
 }

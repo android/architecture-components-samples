@@ -33,10 +33,6 @@ import com.example.background.imgur.ImgurApi
 class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
-    companion object {
-        private const val TAG = "UploadWorker"
-    }
-
     override fun doWork(): Result {
         var imageUriInput: String? = null
         return try {
@@ -73,5 +69,9 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
     private fun toastAndLog(message: String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
         Log.e(TAG, message)
+    }
+
+    companion object {
+        private const val TAG = "UploadWorker"
     }
 }

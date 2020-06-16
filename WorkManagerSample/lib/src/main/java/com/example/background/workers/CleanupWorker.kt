@@ -29,10 +29,6 @@ import java.io.File
 class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
-    companion object {
-        private const val TAG = "CleanupWorker"
-    }
-
     override fun doWork(): Result {
         return try {
             cleanupDirectory()
@@ -57,5 +53,9 @@ class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
                 }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "CleanupWorker"
     }
 }

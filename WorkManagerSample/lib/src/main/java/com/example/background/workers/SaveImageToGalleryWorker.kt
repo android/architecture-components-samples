@@ -36,13 +36,6 @@ import java.util.Locale
 class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
-    companion object {
-        private const val TAG = "SvImageToGalleryWrkr"
-        private const val TITLE = "Filtered Image"
-        private val DATE_FORMATTER =
-            SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", Locale.getDefault())
-    }
-
     override fun doWork(): Result {
         val resolver = applicationContext.contentResolver
         return try {
@@ -64,5 +57,12 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
             Log.e(TAG, "Unable to save image to Gallery", exception)
             Result.failure()
         }
+    }
+
+    companion object {
+        private const val TAG = "SvImageToGalleryWrkr"
+        private const val TITLE = "Filtered Image"
+        private val DATE_FORMATTER =
+            SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", Locale.getDefault())
     }
 }
