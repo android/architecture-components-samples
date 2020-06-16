@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package com.example.background
+package com.android.example.paging.pagingwithnetwork.reddit.vo
 
-import android.app.Application
-import android.util.Log
-import androidx.work.Configuration
-import androidx.work.WorkManager
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-/**
- * The [Application]. Responsible for initializing [WorkManager] in [Log.VERBOSE] mode.
- */
-class App : Application(), Configuration.Provider {
-    override fun getWorkManagerConfiguration() =
-            Configuration.Builder()
-                    .setMinimumLoggingLevel(Log.VERBOSE)
-                    .build()
-}
+@Entity(tableName = "remote_keys")
+data class SubredditRemoteKey(
+    @PrimaryKey
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
+    val subreddit: String, // technically mutable but fine for a demo
+    val nextPageKey: String?
+)

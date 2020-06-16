@@ -16,7 +16,9 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository
 
+import androidx.paging.PagingData
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Common interface shared by the different repository implementations.
@@ -24,7 +26,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
  * network+db, or network-only
  */
 interface RedditPostRepository {
-    fun postsOfSubreddit(subReddit: String, pageSize: Int): Listing<RedditPost>
+    fun postsOfSubreddit(subReddit: String, pageSize: Int): Flow<PagingData<RedditPost>>
 
     enum class Type {
         IN_MEMORY_BY_ITEM,

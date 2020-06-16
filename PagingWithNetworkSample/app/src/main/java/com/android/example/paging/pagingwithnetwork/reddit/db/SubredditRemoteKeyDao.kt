@@ -16,24 +16,20 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.db
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import com.android.example.paging.pagingwithnetwork.reddit.vo.SubredditRemoteKey
 
 @Dao
-interface RedditPostDao {
+interface SubredditRemoteKeyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(posts: List<RedditPost>)
+    suspend fun insert(keys: SubredditRemoteKey)
 
-    @Query("SELECT * FROM posts WHERE subreddit = :subreddit ORDER BY indexInResponse ASC")
-    fun postsBySubreddit(subreddit: String): PagingSource<Int, RedditPost>
+    @Query("SELECT * FROM remote_keys WHERE subreddit = :subreddit")
+    suspend fun remoteKeyByPost(subreddit: String): SubredditRemoteKey
 
-    @Query("DELETE FROM posts WHERE subreddit = :subreddit")
+    @Query("DELETE FROM remote_keys WHERE subreddit = :subreddit")
     suspend fun deleteBySubreddit(subreddit: String)
-
-    @Query("SELECT MAX(indexInResponse) + 1 FROM posts WHERE subreddit = :subreddit")
-    suspend fun getNextIndexInSubreddit(subreddit: String): Int
 }

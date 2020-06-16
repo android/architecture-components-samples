@@ -39,7 +39,7 @@ sealed class ApiResponse<T> {
                 } else {
                     ApiSuccessResponse(
                         body = body,
-                        linkHeader = response.headers()?.get("link")
+                        linkHeader = response.headers().get("link")
                     )
                 }
             } else {
@@ -76,7 +76,7 @@ data class ApiSuccessResponse<T>(
                 null
             } else {
                 try {
-                    Integer.parseInt(matcher.group(1))
+                    Integer.parseInt(matcher.group(1)!!)
                 } catch (ex: NumberFormatException) {
                     Timber.w("cannot parse next page from %s", next)
                     null
@@ -97,7 +97,7 @@ data class ApiSuccessResponse<T>(
             while (matcher.find()) {
                 val count = matcher.groupCount()
                 if (count == 2) {
-                    links[matcher.group(2)] = matcher.group(1)
+                    links[matcher.group(2)!!] = matcher.group(1)!!
                 }
             }
             return links

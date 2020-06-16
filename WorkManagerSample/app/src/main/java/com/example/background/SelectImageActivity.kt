@@ -1,19 +1,17 @@
 /*
+ * Copyright 2018 The Android Open Source Project
  *
- *  * Copyright (C) 2018 The Android Open Source Project
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *      http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example.background
@@ -29,15 +27,13 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
-import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.background.databinding.ActivitySelectBinding
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
+import java.util.ArrayList
 
 /**
  * Helps select an image for the [FilterActivity] and handles permission requests.
@@ -51,12 +47,16 @@ class SelectImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select)
-        // Show stock image credits.
-        val credits = findViewById<TextView>(R.id.credits)
-        credits.text = fromHtml(getString(R.string.credits))
-        // Enable link following.
-        credits.movementMethod = LinkMovementMethod.getInstance()
+        val binding = ActivitySelectBinding.inflate(layoutInflater).apply {
+            setContentView(root)
+        }
+
+        with(binding) {
+            // Show stock image credits.
+            credits.text = fromHtml(getString(R.string.credits))
+            // Enable link following.
+            credits.movementMethod = LinkMovementMethod.getInstance()
+        }
 
         // We keep track of the number of times we requested for permissions.
         // If the user did not want to grant permissions twice - show a Snackbar and don't
@@ -67,20 +67,19 @@ class SelectImageActivity : AppCompatActivity() {
 
         requestPermissionsIfNecessary()
 
-        findViewById<View>(R.id.selectImage).setOnClickListener {
-            showGallery()
+        binding.selectImage.setOnClickListener {
+            registerForActivityResult(PickContract()) { imageUri ->
+                handleImageRequestResult(imageUri)
+            }.launch(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         }
 
-        findViewById<View>(R.id.selectStockImage).setOnClickListener {
-            startActivity(FilterActivity.newIntent(
-                    this@SelectImageActivity, StockImages.randomStockImage()))
+        binding.selectStockImage.setOnClickListener {
+            startActivity(
+                FilterActivity.newIntent(
+                    this@SelectImageActivity, StockImages.randomStockImage()
+                )
+            )
         }
-    }
-
-    private fun showGallery(){
-        registerForActivityResult(PickContract()) { imageUri ->
-            handleImageRequestResult(imageUri)
-        }.launch(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -89,9 +88,10 @@ class SelectImageActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray) {
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Check if permissions were granted after a permissions request flow.
@@ -108,14 +108,16 @@ class SelectImageActivity : AppCompatActivity() {
             if (mPermissionRequestCount < MAX_NUMBER_REQUEST_PERMISSIONS) {
                 mPermissionRequestCount += 1
                 ActivityCompat.requestPermissions(
-                        this,
-                        sPermissions.toTypedArray(),
-                        REQUEST_CODE_PERMISSIONS)
+                    this,
+                    sPermissions.toTypedArray(),
+                    REQUEST_CODE_PERMISSIONS
+                )
             } else {
                 Snackbar.make(
-                        findViewById(R.id.coordinatorLayout),
-                        R.string.set_permissions_in_settings,
-                        Snackbar.LENGTH_INDEFINITE).show()
+                    findViewById(R.id.coordinatorLayout),
+                    R.string.set_permissions_in_settings,
+                    Snackbar.LENGTH_INDEFINITE
+                ).show()
 
                 findViewById<View>(R.id.selectImage).isEnabled = false
             }
@@ -132,7 +134,8 @@ class SelectImageActivity : AppCompatActivity() {
         var hasPermissions = true
         for (permission in sPermissions) {
             hasPermissions = hasPermissions and (ContextCompat.checkSelfPermission(
-                    this, permission) == PackageManager.PERMISSION_GRANTED)
+                this, permission
+            ) == PackageManager.PERMISSION_GRANTED)
         }
         return hasPermissions
     }
@@ -143,7 +146,6 @@ class SelectImageActivity : AppCompatActivity() {
         private const val KEY_PERMISSIONS_REQUEST_COUNT = "KEY_PERMISSIONS_REQUEST_COUNT"
 
         private const val MAX_NUMBER_REQUEST_PERMISSIONS = 2
-        private const val REQUEST_CODE_IMAGE = 100
         private const val REQUEST_CODE_PERMISSIONS = 101
 
         // A list of permissions the application needs.
