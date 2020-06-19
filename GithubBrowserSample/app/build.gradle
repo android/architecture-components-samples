@@ -21,6 +21,7 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-allopen'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'dagger.hilt.android.plugin'
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
@@ -46,8 +47,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        dataBinding = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -86,16 +87,11 @@ dependencies {
     implementation deps.retrofit.gson
     implementation deps.glide.runtime
 
-    implementation deps.dagger.runtime
-    implementation deps.dagger.android
-    implementation deps.dagger.android_support
     implementation deps.constraint_layout
     implementation deps.kotlin.stdlib
 
     implementation deps.timber
 
-    kapt deps.dagger.android_support_compiler
-    kapt deps.dagger.compiler
     kapt deps.room.compiler
     kapt deps.lifecycle.compiler
 
@@ -120,6 +116,11 @@ dependencies {
     androidTestImplementation deps.arch_core.testing
     androidTestImplementation deps.mockito.core
     androidTestImplementation deps.mockito.android
+
+    implementation deps.hilt.android
+    implementation deps.hilt.lifecycle_viewmodel
+    kapt deps.hilt.compiler
+    kapt deps.hilt.android_compiler
 }
 
 // we need all open to run tests which we enable only for debug builds.

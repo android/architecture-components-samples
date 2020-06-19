@@ -16,6 +16,7 @@
 
 package com.android.example.github.ui.user
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,7 +32,7 @@ import javax.inject.Inject
 
 @OpenForTesting
 class UserViewModel
-@Inject constructor(userRepository: UserRepository, repoRepository: RepoRepository) : ViewModel() {
+@ViewModelInject constructor(userRepository: UserRepository, repoRepository: RepoRepository) : ViewModel() {
     private val _login = MutableLiveData<String?>()
     val login: LiveData<String?>
         get() = _login

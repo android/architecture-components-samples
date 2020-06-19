@@ -35,22 +35,18 @@ import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.RepoFragmentBinding
-import com.android.example.github.di.Injectable
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
  * The UI Controller for displaying a Github Repo's information with its contributors.
  */
-class RepoFragment : Fragment(), Injectable {
+@AndroidEntryPoint
+class RepoFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    val repoViewModel: RepoViewModel by viewModels {
-        viewModelFactory
-    }
+    val repoViewModel: RepoViewModel by viewModels()
 
     @Inject
     lateinit var appExecutors: AppExecutors
@@ -99,14 +95,13 @@ class RepoFragment : Fragment(), Injectable {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.repo = repoViewModel.repo
 
-        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) {
-            contributor, imageView ->
+        val adapter = ContributorAdapter(dataBindingComponent, appExecutors) { contributor, imageView ->
             val extras = FragmentNavigatorExtras(
-                    imageView to contributor.login
+                imageView to contributor.login
             )
             findNavController().navigate(
-                    RepoFragmentDirections.showUser(contributor.login, contributor.avatarUrl),
-                    extras
+                RepoFragmentDirections.showUser(contributor.login, contributor.avatarUrl),
+                extras
             )
         }
         this.adapter = adapter

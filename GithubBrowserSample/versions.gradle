@@ -63,6 +63,8 @@ versions.timber = "4.7.1"
 versions.transition = "1.3.0"
 versions.truth = "1.0.1"
 versions.work = "2.2.0"
+versions.hilt_android_version = "2.28-alpha"
+versions.hilt_version = "1.0.0-alpha01"
 ext.versions = versions
 
 def build_versions = [:]
@@ -215,6 +217,14 @@ work.testing = "androidx.work:work-testing:$versions.work"
 work.firebase = "androidx.work:work-firebase:$versions.work"
 work.runtime_ktx = "androidx.work:work-runtime-ktx:$versions.work"
 deps.work = work
+
+def hilt = [:]
+hilt.plugin = "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt_android_version"
+hilt.android_compiler = "com.google.dagger:hilt-android-compiler:$versions.hilt_android_version"
+hilt.android = "com.google.dagger:hilt-android:$versions.hilt_android_version"
+hilt.lifecycle_viewmodel = "androidx.hilt:hilt-lifecycle-viewmodel:$versions.hilt_version"
+hilt.compiler = "androidx.hilt:hilt-compiler:$versions.hilt_version"
+deps.hilt = hilt
 
 ext.deps = deps
 
