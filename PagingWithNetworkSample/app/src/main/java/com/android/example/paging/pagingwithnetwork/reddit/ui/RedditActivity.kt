@@ -27,6 +27,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.R
@@ -35,7 +36,6 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
 import kotlinx.android.synthetic.main.activity_reddit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 /**
  * A list activity that shows reddit posts in the given sub-reddit.
@@ -55,14 +55,14 @@ class RedditActivity : AppCompatActivity() {
     private val model: SubRedditViewModel by viewModels {
         object : AbstractSavedStateViewModelFactory(this, null) {
             override fun <T : ViewModel?> create(
-                key: String,
-                modelClass: Class<T>,
-                handle: SavedStateHandle
+                    key: String,
+                    modelClass: Class<T>,
+                    handle: SavedStateHandle
             ): T {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
                 val repo = ServiceLocator.instance(this@RedditActivity)
-                    .getRepository(repoType)
+                        .getRepository(repoType)
                 @Suppress("UNCHECKED_CAST")
                 return SubRedditViewModel(repo, handle) as T
             }
@@ -83,21 +83,28 @@ class RedditActivity : AppCompatActivity() {
         val glide = GlideApp.with(this)
         adapter = PostsAdapter(glide)
         list.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = PostsLoadStateAdapter(adapter),
-            footer = PostsLoadStateAdapter(adapter)
+                header = PostsLoadStateAdapter(adapter),
+                footer = PostsLoadStateAdapter(adapter)
         )
 
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenCreated {
             @OptIn(ExperimentalCoroutinesApi::class)
             adapter.loadStateFlow.collectLatest { loadStates ->
                 swipe_refresh.isRefreshing = loadStates.refresh is LoadState.Loading
             }
         }
 
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenCreated {
             @OptIn(ExperimentalCoroutinesApi::class)
             model.posts.collectLatest {
                 adapter.submitData(it)
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
+            adapter.dataRefreshFlow.collectLatest {
+                list.scrollToPosition(0)
             }
         }
     }
@@ -129,7 +136,6 @@ class RedditActivity : AppCompatActivity() {
         input.text.trim().toString().let {
             if (it.isNotBlank() && model.shouldShowSubreddit(it)) {
                 model.showSubreddit(it)
-                list.scrollToPosition(0)
             }
         }
     }
