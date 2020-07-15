@@ -17,9 +17,16 @@
 package paging.android.example.com.pagingsample
 
 import android.app.Application
+import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.paging.Config
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import androidx.paging.toLiveData
+import kotlinx.coroutines.flow.Flow
+import java.util.concurrent.Executor
 
 /**
  * A simple ViewModel that provides a paged list of delicious Cheeses.
@@ -27,11 +34,22 @@ import androidx.paging.toLiveData
 class CheeseViewModel(app: Application) : AndroidViewModel(app) {
     val dao = CheeseDb.get(app).cheeseDao()
 
+    fun <Key, Value> DataSource.Factory<Key, Value>.toFlow(
+        config: PagedList.Config,
+        initialLoadKey: Key? = null,
+        boundaryCallback: PagedList.BoundaryCallback<Value>? = null
+    ): Flow<PagedList<Value>> {
+        return FlowBuilder(this, config)
+            .setInitialLoadKey(initialLoadKey)
+            .setBoundaryCallback(boundaryCallback)
+            .build()
+    }
+
     /**
      * We use -ktx Kotlin extension functions here, otherwise you would use LivePagedListBuilder(),
      * and PagedList.Config.Builder()
      */
-    val allCheeses = dao.allCheesesByName().toLiveData(Config(
+    val allCheeses = dao.allCheesesByName().toFlow(Config(
             /**
              * A good page size is a value that fills at least a screen worth of content on a large
              * device so the User is unlikely to see a null item.
