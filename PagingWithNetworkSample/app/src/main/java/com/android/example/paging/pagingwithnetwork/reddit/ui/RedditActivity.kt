@@ -27,7 +27,6 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.R
@@ -35,7 +34,11 @@ import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import kotlinx.android.synthetic.main.activity_reddit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 
 /**
  * A list activity that shows reddit posts in the given sub-reddit.
@@ -55,14 +58,14 @@ class RedditActivity : AppCompatActivity() {
     private val model: SubRedditViewModel by viewModels {
         object : AbstractSavedStateViewModelFactory(this, null) {
             override fun <T : ViewModel?> create(
-                    key: String,
-                    modelClass: Class<T>,
-                    handle: SavedStateHandle
+                key: String,
+                modelClass: Class<T>,
+                handle: SavedStateHandle
             ): T {
                 val repoTypeParam = intent.getIntExtra(KEY_REPOSITORY_TYPE, 0)
                 val repoType = RedditPostRepository.Type.values()[repoTypeParam]
                 val repo = ServiceLocator.instance(this@RedditActivity)
-                        .getRepository(repoType)
+                    .getRepository(repoType)
                 @Suppress("UNCHECKED_CAST")
                 return SubRedditViewModel(repo, handle) as T
             }
@@ -83,8 +86,8 @@ class RedditActivity : AppCompatActivity() {
         val glide = GlideApp.with(this)
         adapter = PostsAdapter(glide)
         list.adapter = adapter.withLoadStateHeaderAndFooter(
-                header = PostsLoadStateAdapter(adapter),
-                footer = PostsLoadStateAdapter(adapter)
+            header = PostsLoadStateAdapter(adapter),
+            footer = PostsLoadStateAdapter(adapter)
         )
 
         lifecycleScope.launchWhenCreated {
@@ -102,10 +105,13 @@ class RedditActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launchWhenCreated {
-            @OptIn(ExperimentalPagingApi::class, ExperimentalCoroutinesApi::class)
-            adapter.dataRefreshFlow.collectLatest {
-                list.scrollToPosition(0)
-            }
+            @OptIn(FlowPreview::class)
+            adapter.loadStateFlow
+                // Only emit when REFRESH LoadState for RemoteMediator changes.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                .collect { list.scrollToPosition(0) }
         }
     }
 
