@@ -1,7 +1,7 @@
 # Paging With Network Sample
 
-This sample demonstrates how to use the Paging library with a backend API (in this
-case [Reddit API][8]).
+This sample demonstrates how to use the [Paging library](https://developer.android.com/topic/libraries/architecture/paging)
+with a backend API (in this case [Reddit API][8]).
 
 There are 3 variations of the demo, which you can select in the `MainActivity` class.
 

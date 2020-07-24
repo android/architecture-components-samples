@@ -34,7 +34,7 @@ solutions:    [Mobile]
 github:       googlesamples/android-architecture-components
 
 # Values: BEGINNER | INTERMEDIATE | ADVANCED | EXPERT
-level:        BEGINNER
+level:        ADVANCED
 
 # Default: apache2. May be omitted for most samples.
 # Alternatives: apache2-android (for AOSP)
