@@ -45,7 +45,6 @@ fun BottomNavigationView.setupWithNavController(
     val selectedNavController = MutableLiveData<NavController>()
 
     var firstFragmentGraphId = 0
-
     // First create a NavHostFragment for each NavGraph ID
     // With navigation 2.3.0 when we detach the parent fragment controller is set to null
     // https://android.googlesource.com/platform/frameworks/support/+/523601f023afb95f861e94c149c50e4962ea42e3
