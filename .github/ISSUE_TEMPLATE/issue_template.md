@@ -1,3 +1,12 @@
+---
+name: Samples
+about: Report an issue with one of the samples in this repository
+title: ''
+labels:
+assignees: ''
+
+---
+
 /* Remove this comment
 
 Reporting an issue with the Architecture Components or the samples?
