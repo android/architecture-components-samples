@@ -46,7 +46,7 @@ class SubRedditViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val posts = flowOf(
-        clearListCh.consumeAsFlow().map { PagingData.empty<RedditPost>() },
+        clearListCh.receiveAsFlow().map { PagingData.empty<RedditPost>() },
         savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
             .asFlow()
             .flatMapLatest { repository.postsOfSubreddit(it, 30) }
