@@ -14,7 +14,7 @@ A collection of samples using the [Architecture Components](https://developer.an
 
 ### Samples
 
-* **[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using a SQLite database and Room. Also uses ViewModels and LiveData.
+* **[BasicSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicSample)** - Shows how to persist data using an SQLite database and Room. Also uses ViewModels and LiveData.
 
 * **[PersistenceContentProviderSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceContentProviderSample)** - Shows how to expose data via a Content Provider using Room.
 
