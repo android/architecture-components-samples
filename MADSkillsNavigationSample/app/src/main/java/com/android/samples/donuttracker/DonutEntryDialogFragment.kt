@@ -20,8 +20,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.android.samples.donuttracker.databinding.DonutEntryDialogBinding
@@ -39,10 +39,6 @@ class DonutEntryDialogFragment : BottomSheetDialogFragment() {
     private enum class EditingState {
         NEW_DONUT,
         EXISTING_DONUT
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
     @SuppressLint("SetTextI18n")
@@ -64,15 +60,12 @@ class DonutEntryDialogFragment : BottomSheetDialogFragment() {
         if (editingState == EditingState.EXISTING_DONUT) {
             // Request to edit an existing item, whose id was passed in as an argument.
             // Retrieve that item and populate the UI with its details
-            donutEntryViewModel.get(args.itemId).observe(
-                viewLifecycleOwner,
-                Observer { donutItem ->
-                    binding.name.setText(donutItem.name)
-                    binding.description.setText(donutItem.description)
-                    binding.ratingBar.rating = donutItem.rating.toFloat()
-                    donut = donutItem
-                }
-            )
+            donutEntryViewModel.get(args.itemId).observe(viewLifecycleOwner) { donutItem ->
+                binding.name.setText(donutItem.name)
+                binding.description.setText(donutItem.description)
+                binding.ratingBar.rating = donutItem.rating.toFloat()
+                donut = donutItem
+            }
         }
 
         // When the user clicks the Done button, use the data here to either update
@@ -86,7 +79,8 @@ class DonutEntryDialogFragment : BottomSheetDialogFragment() {
             donutEntryViewModel.addData(
                 donut?.id ?: 0,
                 binding.name.text.toString(),
-                binding.description.text.toString(), binding.ratingBar.rating.toInt()
+                binding.description.text.toString(),
+                binding.ratingBar.rating.toInt()
             ) { actualId ->
                 val arg = DonutEntryDialogFragmentArgs(actualId).toBundle()
                 val pendingIntent = navController

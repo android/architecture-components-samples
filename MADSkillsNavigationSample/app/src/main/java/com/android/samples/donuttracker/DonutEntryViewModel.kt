@@ -24,12 +24,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DonutEntryViewModel(val donutDao: DonutDao) : ViewModel() {
+class DonutEntryViewModel(private val donutDao: DonutDao) : ViewModel() {
 
     private var donutLiveData: LiveData<Donut>? = null
 
     fun get(id: Long): LiveData<Donut> {
-        return donutLiveData ?: liveData<Donut> {
+        return donutLiveData ?: liveData {
             emit(donutDao.get(id))
         }.also {
             donutLiveData = it

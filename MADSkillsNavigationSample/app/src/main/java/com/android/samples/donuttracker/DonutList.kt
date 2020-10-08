@@ -37,13 +37,12 @@ class DonutList : Fragment() {
     private lateinit var donutListViewModel: DonutListViewModel
 
     private val adapter = DonutListAdapter(
-        {
-            // Edit selected donut
-            donut ->
-            findNavController().navigate(DonutListDirections.actionDonutListToDonutEntryDialogFragment(donut.id))
+        onEdit = { donut ->
+            findNavController().navigate(
+                DonutListDirections.actionDonutListToDonutEntryDialogFragment(donut.id)
+            )
         },
-        {
-            // Delete selected donut
+        onDelete = {
             donut ->
             NotificationManagerCompat.from(requireContext()).cancel(donut.id.toInt())
             donutListViewModel.delete(donut)
@@ -63,8 +62,9 @@ class DonutList : Fragment() {
         recyclerView.adapter = adapter
 
         binding.fab.setOnClickListener { fabView ->
-            fabView.findNavController().navigate(DonutListDirections.
-            actionDonutListToDonutEntryDialogFragment())
+            fabView.findNavController().navigate(
+                DonutListDirections.actionDonutListToDonutEntryDialogFragment()
+            )
         }
     }
 

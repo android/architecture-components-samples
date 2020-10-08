@@ -18,16 +18,10 @@
     <string name="app_name">Donut Tracker</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
     <string name="static_shortcut_label_short">New Donut</string>
     <string name="static_shortcut_label_long">Create New Donut</string>
     <string name="static_shortcut_disabled_message">New Donut Shortcut Disabled</string>
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="donut_name">Donut name</string>
     <string name="donut_description">Description</string>
     <string name="donut_rating">Rating</string>
@@ -36,4 +30,9 @@
     <string name="notificationDescription">Notifications from DonutTracker</string>
     <string name="addDonutInfo">Add more donut info!</string>
     <string name="deepLinkNotificationTitle">Deep Link</string>
+    <string name="donutName">donutName</string>
+    <string name="donutPicture">Picture of donut</string>
+    <string name="name">Name</string>
+    <string name="done">Done</string>
+    <string name="rating">Rating</string>
 </resources>

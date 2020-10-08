@@ -31,7 +31,7 @@ import androidx.core.app.NotificationManagerCompat
  */
 object Notifier {
 
-    private val channelId = "Default"
+    private const val channelId = "Default"
 
     fun init(activity: Activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

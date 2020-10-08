@@ -29,7 +29,7 @@ class DonutListAdapter(private var onEdit: (Donut) -> Unit, private var onDelete
     ListAdapter<Donut, DonutListAdapter.DonutListViewHolder>(DonutDiffCallback()) {
 
     class DonutListViewHolder(
-        val binding: DonutItemBinding,
+        private val binding: DonutItemBinding,
         private var onEdit: (Donut) -> Unit,
         private var onDelete: (Donut) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -57,13 +57,12 @@ class DonutListAdapter(private var onEdit: (Donut) -> Unit, private var onDelete
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DonutListViewHolder {
-        val viewHolder = DonutListViewHolder(
+
+        return DonutListViewHolder(
             DonutItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             onEdit,
             onDelete
         )
-
-        return viewHolder
     }
 
     override fun onBindViewHolder(holder: DonutListViewHolder, position: Int) {
