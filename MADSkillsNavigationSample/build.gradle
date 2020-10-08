@@ -52,5 +52,4 @@ ext {
     coreTestingVersion = '2.1.0'
     materialVersion = '1.1.0'
     coroutines = '1.3.7'
-    navVersion = '2.3.0'
 }

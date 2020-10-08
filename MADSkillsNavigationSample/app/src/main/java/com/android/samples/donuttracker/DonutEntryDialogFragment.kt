@@ -20,8 +20,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+<<<<<<< HEAD
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+=======
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+>>>>>>> c27019039141cc64f2b400598da911549981a36b
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.android.samples.donuttracker.databinding.DonutEntryDialogBinding
