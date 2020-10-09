@@ -42,8 +42,7 @@ class DonutList : Fragment() {
                 DonutListDirections.actionDonutListToDonutEntryDialogFragment(donut.id)
             )
         },
-        onDelete = {
-            donut ->
+        onDelete = { donut ->
             NotificationManagerCompat.from(requireContext()).cancel(donut.id.toInt())
             donutListViewModel.delete(donut)
         }
