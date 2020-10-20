@@ -19,7 +19,9 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,6 +52,9 @@ class SubRedditViewModel(
         savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
             .asFlow()
             .flatMapLatest { repository.postsOfSubreddit(it, 30) }
+            // cachedIn() shares the paging state across multiple consumers of posts,
+            // e.g. different generations of UI across rotation config change
+            .cachedIn(viewModelScope)
     ).flattenMerge(2)
 
     fun shouldShowSubreddit(
