@@ -40,8 +40,12 @@ class FakeRedditApi : RedditApi {
     private fun findPosts(
             subreddit: String,
             limit: Int,
-            after: String? = null
+            after: String? = null,
+            before: String? = null
     ): List<RedditApi.RedditChildrenResponse> {
+        // only support paging forward
+        if (before != null) return emptyList()
+
         val subReddit = findSubReddit(subreddit)
         val posts = subReddit.findPosts(limit, after)
         return posts.map { RedditApi.RedditChildrenResponse(it.copy()) }
@@ -59,12 +63,12 @@ class FakeRedditApi : RedditApi {
         failureMsg?.let {
             throw IOException(it)
         }
-        val items = findPosts(subreddit, limit)
-        val after = items.lastOrNull()?.data?.name
+        val items = findPosts(subreddit, limit, after, before)
+        val nextAfter = items.lastOrNull()?.data?.name
         return RedditApi.ListingResponse(
                 RedditApi.ListingData(
                         children = items,
-                        after = after,
+                        after = nextAfter,
                         before = null
                 )
         )
