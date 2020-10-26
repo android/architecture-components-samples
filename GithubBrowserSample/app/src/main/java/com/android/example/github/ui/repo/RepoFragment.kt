@@ -26,7 +26,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -38,6 +37,7 @@ import com.android.example.github.databinding.RepoFragmentBinding
 import com.android.example.github.di.Injectable
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
+import com.android.example.github.viewmodel.GithubViewModelFactory
 import javax.inject.Inject
 
 /**
@@ -46,7 +46,7 @@ import javax.inject.Inject
 class RepoFragment : Fragment(), Injectable {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: GithubViewModelFactory<RepoViewModel>
 
     val repoViewModel: RepoViewModel by viewModels {
         viewModelFactory

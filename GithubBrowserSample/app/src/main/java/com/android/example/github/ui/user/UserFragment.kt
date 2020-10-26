@@ -38,6 +38,7 @@ import com.android.example.github.di.Injectable
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
+import com.android.example.github.viewmodel.GithubViewModelFactory
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -47,7 +48,7 @@ import javax.inject.Inject
 
 class UserFragment : Fragment(), Injectable {
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: GithubViewModelFactory<UserViewModel>
     @Inject
     lateinit var appExecutors: AppExecutors
 
