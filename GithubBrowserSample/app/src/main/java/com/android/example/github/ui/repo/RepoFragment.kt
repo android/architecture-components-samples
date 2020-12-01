@@ -77,7 +77,7 @@ class RepoFragment : Fragment(), Injectable {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = DataBindingUtil.inflate<RepoFragmentBinding>(
             inflater,
             R.layout.repo_fragment,

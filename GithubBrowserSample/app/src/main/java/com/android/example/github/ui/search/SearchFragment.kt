@@ -66,7 +66,7 @@ class SearchFragment : Fragment(), Injectable {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.search_fragment,

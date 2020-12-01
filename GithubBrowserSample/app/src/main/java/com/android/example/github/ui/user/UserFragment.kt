@@ -63,7 +63,7 @@ class UserFragment : Fragment(), Injectable {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val dataBinding = DataBindingUtil.inflate<UserFragmentBinding>(
             inflater,
             R.layout.user_fragment,
