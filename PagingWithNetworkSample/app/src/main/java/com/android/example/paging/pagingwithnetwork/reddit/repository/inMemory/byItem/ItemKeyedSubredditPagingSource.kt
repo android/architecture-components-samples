@@ -16,7 +16,6 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem
 
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
@@ -61,7 +60,6 @@ class ItemKeyedSubredditPagingSource(
         }
     }
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun getRefreshKey(state: PagingState<String, RedditPost>): String? {
         /**
          * The name field is a unique identifier for post items.
