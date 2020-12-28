@@ -33,8 +33,6 @@ import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import kotlinx.android.synthetic.main.activity_reddit.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -91,21 +89,18 @@ class RedditActivity : AppCompatActivity() {
         )
 
         lifecycleScope.launchWhenCreated {
-            @OptIn(ExperimentalCoroutinesApi::class)
             adapter.loadStateFlow.collectLatest { loadStates ->
                 swipe_refresh.isRefreshing = loadStates.refresh is LoadState.Loading
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            @OptIn(ExperimentalCoroutinesApi::class)
             model.posts.collectLatest {
                 adapter.submitData(it)
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            @OptIn(FlowPreview::class)
             adapter.loadStateFlow
                 // Only emit when REFRESH LoadState for RemoteMediator changes.
                 .distinctUntilChangedBy { it.refresh }
