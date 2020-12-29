@@ -17,7 +17,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
 
     defaultConfig {
@@ -30,6 +30,13 @@ android {
 
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
         }
     }
 
@@ -56,20 +63,20 @@ android {
 }
 
 dependencies {
-    // Support libraries
-    implementation deps.support.app_compat
-    implementation deps.support.v4
-    implementation deps.support.design
-    implementation deps.support.cardview
+    implementation deps.app_compat
+    implementation deps.fragment.runtime
+    implementation deps.material
+    implementation deps.cardview
 
     // Architecture components
     implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     annotationProcessor deps.lifecycle.compiler
     implementation deps.room.runtime
     annotationProcessor deps.room.compiler
 
     // Android Testing Support Library's runner and rules
+    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.room.testing
@@ -81,8 +88,7 @@ dependencies {
     androidTestImplementation deps.espresso.intents
 
     // Resolve conflicts between main and test APK:
-    androidTestImplementation deps.support.annotations
-    androidTestImplementation deps.support.v4
-    androidTestImplementation deps.support.app_compat
-    androidTestImplementation deps.support.design
+    androidTestImplementation deps.annotations
+    androidTestImplementation deps.app_compat
+    androidTestImplementation deps.material
 }

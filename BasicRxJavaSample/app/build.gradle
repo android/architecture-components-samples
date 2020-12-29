@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
 
     defaultConfig {
@@ -27,13 +27,11 @@ android {
 }
 
 dependencies {
-    // Support libraries
-    implementation deps.support.app_compat
-    implementation deps.support.v4
-    implementation deps.support.design
+    implementation deps.app_compat
+    implementation deps.fragment.runtime
+    implementation deps.material
     // Architecture components
     implementation deps.lifecycle.runtime
-    implementation deps.lifecycle.extensions
     annotationProcessor deps.lifecycle.compiler
     implementation deps.room.runtime
     annotationProcessor deps.room.compiler
@@ -47,13 +45,10 @@ dependencies {
     testImplementation deps.junit
     testImplementation deps.hamcrest
     testImplementation deps.arch_core.testing
-    testImplementation deps.mockito.all
-
-    // Resolve conflicts between main and local unit tests
-    testImplementation deps.support.annotations
-    testImplementation deps.support.core_utils
+    testImplementation deps.mockito.core
 
     // Android Testing Support Library's runner and rules
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.room.testing
@@ -70,8 +65,7 @@ dependencies {
     androidTestImplementation deps.espresso.intents
 
     // Resolve conflicts between main and test APK:
-    androidTestImplementation deps.support.annotations
-    androidTestImplementation deps.support.v4
-    androidTestImplementation deps.support.app_compat
-    androidTestImplementation deps.support.design
+    androidTestImplementation deps.annotations
+    androidTestImplementation deps.app_compat
+    androidTestImplementation deps.material
 }

@@ -1,0 +1,138 @@
+version: 2
+
+config_android: &config_android
+  docker:
+    - image: circleci/android:api-29
+      environment:
+        JAVA_TOOL_OPTIONS: "-Xmx1024m"
+        GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
+        TERM: dumb
+  working_directory: ~/project
+
+setup_ftl: &setup_ftl
+  name: Authorize gcloud and set config defaults
+  command: |
+    echo $GCLOUD_SERVICE_KEY | base64 -di > ${HOME}/gcloud-service-key.json
+    sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+    sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+
+download_results: &download_results
+  name: Install gsutil dependency and copy test results data
+  command: |
+    BUCKETNAME=${PROJECT_DIR:0:29} # limit length
+    sudo pip install -U crcmod
+    sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}/ | tail -1` ${CIRCLE_ARTIFACTS}/ | true
+
+test_sample: &test_sample
+    <<: *config_android
+    steps:
+      - checkout
+      - run:
+          <<: *setup_ftl
+      - run:
+          name: Assemble APKs
+          command: |
+            cd ${PROJECT_DIR}
+            ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:test :app:lint
+      - run:
+          name: Test $PROJECT_DIR with Firebase Test Lab
+          command: |
+            BUCKETNAME=${PROJECT_DIR:0:29} # limit length
+            sudo gcloud firebase test android run \
+              --app ${PROJECT_DIR}/app/build/outputs/apk/debug/app-debug.apk \
+              --test ${PROJECT_DIR}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}-arch-${BUCKETNAME,,}
+      - run:
+          <<: *download_results
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit
+          destination: tests
+      - run:
+          name: Save test/lint reports
+          command: |
+            mkdir -p ~/reports/${PROJECT_DIR}/
+            cp -R ./${PROJECT_DIR}/app/build/reports/* ~/reports/${PROJECT_DIR}/
+          when: always
+      - store_artifacts:
+          path: ~/reports/
+          destination: reports
+
+jobs:
+  test_basic_sample:
+    environment:
+      PROJECT_DIR: BasicSample
+    <<: *test_sample
+  test_rx_java_sample:
+    environment:
+      PROJECT_DIR: BasicRxJavaSample
+    <<: *test_sample
+  test_rx_java_sample_kotlin:
+    environment:
+      PROJECT_DIR: BasicRxJavaSampleKotlin
+    <<: *test_sample
+  test_github_browser_sample:
+    environment:
+      PROJECT_DIR: GithubBrowserSample
+    <<: *test_sample
+  test_livedata_sample:
+    environment:
+      PROJECT_DIR: LiveDataSample
+    <<: *test_sample
+  test_navigation_basic_sample:
+    environment:
+      PROJECT_DIR: NavigationBasicSample
+    <<: *test_sample
+  test_navigation_advanced_sample:
+    environment:
+      PROJECT_DIR: NavigationAdvancedSample
+    <<: *test_sample
+  test_paging_sample:
+    environment:
+      PROJECT_DIR: PagingSample
+    <<: *test_sample
+  test_paging_network_sample:
+    environment:
+      PROJECT_DIR: PagingWithNetworkSample
+    <<: *test_sample
+  test_persistence_content_provider_sample:
+    environment:
+      PROJECT_DIR: PersistenceContentProviderSample
+    <<: *test_sample
+  test_persistence_migrations_sample:
+    environment:
+      PROJECT_DIR: PersistenceMigrationsSample
+    <<: *test_sample
+  test_workmanager_sample:
+    environment:
+      PROJECT_DIR: WorkManagerSample
+    <<: *test_sample
+  test_viewbinding_sample:
+    environment:
+      PROJECT_DIR: ViewBindingSample
+    <<: *test_sample
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - test_basic_sample
+      - test_rx_java_sample
+      - test_rx_java_sample_kotlin
+      - test_github_browser_sample
+      - test_livedata_sample
+      - test_navigation_basic_sample
+      - test_navigation_advanced_sample
+      - test_paging_sample
+      # flaky, deprecated - test_paging_network_sample
+      - test_persistence_content_provider_sample
+      # inst tests with flavors - test_persistence_migrations_sample
+      # temporarily disabled due to #804 - test_workmanager_sample
+      - test_viewbinding_sample

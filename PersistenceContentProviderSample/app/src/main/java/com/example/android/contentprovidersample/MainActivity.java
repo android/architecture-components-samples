@@ -18,6 +18,9 @@ package com.example.android.contentprovidersample;
 
 import android.database.Cursor;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -54,41 +57,29 @@ public class MainActivity extends AppCompatActivity {
         mCheeseAdapter = new CheeseAdapter();
         list.setAdapter(mCheeseAdapter);
 
-        getSupportLoaderManager().initLoader(LOADER_CHEESES, null, mLoaderCallbacks);
+        LoaderManager.getInstance(this).initLoader(LOADER_CHEESES, null, mLoaderCallbacks);
     }
 
-    private LoaderManager.LoaderCallbacks<Cursor> mLoaderCallbacks =
+    private final LoaderManager.LoaderCallbacks<Cursor> mLoaderCallbacks =
             new LoaderManager.LoaderCallbacks<Cursor>() {
 
                 @Override
-                public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-                    switch (id) {
-                        case LOADER_CHEESES:
-                            return new CursorLoader(getApplicationContext(),
-                                    SampleContentProvider.URI_CHEESE,
-                                    new String[]{Cheese.COLUMN_NAME},
-                                    null, null, null);
-                        default:
-                            throw new IllegalArgumentException();
-                    }
+                @NonNull
+                public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+                    return new CursorLoader(getApplicationContext(),
+                            SampleContentProvider.URI_CHEESE,
+                            new String[]{Cheese.COLUMN_NAME},
+                            null, null, null);
                 }
 
                 @Override
-                public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-                    switch (loader.getId()) {
-                        case LOADER_CHEESES:
-                            mCheeseAdapter.setCheeses(data);
-                            break;
-                    }
+                public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+                    mCheeseAdapter.setCheeses(data);
                 }
 
                 @Override
-                public void onLoaderReset(Loader<Cursor> loader) {
-                    switch (loader.getId()) {
-                        case LOADER_CHEESES:
-                            mCheeseAdapter.setCheeses(null);
-                            break;
-                    }
+                public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+                    mCheeseAdapter.setCheeses(null);
                 }
 
             };
@@ -98,12 +89,13 @@ public class MainActivity extends AppCompatActivity {
         private Cursor mCursor;
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        @NonNull
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new ViewHolder(parent);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             if (mCursor.moveToPosition(position)) {
                 holder.mText.setText(mCursor.getString(
                         mCursor.getColumnIndexOrThrow(Cheese.COLUMN_NAME)));
@@ -122,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         static class ViewHolder extends RecyclerView.ViewHolder {
 
-            TextView mText;
+            final TextView mText;
 
             ViewHolder(ViewGroup parent) {
                 super(LayoutInflater.from(parent.getContext()).inflate(

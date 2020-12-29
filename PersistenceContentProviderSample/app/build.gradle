@@ -17,7 +17,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.android.contentprovidersample"
@@ -48,13 +48,12 @@ dependencies {
     androidTestImplementation(deps.espresso.core, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
 
-    // Support Libraries
-    implementation deps.support.app_compat
-    implementation deps.support.recyclerview
+    implementation deps.app_compat
+    implementation deps.recyclerview
 
-    // App Toolkit
-    implementation deps.lifecycle.extensions
     implementation deps.room.runtime
     annotationProcessor deps.lifecycle.compiler
     annotationProcessor deps.room.compiler

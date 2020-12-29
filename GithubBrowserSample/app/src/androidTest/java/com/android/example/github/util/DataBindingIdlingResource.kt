@@ -16,24 +16,25 @@
 
 package com.android.example.github.util
 
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.espresso.IdlingResource
-import androidx.test.rule.ActivityTestRule
-import androidx.fragment.app.FragmentActivity
-import android.view.View
 import java.util.UUID
 
 /**
  * An espresso idling resource implementation that reports idle status for all data binding
- * layouts.
- * <b/>
- * Since this application only uses fragments, the resource only checks the fragments instead
- * of the whole view tree.
+ * layouts. Data Binding uses a mechanism to post messages which Espresso doesn't track yet.
+ *
+ * Since this application runs UI tests at the fragment layer, this relies on implementations
+ * calling [monitorFragment] with a [FragmentScenario], thereby monitoring all bindings in that
+ * fragment and any child views.
  */
-class DataBindingIdlingResource(
-    private val activityTestRule: ActivityTestRule<*>
-) : IdlingResource {
+class DataBindingIdlingResource : IdlingResource {
     // list of registered callbacks
     private val idlingCallbacks = mutableListOf<IdlingResource.ResourceCallback>()
     // give it a unique id to workaround an espresso bug where you cannot register/unregister
@@ -43,7 +44,16 @@ class DataBindingIdlingResource(
     // onTransitionToIdle callbacks if Espresso never thought we were idle in the first place.
     private var wasNotIdle = false
 
+    private lateinit var scenario: FragmentScenario<out Fragment>
+
     override fun getName() = "DataBinding $id"
+
+    /**
+     * Sets the fragment from a [FragmentScenario] to be used from [DataBindingIdlingResource].
+     */
+    fun monitorFragment(fragmentScenario: FragmentScenario<out Fragment>) {
+        scenario = fragmentScenario
+    }
 
     override fun isIdleNow(): Boolean {
         val idle = !getBindings().any { it.hasPendingBindings() }
@@ -57,9 +67,13 @@ class DataBindingIdlingResource(
         } else {
             wasNotIdle = true
             // check next frame
-            activityTestRule.activity.findViewById<View>(android.R.id.content).postDelayed({
-                isIdleNow
-            }, 16)
+            scenario.onFragment { fragment ->
+                fragment.view?.postDelayed({
+                    if (fragment.view != null) {
+                        isIdleNow
+                    }
+                }, 16)
+            }
         }
         return idle
     }
@@ -72,15 +86,18 @@ class DataBindingIdlingResource(
      * Find all binding classes in all currently available fragments.
      */
     private fun getBindings(): List<ViewDataBinding> {
-        return (activityTestRule.activity as? FragmentActivity)
-            ?.supportFragmentManager
-            ?.fragments
-            ?.mapNotNull {
-                it.view?.let { view ->
-                    DataBindingUtil.getBinding<ViewDataBinding>(
-                        view
-                    )
-                }
-            } ?: emptyList()
+        lateinit var bindings: List<ViewDataBinding>
+        scenario.onFragment {  fragment ->
+            bindings = fragment.requireView().flattenHierarchy().mapNotNull { view ->
+                DataBindingUtil.getBinding<ViewDataBinding>(view)
+            }
+        }
+        return bindings
+    }
+
+    private fun View.flattenHierarchy(): List<View> = if (this is ViewGroup) {
+        listOf(this) + children.map { it.flattenHierarchy() }.flatten()
+    } else {
+        listOf(this)
     }
 }

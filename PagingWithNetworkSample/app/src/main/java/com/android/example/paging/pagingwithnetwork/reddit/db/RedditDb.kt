@@ -16,33 +16,35 @@
 
 package com.android.example.paging.pagingwithnetwork.reddit.db
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import android.content.Context
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
+import com.android.example.paging.pagingwithnetwork.reddit.vo.SubredditRemoteKey
 
 /**
  * Database schema used by the DbRedditPostRepository
  */
 @Database(
-        entities = arrayOf(RedditPost::class),
-        version = 1,
-        exportSchema = false
+    entities = [RedditPost::class, SubredditRemoteKey::class],
+    version = 1,
+    exportSchema = false
 )
 abstract class RedditDb : RoomDatabase() {
     companion object {
-        fun create(context: Context, useInMemory : Boolean): RedditDb {
-            val databaseBuilder = if(useInMemory) {
+        fun create(context: Context, useInMemory: Boolean): RedditDb {
+            val databaseBuilder = if (useInMemory) {
                 Room.inMemoryDatabaseBuilder(context, RedditDb::class.java)
             } else {
                 Room.databaseBuilder(context, RedditDb::class.java, "reddit.db")
             }
             return databaseBuilder
-                    .fallbackToDestructiveMigration()
-                    .build()
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
 
     abstract fun posts(): RedditPostDao
+    abstract fun remoteKeys(): SubredditRemoteKeyDao
 }

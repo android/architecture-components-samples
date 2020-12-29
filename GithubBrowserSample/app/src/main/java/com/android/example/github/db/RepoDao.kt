@@ -16,18 +16,17 @@
 
 package com.android.example.github.db
 
+import android.util.SparseIntArray
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import android.util.SparseIntArray
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.RepoSearchResult
-import java.util.Collections
 
 /**
  * Interface for database access on Repo related operations.
@@ -71,20 +70,15 @@ abstract class RepoDao {
     abstract fun insert(result: RepoSearchResult)
 
     @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
-    abstract fun search(query: String): LiveData<RepoSearchResult>
+    abstract fun search(query: String): LiveData<RepoSearchResult?>
 
     fun loadOrdered(repoIds: List<Int>): LiveData<List<Repo>> {
         val order = SparseIntArray()
         repoIds.withIndex().forEach {
             order.put(it.value, it.index)
         }
-        return Transformations.map(loadById(repoIds)) { repositories ->
-            Collections.sort(repositories) { r1, r2 ->
-                val pos1 = order.get(r1.id)
-                val pos2 = order.get(r2.id)
-                pos1 - pos2
-            }
-            repositories
+        return loadById(repoIds).map { repositories ->
+            repositories.sortedWith(compareBy { order.get(it.id) })
         }
     }
 

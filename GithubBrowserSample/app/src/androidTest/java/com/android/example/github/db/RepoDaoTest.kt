@@ -18,9 +18,9 @@ package com.android.example.github.db
 
 import android.database.sqlite.SQLiteException
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.runner.AndroidJUnit4
-import com.android.example.github.util.LiveDataTestUtil.getValue
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.example.github.util.TestUtil
+import com.android.example.github.util.getOrAwaitValue
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -38,7 +38,7 @@ class RepoDaoTest : DbTest() {
     fun insertAndRead() {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         db.repoDao().insert(repo)
-        val loaded = getValue(db.repoDao().load("foo", "bar"))
+        val loaded = db.repoDao().load("foo", "bar").getOrAwaitValue()
         assertThat(loaded, notNullValue())
         assertThat(loaded.name, `is`("bar"))
         assertThat(loaded.description, `is`("desc"))
@@ -63,15 +63,11 @@ class RepoDaoTest : DbTest() {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         val c1 = TestUtil.createContributor(repo, "c1", 3)
         val c2 = TestUtil.createContributor(repo, "c2", 7)
-        db.beginTransaction()
-        try {
+        db.runInTransaction {
             db.repoDao().insert(repo)
             db.repoDao().insertContributors(arrayListOf(c1, c2))
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
         }
-        val list = getValue(db.repoDao().loadContributors("foo", "bar"))
+        val list = db.repoDao().loadContributors("foo", "bar").getOrAwaitValue()
         assertThat(list.size, `is`(2))
         val first = list[0]
 
@@ -103,11 +99,11 @@ class RepoDaoTest : DbTest() {
         val contributor = TestUtil.createContributor(repo, "aa", 3)
         db.repoDao().insertContributors(listOf(contributor))
         var data = db.repoDao().loadContributors("foo", "bar")
-        assertThat(getValue(data).size, `is`(1))
+        assertThat(data.getOrAwaitValue().size, `is`(1))
 
         val update = TestUtil.createRepo("foo", "bar", "desc")
         db.repoDao().insert(update)
         data = db.repoDao().loadContributors("foo", "bar")
-        assertThat(getValue(data).size, `is`(1))
+        assertThat(data.getOrAwaitValue().size, `is`(1))
     }
 }

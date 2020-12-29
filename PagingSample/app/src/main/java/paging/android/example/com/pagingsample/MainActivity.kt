@@ -16,16 +16,17 @@
 
 package paging.android.example.com.pagingsample
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.KeyEvent
-import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * Shows a list of Cheeses, with swipe-to-delete, and an input field at the top to add.
@@ -34,9 +35,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  * is updated automatically using paging components.
  */
 class MainActivity : AppCompatActivity() {
-    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProviders.of(this).get(CheeseViewModel::class.java)
-    }
+    private val viewModel by viewModels<CheeseViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +47,9 @@ class MainActivity : AppCompatActivity() {
 
         // Subscribe the adapter to the ViewModel, so the items in the adapter are refreshed
         // when the list changes
-        viewModel.allCheeses.observe(this, Observer(adapter::submitList))
+        lifecycleScope.launch {
+            viewModel.allCheeses.collectLatest { adapter.submitData(it) }
+        }
 
         initAddButtonListener()
         initSwipeToDelete()

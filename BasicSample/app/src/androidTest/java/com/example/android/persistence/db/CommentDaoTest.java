@@ -29,8 +29,8 @@ import static org.junit.Assert.assertThat;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import android.database.sqlite.SQLiteConstraintException;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.android.persistence.LiveDataTestUtil;
 import com.example.android.persistence.db.dao.CommentDao;
 import com.example.android.persistence.db.dao.ProductDao;
@@ -63,7 +63,7 @@ public class CommentDaoTest {
     public void initDb() throws Exception {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
-        mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 AppDatabase.class)
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()

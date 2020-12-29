@@ -18,8 +18,8 @@ package com.example.android.observability.persistence
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -38,7 +38,7 @@ class UserDaoTest {
 
     @Before fun initDb() {
         // using an in-memory database because the information stored here disappears after test
-        database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
+        database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 UsersDatabase::class.java)
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()
@@ -57,7 +57,7 @@ class UserDaoTest {
 
     @Test fun insertAndGetUser() {
         // When inserting a new user in the data source
-        database.userDao().insertUser(USER)
+        database.userDao().insertUser(USER).blockingAwait()
 
         // When subscribing to the emissions of the user
         database.userDao().getUserById(USER.id)
@@ -68,11 +68,11 @@ class UserDaoTest {
 
     @Test fun updateAndGetUser() {
         // Given that we have a user in the data source
-        database.userDao().insertUser(USER)
+        database.userDao().insertUser(USER).blockingAwait()
 
         // When we are updating the name of the user
         val updatedUser = User(USER.id, "new username")
-        database.userDao().insertUser(updatedUser)
+        database.userDao().insertUser(updatedUser).blockingAwait()
 
         // When subscribing to the emissions of the user
         database.userDao().getUserById(USER.id)
@@ -83,7 +83,7 @@ class UserDaoTest {
 
     @Test fun deleteAndGetUser() {
         // Given that we have a user in the data source
-        database.userDao().insertUser(USER)
+        database.userDao().insertUser(USER).blockingAwait()
 
         //When we are deleting all users
         database.userDao().deleteAllUsers()

@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.benchmark">
+
+    <application
+        android:debuggable="false"
+        android:theme="@style/TextAppearance.AppCompat"
+        tools:replace="android:debuggable">
+        <activity
+            android:name=".BenchmarkActivity"
+            android:theme="@style/Theme.AppCompat" />
+    </application>
+</manifest>

@@ -21,7 +21,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     defaultConfig {
         applicationId "com.example.android.navigationsample"
         minSdkVersion build_versions.min_sdk
@@ -37,21 +37,63 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    // Robolectric
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
+    sourceSets {
+        androidTest {
+            java.srcDirs += "src/uiTest/java"
+        }
+        test {
+            java.srcDirs += "src/uiTest/java"
+            resources.srcDirs += 'src/uiTest/resources'
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation deps.kotlin.stdlib
-    implementation deps.support.app_compat
-    implementation deps.support.design
-    implementation deps.support.v4
+    implementation deps.app_compat
+    implementation deps.material
     implementation deps.constraint_layout
+    implementation deps.core_ktx
 
-    implementation 'androidx.core:core-ktx:1.0.0'
+    implementation deps.lifecycle.viewmodel_ktx
 
-    // Navigation
+    implementation deps.navigation.fragment_ktx
+    implementation deps.navigation.runtime_ktx
+    implementation deps.fragment.runtime_ktx
+    // "androidx.fragment:fragment-testing" must be scoped to all sourcesets.
+    implementation(deps.fragment.testing)
 
-    implementation deps.navigation.runtime
-    implementation deps.navigation.fragment
+    // Espresso and UI Testing
+    androidTestImplementation deps.atsl.ext_junit
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
+    androidTestImplementation deps.espresso.intents
+    androidTestImplementation deps.navigation.testing
+    androidTestImplementation deps.truth
 
+    // Host-side tests
+    testImplementation deps.atsl.ext_junit
+    testImplementation deps.robolectric
+    // Espresso API running in Robolectric
+    testImplementation deps.espresso.core
+    testImplementation deps.espresso.contrib
+    testImplementation deps.espresso.intents
+    testImplementation deps.navigation.testing
+    testImplementation deps.truth
 }

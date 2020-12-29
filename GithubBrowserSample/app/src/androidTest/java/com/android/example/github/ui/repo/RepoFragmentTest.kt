@@ -16,10 +16,15 @@
 
 package com.android.example.github.ui.repo
 
-import androidx.lifecycle.MutableLiveData
-import androidx.databinding.DataBindingComponent
+import android.content.Context
 import androidx.annotation.StringRes
-import androidx.test.InstrumentationRegistry
+import androidx.databinding.DataBindingComponent
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -28,19 +33,16 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
-import androidx.navigation.NavController
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
-import com.android.example.github.testing.SingleFragmentActivity
 import com.android.example.github.util.CountingAppExecutorsRule
 import com.android.example.github.util.DataBindingIdlingResourceRule
-import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
+import com.android.example.github.util.disableProgressBarAnimations
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
@@ -50,7 +52,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.mock
@@ -60,25 +64,19 @@ import org.mockito.Mockito.verify
 class RepoFragmentTest {
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
-    @Rule
-    @JvmField
     val executorRule = TaskExecutorWithIdlingResourceRule()
     @Rule
     @JvmField
     val countingAppExecutors = CountingAppExecutorsRule()
     @Rule
     @JvmField
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule()
 
+    private val navController = mock<NavController>()
     private val repoLiveData = MutableLiveData<Resource<Repo>>()
     private val contributorsLiveData = MutableLiveData<Resource<List<Contributor>>>()
     private lateinit var viewModel: RepoViewModel
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
-
-    private val repoFragment = TestRepoFragment().apply {
-        arguments = RepoFragmentArgs.Builder("a", "b").build().toBundle()
-    }
 
     @Before
     fun init() {
@@ -87,15 +85,23 @@ class RepoFragmentTest {
         doNothing().`when`(viewModel).setId(anyString(), anyString())
         `when`(viewModel.repo).thenReturn(repoLiveData)
         `when`(viewModel.contributors).thenReturn(contributorsLiveData)
-        repoFragment.appExecutors = countingAppExecutors.appExecutors
-        repoFragment.viewModelFactory = ViewModelUtil.createFor(viewModel)
-        repoFragment.dataBindingComponent = object : DataBindingComponent {
-            override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
-                return mockBindingAdapter
+        val scenario = launchFragmentInContainer(
+                RepoFragmentArgs("a", "b").toBundle()) {
+            RepoFragment().apply {
+                appExecutors = countingAppExecutors.appExecutors
+                viewModelFactory = ViewModelUtil.createFor(viewModel)
+                dataBindingComponent = object : DataBindingComponent {
+                    override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
+                        return mockBindingAdapter
+                    }
+                }
             }
         }
-        activityRule.activity.setFragment(repoFragment)
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
+        dataBindingIdlingResourceRule.monitorFragment(scenario)
+        scenario.onFragment { fragment ->
+            Navigation.setViewNavController(fragment.requireView(), navController)
+            fragment.disableProgressBarAnimations()
+        }
     }
 
     @Test
@@ -172,8 +178,9 @@ class RepoFragmentTest {
     fun testContributorClick() {
         setContributors("aa", "bb", "cc")
         onView(withText("cc")).perform(click())
-        verify(repoFragment.navController).navigate(
-                RepoFragmentDirections.showUser("cc")
+        verify(navController).navigate(
+                eq(RepoFragmentDirections.showUser("cc")),
+                any(FragmentNavigator.Extras::class.java)
         )
     }
 
@@ -204,11 +211,6 @@ class RepoFragmentTest {
     }
 
     private fun getString(@StringRes id: Int, vararg args: Any): String {
-        return InstrumentationRegistry.getTargetContext().getString(id, *args)
-    }
-
-    class TestRepoFragment : RepoFragment() {
-        val navController = mock<NavController>()
-        override fun navController() = navController
+        return ApplicationProvider.getApplicationContext<Context>().getString(id, *args)
     }
 }

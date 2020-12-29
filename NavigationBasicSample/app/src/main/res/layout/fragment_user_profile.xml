@@ -56,6 +56,7 @@
 
     <TextView
         android:id="@+id/profile_user_name"
+        android:gravity="center_horizontal"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"

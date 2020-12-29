@@ -18,7 +18,8 @@ package com.example.android.observability.persistence;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,10 +39,10 @@ public class LocalUserDataSourceTest {
     private LocalUserDataSource mDataSource;
 
     @Before
-    public void initDb() throws Exception {
+    public void initDb() {
         // using an in-memory database because the information stored here disappears when the
         // process is killed
-        mDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
+        mDatabase = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
                 UsersDatabase.class)
                 // allowing main thread queries, just for testing
                 .allowMainThreadQueries()
@@ -50,14 +51,14 @@ public class LocalUserDataSourceTest {
     }
 
     @After
-    public void closeDb() throws Exception {
+    public void closeDb() {
         mDatabase.close();
     }
 
     @Test
     public void insertAndGetUser() {
         // When inserting a new user in the data source
-        mDataSource.insertOrUpdateUser(USER);
+        mDataSource.insertOrUpdateUser(USER).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDataSource.getUser()
@@ -73,11 +74,11 @@ public class LocalUserDataSourceTest {
     @Test
     public void updateAndGetUser() {
         // Given that we have a user in the data source
-        mDataSource.insertOrUpdateUser(USER);
+        mDataSource.insertOrUpdateUser(USER).blockingAwait();
 
         // When we are updating the name of the user
         User updatedUser = new User(USER.getId(), "new username");
-        mDataSource.insertOrUpdateUser(updatedUser);
+        mDataSource.insertOrUpdateUser(updatedUser).blockingAwait();
 
         // When subscribing to the emissions of the user
         mDatabase.userDao().getUser()
@@ -93,7 +94,7 @@ public class LocalUserDataSourceTest {
     @Test
     public void deleteAndGetUser() {
         // Given that we have a user in the data source
-        mDataSource.insertOrUpdateUser(USER);
+        mDataSource.insertOrUpdateUser(USER).blockingAwait();
 
         //When we are deleting all users
         mDataSource.deleteAllUsers();

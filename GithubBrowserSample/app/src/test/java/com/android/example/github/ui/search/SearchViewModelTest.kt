@@ -48,7 +48,7 @@ class SearchViewModelTest {
 
     @Before
     fun init() {
-        // need ot init after instant executor rule is established.
+        // need to init after instant executor rule is established.
         viewModel = SearchViewModel(repository)
     }
 

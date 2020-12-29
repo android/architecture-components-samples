@@ -16,10 +16,13 @@
 
 package com.example.android.persistence.ui;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -28,7 +31,6 @@ import com.example.android.persistence.model.Product;
 import com.example.android.persistence.R;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -69,8 +71,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     Product newProduct = productList.get(newItemPosition);
                     Product oldProduct = mProductList.get(oldItemPosition);
                     return newProduct.getId() == oldProduct.getId()
-                            && Objects.equals(newProduct.getDescription(), oldProduct.getDescription())
-                            && Objects.equals(newProduct.getName(), oldProduct.getName())
+                            && TextUtils.equals(newProduct.getDescription(), oldProduct.getDescription())
+                            && TextUtils.equals(newProduct.getName(), oldProduct.getName())
                             && newProduct.getPrice() == oldProduct.getPrice();
                 }
             });
@@ -80,7 +82,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     @Override
-    public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ProductItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.product_item,
                         parent, false);
@@ -89,7 +92,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     @Override
-    public void onBindViewHolder(ProductViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         holder.binding.setProduct(mProductList.get(position));
         holder.binding.executePendingBindings();
     }

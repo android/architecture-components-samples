@@ -16,8 +16,13 @@
 
 package com.android.example.github.ui.search
 
-import androidx.lifecycle.MutableLiveData
+import android.view.KeyEvent
 import androidx.databinding.DataBindingComponent
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressKey
@@ -30,21 +35,16 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
-import androidx.recyclerview.widget.RecyclerView
-import android.view.KeyEvent
-import androidx.navigation.NavController
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
-import com.android.example.github.testing.SingleFragmentActivity
 import com.android.example.github.util.CountingAppExecutorsRule
 import com.android.example.github.util.DataBindingIdlingResourceRule
-import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
+import com.android.example.github.util.disableProgressBarAnimations
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
@@ -63,22 +63,19 @@ import org.mockito.Mockito.verify
 class SearchFragmentTest {
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
-    @Rule
-    @JvmField
     val executorRule = TaskExecutorWithIdlingResourceRule()
     @Rule
     @JvmField
     val countingAppExecutors = CountingAppExecutorsRule()
     @Rule
     @JvmField
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule()
 
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
     private lateinit var viewModel: SearchViewModel
+    private val navController = mock<NavController>()
     private val results = MutableLiveData<Resource<List<Repo>>>()
     private val loadMoreStatus = MutableLiveData<SearchViewModel.LoadMoreState>()
-    private val searchFragment = TestSearchFragment()
 
     @Before
     fun init() {
@@ -88,15 +85,23 @@ class SearchFragmentTest {
 
         mockBindingAdapter = mock(FragmentBindingAdapters::class.java)
 
-        searchFragment.appExecutors = countingAppExecutors.appExecutors
-        searchFragment.viewModelFactory = ViewModelUtil.createFor(viewModel)
-        searchFragment.dataBindingComponent = object : DataBindingComponent {
-            override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
-                return mockBindingAdapter
+        val scenario = launchFragmentInContainer(
+                themeResId = R.style.AppTheme) {
+            SearchFragment().apply {
+                appExecutors = countingAppExecutors.appExecutors
+                viewModelFactory = ViewModelUtil.createFor(viewModel)
+                dataBindingComponent = object : DataBindingComponent {
+                    override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
+                        return mockBindingAdapter
+                    }
+                }
             }
         }
-        activityRule.activity.setFragment(searchFragment)
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
+        dataBindingIdlingResourceRule.monitorFragment(scenario)
+        scenario.onFragment { fragment ->
+            Navigation.setViewNavController(fragment.requireView(), navController)
+            fragment.disableProgressBarAnimations()
+        }
     }
 
     @Test
@@ -149,7 +154,7 @@ class SearchFragmentTest {
         val repo = TestUtil.createRepo("foo", "bar", "desc")
         results.postValue(Resource.success(arrayListOf(repo)))
         onView(withText("desc")).perform(click())
-        verify(searchFragment.navController).navigate(
+        verify(navController).navigate(
                 SearchFragmentDirections.showRepo("foo", "bar")
         )
     }
@@ -174,10 +179,5 @@ class SearchFragmentTest {
 
     private fun listMatcher(): RecyclerViewMatcher {
         return RecyclerViewMatcher(R.id.repo_list)
-    }
-
-    class TestSearchFragment : SearchFragment() {
-        val navController = mock<NavController>()
-        override fun navController() = navController
     }
 }

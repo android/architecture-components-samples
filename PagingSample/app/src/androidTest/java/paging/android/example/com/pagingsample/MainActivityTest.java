@@ -19,8 +19,9 @@ package paging.android.example.com.pagingsample;
 import android.app.Activity;
 import androidx.arch.core.executor.testing.CountingTaskExecutorRule;
 import android.content.Intent;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.junit.Rule;
@@ -41,11 +42,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
     @Rule
-    public CountingTaskExecutorRule testRule = new CountingTaskExecutorRule();
+    public final CountingTaskExecutorRule testRule = new CountingTaskExecutorRule();
 
     @Test
     public void showSomeResults() throws InterruptedException, TimeoutException {
-        Intent intent = new Intent(InstrumentationRegistry.getTargetContext(), MainActivity.class);
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Activity activity = InstrumentationRegistry.getInstrumentation().startActivitySync(intent);
         testRule.drainTasks(10, TimeUnit.SECONDS);
@@ -59,9 +60,7 @@ public class MainActivityTest {
 
     private void waitForAdapterChange(final RecyclerView recyclerView) throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() ->
                 recyclerView.getAdapter().registerAdapterDataObserver(
                         new RecyclerView.AdapterDataObserver() {
                             @Override
@@ -73,9 +72,7 @@ public class MainActivityTest {
                             public void onChanged() {
                                 latch.countDown();
                             }
-                        });
-            }
-        });
+                        }));
         if (recyclerView.getAdapter().getItemCount() > 0) {
             return;//already loaded
         }

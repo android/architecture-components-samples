@@ -52,8 +52,7 @@ class FetchNextSearchPageTask constructor(
         }
         val newValue = try {
             val response = githubService.searchRepos(query, nextPage).execute()
-            val apiResponse = ApiResponse.create(response)
-            when (apiResponse) {
+            when (val apiResponse = ApiResponse.create(response)) {
                 is ApiSuccessResponse -> {
                     // we merge all repo ids into 1 list so that it is easier to fetch the
                     // result list.
@@ -65,13 +64,9 @@ class FetchNextSearchPageTask constructor(
                         query, ids,
                         apiResponse.body.total, apiResponse.nextPage
                     )
-                    try {
-                        db.beginTransaction()
+                    db.runInTransaction {
                         db.repoDao().insert(merged)
                         db.repoDao().insertRepos(apiResponse.body.items)
-                        db.setTransactionSuccessful()
-                    } finally {
-                        db.endTransaction()
                     }
                     Resource.success(apiResponse.nextPage != null)
                 }

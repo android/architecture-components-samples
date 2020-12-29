@@ -16,71 +16,49 @@
 
 package com.example.android.persistence.ui;
 
-import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.android.persistence.databinding.CommentItemBinding;
-import com.example.android.persistence.model.Comment;
+import com.example.android.persistence.db.entity.CommentEntity;
 import com.example.android.persistence.R;
 
-import java.util.List;
-import java.util.Objects;
-
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
-
-    private List<? extends Comment> mCommentList;
+public class CommentAdapter extends ListAdapter<CommentEntity, CommentAdapter.CommentViewHolder> {
 
     @Nullable
     private final CommentClickCallback mCommentClickCallback;
 
-    public CommentAdapter(@Nullable CommentClickCallback commentClickCallback) {
+    CommentAdapter(@Nullable CommentClickCallback commentClickCallback) {
+        super(new AsyncDifferConfig.Builder<>(new DiffUtil.ItemCallback<CommentEntity>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull CommentEntity old,
+                    @NonNull CommentEntity comment) {
+                return old.getId() == comment.getId();
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull CommentEntity old,
+                    @NonNull CommentEntity comment) {
+                return old.getId() == comment.getId()
+                        && old.getPostedAt().equals(comment.getPostedAt())
+                        && old.getProductId() == comment.getProductId()
+                        && TextUtils.equals(old.getText(), comment.getText());
+            }
+        }).build());
         mCommentClickCallback = commentClickCallback;
     }
 
-    public void setCommentList(final List<? extends Comment> comments) {
-        if (mCommentList == null) {
-            mCommentList = comments;
-            notifyItemRangeInserted(0, comments.size());
-        } else {
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                @Override
-                public int getOldListSize() {
-                    return mCommentList.size();
-                }
-
-                @Override
-                public int getNewListSize() {
-                    return comments.size();
-                }
-
-                @Override
-                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    Comment old = mCommentList.get(oldItemPosition);
-                    Comment comment = comments.get(newItemPosition);
-                    return old.getId() == comment.getId();
-                }
-
-                @Override
-                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Comment old = mCommentList.get(oldItemPosition);
-                    Comment comment = comments.get(newItemPosition);
-                    return old.getId() == comment.getId()
-                            && old.getPostedAt() == comment.getPostedAt()
-                            && old.getProductId() == comment.getProductId()
-                            && Objects.equals(old.getText(), comment.getText());
-                }
-            });
-            mCommentList = comments;
-            diffResult.dispatchUpdatesTo(this);
-        }
-    }
-
     @Override
-    public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         CommentItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.comment_item,
                         parent, false);
@@ -89,14 +67,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     @Override
-    public void onBindViewHolder(CommentViewHolder holder, int position) {
-        holder.binding.setComment(mCommentList.get(position));
+    public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        holder.binding.setComment(getItem(position));
         holder.binding.executePendingBindings();
-    }
-
-    @Override
-    public int getItemCount() {
-        return mCommentList == null ? 0 : mCommentList.size();
     }
 
     static class CommentViewHolder extends RecyclerView.ViewHolder {

@@ -55,7 +55,7 @@ The database is created using Room and it has two entities: a `ProductEntity` an
 
 Room populates the database asynchronously when it's created, via the `RoomDatabase#Callback`. To simulate low-performance, an artificial delay is added. To let 
  other components know when the data has finished populating, the `AppDatabase` exposes a 
- `LiveData` object..
+ `LiveData` object.
 
 To access the data and execute queries, you use a [Data Access Object](https://developer.android.com/topic/libraries/architecture/room.html#daos) (DAO). For example, a product is loaded with the following query:
 

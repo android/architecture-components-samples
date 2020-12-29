@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Lifecycle
+    url: https://issuetracker.google.com/issues/new?component=413132&template=1096619
+    about: File a bug or feature request for Lifecycle
+  - name: Navigation
+    url: https://issuetracker.google.com/issues/new?component=409828&template=1093757
+    about: File a bug or feature request for Navigation or SafeArgs
+  - name: Paging
+    url: https://issuetracker.google.com/issues/new?component=413106&template=1096385
+    about: File a bug or feature request for Paging
+  - name: Room
+    url: https://issuetracker.google.com/issues/new?component=413107&template=1096568
+    about: File a bug or feature request for Room
+  - name: WorkManager
+    url: https://issuetracker.google.com/issues/new?component=409906&template=1094197
+    about: File a bug or feature request for WorkManager

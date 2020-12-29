@@ -3,6 +3,9 @@ package com.example.android.persistence;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.rule.ActivityTestRule;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -27,8 +30,9 @@ public class EspressoTestUtil {
                 .registerFragmentLifecycleCallbacks(
                         new FragmentManager.FragmentLifecycleCallbacks() {
                             @Override
-                            public void onFragmentViewCreated(FragmentManager fm, Fragment f, View v,
-                                    Bundle savedInstanceState) {
+                            public void onFragmentViewCreated(@NonNull FragmentManager fm,
+                                    @NonNull Fragment f, @NonNull View v,
+                                    @Nullable Bundle savedInstanceState) {
                                 // traverse all views, if any is a progress bar, replace its animation
                                 traverseViews(v);
                             }

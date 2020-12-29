@@ -43,7 +43,7 @@ public class User {
         mUserName = userName;
     }
 
-    public User(String id, String userName) {
+    public User(@NonNull String id, String userName) {
         this.mId = id;
         this.mUserName = userName;
     }

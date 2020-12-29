@@ -16,16 +16,18 @@
 
 package com.example.android.observability.ui
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.example.android.observability.Injection
 import com.example.android.observability.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_user.*
+import kotlinx.android.synthetic.main.activity_user.update_user_button
+import kotlinx.android.synthetic.main.activity_user.user_name
+import kotlinx.android.synthetic.main.activity_user.user_name_input
 
 /**
  * Main screen of the app. Displays a user name and gives the option to update the user name.
@@ -34,7 +36,7 @@ class UserActivity : AppCompatActivity() {
 
     private lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var viewModel: UserViewModel
+    private val viewModel: UserViewModel by viewModels { viewModelFactory }
 
     private val disposable = CompositeDisposable()
 
@@ -43,7 +45,6 @@ class UserActivity : AppCompatActivity() {
         setContentView(R.layout.activity_user)
 
         viewModelFactory = Injection.provideViewModelFactory(this)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel::class.java)
         update_user_button.setOnClickListener { updateUserName() }
     }
 

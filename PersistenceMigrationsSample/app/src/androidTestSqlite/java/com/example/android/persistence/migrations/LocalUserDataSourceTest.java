@@ -19,8 +19,8 @@ package com.example.android.persistence.migrations;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class LocalUserDataSourceTest {
 
     @Before
     public void initDb() throws Exception {
-        mDataSource = LocalUserDataSource.getInstance(InstrumentationRegistry.getTargetContext());
+        mDataSource = LocalUserDataSource.getInstance(ApplicationProvider.getApplicationContext());
     }
 
     @After

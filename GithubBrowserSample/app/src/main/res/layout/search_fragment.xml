@@ -27,22 +27,18 @@
         <import type="com.android.example.github.vo.Status" />
 
         <import type="com.android.example.github.vo.Resource" />
-
-        <variable
-            name="resultCount"
-            type="int" />
-
+        <import type="androidx.lifecycle.LiveData"/>
         <variable
             name="query"
-            type="String" />
+            type="LiveData&lt;String>" />
 
         <variable
             name="loadingMore"
             type="boolean" />
 
         <variable
-            name="searchResource"
-            type="Resource" />
+            name="searchResult"
+            type="LiveData&lt;Resource&lt;List&lt;Repo>>>" />
 
         <variable
             name="callback"
@@ -104,7 +100,7 @@
             android:layout_height="wrap_content"
             android:text="@{@string/empty_search_result(query)}"
             android:id="@+id/no_results_text"
-            app:visibleGone="@{searchResource.status == Status.SUCCESS &amp;&amp; resultCount == 0}"
+            app:visibleGone="@{searchResult.status == Status.SUCCESS &amp;&amp; searchResult.data.size == 0}"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -114,7 +110,7 @@
 
         <include
             layout="@layout/loading_state"
-            app:resource="@{searchResource}"
+            app:resource="@{(Resource) searchResult}"
             app:callback="@{() -> callback.retry()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

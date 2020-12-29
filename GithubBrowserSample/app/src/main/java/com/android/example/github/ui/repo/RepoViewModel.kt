@@ -18,8 +18,8 @@ package com.android.example.github.ui.repo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.android.example.github.repository.RepoRepository
 import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.util.AbsentLiveData
@@ -33,18 +33,16 @@ class RepoViewModel @Inject constructor(repository: RepoRepository) : ViewModel(
     private val _repoId: MutableLiveData<RepoId> = MutableLiveData()
     val repoId: LiveData<RepoId>
         get() = _repoId
-    val repo: LiveData<Resource<Repo>> = Transformations
-        .switchMap(_repoId) { input ->
-            input.ifExists { owner, name ->
-                repository.loadRepo(owner, name)
-            }
+    val repo: LiveData<Resource<Repo>> = _repoId.switchMap { input ->
+        input.ifExists { owner, name ->
+            repository.loadRepo(owner, name)
         }
-    val contributors: LiveData<Resource<List<Contributor>>> = Transformations
-        .switchMap(_repoId) { input ->
-            input.ifExists { owner, name ->
-                repository.loadContributors(owner, name)
-            }
+    }
+    val contributors: LiveData<Resource<List<Contributor>>> = _repoId.switchMap { input ->
+        input.ifExists { owner, name ->
+            repository.loadContributors(owner, name)
         }
+    }
 
     fun retry() {
         val owner = _repoId.value?.owner

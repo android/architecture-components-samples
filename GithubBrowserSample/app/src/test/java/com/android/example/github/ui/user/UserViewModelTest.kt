@@ -150,7 +150,7 @@ class UserViewModelTest {
 
     @Test
     fun dontRefreshOnSameData() {
-        val observer = mock<Observer<String>>()
+        val observer = mock<Observer<String?>>()
         userViewModel.login.observeForever(observer)
         verifyNoMoreInteractions(observer)
         userViewModel.setLogin("foo")

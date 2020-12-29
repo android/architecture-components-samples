@@ -19,7 +19,7 @@ package com.android.example.github.db
 
 import androidx.arch.core.executor.testing.CountingTaskExecutorRule
 import androidx.room.Room
-import androidx.test.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -36,7 +36,7 @@ abstract class DbTest {
     @Before
     fun initDb() {
         _db = Room.inMemoryDatabaseBuilder(
-            InstrumentationRegistry.getContext(),
+            ApplicationProvider.getApplicationContext(),
             GithubDb::class.java
         ).build()
     }

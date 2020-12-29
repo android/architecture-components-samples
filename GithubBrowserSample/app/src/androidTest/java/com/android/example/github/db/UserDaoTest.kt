@@ -17,9 +17,9 @@
 package com.android.example.github.db
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.runner.AndroidJUnit4
-import com.android.example.github.util.LiveDataTestUtil.getValue
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.example.github.util.TestUtil
+import com.android.example.github.util.getOrAwaitValue
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
@@ -37,13 +37,13 @@ class UserDaoTest : DbTest() {
         val user = TestUtil.createUser("foo")
         db.userDao().insert(user)
 
-        val loaded = getValue(db.userDao().findByLogin(user.login))
+        val loaded = db.userDao().findByLogin(user.login).getOrAwaitValue()
         assertThat(loaded.login, `is`("foo"))
 
         val replacement = TestUtil.createUser("foo2")
         db.userDao().insert(replacement)
 
-        val loadedReplacement = getValue(db.userDao().findByLogin(replacement.login))
+        val loadedReplacement = db.userDao().findByLogin(replacement.login).getOrAwaitValue()
         assertThat(loadedReplacement.login, `is`("foo2"))
     }
 }

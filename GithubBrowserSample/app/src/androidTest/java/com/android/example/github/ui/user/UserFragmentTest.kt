@@ -16,8 +16,11 @@
 
 package com.android.example.github.ui.user
 
-import androidx.lifecycle.MutableLiveData
 import androidx.databinding.DataBindingComponent
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -26,19 +29,16 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
-import androidx.navigation.NavController
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentBindingAdapters
-import com.android.example.github.testing.SingleFragmentActivity
 import com.android.example.github.util.CountingAppExecutorsRule
 import com.android.example.github.util.DataBindingIdlingResourceRule
-import com.android.example.github.util.EspressoTestUtil
 import com.android.example.github.util.RecyclerViewMatcher
 import com.android.example.github.util.TaskExecutorWithIdlingResourceRule
 import com.android.example.github.util.TestUtil
 import com.android.example.github.util.ViewModelUtil
+import com.android.example.github.util.disableProgressBarAnimations
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
@@ -58,23 +58,18 @@ import org.mockito.Mockito.verify
 class UserFragmentTest {
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
-    @Rule
-    @JvmField
     val executorRule = TaskExecutorWithIdlingResourceRule()
     @Rule
     @JvmField
     val countingAppExecutors = CountingAppExecutorsRule()
     @Rule
     @JvmField
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityRule)
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule()
     private lateinit var viewModel: UserViewModel
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
+    private val navController = mock<NavController>()
     private val userData = MutableLiveData<Resource<User>>()
     private val repoListData = MutableLiveData<Resource<List<Repo>>>()
-    private val testFragment = TestUserFragment().apply {
-        arguments = UserFragmentArgs.Builder("foo").build().toBundle()
-    }
 
     @Before
     fun init() {
@@ -84,18 +79,24 @@ class UserFragmentTest {
         doNothing().`when`(viewModel).setLogin(anyString())
         mockBindingAdapter = mock(FragmentBindingAdapters::class.java)
 
-        testFragment.appExecutors = countingAppExecutors.appExecutors
-        testFragment.viewModelFactory = ViewModelUtil.createFor(viewModel)
-        testFragment.dataBindingComponent = object : DataBindingComponent {
-            override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
-                return mockBindingAdapter
+        val scenario = launchFragmentInContainer(
+                UserFragmentArgs("foo").toBundle()) {
+            UserFragment().apply {
+                appExecutors = countingAppExecutors.appExecutors
+                viewModelFactory = ViewModelUtil.createFor(viewModel)
+                dataBindingComponent = object : DataBindingComponent {
+                    override fun getFragmentBindingAdapters(): FragmentBindingAdapters {
+                        return mockBindingAdapter
+                    }
+                }
             }
         }
-        activityRule.activity.setFragment(testFragment)
-        activityRule.runOnUiThread {
-            testFragment.binding.repoList.itemAnimator = null
+        dataBindingIdlingResourceRule.monitorFragment(scenario)
+        scenario.onFragment { fragment ->
+            Navigation.setViewNavController(fragment.requireView(), navController)
+            fragment.binding.repoList.itemAnimator = null
+            fragment.disableProgressBarAnimations()
         }
-        EspressoTestUtil.disableProgressBarAnimations(activityRule)
     }
 
     @Test
@@ -154,7 +155,7 @@ class UserFragmentTest {
         val repos = setRepos(2)
         val selected = repos[1]
         onView(withText(selected.description)).perform(click())
-        verify(testFragment.navController).navigate(
+        verify(navController).navigate(
                 UserFragmentDirections.showRepo(selected.owner.login, selected.name)
         )
     }
@@ -196,10 +197,5 @@ class UserFragmentTest {
         }
         repoListData.postValue(Resource.success(repos))
         return repos
-    }
-
-    class TestUserFragment : UserFragment() {
-        val navController = mock<NavController>()
-        override fun navController() = navController
     }
 }

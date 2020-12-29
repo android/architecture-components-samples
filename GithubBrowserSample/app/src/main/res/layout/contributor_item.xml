@@ -22,11 +22,7 @@
 
         <variable
             name="contributor"
-            type="com.android.example.github.vo.Contributor"
-            tools:layout_conversion_absoluteX="0dp"
-            tools:layout_conversion_absoluteY="-81dp"
-            tools:layout_conversion_absoluteWidth="0dp"
-            tools:layout_conversion_absoluteHeight="0dp" />
+            type="com.android.example.github.vo.Contributor" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -48,6 +44,7 @@
                 android:adjustViewBounds="false"
                 android:cropToPadding="false"
                 android:scaleType="centerCrop"
+                app:transitionName="@{contributor.login}"
                 app:srcCompat="@android:drawable/btn_star"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="@dimen/default_margin"

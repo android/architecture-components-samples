@@ -15,11 +15,15 @@
  */
 package com.android.example.github.util
 
-import androidx.test.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import com.android.example.github.testing.SingleFragmentActivity
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
@@ -47,7 +51,6 @@ class AutoClearedValueTest {
 
     @Test
     fun clearOnReplace() {
-        testFragment.testValue = "foo"
         activityRule.activity.replaceFragment(TestFragment())
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         try {
@@ -58,8 +61,21 @@ class AutoClearedValueTest {
     }
 
     @Test
+    fun clearOnReplaceBackStack() {
+        activityRule.activity.replaceFragment(TestFragment(), true)
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        try {
+            testFragment.testValue
+            Assert.fail("should throw if accessed when not set")
+        } catch (ex: IllegalStateException) {
+        }
+        activityRule.activity.supportFragmentManager.popBackStack()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        assertThat(testFragment.testValue, `is`("foo"))
+    }
+
+    @Test
     fun dontClearForChildFragment() {
-        testFragment.testValue = "foo"
         testFragment.childFragmentManager.beginTransaction()
             .add(Fragment(), "foo").commit()
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
@@ -68,9 +84,8 @@ class AutoClearedValueTest {
 
     @Test
     fun dontClearForDialog() {
-        testFragment.testValue = "foo"
         val dialogFragment = DialogFragment()
-        dialogFragment.show(testFragment.fragmentManager!!, "dialog")
+        dialogFragment.show(testFragment.parentFragmentManager, "dialog")
         dialogFragment.dismiss()
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         assertThat(testFragment.testValue, `is`("foo"))
@@ -78,5 +93,11 @@ class AutoClearedValueTest {
 
     class TestFragment : Fragment() {
         var testValue by autoCleared<String>()
+
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                savedInstanceState: Bundle?): View? {
+            testValue = "foo"
+            return View(context)
+        }
     }
 }
