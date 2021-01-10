@@ -26,7 +26,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
@@ -34,7 +33,6 @@ import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.UserFragmentBinding
-import com.android.example.github.di.Injectable
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
@@ -42,34 +40,34 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class UserFragment : Fragment(), Injectable {
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+@AndroidEntryPoint
+class UserFragment : Fragment() {
+
     @Inject
     lateinit var appExecutors: AppExecutors
 
     var binding by autoCleared<UserFragmentBinding>()
     var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
-    private val userViewModel: UserViewModel by viewModels {
-        viewModelFactory
-    }
+    private val userViewModel: UserViewModel by viewModels()
+
     private val params by navArgs<UserFragmentArgs>()
     private var adapter by autoCleared<RepoListAdapter>()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val dataBinding = DataBindingUtil.inflate<UserFragmentBinding>(
-            inflater,
-            R.layout.user_fragment,
-            container,
-            false,
-            dataBindingComponent
+                inflater,
+                R.layout.user_fragment,
+                container,
+                false,
+                dataBindingComponent
         )
         dataBinding.retryCallback = object : RetryCallback {
             override fun retry() {
@@ -102,9 +100,9 @@ class UserFragment : Fragment(), Injectable {
         binding.user = userViewModel.user
         binding.lifecycleOwner = viewLifecycleOwner
         val rvAdapter = RepoListAdapter(
-            dataBindingComponent = dataBindingComponent,
-            appExecutors = appExecutors,
-            showFullName = false
+                dataBindingComponent = dataBindingComponent,
+                appExecutors = appExecutors,
+                showFullName = false
         ) { repo ->
             findNavController().navigate(UserFragmentDirections.showRepo(repo.owner.login, repo.name))
         }
