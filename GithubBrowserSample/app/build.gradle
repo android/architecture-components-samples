@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+plugins {
+    id 'com.google.devtools.ksp' version "1.4.20-dev-experimental-20210111"
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
@@ -96,7 +99,7 @@ dependencies {
 
     kapt deps.dagger.android_support_compiler
     kapt deps.dagger.compiler
-    kapt deps.room.compiler
+    ksp deps.room.compiler
     kapt deps.lifecycle.compiler
 
     testImplementation deps.junit
