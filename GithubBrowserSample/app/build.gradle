@@ -15,7 +15,6 @@
  */
 
 apply plugin: 'com.android.application'
-apply plugin: 'jacoco'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
@@ -63,10 +62,6 @@ android {
     lintOptions {
         lintConfig rootProject.file('lint.xml')
     }
-}
-
-jacoco {
-    toolVersion = "0.7.4+"
 }
 
 dependencies {
