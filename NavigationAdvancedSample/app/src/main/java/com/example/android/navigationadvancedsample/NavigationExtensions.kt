@@ -47,7 +47,7 @@ fun BottomNavigationView.setupWithNavController(
     var firstFragmentGraphId = 0
 
     // First create a NavHostFragment for each NavGraph ID
-    navGraphIds.forEachIndexed { index, navGraphId ->
+    navGraphIds.reversed().forEachIndexed { index, navGraphId ->
         val fragmentTag = getFragmentTag(index)
 
         // Find or create the Navigation host fragment
