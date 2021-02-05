@@ -22,7 +22,6 @@ import androidx.test.annotation.UiThreadTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-import kotlinx.android.synthetic.main.activity_benchmark.*
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -44,10 +43,10 @@ class PostsAdapterBenchmark {
 
         // If RecyclerView has children, the items are attached, bound, and gone through layout.
         // Ready to benchmark.
-        assertTrue("RecyclerView expected to have children", activity.list.childCount > 0)
+        assertTrue("RecyclerView expected to have children", activity.binding.list.childCount > 0)
 
         benchmarkRule.measureRepeated {
-            activity.list.scrollByOneItem()
+            activity.binding.list.scrollByOneItem()
             runWithTimingDisabled {
                 activity.testExecutor.flush()
             }

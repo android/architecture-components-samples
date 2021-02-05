@@ -24,21 +24,24 @@ import androidx.paging.PagingSource
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.reddit.ui.PostsAdapter
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import kotlinx.android.synthetic.main.activity_benchmark.*
+import com.example.benchmark.databinding.ActivityBenchmarkBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class BenchmarkActivity : AppCompatActivity() {
     val testExecutor = TestExecutor()
+    lateinit var binding: ActivityBenchmarkBinding
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_benchmark)
+        binding = ActivityBenchmarkBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val glide = GlideApp.with(this)
         val adapter = PostsAdapter(glide)
-        list.adapter = adapter
+        binding.list.adapter = adapter
 
         val config = PagingConfig(
             pageSize = 5,

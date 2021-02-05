@@ -59,6 +59,7 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     var testRule = CountingTaskExecutorRule()
 
     private val postFactory = PostFactory()
+
     @Before
     fun init() {
         val fakeApi = FakeRedditApi()
@@ -68,9 +69,9 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         val app = ApplicationProvider.getApplicationContext<Application>()
         // use a controlled service locator w/ fake API
         ServiceLocator.swap(
-                object : DefaultServiceLocator(app = app, useInMemoryDb = true) {
-                    override fun getRedditApi(): RedditApi = fakeApi
-                }
+            object : DefaultServiceLocator(app = app, useInMemoryDb = true) {
+                override fun getRedditApi(): RedditApi = fakeApi
+            }
         )
     }
 
@@ -78,8 +79,8 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     @Throws(InterruptedException::class, TimeoutException::class)
     fun showSomeResults() {
         val intent = RedditActivity.intentFor(
-                context = ApplicationProvider.getApplicationContext(),
-                type = type
+            context = ApplicationProvider.getApplicationContext(),
+            type = type
         )
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val activity = InstrumentationRegistry.getInstrumentation().startActivitySync(intent)
@@ -93,15 +94,15 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         val latch = CountDownLatch(1)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             recyclerView.adapter?.registerAdapterDataObserver(
-                    object : RecyclerView.AdapterDataObserver() {
-                        override fun onChanged() {
-                            latch.countDown()
-                        }
+                object : RecyclerView.AdapterDataObserver() {
+                    override fun onChanged() {
+                        latch.countDown()
+                    }
 
-                        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                            latch.countDown()
-                        }
-                    })
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        latch.countDown()
+                    }
+                })
         }
         testRule.drainTasks(1, TimeUnit.SECONDS)
         if (recyclerView.adapter?.itemCount ?: 0 > 0) {
