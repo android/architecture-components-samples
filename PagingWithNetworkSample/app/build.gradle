@@ -91,5 +91,6 @@ dependencies {
     androidTestImplementation deps.espresso.core
 
     testImplementation deps.junit
-    testImplementation deps.arch_core.testing
+    testImplementation deps.coroutines.test
+    testImplementation deps.kotlin.test
 }
