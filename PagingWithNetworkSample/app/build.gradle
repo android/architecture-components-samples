@@ -83,18 +83,13 @@ dependencies {
     implementation deps.glide.runtime
 
     // Android Testing Support Library's runner and rules
-    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.arch_core.testing
-
-    androidTestImplementation deps.junit
-    androidTestImplementation deps.retrofit.mock
-    androidTestImplementation deps.mockito.core
-    androidTestImplementation deps.mockito.android
+    androidTestImplementation deps.espresso.contrib
+    androidTestImplementation deps.espresso.core
 
     testImplementation deps.junit
-    testImplementation deps.retrofit.mock
     testImplementation deps.arch_core.testing
-    testImplementation deps.mockito.core
 }

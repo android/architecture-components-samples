@@ -16,11 +16,13 @@
 package com.example.benchmark
 
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.reddit.ui.PostsAdapter
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
@@ -31,6 +33,7 @@ import kotlinx.coroutines.launch
 
 class BenchmarkActivity : AppCompatActivity() {
     val testExecutor = TestExecutor()
+    @VisibleForTesting
     lateinit var binding: ActivityBenchmarkBinding
         private set
 
@@ -71,4 +74,7 @@ class MockPagingSource : PagingSource<Int, RedditPost>() {
         val key = params.key ?: 0
         return LoadResult.Page(List(200) { generatePost() }.toList(), key - 1, key + 1)
     }
+
+    // Unused in benchmark.
+    override fun getRefreshKey(state: PagingState<Int, RedditPost>): Int? = null
 }
