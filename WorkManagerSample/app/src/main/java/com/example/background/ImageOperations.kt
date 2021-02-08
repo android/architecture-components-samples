@@ -84,7 +84,6 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
                 )
 
             if (mApplyWaterColor) {
-
                 val waterColor = OneTimeWorkRequestBuilder<WaterColorFilterWorker>()
                     .setInputData(createInputData())
                     .build()

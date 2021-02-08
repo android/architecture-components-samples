@@ -20,7 +20,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -44,8 +43,8 @@ import java.util.ArrayList
  */
 class SelectImageActivity : AppCompatActivity() {
 
-    private var mPermissionRequestCount: Int = 0
-    private var mHasPermissions: Boolean = false
+    private var mPermissionRequestCount = 0
+    private var mHasPermissions = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,13 +92,13 @@ class SelectImageActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> handleImageRequestResult(data)
                 else -> Log.d(TAG, "Unknown request code.")
             }
         } else {
-            Log.e(TAG, String.format("Unexpected Result code %s", resultCode))
+            Log.e(TAG, String.format("Unexpected Result code \"%s\" or missing data.", resultCode))
         }
     }
 
@@ -140,16 +139,9 @@ class SelectImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleImageRequestResult(data: Intent?) {
+    private fun handleImageRequestResult(data: Intent) {
         // Get the imageUri the user picked, from the Intent.ACTION_PICK result.
-        var imageUri: Uri? = null
-        // Use clip data if SDK_INT >= 16
-        if (Build.VERSION.SDK_INT >= 16 && data!!.clipData != null) {
-            imageUri = data.clipData!!.getItemAt(0).uri
-        } else if (data!!.data != null) {
-            // fallback to getData() on the intent.
-            imageUri = data.data
-        }
+        val imageUri = data.clipData!!.getItemAt(0).uri
 
         if (imageUri == null) {
             Log.e(TAG, "Invalid input image Uri.")
@@ -183,12 +175,7 @@ class SelectImageActivity : AppCompatActivity() {
             init {
                 add(Manifest.permission.INTERNET)
                 add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
-        }
-
-        init {
-            if (Build.VERSION.SDK_INT >= 16) {
-                sPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                add(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
 
@@ -197,6 +184,7 @@ class SelectImageActivity : AppCompatActivity() {
                 Html.fromHtml(input, Html.FROM_HTML_MODE_COMPACT)
             } else {
                 // method deprecated at API 24.
+                @Suppress("DEPRECATION")
                 Html.fromHtml(input)
             }
         }

@@ -25,6 +25,7 @@ import androidx.work.WorkManager
  * The [Application]. Responsible for initializing [WorkManager] in [Log.VERBOSE] mode.
  */
 class App : Application(), Configuration.Provider {
+
     override fun getWorkManagerConfiguration() =
             Configuration.Builder()
                     .setMinimumLoggingLevel(Log.VERBOSE)

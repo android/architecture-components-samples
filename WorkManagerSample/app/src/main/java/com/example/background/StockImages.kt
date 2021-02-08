@@ -23,6 +23,7 @@ import java.util.Random
  * Helps produce a random stock image [Uri].
  */
 internal object StockImages {
+
     private val sRandom = Random()
     private val sAssetUris = arrayOf(
             Uri.parse("file:///android_asset/images/lit_pier.jpg"),

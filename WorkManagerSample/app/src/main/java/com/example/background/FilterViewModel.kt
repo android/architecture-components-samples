@@ -29,6 +29,7 @@ import androidx.work.WorkManager
  * Keeps track of pending image filter operations.
  */
 class FilterViewModel(application: Application) : AndroidViewModel(application) {
+
     private val mWorkManager = WorkManager.getInstance(application)
 
     internal val outputStatus: LiveData<List<WorkInfo>>
