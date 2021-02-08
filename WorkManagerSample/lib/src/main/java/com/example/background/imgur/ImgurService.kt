@@ -26,6 +26,7 @@ import retrofit2.http.Part
  * A [retrofit2.Retrofit] interface to the Imgur postImage API.
  */
 interface ImgurService {
+
     @Multipart
     @POST("image")
     fun postImage(@Part image: MultipartBody.Part): Call<PostImageResponse>

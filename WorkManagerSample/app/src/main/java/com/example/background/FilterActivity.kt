@@ -30,10 +30,7 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.background.databinding.ActivityProcessingBinding
 
-/**
- * The [android.app.Activity] where the user picks filters to be applied on an
- * image.
- */
+/** The [android.app.Activity] where the user picks filters to be applied on an image. */
 class FilterActivity : AppCompatActivity() {
 
     private val mViewModel: FilterViewModel by viewModels()

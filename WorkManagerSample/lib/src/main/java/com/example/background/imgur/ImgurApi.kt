@@ -34,6 +34,7 @@ import java.io.IOException
  * The Imgur API client, which uses the [ImgurService] Retrofit APIs.
  */
 class ImgurApi private constructor() {
+
     private val mImgurService: ImgurService
 
     init {
@@ -56,6 +57,7 @@ class ImgurApi private constructor() {
     }
 
     private class AuthInterceptor : Interceptor {
+
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
@@ -68,8 +70,8 @@ class ImgurApi private constructor() {
     }
 
     companion object {
-        private val MEDIA_TYPE_PNG = MediaType.parse("image/png")
 
+        private val MEDIA_TYPE_PNG = MediaType.parse("image/png")
         val instance: Lazy<ImgurApi> = lazy { ImgurApi() }
     }
 }

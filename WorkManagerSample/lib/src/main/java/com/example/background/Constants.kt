@@ -20,6 +20,7 @@ package com.example.background
  * Defines a list of constants used for [androidx.work.Worker] names, inputs & outputs.
  */
 object Constants {
+
     // The name of the image manipulation work
     const val IMAGE_MANIPULATION_WORK_NAME = "image_manipulation_work"
 
