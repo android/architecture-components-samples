@@ -18,11 +18,9 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.app.Application
 import android.content.Intent
-import androidx.arch.core.executor.testing.CountingTaskExecutorRule
-import androidx.recyclerview.widget.RecyclerView
+import androidx.test.annotation.UiThreadTest
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.platform.app.InstrumentationRegistry
-import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
@@ -32,17 +30,11 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
 import com.android.example.paging.pagingwithnetwork.reddit.ui.SubRedditViewModel.Companion.DEFAULT_SUBREDDIT
 import com.android.example.paging.pagingwithnetwork.repository.FakeRedditApi
 import com.android.example.paging.pagingwithnetwork.repository.PostFactory
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.notNullValue
-import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 /**
  * Simple sanity test to ensure data is displayed
@@ -55,10 +47,8 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         fun params() = arrayOf(IN_MEMORY_BY_ITEM, IN_MEMORY_BY_PAGE)
     }
 
-    @get:Rule
-    var testRule = CountingTaskExecutorRule()
-
     private val postFactory = PostFactory()
+
     @Before
     fun init() {
         val fakeApi = FakeRedditApi()
@@ -68,45 +58,27 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         val app = ApplicationProvider.getApplicationContext<Application>()
         // use a controlled service locator w/ fake API
         ServiceLocator.swap(
-                object : DefaultServiceLocator(app = app, useInMemoryDb = true) {
-                    override fun getRedditApi(): RedditApi = fakeApi
-                }
+            object : DefaultServiceLocator(app = app, useInMemoryDb = true) {
+                override fun getRedditApi(): RedditApi = fakeApi
+            }
         )
     }
 
     @Test
-    @Throws(InterruptedException::class, TimeoutException::class)
+    @UiThreadTest
     fun showSomeResults() {
-        val intent = RedditActivity.intentFor(
+        val scenario = ActivityScenario.launch<RedditActivity>(
+            RedditActivity.intentFor(
                 context = ApplicationProvider.getApplicationContext(),
                 type = type
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
         )
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val activity = InstrumentationRegistry.getInstrumentation().startActivitySync(intent)
-        val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
-        assertThat(recyclerView.adapter, notNullValue())
-        waitForAdapterChange(recyclerView)
-        assertThat(recyclerView.adapter?.itemCount, `is`(3))
-    }
 
-    private fun waitForAdapterChange(recyclerView: RecyclerView) {
-        val latch = CountDownLatch(1)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            recyclerView.adapter?.registerAdapterDataObserver(
-                    object : RecyclerView.AdapterDataObserver() {
-                        override fun onChanged() {
-                            latch.countDown()
-                        }
-
-                        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                            latch.countDown()
-                        }
-                    })
+        scenario.onActivity { activity ->
+            val recyclerView = activity.binding.list
+            assertEquals(3, recyclerView.adapter?.itemCount)
         }
-        testRule.drainTasks(1, TimeUnit.SECONDS)
-        if (recyclerView.adapter?.itemCount ?: 0 > 0) {
-            return
-        }
-        assertThat(latch.await(10, TimeUnit.SECONDS), `is`(true))
     }
 }

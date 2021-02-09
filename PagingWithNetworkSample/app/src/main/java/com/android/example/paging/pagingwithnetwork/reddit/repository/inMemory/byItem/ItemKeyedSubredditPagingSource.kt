@@ -22,6 +22,7 @@ import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
+import com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage.PageKeyedSubredditPagingSource
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import retrofit2.HttpException
 import java.io.IOException
@@ -32,26 +33,25 @@ import java.io.IOException
  * Note that this is not the correct consumption of the Reddit API but rather shown here as an
  * alternative implementation which might be more suitable for your backend.
  *
- * @see [com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byPage.PageKeyedSubredditPagingSource]
+ * @see [PageKeyedSubredditPagingSource]
  */
 class ItemKeyedSubredditPagingSource(
-        private val redditApi: RedditApi,
-        private val subredditName: String
+    private val redditApi: RedditApi,
+    private val subredditName: String
 ) : PagingSource<String, RedditPost>() {
-
     override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditPost> {
         return try {
             val items = redditApi.getTop(
-                    subreddit = subredditName,
-                    after = if (params is Append) params.key else null,
-                    before = if (params is Prepend) params.key else null,
-                    limit = params.loadSize
+                subreddit = subredditName,
+                after = if (params is Append) params.key else null,
+                before = if (params is Prepend) params.key else null,
+                limit = params.loadSize
             ).data.children.map { it.data }
 
             Page(
-                    data = items,
-                    prevKey = items.firstOrNull()?.name,
-                    nextKey = items.lastOrNull()?.name
+                data = items,
+                prevKey = items.firstOrNull()?.name,
+                nextKey = items.lastOrNull()?.name
             )
         } catch (e: IOException) {
             LoadResult.Error(e)

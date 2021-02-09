@@ -29,10 +29,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.android.example.paging.pagingwithnetwork.GlideApp
-import com.android.example.paging.pagingwithnetwork.R
+import com.android.example.paging.pagingwithnetwork.databinding.ActivityRedditBinding
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
-import kotlinx.android.synthetic.main.activity_reddit.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -44,14 +43,8 @@ import kotlinx.coroutines.flow.filter
  * The intent arguments can be modified to make it use a different repository (see MainActivity).
  */
 class RedditActivity : AppCompatActivity() {
-    companion object {
-        const val KEY_REPOSITORY_TYPE = "repository_type"
-        fun intentFor(context: Context, type: RedditPostRepository.Type): Intent {
-            val intent = Intent(context, RedditActivity::class.java)
-            intent.putExtra(KEY_REPOSITORY_TYPE, type.ordinal)
-            return intent
-        }
-    }
+    lateinit var binding: ActivityRedditBinding
+        private set
 
     private val model: SubRedditViewModel by viewModels {
         object : AbstractSavedStateViewModelFactory(this, null) {
@@ -74,7 +67,9 @@ class RedditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reddit)
+        binding = ActivityRedditBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         initAdapter()
         initSwipeToRefresh()
         initSearch()
@@ -83,14 +78,14 @@ class RedditActivity : AppCompatActivity() {
     private fun initAdapter() {
         val glide = GlideApp.with(this)
         adapter = PostsAdapter(glide)
-        list.adapter = adapter.withLoadStateHeaderAndFooter(
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
             header = PostsLoadStateAdapter(adapter),
             footer = PostsLoadStateAdapter(adapter)
         )
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                swipe_refresh.isRefreshing = loadStates.refresh is LoadState.Loading
+                binding.swipeRefresh.isRefreshing = loadStates.refresh is LoadState.Loading
             }
         }
 
@@ -106,16 +101,16 @@ class RedditActivity : AppCompatActivity() {
                 .distinctUntilChangedBy { it.refresh }
                 // Only react to cases where Remote REFRESH completes i.e., NotLoading.
                 .filter { it.refresh is LoadState.NotLoading }
-                .collect { list.scrollToPosition(0) }
+                .collect { binding.list.scrollToPosition(0) }
         }
     }
 
     private fun initSwipeToRefresh() {
-        swipe_refresh.setOnRefreshListener { adapter.refresh() }
+        binding.swipeRefresh.setOnRefreshListener { adapter.refresh() }
     }
 
     private fun initSearch() {
-        input.setOnEditorActionListener { _, actionId, _ ->
+        binding.input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 updatedSubredditFromInput()
                 true
@@ -123,7 +118,7 @@ class RedditActivity : AppCompatActivity() {
                 false
             }
         }
-        input.setOnKeyListener { _, keyCode, event ->
+        binding.input.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 updatedSubredditFromInput()
                 true
@@ -134,10 +129,19 @@ class RedditActivity : AppCompatActivity() {
     }
 
     private fun updatedSubredditFromInput() {
-        input.text.trim().toString().let {
+        binding.input.text.trim().toString().let {
             if (it.isNotBlank() && model.shouldShowSubreddit(it)) {
                 model.showSubreddit(it)
             }
+        }
+    }
+
+    companion object {
+        const val KEY_REPOSITORY_TYPE = "repository_type"
+        fun intentFor(context: Context, type: RedditPostRepository.Type): Intent {
+            val intent = Intent(context, RedditActivity::class.java)
+            intent.putExtra(KEY_REPOSITORY_TYPE, type.ordinal)
+            return intent
         }
     }
 }

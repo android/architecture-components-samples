@@ -15,11 +15,7 @@
  */
 
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -33,20 +29,28 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
+
     sourceSets {
         androidTest.java.srcDirs += "src/test-common/java"
         test.java.srcDirs += "src/test-common/java"
@@ -79,18 +83,12 @@ dependencies {
     implementation deps.glide.runtime
 
     // Android Testing Support Library's runner and rules
-    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.arch_core.testing
 
-    androidTestImplementation deps.junit
-    androidTestImplementation deps.retrofit.mock
-    androidTestImplementation deps.mockito.core
-    androidTestImplementation deps.mockito.android
-
     testImplementation deps.junit
-    testImplementation deps.retrofit.mock
-    testImplementation deps.arch_core.testing
-    testImplementation deps.mockito.core
+    testImplementation deps.coroutines.test
+    testImplementation deps.kotlin.test
 }

@@ -19,10 +19,9 @@ import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.annotation.UiThreadTest
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
-import kotlinx.android.synthetic.main.activity_benchmark.*
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -35,21 +34,21 @@ class PostsAdapterBenchmark {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    val activityRule = ActivityTestRule(BenchmarkActivity::class.java)
+    val activityRule = ActivityScenarioRule(BenchmarkActivity::class.java)
 
-    @UiThreadTest
     @Test
+    @UiThreadTest
     fun scrollItem() {
-        val activity = activityRule.activity
+        activityRule.scenario.onActivity { activity ->
+            // If RecyclerView has children, the items are attached, bound, and gone through layout.
+            // Ready to benchmark.
+            assertTrue("RecyclerView expected to have children", activity.binding.list.childCount > 0)
 
-        // If RecyclerView has children, the items are attached, bound, and gone through layout.
-        // Ready to benchmark.
-        assertTrue("RecyclerView expected to have children", activity.list.childCount > 0)
-
-        benchmarkRule.measureRepeated {
-            activity.list.scrollByOneItem()
-            runWithTimingDisabled {
-                activity.testExecutor.flush()
+            benchmarkRule.measureRepeated {
+                activity.binding.list.scrollByOneItem()
+                runWithTimingDisabled {
+                    activity.testExecutor.flush()
+                }
             }
         }
     }
