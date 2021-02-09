@@ -75,9 +75,7 @@ class ImageOperationsTest {
 
     @Test
     fun testImageOperations() {
-        val imageOperations = ImageOperations.Builder(targetContext, IMAGE)
-            .setApplyGrayScale(true)
-            .build()
+        val imageOperations = ImageOperations(targetContext, IMAGE, grayScale = true)
 
         imageOperations.continuation
             .enqueue()
@@ -111,12 +109,7 @@ class ImageOperationsTest {
     @Test
     @SdkSuppress(maxSdkVersion = 22)
     fun testImageOperationsChain() {
-        val imageOperations = ImageOperations.Builder(targetContext, IMAGE)
-            .setApplyWaterColor(true)
-            .setApplyGrayScale(true)
-            .setApplyBlur(true)
-            .setApplySave(true)
-            .build()
+        val imageOperations = ImageOperations(targetContext, IMAGE, true, true, true, true)
 
         imageOperations.continuation
             .enqueue()
