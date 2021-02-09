@@ -30,16 +30,16 @@ import androidx.work.WorkManager
  */
 class FilterViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val mWorkManager = WorkManager.getInstance(application)
+    private val workManager = WorkManager.getInstance(application)
 
     internal val outputStatus: LiveData<List<WorkInfo>>
-        get() = mWorkManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)
+        get() = workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)
 
     internal fun apply(imageOperations: ImageOperations) {
         imageOperations.continuation.enqueue()
     }
 
     internal fun cancel() {
-        mWorkManager.cancelUniqueWork(Constants.IMAGE_MANIPULATION_WORK_NAME)
+        workManager.cancelUniqueWork(Constants.IMAGE_MANIPULATION_WORK_NAME)
     }
 }

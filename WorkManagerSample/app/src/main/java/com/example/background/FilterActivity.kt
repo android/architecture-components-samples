@@ -33,9 +33,9 @@ import com.example.background.databinding.ActivityProcessingBinding
 /** The [android.app.Activity] where the user picks filters to be applied on an image. */
 class FilterActivity : AppCompatActivity() {
 
-    private val mViewModel: FilterViewModel by viewModels()
-    private var mImageUri: Uri? = null
-    private var mOutputImageUri: Uri? = null
+    private val viewModel: FilterViewModel by viewModels()
+    private var imageUri: Uri? = null
+    private var outputImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +49,9 @@ class FilterActivity : AppCompatActivity() {
 
         val imageUriExtra = intent.getStringExtra(Constants.KEY_IMAGE_URI)
         if (!imageUriExtra.isNullOrEmpty()) {
-            mImageUri = Uri.parse(imageUriExtra)
+            imageUri = Uri.parse(imageUriExtra)
             val imageView = findViewById<ImageView>(R.id.imageView)
-            Glide.with(this).load(mImageUri).into(imageView)
+            Glide.with(this).load(imageUri).into(imageView)
         }
 
         binding.go.setOnClickListener {
@@ -61,7 +61,7 @@ class FilterActivity : AppCompatActivity() {
             val save = isChecked(R.id.save)
             val upload = isChecked(R.id.upload)
 
-            val imageOperations = ImageOperations.Builder(applicationContext, mImageUri!!)
+            val imageOperations = ImageOperations.Builder(applicationContext, imageUri!!)
                 .setApplyWaterColor(applyWaterColor)
                 .setApplyGrayScale(applyGrayScale)
                 .setApplyBlur(applyBlur)
@@ -69,22 +69,22 @@ class FilterActivity : AppCompatActivity() {
                 .setApplyUpload(upload)
                 .build()
 
-            mViewModel.apply(imageOperations)
+            viewModel.apply(imageOperations)
         }
 
         binding.output.setOnClickListener {
-            if (mOutputImageUri != null) {
-                val actionView = Intent(Intent.ACTION_VIEW, mOutputImageUri)
+            if (outputImageUri != null) {
+                val actionView = Intent(Intent.ACTION_VIEW, outputImageUri)
                 if (actionView.resolveActivity(packageManager) != null) {
                     startActivity(actionView)
                 }
             }
         }
 
-        binding.cancel.setOnClickListener { mViewModel.cancel() }
+        binding.cancel.setOnClickListener { viewModel.cancel() }
 
         // Check to see if we have output.
-        mViewModel.outputStatus.observe(this, Observer { listOfInfos ->
+        viewModel.outputStatus.observe(this, Observer { listOfInfos ->
             if (listOfInfos == null || listOfInfos.isEmpty()) {
                 return@Observer
             }
@@ -111,7 +111,7 @@ class FilterActivity : AppCompatActivity() {
                 val outputImageUri = outputData.getString(Constants.KEY_IMAGE_URI)
 
                 if (!outputImageUri.isNullOrEmpty()) {
-                    mOutputImageUri = Uri.parse(outputImageUri)
+                    this.outputImageUri = Uri.parse(outputImageUri)
                     binding.output.visibility = View.VISIBLE
                 }
             }
