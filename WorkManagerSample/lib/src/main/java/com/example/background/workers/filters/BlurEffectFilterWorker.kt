@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,37 @@
  * limitations under the License.
  */
 
-package com.example.background.workers
+package com.example.background.workers.filters
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.renderscript.Allocation
+import android.renderscript.Element
 import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import androidx.work.WorkerParameters
-import com.example.background.ScriptC_grayscale
 
-class GrayScaleFilterWorker(context: Context, parameters: WorkerParameters) :
+class BlurEffectFilterWorker(context: Context, parameters: WorkerParameters) :
     BaseFilterWorker(context, parameters) {
 
     override fun applyFilter(input: Bitmap): Bitmap {
         var rsContext: RenderScript? = null
         return try {
+            // Create a RenderScript context.
             rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
+
+            // Creates a RenderScript allocation for the blurred result.
             val inAlloc = Allocation.createFromBitmap(rsContext, input)
             val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)
-            // The Renderscript function that computes gray scale pixel values is defined in
-            // `src/main/rs/grayscale.rs`. We compute a new pixel value for every pixel which is
-            // out = (r + g + b) / 3 where r, g, b are the red, green and blue channels in the
-            // input image.
-            ScriptC_grayscale(rsContext).run {
-                _script = this
-                _width = input.width.toLong()
-                _height = input.height.toLong()
-                _in = inAlloc
-                _out = outAlloc
-                invoke_filter()
-            }
+
+            // Use the ScriptIntrinsicBlur intrinsic.
+            val theIntrinsic = ScriptIntrinsicBlur.create(rsContext, Element.U8_4(rsContext))
+            theIntrinsic.setRadius(25f)
+            theIntrinsic.setInput(inAlloc)
+            theIntrinsic.forEach(outAlloc)
 
             Bitmap.createBitmap(input.width, input.height, input.config).apply {
+                // Copy to the output input from the allocation.
                 outAlloc.copyTo(this)
             }
         } finally {
