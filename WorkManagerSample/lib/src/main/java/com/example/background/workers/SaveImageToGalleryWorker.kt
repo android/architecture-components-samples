@@ -20,7 +20,6 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
-import android.text.TextUtils
 import android.util.Log
 import androidx.work.Data
 import androidx.work.Worker

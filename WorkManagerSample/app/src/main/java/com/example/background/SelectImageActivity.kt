@@ -43,8 +43,8 @@ import java.util.ArrayList
  */
 class SelectImageActivity : AppCompatActivity() {
 
-    private var mPermissionRequestCount = 0
-    private var mHasPermissions = false
+    private var permissionRequestCount = 0
+    private var hasPermissions = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +63,7 @@ class SelectImageActivity : AppCompatActivity() {
         // If the user did not want to grant permissions twice - show a Snackbar and don't
         // ask for permissions again for the rest of the session.
         if (savedInstanceState != null) {
-            mPermissionRequestCount = savedInstanceState.getInt(KEY_PERMISSIONS_REQUEST_COUNT, 0)
+            permissionRequestCount = savedInstanceState.getInt(KEY_PERMISSIONS_REQUEST_COUNT, 0)
         }
 
         requestPermissionsIfNecessary()
@@ -87,7 +87,7 @@ class SelectImageActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(KEY_PERMISSIONS_REQUEST_COUNT, mPermissionRequestCount)
+        outState.putInt(KEY_PERMISSIONS_REQUEST_COUNT, permissionRequestCount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -118,10 +118,10 @@ class SelectImageActivity : AppCompatActivity() {
     private fun requestPermissionsIfNecessary() {
         // Check to see if we have all the permissions we need.
         // Otherwise request permissions up to MAX_NUMBER_REQUESTED_PERMISSIONS.
-        mHasPermissions = checkAllPermissions()
-        if (!mHasPermissions) {
-            if (mPermissionRequestCount < MAX_NUMBER_REQUEST_PERMISSIONS) {
-                mPermissionRequestCount += 1
+        hasPermissions = checkAllPermissions()
+        if (!hasPermissions) {
+            if (permissionRequestCount < MAX_NUMBER_REQUEST_PERMISSIONS) {
+                permissionRequestCount += 1
                 ActivityCompat.requestPermissions(
                     this,
                     sPermissions.toTypedArray(),

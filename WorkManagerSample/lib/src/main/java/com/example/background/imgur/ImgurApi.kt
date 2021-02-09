@@ -35,7 +35,7 @@ import java.io.IOException
  */
 class ImgurApi private constructor() {
 
-    private val mImgurService: ImgurService
+    private val imgurService: ImgurService
 
     init {
         val client = OkHttpClient.Builder()
@@ -46,14 +46,14 @@ class ImgurApi private constructor() {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        mImgurService = retrofit.create(ImgurService::class.java)
+        imgurService = retrofit.create(ImgurService::class.java)
     }
 
     fun uploadImage(imageUri: Uri): Call<PostImageResponse> {
         val imageFile = File(imageUri.path!!)
         val requestFile = RequestBody.create(MEDIA_TYPE_PNG, imageFile)
         val body = MultipartBody.Part.createFormData("image", "image.png", requestFile)
-        return mImgurService.postImage(body)
+        return imgurService.postImage(body)
     }
 
     private class AuthInterceptor : Interceptor {

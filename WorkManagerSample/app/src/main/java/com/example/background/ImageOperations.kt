@@ -20,16 +20,17 @@ import android.content.Context
 import android.net.Uri
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkContinuation
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.example.background.workers.filters.BlurEffectFilterWorker
 import com.example.background.workers.CleanupWorker
-import com.example.background.workers.filters.GrayScaleFilterWorker
 import com.example.background.workers.SaveImageToGalleryWorker
 import com.example.background.workers.UploadWorker
+import com.example.background.workers.filters.BlurEffectFilterWorker
+import com.example.background.workers.filters.GrayScaleFilterWorker
 import com.example.background.workers.filters.WaterColorFilterWorker
 
 /**
@@ -37,35 +38,35 @@ import com.example.background.workers.filters.WaterColorFilterWorker
  */
 internal class ImageOperations private constructor(val continuation: WorkContinuation) {
 
-    internal class Builder(private val mContext: Context, private val mImageUri: Uri) {
-        private var mApplyWaterColor: Boolean = false
-        private var mApplyGrayScale: Boolean = false
-        private var mApplyBlur: Boolean = false
-        private var mApplySave: Boolean = false
-        private var mApplyUpload: Boolean = false
+    internal class Builder(private val context: Context, private val imageUri: Uri) {
+        private var applyWaterColor: Boolean = false
+        private var applyGrayScale: Boolean = false
+        private var applyBlur: Boolean = false
+        private var applySave: Boolean = false
+        private var applyUpload: Boolean = false
 
         fun setApplyWaterColor(applyWaterColor: Boolean): Builder {
-            mApplyWaterColor = applyWaterColor
+            this.applyWaterColor = applyWaterColor
             return this
         }
 
         fun setApplyGrayScale(applyGrayScale: Boolean): Builder {
-            mApplyGrayScale = applyGrayScale
+            this.applyGrayScale = applyGrayScale
             return this
         }
 
         fun setApplyBlur(applyBlur: Boolean): Builder {
-            mApplyBlur = applyBlur
+            this.applyBlur = applyBlur
             return this
         }
 
         fun setApplySave(applySave: Boolean): Builder {
-            mApplySave = applySave
+            this.applySave = applySave
             return this
         }
 
         fun setApplyUpload(applyUpload: Boolean): Builder {
-            mApplyUpload = applyUpload
+            this.applyUpload = applyUpload
             return this
         }
 
@@ -76,14 +77,14 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
          */
         fun build(): ImageOperations {
             var hasInputData = false
-            var continuation = WorkManager.getInstance(mContext)
+            var continuation = WorkManager.getInstance(context)
                 .beginUniqueWork(
                     Constants.IMAGE_MANIPULATION_WORK_NAME,
                     ExistingWorkPolicy.REPLACE,
                     OneTimeWorkRequest.from(CleanupWorker::class.java)
                 )
 
-            if (mApplyWaterColor) {
+            if (applyWaterColor) {
                 val waterColor = OneTimeWorkRequestBuilder<WaterColorFilterWorker>()
                     .setInputData(createInputData())
                     .build()
@@ -91,7 +92,7 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
                 hasInputData = true
             }
 
-            if (mApplyGrayScale) {
+            if (applyGrayScale) {
                 val grayScaleBuilder = OneTimeWorkRequestBuilder<GrayScaleFilterWorker>()
                 if (!hasInputData) {
                     grayScaleBuilder.setInputData(createInputData())
@@ -101,7 +102,7 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
                 continuation = continuation.then(grayScale)
             }
 
-            if (mApplyBlur) {
+            if (applyBlur) {
                 val blurBuilder = OneTimeWorkRequestBuilder<BlurEffectFilterWorker>()
                 if (!hasInputData) {
                     blurBuilder.setInputData(createInputData())
@@ -111,26 +112,25 @@ internal class ImageOperations private constructor(val continuation: WorkContinu
                 continuation = continuation.then(blur)
             }
 
-            if (mApplySave) {
-                val save = OneTimeWorkRequestBuilder<SaveImageToGalleryWorker>()
-                    .setInputData(createInputData())
-                    .addTag(Constants.TAG_OUTPUT)
-                    .build()
+            if (applySave) {
+                val save = makeOneTimeWorkRequestBuilder<SaveImageToGalleryWorker>().build()
                 continuation = continuation.then(save)
             }
 
-            if (mApplyUpload) {
-                val upload = OneTimeWorkRequestBuilder<UploadWorker>()
-                    .setInputData(createInputData())
-                    .addTag(Constants.TAG_OUTPUT)
-                    .build()
+            if (applyUpload) {
+                val upload = makeOneTimeWorkRequestBuilder<UploadWorker>().build()
                 continuation = continuation.then(upload)
             }
             return ImageOperations(continuation)
         }
 
+        private inline fun <reified T : ListenableWorker> makeOneTimeWorkRequestBuilder() =
+            OneTimeWorkRequestBuilder<T>()
+                .setInputData(createInputData())
+                .addTag(Constants.TAG_OUTPUT)
+
         private fun createInputData(): Data {
-            return workDataOf(Constants.KEY_IMAGE_URI to mImageUri.toString())
+            return workDataOf(Constants.KEY_IMAGE_URI to imageUri.toString())
         }
     }
 }

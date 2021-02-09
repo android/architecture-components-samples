@@ -27,7 +27,5 @@ import androidx.work.WorkManager
 class App : Application(), Configuration.Provider {
 
     override fun getWorkManagerConfiguration() =
-            Configuration.Builder()
-                    .setMinimumLoggingLevel(Log.VERBOSE)
-                    .build()
+            Configuration.Builder().setMinimumLoggingLevel(Log.VERBOSE).build()
 }
