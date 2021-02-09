@@ -61,13 +61,11 @@ class FilterActivity : AppCompatActivity() {
             val save = isChecked(R.id.save)
             val upload = isChecked(R.id.upload)
 
-            val imageOperations = ImageOperations.Builder(applicationContext, imageUri!!)
-                .setApplyWaterColor(applyWaterColor)
-                .setApplyGrayScale(applyGrayScale)
-                .setApplyBlur(applyBlur)
-                .setApplySave(save)
-                .setApplyUpload(upload)
-                .build()
+            val imageOperations = ImageOperations(
+                applicationContext, imageUri!!,
+                applyWaterColor, applyGrayScale, applyBlur,
+                save, upload
+            )
 
             viewModel.apply(imageOperations)
         }
