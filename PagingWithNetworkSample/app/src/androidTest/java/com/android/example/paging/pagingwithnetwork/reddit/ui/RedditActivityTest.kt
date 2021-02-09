@@ -18,17 +18,9 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.app.Application
 import android.content.Intent
-import android.view.View
-import androidx.arch.core.executor.testing.CountingTaskExecutorRule
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.annotation.UiThreadTest
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
@@ -38,10 +30,8 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
 import com.android.example.paging.pagingwithnetwork.reddit.ui.SubRedditViewModel.Companion.DEFAULT_SUBREDDIT
 import com.android.example.paging.pagingwithnetwork.repository.FakeRedditApi
 import com.android.example.paging.pagingwithnetwork.repository.PostFactory
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -56,9 +46,6 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
         @Parameterized.Parameters(name = "{0}")
         fun params() = arrayOf(IN_MEMORY_BY_ITEM, IN_MEMORY_BY_PAGE)
     }
-
-    @get:Rule
-    var testRule = CountingTaskExecutorRule()
 
     private val postFactory = PostFactory()
 
@@ -80,7 +67,7 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     @Test
     @UiThreadTest
     fun showSomeResults() {
-        ActivityScenario.launch<RedditActivity>(
+        val scenario = ActivityScenario.launch<RedditActivity>(
             RedditActivity.intentFor(
                 context = ApplicationProvider.getApplicationContext(),
                 type = type
@@ -89,17 +76,9 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
             }
         )
 
-        onView(withId(R.id.list)).check(RecyclerViewItemCountAssertion(3))
-    }
-
-    class RecyclerViewItemCountAssertion(private val expectedCount: Int) : ViewAssertion {
-        override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
-            if (noViewFoundException != null) {
-                throw noViewFoundException
-            }
-            val recyclerView = view as RecyclerView
-            val adapter = recyclerView.adapter
-            assertThat(adapter!!.itemCount, `is`(expectedCount))
+        scenario.onActivity { activity ->
+            val recyclerView = activity.binding.list
+            assertEquals(3, recyclerView.adapter?.itemCount)
         }
     }
 }
