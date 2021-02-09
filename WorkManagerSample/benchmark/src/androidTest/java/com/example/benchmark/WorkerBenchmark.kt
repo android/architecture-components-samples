@@ -23,11 +23,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.testing.TestListenableWorkerBuilder
-import com.example.background.workers.BaseFilterWorker
-import com.example.background.workers.BaseFilterWorker.Companion.inputStreamFor
-import com.example.background.workers.BlurEffectFilterWorker
-import com.example.background.workers.GrayScaleFilterWorker
-import com.example.background.workers.WaterColorFilterWorker
+import com.example.background.workers.filters.BaseFilterWorker
+import com.example.background.workers.filters.BaseFilterWorker.Companion.inputStreamFor
+import com.example.background.workers.filters.BlurEffectFilterWorker
+import com.example.background.workers.filters.GrayScaleFilterWorker
+import com.example.background.workers.filters.WaterColorFilterWorker
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

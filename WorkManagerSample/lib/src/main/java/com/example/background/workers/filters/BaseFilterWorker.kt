@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.background.workers
+package com.example.background.workers.filters
 
 import android.R.drawable
 import android.annotation.TargetApi
@@ -27,7 +27,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting

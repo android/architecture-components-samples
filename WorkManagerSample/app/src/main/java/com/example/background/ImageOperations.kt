@@ -25,12 +25,12 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkContinuation
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.example.background.workers.BlurEffectFilterWorker
+import com.example.background.workers.filters.BlurEffectFilterWorker
 import com.example.background.workers.CleanupWorker
-import com.example.background.workers.GrayScaleFilterWorker
+import com.example.background.workers.filters.GrayScaleFilterWorker
 import com.example.background.workers.SaveImageToGalleryWorker
 import com.example.background.workers.UploadWorker
-import com.example.background.workers.WaterColorFilterWorker
+import com.example.background.workers.filters.WaterColorFilterWorker
 
 /**
  * Builds and holds WorkContinuation based on supplied filters.

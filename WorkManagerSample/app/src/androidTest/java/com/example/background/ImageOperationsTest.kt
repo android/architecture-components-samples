@@ -34,8 +34,8 @@ import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.example.background.Constants.KEY_IMAGE_URI
 import com.example.background.Constants.TAG_OUTPUT
-import com.example.background.workers.BaseFilterWorker
-import com.example.background.workers.BaseFilterWorker.Companion.inputStreamFor
+import com.example.background.workers.filters.BaseFilterWorker
+import com.example.background.workers.filters.BaseFilterWorker.Companion.inputStreamFor
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
