@@ -175,15 +175,14 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
             resourceUri: String
         ): InputStream? {
 
-            val appContext = context.applicationContext
             // If the resourceUri is an Android asset URI, then use AssetManager to get a handle to
             // the input stream. (Stock Images are Asset URIs).
             return if (resourceUri.startsWith(ASSET_PREFIX)) {
-                val assetManager = appContext.resources.assets
+                val assetManager = context.resources.assets
                 assetManager.open(resourceUri.substring(ASSET_PREFIX.length))
             } else {
                 // Not an Android asset Uri. Use a ContentResolver to get a handle to the input stream.
-                val resolver = appContext.contentResolver
+                val resolver = context.contentResolver
                 resolver.openInputStream(Uri.parse(resourceUri))
             }
         }
