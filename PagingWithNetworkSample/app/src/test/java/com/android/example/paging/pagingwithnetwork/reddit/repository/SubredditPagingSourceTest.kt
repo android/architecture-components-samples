@@ -29,14 +29,14 @@ class SubredditPagingSourceTest {
         val pagingSource = ItemKeyedSubredditPagingSource(fakeApi, DEFAULT_SUBREDDIT)
         assertEquals(
             expected = Page(
-                data = listOf(fakePosts[0]),
+                data = listOf(fakePosts[0], fakePosts[1]),
                 prevKey = fakePosts[0].name,
-                nextKey = fakePosts[0].name
+                nextKey = fakePosts[1].name
             ),
             actual = pagingSource.load(
                 Refresh(
                     key = null,
-                    loadSize = 1,
+                    loadSize = 2,
                     placeholdersEnabled = false
                 )
             ),
@@ -48,14 +48,14 @@ class SubredditPagingSourceTest {
         val pagingSource = PageKeyedSubredditPagingSource(fakeApi, DEFAULT_SUBREDDIT)
         assertEquals(
             expected = Page(
-                data = listOf(fakePosts[0]),
+                data = listOf(fakePosts[0], fakePosts[1]),
                 prevKey = null,
-                nextKey = fakePosts[0].name
+                nextKey = fakePosts[1].name
             ),
             actual = pagingSource.load(
                 Refresh(
                     key = null,
-                    loadSize = 1,
+                    loadSize = 2,
                     placeholdersEnabled = false
                 )
             ),
