@@ -23,9 +23,7 @@ import androidx.work.WorkerParameters
 import com.example.background.Constants
 import java.io.File
 
-/**
- * Cleans up temporary files from the output folder.
- */
+/** Clears temporary files. */
 class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
@@ -39,16 +37,14 @@ class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
         }
     }
 
+    /** Removes pngs from the app's files directory */
     private fun cleanupDirectory() {
-        val outputDirectory = File(applicationContext.filesDir, Constants.OUTPUT_PATH)
-        if (outputDirectory.exists()) {
-            val entries = outputDirectory.listFiles()
-            if (!entries.isNullOrEmpty()) {
-                for (entry in entries) {
-                    val name = entry.name
-                    if (name.isNotEmpty() && name.endsWith(".png")) {
-                        val deleted = entry.delete()
-                        Log.i(TAG, "Deleted $name - $deleted")
+        File(applicationContext.filesDir, Constants.OUTPUT_PATH).apply {
+            if (exists()) {
+                listFiles()?.forEach { file ->
+                    if (file.name.endsWith(".png")) {
+                        val deleted = file.delete()
+                        Log.i(TAG, "Deleted ${file.name} - $deleted")
                     }
                 }
             }
