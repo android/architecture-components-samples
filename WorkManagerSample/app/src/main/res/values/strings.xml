@@ -28,7 +28,7 @@
     <string name="destination_save">Save Image</string>
     <string name="destination_upload">Upload to Imgur</string>
     <!-- actions -->
-    <string name="go">Go</string>
+    <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
     <string name="output">Output</string>
     <!-- content descriptions -->
