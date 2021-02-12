@@ -49,8 +49,7 @@ class FilterActivity : AppCompatActivity() {
         val imageUriExtra = intent.getStringExtra(Constants.KEY_IMAGE_URI)
         if (!imageUriExtra.isNullOrEmpty()) {
             imageUri = Uri.parse(imageUriExtra)
-            val imageView = findViewById<ImageView>(R.id.imageView)
-            Glide.with(this).load(imageUri).into(imageView)
+            Glide.with(this).load(imageUri).into(binding.imageView)
         }
 
         binding.apply.setOnClickListener {
