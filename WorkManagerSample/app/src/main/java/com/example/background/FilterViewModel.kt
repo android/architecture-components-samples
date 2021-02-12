@@ -17,9 +17,9 @@
 package com.example.background
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 
@@ -28,7 +28,7 @@ import androidx.work.WorkManager
  *
  * Keeps track of pending image filter operations.
  */
-class FilterViewModel(application: Application) : AndroidViewModel(application) {
+class FilterViewModel(application: Application) : ViewModel() {
 
     private val workManager = WorkManager.getInstance(application)
 
@@ -41,5 +41,16 @@ class FilterViewModel(application: Application) : AndroidViewModel(application) 
 
     internal fun cancel() {
         workManager.cancelUniqueWork(Constants.IMAGE_MANIPULATION_WORK_NAME)
+    }
+}
+
+class FilterViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return if (modelClass.isAssignableFrom(FilterViewModel::class.java)) {
+            FilterViewModel(application) as T
+        } else {
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 }
