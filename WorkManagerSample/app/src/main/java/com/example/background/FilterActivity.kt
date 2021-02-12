@@ -22,7 +22,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Checkable
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -82,14 +81,14 @@ class FilterActivity : AppCompatActivity() {
         binding.cancel.setOnClickListener { viewModel.cancel() }
 
         // Check to see if we have output.
-        viewModel.outputStatus.observe(this, Observer { listOfInfos ->
-            if (listOfInfos == null || listOfInfos.isEmpty()) {
+        viewModel.outputStatus.observe(this, Observer { infoList ->
+            if (infoList.isNullOrEmpty()) {
                 return@Observer
             }
 
             // We only care about the one output status.
             // Every continuation has only one worker tagged TAG_OUTPUT
-            val info = listOfInfos[0]
+            val info = infoList[0]
             val finished = info.state.isFinished
             if (!finished) {
                 with(binding) {
@@ -106,10 +105,8 @@ class FilterActivity : AppCompatActivity() {
                 }
 
                 val outputData = info.outputData
-                val outputImageUri = outputData.getString(Constants.KEY_IMAGE_URI)
-
-                if (!outputImageUri.isNullOrEmpty()) {
-                    this.outputImageUri = Uri.parse(outputImageUri)
+                outputData.getString(Constants.KEY_IMAGE_URI)?.let {
+                    outputImageUri = Uri.parse(it)
                     binding.output.visibility = View.VISIBLE
                 }
             }
