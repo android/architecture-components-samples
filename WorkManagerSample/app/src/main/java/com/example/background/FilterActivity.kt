@@ -33,7 +33,7 @@ import com.example.background.databinding.ActivityProcessingBinding
 /** The [android.app.Activity] where the user picks filters to be applied on an image. */
 class FilterActivity : AppCompatActivity() {
 
-    private val viewModel: FilterViewModel by viewModels()
+    private val viewModel: FilterViewModel by viewModels { FilterViewModelFactory(application) }
     private var imageUri: Uri? = null
     private var outputImageUri: Uri? = null
 
