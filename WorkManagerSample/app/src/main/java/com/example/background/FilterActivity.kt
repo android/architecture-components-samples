@@ -53,7 +53,7 @@ class FilterActivity : AppCompatActivity() {
             Glide.with(this).load(imageUri).into(imageView)
         }
 
-        binding.go.setOnClickListener {
+        binding.apply.setOnClickListener {
             val applyWaterColor = isChecked(R.id.filter_watercolor)
             val applyGrayScale = isChecked(R.id.filter_grayscale)
             val applyBlur = isChecked(R.id.filter_blur)
@@ -94,14 +94,14 @@ class FilterActivity : AppCompatActivity() {
                 with(binding) {
                     progressBar.visibility = View.VISIBLE
                     cancel.visibility = View.VISIBLE
-                    go.visibility = View.GONE
+                    apply.visibility = View.GONE
                     output.visibility = View.GONE
                 }
             } else {
                 with(binding) {
                     progressBar.visibility = View.GONE
                     cancel.visibility = View.GONE
-                    go.visibility = View.VISIBLE
+                    apply.visibility = View.VISIBLE
                 }
 
                 val outputData = info.outputData
