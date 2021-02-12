@@ -20,8 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeoutException
@@ -41,8 +40,7 @@ class MainActivityTest {
 
         scenario.onActivity { activity ->
             val recyclerView: RecyclerView = activity.binding.cheeseList
-            MatcherAssert.assertThat(recyclerView.adapter, CoreMatchers.notNullValue())
-            MatcherAssert.assertThat(recyclerView.adapter!!.itemCount > 0, CoreMatchers.`is`(true))
+            assertEquals(CHEESE_DATA.size, recyclerView.adapter!!.itemCount)
         }
     }
 }
