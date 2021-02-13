@@ -5,12 +5,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
@@ -20,10 +19,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CheeseViewModelTest {
-    val testScope = TestCoroutineScope()
-
-    @OptIn(ExperimentalStdlibApi::class)
-    val testDispatcher = testScope.coroutineContext[CoroutineDispatcher]!!
+    val testDispatcher = TestCoroutineDispatcher()
 
     @Before
     fun setup() {
@@ -36,7 +32,7 @@ class CheeseViewModelTest {
     }
 
     @Test
-    fun separatorsTest() = runBlockingTest {
+    fun separatorsTest() = runBlockingTest(testDispatcher) {
         val cheeses = listOf(
             Cheese(0, "Abbaye de Belloc"),
             Cheese(1, "Brie"),
