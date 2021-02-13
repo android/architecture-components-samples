@@ -48,6 +48,7 @@ fun BottomNavigationView.setupWithNavController(
 
     // First create a NavHostFragment for each NavGraph ID
     navGraphIds.reversed().forEachIndexed { index, navGraphId ->
+        val reversedIndex = navGraphIds.lastIndex - index
         val fragmentTag = getFragmentTag(index)
 
         // Find or create the Navigation host fragment
@@ -61,7 +62,7 @@ fun BottomNavigationView.setupWithNavController(
         // Obtain its id
         val graphId = navHostFragment.navController.graph.id
 
-        if (index == 0) {
+        if (reversedIndex == 0) {
             firstFragmentGraphId = graphId
         }
 
@@ -72,7 +73,7 @@ fun BottomNavigationView.setupWithNavController(
         if (this.selectedItemId == graphId) {
             // Update livedata with the selected graph
             selectedNavController.value = navHostFragment.navController
-            attachNavHostFragment(fragmentManager, navHostFragment, index == 0)
+            attachNavHostFragment(fragmentManager, navHostFragment, reversedIndex == 0)
         } else {
             detachNavHostFragment(fragmentManager, navHostFragment)
         }
