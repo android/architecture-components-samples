@@ -37,7 +37,7 @@ import paging.android.example.com.pagingsample.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
         private set
-    private val viewModel by viewModels<CheeseViewModel>()
+    private val viewModel by viewModels<CheeseViewModel> { CheeseViewModelFactory(application) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +61,17 @@ class MainActivity : AppCompatActivity() {
     private fun initSwipeToDelete() {
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
             // enable the items to swipe to the left or right
-            override fun getMovementFlags(recyclerView: RecyclerView,
-                                          viewHolder: RecyclerView.ViewHolder): Int =
-                makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                val cheeseViewHolder = viewHolder as CheeseViewHolder
+                return if (cheeseViewHolder.cheese != null) {
+                    makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+                } else {
+                    makeMovementFlags(0, 0)
+                }
+            }
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                                 target: RecyclerView.ViewHolder): Boolean = false

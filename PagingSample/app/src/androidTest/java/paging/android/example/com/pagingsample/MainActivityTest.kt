@@ -19,20 +19,15 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.runner.RunWith
-import java.util.concurrent.TimeoutException
 
 /**
  * Simply sanity test to ensure that activity launches without any issues and shows some data.
  */
-@RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
     @Test
-    @Throws(InterruptedException::class, TimeoutException::class)
     fun showSomeResults() {
         val intent = Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -57,7 +57,6 @@ abstract class CheeseDb : RoomDatabase() {
     }
 }
 
-
 val CHEESE_DATA = arrayListOf(
         "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
         "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale",

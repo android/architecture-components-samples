@@ -50,6 +50,11 @@ android {
         jvmTarget = "1.8"
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
+
+    packagingOptions {
+        pickFirst "META-INF/AL2.0"
+        pickFirst "META-INF/LGPL2.1"
+    }
 }
 
 dependencies {
@@ -57,18 +62,17 @@ dependencies {
     implementation deps.fragment.runtime_ktx
     implementation deps.recyclerview
     implementation deps.cardview
-    implementation deps.room.runtime
     implementation deps.lifecycle.runtime
     implementation deps.paging_runtime
     implementation deps.kotlin.stdlib
+
+    kapt deps.room.compiler
+    implementation deps.room.runtime
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
-    androidTestImplementation deps.atsl.rules
-    androidTestImplementation deps.arch_core.testing
-    androidTestImplementation deps.room.testing
-
-    kapt deps.room.compiler
+    androidTestImplementation deps.coroutines.test
+    androidTestImplementation deps.truth
 }
