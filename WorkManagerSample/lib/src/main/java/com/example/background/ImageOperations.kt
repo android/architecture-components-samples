@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import com.example.background.workers.filters.WaterColorFilterWorker
  * Builds and holds WorkContinuation based on supplied filters.
  */
 @SuppressLint("EnqueueWork")
-internal class ImageOperations(
+class ImageOperations(
     context: Context,
     private val imageUri: Uri,
     waterColor: Boolean = false,
