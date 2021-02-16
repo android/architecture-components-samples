@@ -30,6 +30,7 @@
         android:contentDescription="@string/description_image"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="100"
         app:layout_constraintHeight_percent="50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -98,10 +99,14 @@
             android:id="@+id/upload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/destination_upload"
-            tools:layout_editor_absoluteX="-5dp"
-            tools:layout_editor_absoluteY="473dp" />
+            android:text="@string/destination_upload" />
     </RadioGroup>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/destinations_group"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="destinations_title,destinations" />
 
     <Button
         android:id="@+id/apply"

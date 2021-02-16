@@ -51,9 +51,11 @@ class FilterActivity : AppCompatActivity() {
             val imageUri: Uri = Uri.parse(intent.getStringExtra(Constants.KEY_IMAGE_URI))
             Glide.with(this@FilterActivity).load(imageUri).into(imageView)
 
-            // Disable upload to Imgur, unless the developer specifies their own clientId.
-            val uploadEnabled = Constants.IMGUR_CLIENT_ID.isNotEmpty()
-            upload.isEnabled = uploadEnabled
+            // Only show output options if a Imgur client id is set.
+            val multipleDestinationsPossible = Constants.IMGUR_CLIENT_ID.isNotEmpty()
+            if (!multipleDestinationsPossible) {
+                destinationsGroup.visibility = View.GONE
+            }
 
             apply.setOnClickListener {
                 val applyWaterColor = filterWatercolor.isChecked
