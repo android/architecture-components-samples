@@ -19,12 +19,15 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * Simply sanity test to ensure that activity launches without any issues and shows some data.
  */
+@RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
     @Test

@@ -34,7 +34,7 @@ import androidx.recyclerview.widget.DiffUtil
  * @see androidx.paging.PagedListAdapter
  * @see androidx.paging.AsyncPagedListDiffer
  */
-class CheeseAdapter : PagingDataAdapter<CheeseItem, CheeseViewHolder>(diffCallback) {
+class CheeseAdapter : PagingDataAdapter<CheeseListItem, CheeseViewHolder>(diffCallback) {
     override fun onBindViewHolder(holder: CheeseViewHolder, position: Int) {
         holder.bindTo(getItem(position))
     }
@@ -54,11 +54,11 @@ class CheeseAdapter : PagingDataAdapter<CheeseItem, CheeseViewHolder>(diffCallba
          *
          * @see DiffUtil
          */
-        val diffCallback = object : DiffUtil.ItemCallback<CheeseItem>() {
-            override fun areItemsTheSame(oldItem: CheeseItem, newItem: CheeseItem): Boolean {
-                return if (oldItem is CheeseItem.Item && newItem is CheeseItem.Item) {
+        val diffCallback = object : DiffUtil.ItemCallback<CheeseListItem>() {
+            override fun areItemsTheSame(oldItem: CheeseListItem, newItem: CheeseListItem): Boolean {
+                return if (oldItem is CheeseListItem.Item && newItem is CheeseListItem.Item) {
                     oldItem.cheese.id == newItem.cheese.id
-                } else if (oldItem is CheeseItem.Separator && newItem is CheeseItem.Separator) {
+                } else if (oldItem is CheeseListItem.Separator && newItem is CheeseListItem.Separator) {
                     oldItem.name == newItem.name
                 } else {
                     oldItem == newItem
@@ -69,7 +69,7 @@ class CheeseAdapter : PagingDataAdapter<CheeseItem, CheeseViewHolder>(diffCallba
              * Note that in kotlin, == checking on data classes compares all contents, but in Java,
              * typically you'll implement Object#equals, and use it to compare object contents.
              */
-            override fun areContentsTheSame(oldItem: CheeseItem, newItem: CheeseItem): Boolean {
+            override fun areContentsTheSame(oldItem: CheeseListItem, newItem: CheeseListItem): Boolean {
                 return oldItem == newItem
             }
         }
