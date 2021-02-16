@@ -40,8 +40,8 @@ class FilterActivity : AppCompatActivity() {
             setContentView(root)
             bindViews(this)
             // Check to see if we have output.
-            viewModel.outputStatus.observe(this@FilterActivity) { infoList ->
-                onStateChange(infoList, this)
+            viewModel.workInfo.observe(this@FilterActivity) { info ->
+                onStateChange(info, this)
             }
         }
     }
@@ -85,13 +85,7 @@ class FilterActivity : AppCompatActivity() {
         }
     }
 
-    private fun onStateChange(infoList: List<WorkInfo>, binding: ActivityFilterBinding) {
-        if (infoList.isEmpty()) {
-            return
-        }
-        // We only care about the one output status.
-        // Every continuation has only one worker tagged TAG_OUTPUT
-        val info = infoList[0]
+    private fun onStateChange(info: WorkInfo, binding: ActivityFilterBinding) {
         val finished = info.state.isFinished
 
         with(binding) {
