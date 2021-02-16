@@ -21,9 +21,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Checkable
 import androidx.activity.viewModels
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -52,27 +50,29 @@ class FilterActivity : AppCompatActivity() {
             Glide.with(this).load(imageUri).into(binding.imageView)
         }
 
-        binding.apply.setOnClickListener {
-            val applyWaterColor = isChecked(R.id.filter_watercolor)
-            val applyGrayScale = isChecked(R.id.filter_grayscale)
-            val applyBlur = isChecked(R.id.filter_blur)
-            val save = isChecked(R.id.save)
-            val upload = isChecked(R.id.upload)
+        with(binding) {
+            apply.setOnClickListener {
+                val applyWaterColor = filterWatercolor.isChecked
+                val applyGrayScale = filterGrayscale.isChecked
+                val applyBlur = filterBlur.isChecked
+                val save = save.isChecked
+                val upload = upload.isChecked
 
-            val imageOperations = ImageOperations(
-                applicationContext, imageUri!!,
-                applyWaterColor, applyGrayScale, applyBlur,
-                save, upload
-            )
+                val imageOperations = ImageOperations(
+                    applicationContext, imageUri!!,
+                    applyWaterColor, applyGrayScale, applyBlur,
+                    save, upload
+                )
 
-            viewModel.apply(imageOperations)
+                viewModel.apply(imageOperations)
+            }
         }
 
         binding.output.setOnClickListener {
             if (outputImageUri != null) {
-                val actionView = Intent(Intent.ACTION_VIEW, outputImageUri)
-                if (actionView.resolveActivity(packageManager) != null) {
-                    startActivity(actionView)
+                val viewOutput = Intent(Intent.ACTION_VIEW, outputImageUri)
+                if (viewOutput.resolveActivity(packageManager) != null) {
+                    startActivity(viewOutput)
                 }
             }
         }
@@ -110,11 +110,6 @@ class FilterActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun isChecked(@IdRes resourceId: Int): Boolean {
-        val view = findViewById<View>(resourceId)
-        return view is Checkable && (view as Checkable).isChecked
     }
 
     companion object {
