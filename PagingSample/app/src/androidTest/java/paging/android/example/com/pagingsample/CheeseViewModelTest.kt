@@ -1,5 +1,6 @@
 package paging.android.example.com.pagingsample
 
+import androidx.annotation.UiThread
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -19,7 +20,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CheeseViewModelTest {
-    val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = TestCoroutineDispatcher()
 
     @Before
     fun setup() {
@@ -32,6 +33,7 @@ class CheeseViewModelTest {
     }
 
     @Test
+    @UiThread
     fun separatorsTest() = runBlockingTest(testDispatcher) {
         val cheeses = listOf(
             Cheese(0, "Abbaye de Belloc"),
