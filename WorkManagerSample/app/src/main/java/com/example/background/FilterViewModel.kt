@@ -17,10 +17,9 @@
 package com.example.background
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
+import androidx.lifecycle.map
 import androidx.work.WorkManager
 
 /**
@@ -32,8 +31,8 @@ class FilterViewModel(application: Application) : ViewModel() {
 
     private val workManager = WorkManager.getInstance(application)
 
-    internal val outputStatus: LiveData<List<WorkInfo>>
-        get() = workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)
+    internal val workInfo =
+        workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT).map { it[0] }
 
     internal fun apply(imageOperations: ImageOperations) {
         imageOperations.continuation.enqueue()
