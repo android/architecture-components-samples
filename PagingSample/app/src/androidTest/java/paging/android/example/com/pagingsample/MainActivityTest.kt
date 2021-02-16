@@ -19,7 +19,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 /**
@@ -35,7 +35,8 @@ class MainActivityTest {
 
         scenario.onActivity { activity ->
             val recyclerView: RecyclerView = activity.binding.cheeseList
-            assertTrue(recyclerView.adapter!!.itemCount > 0)
+            assertThat(recyclerView.adapter).isNotNull()
+            assertThat(recyclerView.adapter!!.itemCount).isGreaterThan(0)
         }
     }
 }
