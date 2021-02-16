@@ -49,7 +49,6 @@ class CheeseViewModelTest {
         // submitData allows differ to receive data from PagingData, but suspends until
         // invalidation, so we must launch this in a separate job.
         val job = launch {
-            println("ASD")
             cheeseViewModel.allCheeses.collectLatest { pagingData ->
                 differ.submitData(pagingData)
             }
