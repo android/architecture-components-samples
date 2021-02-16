@@ -31,7 +31,7 @@ class CheeseViewModel(private val dao: CheeseDao) : ViewModel() {
      * We use the Kotlin [Flow] property available on [Pager]. Java developers should use the
      * RxJava or LiveData extension properties available in `PagingRx` and `PagingLiveData`.
      */
-    val allCheeses: Flow<PagingData<CheeseItem>> = Pager(
+    val allCheeses: Flow<PagingData<CheeseListItem>> = Pager(
         config = PagingConfig(
             /**
              * A good page size is a value that fills at least a few screens worth of content on a
@@ -67,8 +67,8 @@ class CheeseViewModel(private val dao: CheeseDao) : ViewModel() {
         .map { pagingData ->
             pagingData
                 // Map cheeses to common UI model.
-                .map { cheese -> CheeseItem.Item(cheese) }
-                .insertSeparators { before: CheeseItem?, after: CheeseItem? ->
+                .map { cheese -> CheeseListItem.Item(cheese) }
+                .insertSeparators { before: CheeseListItem?, after: CheeseListItem? ->
                     if (before == null && after == null) {
                         // List is empty after fully loaded; return null to skip adding separator.
                         null
@@ -77,10 +77,10 @@ class CheeseViewModel(private val dao: CheeseDao) : ViewModel() {
                         null
                     } else if (before == null) {
                         // Header
-                        CheeseItem.Separator(after.name.first())
+                        CheeseListItem.Separator(after.name.first())
                     } else if (before.name.first() != after.name.first()) {
                         // Between two items that start with different letters.
-                        CheeseItem.Separator(after.name.first())
+                        CheeseListItem.Separator(after.name.first())
                     } else {
                         // Between two items that start with the same letter.
                         null

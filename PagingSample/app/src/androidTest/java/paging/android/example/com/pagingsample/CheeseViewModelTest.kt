@@ -58,12 +58,12 @@ class CheeseViewModelTest {
         advanceUntilIdle()
 
         assertThat(differ.snapshot()).containsExactly(
-            CheeseItem.Separator('A'),
-            CheeseItem.Item(cheeses[0]),
-            CheeseItem.Separator('B'),
-            CheeseItem.Item(cheeses[1]),
-            CheeseItem.Separator('C'),
-            CheeseItem.Item(cheeses[2]),
+            CheeseListItem.Separator('A'),
+            CheeseListItem.Item(cheeses[0]),
+            CheeseListItem.Separator('B'),
+            CheeseListItem.Item(cheeses[1]),
+            CheeseListItem.Separator('C'),
+            CheeseListItem.Item(cheeses[2]),
         )
 
         // runBlockingTest checks for leaking jobs, so we have to cancel the one we started.
