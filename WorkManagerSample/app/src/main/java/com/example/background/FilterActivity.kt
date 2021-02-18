@@ -62,12 +62,11 @@ class FilterActivity : AppCompatActivity() {
                 val applyGrayScale = filterGrayscale.isChecked
                 val applyBlur = filterBlur.isChecked
                 val save = save.isChecked
-                val upload = upload.isChecked
 
                 val imageOperations = ImageOperations(
                     applicationContext, imageUri,
                     applyWaterColor, applyGrayScale, applyBlur,
-                    save, upload
+                    save
                 )
 
                 viewModel.apply(imageOperations)

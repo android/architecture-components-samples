@@ -40,52 +40,58 @@ import com.example.background.workers.filters.WaterColorFilterWorker
 @SuppressLint("EnqueueWork")
 class ImageOperations(
     context: Context,
-    private val imageUri: Uri,
+    imageUri: Uri,
     waterColor: Boolean = false,
     grayScale: Boolean = false,
     blur: Boolean = false,
-    save: Boolean = false,
-    upload: Boolean = false
+    save: Boolean = false
 ) {
 
-    private lateinit var inputData: Data
+    private val imageInputData = workDataOf(Constants.KEY_IMAGE_URI to imageUri.toString())
     val continuation: WorkContinuation
 
     init {
-        var tmpContinuation = WorkManager.getInstance(context)
+        continuation = WorkManager.getInstance(context)
             .beginUniqueWork(
                 Constants.IMAGE_MANIPULATION_WORK_NAME,
                 ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequest.from(CleanupWorker::class.java)
+            ).thenMaybe<WaterColorFilterWorker>(waterColor)
+            .thenMaybe<GrayScaleFilterWorker>(grayScale)
+            .thenMaybe<BlurEffectFilterWorker>(blur)
+            .then(
+                if (save) {
+                    workRequest<SaveImageToGalleryWorker>(tag = Constants.TAG_OUTPUT)
+                } else /* upload */ {
+                    workRequest<UploadWorker>(tag = Constants.TAG_OUTPUT)
+                }
             )
-
-        if (waterColor) {
-            tmpContinuation = tmpContinuation.then(workRequest<WaterColorFilterWorker>())
-        }
-        if (grayScale) {
-            tmpContinuation = tmpContinuation.then(workRequest<GrayScaleFilterWorker>())
-        }
-        if (blur) {
-            tmpContinuation = tmpContinuation.then(workRequest<BlurEffectFilterWorker>())
-        }
-        if (save) {
-            tmpContinuation = tmpContinuation.then(workRequest<SaveImageToGalleryWorker>(true))
-        }
-        if (upload) {
-            tmpContinuation = tmpContinuation.then(workRequest<UploadWorker>(true))
-        }
-
-        continuation = tmpContinuation
     }
 
-    private inline fun <reified T : ListenableWorker> workRequest(shouldOutput: Boolean = false) =
+    /**
+     * Applies a [ListenableWorker] to a [WorkContinuation] in case [apply] is `true`.
+     */
+    private inline fun <reified T : ListenableWorker> WorkContinuation.thenMaybe(
+        apply: Boolean
+    ): WorkContinuation {
+        return if (apply) {
+            then(workRequest<T>())
+        } else {
+            this
+        }
+    }
+
+    /**
+     * Creates a [OneTimeWorkRequest] with the given inputData and a [tag] if set.
+     */
+    private inline fun <reified T : ListenableWorker> workRequest(
+        inputData: Data = imageInputData,
+        tag: String? = null
+    ) =
         OneTimeWorkRequestBuilder<T>().apply {
-            if (!::inputData.isInitialized) {
-                inputData = workDataOf(Constants.KEY_IMAGE_URI to imageUri.toString())
-                setInputData(inputData)
-            }
-            if (shouldOutput) {
-                addTag(Constants.TAG_OUTPUT)
+            setInputData(inputData)
+            if (!tag.isNullOrEmpty()) {
+                addTag(tag)
             }
         }.build()
 }
