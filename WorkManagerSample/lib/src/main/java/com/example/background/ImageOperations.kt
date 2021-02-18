@@ -19,14 +19,7 @@ package com.example.background
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.ListenableWorker
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkContinuation
-import androidx.work.WorkManager
-import androidx.work.workDataOf
+import androidx.work.*
 import com.example.background.workers.CleanupWorker
 import com.example.background.workers.SaveImageToGalleryWorker
 import com.example.background.workers.UploadWorker
@@ -84,12 +77,14 @@ class ImageOperations(
     /**
      * Creates a [OneTimeWorkRequest] with the given inputData and a [tag] if set.
      */
+    @SuppressLint("UnsafeExperimentalUsageError")
     private inline fun <reified T : ListenableWorker> workRequest(
         inputData: Data = imageInputData,
         tag: String? = null
     ) =
         OneTimeWorkRequestBuilder<T>().apply {
             setInputData(inputData)
+            setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             if (!tag.isNullOrEmpty()) {
                 addTag(tag)
             }
