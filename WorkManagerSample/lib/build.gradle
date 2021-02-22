@@ -55,4 +55,10 @@ dependencies {
     implementation deps.glide.runtime
 
     testImplementation deps.junit
+
+    androidTestImplementation deps.atsl.ext_junit_ktx
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
+
+    androidTestImplementation deps.work.testing
 }
