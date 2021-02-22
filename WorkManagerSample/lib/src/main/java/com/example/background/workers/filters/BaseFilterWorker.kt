@@ -31,9 +31,9 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationCompat.Builder
-import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
+import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.background.Constants
@@ -46,16 +46,16 @@ import java.io.InputStream
 import java.util.UUID
 
 abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) :
-    CoroutineWorker(context, parameters) {
+    Worker(context, parameters) {
 
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    override suspend fun doWork(): Result {
+    override fun doWork(): Result {
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI) ?:
         throw IllegalArgumentException("Invalid input uri")
         return try {
-            setForeground(createForegroundInfo())
+            setForegroundAsync(createForegroundInfo())
             val inputStream = inputStreamFor(applicationContext, resourceUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
             val output = applyFilter(bitmap)
@@ -64,7 +64,7 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
             Result.success(workDataOf(Constants.KEY_IMAGE_URI to outputUri.toString()))
         } catch (fileNotFoundException: FileNotFoundException) {
             Log.e(TAG, "Failed to decode input stream", fileNotFoundException)
-            throw RuntimeException("Failed to decode input stream", fileNotFoundException)
+            Result.failure()
         } catch (throwable: Throwable) {
             Log.e(TAG, "Error applying filter", throwable)
             Result.failure()
