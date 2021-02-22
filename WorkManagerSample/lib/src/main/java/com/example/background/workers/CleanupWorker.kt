@@ -18,22 +18,26 @@ package com.example.background.workers
 
 import android.content.Context
 import android.util.Log
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.background.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /** Clears temporary files. */
 class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
-    Worker(appContext, workerParams) {
+    CoroutineWorker(appContext, workerParams) {
 
-    override fun doWork(): Result {
-        return try {
-            cleanupDirectory()
-            Result.success()
-        } catch (exception: Exception) {
-            Log.e(TAG, "Error cleaning up", exception)
-            Result.failure()
+    override suspend fun doWork(): Result {
+        return withContext(Dispatchers.IO) {
+            try {
+                cleanupDirectory()
+                Result.success()
+            } catch (exception: Exception) {
+                Log.e(TAG, "Error cleaning up", exception)
+                Result.failure()
+            }
         }
     }
 
