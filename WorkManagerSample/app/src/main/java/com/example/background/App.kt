@@ -31,5 +31,6 @@ class App : Application(), Configuration.Provider {
     override fun getWorkManagerConfiguration() =
         Configuration.Builder()
             .setWorkerFactory(RenameWorkerFactory())
-            .setMinimumLoggingLevel(Log.VERBOSE).build()
+            .setMinimumLoggingLevel(Log.VERBOSE)
+            .build()
 }
