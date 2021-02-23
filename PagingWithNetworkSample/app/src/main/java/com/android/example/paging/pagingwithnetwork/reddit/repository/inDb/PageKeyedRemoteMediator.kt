@@ -24,6 +24,12 @@ class PageKeyedRemoteMediator(
     private val postDao: RedditPostDao = db.posts()
     private val remoteKeyDao: SubredditRemoteKeyDao = db.remoteKeys()
 
+    override suspend fun initialize(): InitializeAction {
+        // Require that remote REFRESH is launched on initial load and succeeds before launching
+        // remote PREPEND / APPEND.
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
+    }
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, RedditPost>
