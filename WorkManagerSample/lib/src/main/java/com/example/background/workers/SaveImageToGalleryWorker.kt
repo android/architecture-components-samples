@@ -16,10 +16,12 @@
 
 package com.example.background.workers
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media
 import android.util.Log
 import androidx.work.Data
 import androidx.work.Worker
@@ -38,23 +40,28 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
     override fun doWork(): Result {
         val resolver = applicationContext.contentResolver
         return try {
-            val resourceUri = Uri.parse(inputData.getString(Constants.KEY_IMAGE_URI))
-            val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(resourceUri))
-            val imageUrl = MediaStore.Images.Media.insertImage(
-                resolver, bitmap, DATE_FORMATTER.format(Date()), TITLE)
-            if (imageUrl.isEmpty()) {
+            val input = Uri.parse(inputData.getString(Constants.KEY_IMAGE_URI))
+            val imageLocation = insertImage(resolver, input)
+            if (imageLocation.isNullOrEmpty()) {
                 Log.e(TAG, "Writing to MediaStore failed")
                 Result.failure()
             }
             // Set the result of the worker by calling setOutputData().
             val output = Data.Builder()
-                .putString(Constants.KEY_IMAGE_URI, imageUrl)
+                .putString(Constants.KEY_IMAGE_URI, imageLocation)
                 .build()
             Result.success(output)
         } catch (exception: Exception) {
             Log.e(TAG, "Unable to save image to Gallery", exception)
             Result.failure()
         }
+    }
+
+    private fun insertImage(resolver: ContentResolver, resourceUri: Uri): String? {
+        val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(resourceUri))
+        return Media.insertImage(
+            resolver, bitmap, DATE_FORMATTER.format(Date()), TITLE
+        )
     }
 
     companion object {
