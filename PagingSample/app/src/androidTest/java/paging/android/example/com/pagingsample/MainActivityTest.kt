@@ -22,33 +22,14 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
  * Simply sanity test to ensure that activity launches without any issues and shows some data.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
-    private val testDispatcher = TestCoroutineDispatcher()
-
-    @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     @UiThread
@@ -58,7 +39,6 @@ class MainActivityTest {
         val scenario = ActivityScenario.launch<MainActivity>(intent)
         scenario.onActivity { activity ->
             val recyclerView: RecyclerView = activity.binding.cheeseList
-            testDispatcher.advanceUntilIdle()
             assertThat(recyclerView.adapter).isNotNull()
             assertThat(recyclerView.adapter!!.itemCount).isGreaterThan(0)
         }
