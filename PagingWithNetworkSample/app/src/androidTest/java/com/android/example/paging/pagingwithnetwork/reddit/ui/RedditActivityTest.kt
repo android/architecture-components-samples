@@ -18,9 +18,12 @@ package com.android.example.paging.pagingwithnetwork.reddit.ui
 
 import android.app.Application
 import android.content.Intent
-import androidx.test.annotation.UiThreadTest
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.android.example.paging.pagingwithnetwork.R
 import com.android.example.paging.pagingwithnetwork.reddit.DefaultServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
@@ -65,9 +68,8 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
     }
 
     @Test
-    @UiThreadTest
     fun showSomeResults() {
-        val scenario = ActivityScenario.launch<RedditActivity>(
+        ActivityScenario.launch<RedditActivity>(
             RedditActivity.intentFor(
                 context = ApplicationProvider.getApplicationContext(),
                 type = type
@@ -76,8 +78,12 @@ class RedditActivityTest(private val type: RedditPostRepository.Type) {
             }
         )
 
-        scenario.onActivity { activity ->
-            val recyclerView = activity.binding.list
+        onView(withId(R.id.list)).check { view, noViewFoundException ->
+            if (noViewFoundException != null) {
+                throw noViewFoundException
+            }
+
+            val recyclerView = view as RecyclerView
             assertEquals(3, recyclerView.adapter?.itemCount)
         }
     }
