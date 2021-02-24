@@ -75,4 +75,5 @@ dependencies {
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.coroutines.test
     androidTestImplementation deps.truth
+    androidTestImplementation deps.espresso.contrib
 }
