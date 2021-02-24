@@ -41,7 +41,7 @@ class FilterActivity : AppCompatActivity() {
             bindViews(this)
             // Check to see if we have output.
             viewModel.workInfo.observe(this@FilterActivity) { info ->
-                onStateChange(info, this)
+                if (info.size == 0) return@observe else onStateChange(info[0], this)
             }
         }
     }
