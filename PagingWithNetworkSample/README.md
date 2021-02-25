@@ -1,5 +1,7 @@
 # Paging With Network Sample
+Demos Paging library with a backend API, that is, the Reddit API.
 
+## Introduction
 This sample demonstrates how to use the Paging library with a backend API (in this
 case [Reddit API][7]).
 
