@@ -1,11 +1,10 @@
 Room & RxJava (Kotlin) Sample
 ============================
+Demos Room with RxJava's Flowable objects in Kotlin.
 
+## Introduction
 This is an API sample to showcase how to use [Room](https://developer.android.com/topic/libraries/architecture/room.html),
 with RxJava's [Flowable](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html) objects in Kotlin.
-
-Introduction
--------------
 
 ### Functionality
 The sample app shows an editable user name, stored in the database.
