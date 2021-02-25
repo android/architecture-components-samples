@@ -1,12 +1,11 @@
 Room & RxJava Sample
 =====================
+Demos observable queries in Room with RxJava's Flowable objects.
 
+## Introduction
 This is an API sample to showcase how to implement observable queries in
 [Room](https://developer.android.com/topic/libraries/architecture/room.html), with RxJava's
 [Flowable](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html) objects.
-
-Introduction
--------------
 
 ### Functionality
 The sample app shows an editable user name, stored in the database.
