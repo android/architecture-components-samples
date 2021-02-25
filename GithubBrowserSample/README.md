@@ -1,14 +1,13 @@
 Github Browser Sample with Android Architecture Components
 ===========================================================
+Demos Android Architecture Components with Dagger 2.
 
+## Introduction
 This is a sample app that uses Android Architecture Components with Dagger 2.
 
 **NOTE** It is a relatively more complex and complete example so if you are not familiar
 with [Architecture Components][arch], you are highly recommended to check other examples
 in this repository first.
-
-Introduction
--------------
 
 ### Functionality
 The app is composed of 3 main screens.
