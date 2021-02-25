@@ -1,6 +1,8 @@
 Kotlin Coroutines with Architecture Components (LiveData, ViewModel, Lifecycle)
 =============================================
+Demos multiple Architecture Components together (LiveData, ViewModels, and DataBinding).
 
+## Introduction
 This sample showcases the following Architecture Components:
 
 * [LiveData](https://developer.android.com/reference/android/arch/lifecycle/LiveData.html)
@@ -13,9 +15,6 @@ And the following artifacts:
 * [androidx.lifecycle.lifecycle-livedata-ktx](https://developer.android.com/jetpack/androidx/releases/lifecycle)
 
 This project shows how to integrate them with Kotlin's coroutines using the `liveData` builder. 
-
-Introduction
--------------
 
 LiveData is a data holder class that can be observed within a given lifecycle. Usually, you use LiveData to communicate a ViewModel with a View. In this project you'll find different patterns showcasing the `liveData` builder that lets you control a LiveData from a coroutine block.
 
