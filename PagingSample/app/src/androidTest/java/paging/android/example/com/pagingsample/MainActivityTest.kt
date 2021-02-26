@@ -16,15 +16,16 @@
 package paging.android.example.com.pagingsample
 
 import android.content.Intent
+import androidx.annotation.UiThread
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.TimeoutException
 
 /**
  * Simply sanity test to ensure that activity launches without any issues and shows some data.
@@ -33,16 +34,19 @@ import java.util.concurrent.TimeoutException
 class MainActivityTest {
 
     @Test
-    @Throws(InterruptedException::class, TimeoutException::class)
+    @UiThread
     fun showSomeResults() {
         val intent = Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val scenario = ActivityScenario.launch<MainActivity>(intent)
+        ActivityScenario.launch<MainActivity>(intent)
+        onView(withId(R.id.cheeseList)).check { view, noViewFoundException ->
+            if (noViewFoundException != null) {
+                throw noViewFoundException
+            }
 
-        scenario.onActivity { activity ->
-            val recyclerView: RecyclerView = activity.binding.cheeseList
-            MatcherAssert.assertThat(recyclerView.adapter, CoreMatchers.notNullValue())
-            MatcherAssert.assertThat(recyclerView.adapter!!.itemCount > 0, CoreMatchers.`is`(true))
+            val recyclerView = view as RecyclerView
+            assertThat(recyclerView.adapter).isNotNull()
+            assertThat(recyclerView.adapter!!.itemCount).isGreaterThan(0)
         }
     }
 }
