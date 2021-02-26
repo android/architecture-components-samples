@@ -23,8 +23,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * A simple ViewHolder that can bind a Cheese item. It also accepts null items since the data may
- * not have been fetched before it is bound.
+ * A simple ViewHolder that can bind a Cheese or Separator item. It also accepts null items since
+ * the data may not have been fetched before it is bound.
  */
 class CheeseViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.cheese_item, parent, false)
@@ -49,3 +49,4 @@ class CheeseViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         nameView.text = item?.name
     }
 }
+
