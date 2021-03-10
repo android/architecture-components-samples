@@ -23,8 +23,9 @@ import java.util.Random
  * Helps produce a random stock image [Uri].
  */
 internal object StockImages {
-    private val sRandom = Random()
-    private val sAssetUris = arrayOf(
+
+    private val random = Random()
+    private val imageUris = arrayOf(
             Uri.parse("file:///android_asset/images/lit_pier.jpg"),
             Uri.parse("file:///android_asset/images/parting_ways.jpg"),
             Uri.parse("file:///android_asset/images/wrong_way.jpg"),
@@ -39,7 +40,7 @@ internal object StockImages {
      * @return a random stock image [Uri].
      */
     fun randomStockImage(): Uri {
-        val index = sRandom.nextInt(sAssetUris.size)
-        return sAssetUris[index]
+        val index = random.nextInt(imageUris.size)
+        return imageUris[index]
     }
 }

@@ -20,6 +20,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams.Append
 import androidx.paging.PagingSource.LoadParams.Prepend
 import androidx.paging.PagingSource.LoadResult.Page
+import androidx.paging.PagingState
 import com.android.example.paging.pagingwithnetwork.reddit.api.RedditApi
 import com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.byItem.ItemKeyedSubredditPagingSource
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
@@ -53,6 +54,16 @@ class PageKeyedSubredditPagingSource(
             LoadResult.Error(e)
         } catch (e: HttpException) {
             LoadResult.Error(e)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<String, RedditPost>): String? {
+        return state.anchorPosition?.let { anchorPosition ->
+            // This loads starting from previous page, but since PagingConfig.initialLoadSize spans
+            // multiple pages, the initial load will still load items centered around
+            // anchorPosition. This also prevents needing to immediately launch prepend due to
+            // prefetchDistance.
+            state.closestPageToPosition(anchorPosition)?.prevKey
         }
     }
 }

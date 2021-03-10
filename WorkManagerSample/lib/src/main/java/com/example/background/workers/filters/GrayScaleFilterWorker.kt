@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Android Open Source Project
+ * Copyright 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.example.background.workers
+package com.example.background.workers.filters
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.renderscript.Allocation
 import android.renderscript.RenderScript
 import androidx.work.WorkerParameters
-import com.example.background.ScriptC_waterColorEffect
+import com.example.background.ScriptC_grayscale
 
-class WaterColorFilterWorker(context: Context, parameters: WorkerParameters) :
+class GrayScaleFilterWorker(context: Context, parameters: WorkerParameters) :
     BaseFilterWorker(context, parameters) {
 
     override fun applyFilter(input: Bitmap): Bitmap {
@@ -32,11 +32,11 @@ class WaterColorFilterWorker(context: Context, parameters: WorkerParameters) :
             rsContext = RenderScript.create(applicationContext, RenderScript.ContextType.DEBUG)
             val inAlloc = Allocation.createFromBitmap(rsContext, input)
             val outAlloc = Allocation.createTyped(rsContext, inAlloc.type)
-            // The Renderscript function that generates the water color effect is defined in
-            // `src/main/rs/waterColorEffect.rs`. The main idea, is to select a window of the image
-            // and then find the most dominant pixel value. Then we set the r, g, b, channels of the
-            // pixels to the one with the dominant pixel value.
-            ScriptC_waterColorEffect(rsContext).run {
+            // The Renderscript function that computes gray scale pixel values is defined in
+            // `src/main/rs/grayscale.rs`. We compute a new pixel value for every pixel which is
+            // out = (r + g + b) / 3 where r, g, b are the red, green and blue channels in the
+            // input image.
+            ScriptC_grayscale(rsContext).run {
                 _script = this
                 _width = input.width.toLong()
                 _height = input.height.toLong()
@@ -44,6 +44,7 @@ class WaterColorFilterWorker(context: Context, parameters: WorkerParameters) :
                 _out = outAlloc
                 invoke_filter()
             }
+
             Bitmap.createBitmap(input.width, input.height, input.config).apply {
                 outAlloc.copyTo(this)
             }

@@ -16,29 +16,35 @@
 package com.example.benchmark
 
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.reddit.ui.PostsAdapter
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
-import kotlinx.android.synthetic.main.activity_benchmark.*
+import com.example.benchmark.databinding.ActivityBenchmarkBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class BenchmarkActivity : AppCompatActivity() {
     val testExecutor = TestExecutor()
+    @VisibleForTesting
+    lateinit var binding: ActivityBenchmarkBinding
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_benchmark)
+        binding = ActivityBenchmarkBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val glide = GlideApp.with(this)
         val adapter = PostsAdapter(glide)
-        list.adapter = adapter
+        binding.list.adapter = adapter
 
         val config = PagingConfig(
             pageSize = 5,
@@ -68,4 +74,7 @@ class MockPagingSource : PagingSource<Int, RedditPost>() {
         val key = params.key ?: 0
         return LoadResult.Page(List(200) { generatePost() }.toList(), key - 1, key + 1)
     }
+
+    // Unused in benchmark.
+    override fun getRefreshKey(state: PagingState<Int, RedditPost>): Int? = null
 }

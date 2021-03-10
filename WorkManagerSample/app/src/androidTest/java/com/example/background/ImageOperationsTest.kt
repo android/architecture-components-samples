@@ -34,8 +34,8 @@ import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.example.background.Constants.KEY_IMAGE_URI
 import com.example.background.Constants.TAG_OUTPUT
-import com.example.background.workers.BaseFilterWorker
-import com.example.background.workers.BaseFilterWorker.Companion.inputStreamFor
+import com.example.background.workers.filters.BaseFilterWorker
+import com.example.background.workers.filters.BaseFilterWorker.Companion.inputStreamFor
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -50,48 +50,32 @@ import java.util.concurrent.TimeUnit
 @SmallTest
 class ImageOperationsTest {
 
-    companion object {
-        // Maximum wait time for a test.
-        private const val TEST_TIMEOUT = 5L
-        // Making the input image to the ImageOperationsBuilder look like a URI.
-        // However the underlying image is loaded using AssetManager. For more information
-        // look at BaseFilterWorker#inputStreamFor(...).
-        private const val JETPACK = "${BaseFilterWorker.ASSET_PREFIX}images/jetpack.png"
-        private const val JETPACK_GRAYSCALED =
-            "${BaseFilterWorker.ASSET_PREFIX}test_outputs/grayscale.png"
-        private val IMAGE = Uri.parse(JETPACK)
-        private val IMAGE_GRAYSCALE = Uri.parse(JETPACK_GRAYSCALED) // grayscale
-        private val DEFAULT_IMAGE_URI = Uri.EMPTY.toString()
-    }
-
-    private lateinit var mContext: Context
-    private lateinit var mTargetContext: Context
-    private lateinit var mLifeCycleOwner: LifecycleOwner
-    private lateinit var mConfiguration: Configuration
-    private var mWorkManager: WorkManager? = null
+    private lateinit var context: Context
+    private lateinit var targetContext: Context
+    private lateinit var lifeCycleOwner: LifecycleOwner
+    private lateinit var configuration: Configuration
+    private var workManager: WorkManager? = null
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        mContext = InstrumentationRegistry.getInstrumentation().context
-        mTargetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        mLifeCycleOwner = TestLifeCycleOwner()
-        mConfiguration = Configuration.Builder()
+        context = InstrumentationRegistry.getInstrumentation().context
+        targetContext = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
+        lifeCycleOwner = TestLifeCycleOwner()
+        configuration = Configuration.Builder()
             .setExecutor(SynchronousExecutor())
             .setMinimumLoggingLevel(Log.DEBUG)
             .build()
         // Initialize WorkManager using the WorkManagerTestInitHelper.
-        WorkManagerTestInitHelper.initializeTestWorkManager(mTargetContext, mConfiguration)
-        mWorkManager = WorkManager.getInstance(mTargetContext)
+        WorkManagerTestInitHelper.initializeTestWorkManager(targetContext, configuration)
+        workManager = WorkManager.getInstance(targetContext)
     }
 
     @Test
     fun testImageOperations() {
-        val imageOperations = ImageOperations.Builder(mTargetContext, IMAGE)
-            .setApplyGrayScale(true)
-            .build()
+        val imageOperations = ImageOperations(targetContext, IMAGE, grayScale = true)
 
         imageOperations.continuation
             .enqueue()
@@ -102,7 +86,7 @@ class ImageOperationsTest {
         val outputs: MutableList<Uri> = mutableListOf()
 
         imageOperations.continuation.workInfosLiveData.observe(
-            mLifeCycleOwner, Observer { workInfos ->
+            lifeCycleOwner, Observer { workInfos ->
                 val statuses = workInfos ?: return@Observer
                 val finished = statuses.all { it.state.isFinished }
                 if (finished) {
@@ -125,12 +109,7 @@ class ImageOperationsTest {
     @Test
     @SdkSuppress(maxSdkVersion = 22)
     fun testImageOperationsChain() {
-        val imageOperations = ImageOperations.Builder(mTargetContext, IMAGE)
-            .setApplyWaterColor(true)
-            .setApplyGrayScale(true)
-            .setApplyBlur(true)
-            .setApplySave(true)
-            .build()
+        val imageOperations = ImageOperations(targetContext, IMAGE, true, true, true, true)
 
         imageOperations.continuation
             .enqueue()
@@ -141,7 +120,7 @@ class ImageOperationsTest {
         val outputs: MutableList<Uri> = mutableListOf()
 
         imageOperations.continuation.workInfosLiveData.observe(
-            mLifeCycleOwner, Observer { workInfos ->
+            lifeCycleOwner, Observer { workInfos ->
                 val statuses = workInfos ?: return@Observer
                 val finished = statuses.all { it.state.isFinished }
                 if (finished) {
@@ -157,8 +136,8 @@ class ImageOperationsTest {
             })
 
         var outputUri: Uri? = null
-        mWorkManager?.getWorkInfosByTagLiveData(TAG_OUTPUT)
-            ?.observe(mLifeCycleOwner, Observer { workInfos ->
+        workManager?.getWorkInfosByTagLiveData(TAG_OUTPUT)
+            ?.observe(lifeCycleOwner, Observer { workInfos ->
                 val statuses = workInfos ?: return@Observer
                 val finished = statuses.all { it.state.isFinished }
                 if (finished) {
@@ -177,11 +156,25 @@ class ImageOperationsTest {
 
     private fun sameBitmaps(outputUri: Uri, compareWith: Uri): Boolean {
         val outputBitmap: Bitmap = BitmapFactory.decodeStream(
-            inputStreamFor(mContext, outputUri.toString())
+            inputStreamFor(context, outputUri.toString())
         )
         val compareBitmap: Bitmap = BitmapFactory.decodeStream(
-            inputStreamFor(mContext, compareWith.toString())
+            inputStreamFor(context, compareWith.toString())
         )
         return outputBitmap.sameAs(compareBitmap)
+    }
+
+    companion object {
+        // Maximum wait time for a test.
+        private const val TEST_TIMEOUT = 5L
+        // Making the input image to the ImageOperationsBuilder look like a URI.
+        // However the underlying image is loaded using AssetManager. For more information
+        // look at BaseFilterWorker#inputStreamFor(...).
+        private const val JETPACK = "${BaseFilterWorker.ASSET_PREFIX}images/jetpack.png"
+        private const val JETPACK_GRAYSCALED =
+            "${BaseFilterWorker.ASSET_PREFIX}test_outputs/grayscale.png"
+        private val IMAGE = Uri.parse(JETPACK)
+        private val IMAGE_GRAYSCALE = Uri.parse(JETPACK_GRAYSCALED) // grayscale
+        private val DEFAULT_IMAGE_URI = Uri.EMPTY.toString()
     }
 }

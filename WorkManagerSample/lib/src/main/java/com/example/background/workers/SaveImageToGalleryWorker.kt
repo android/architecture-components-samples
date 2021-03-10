@@ -20,7 +20,6 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
-import android.text.TextUtils
 import android.util.Log
 import androidx.work.Data
 import androidx.work.Worker
@@ -42,8 +41,7 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
             val resourceUri = Uri.parse(inputData.getString(Constants.KEY_IMAGE_URI))
             val bitmap = BitmapFactory.decodeStream(resolver.openInputStream(resourceUri))
             val imageUrl = MediaStore.Images.Media.insertImage(
-                resolver, bitmap, TITLE, DATE_FORMATTER.format(Date())
-            )
+                resolver, bitmap, DATE_FORMATTER.format(Date()), TITLE)
             if (imageUrl.isEmpty()) {
                 Log.e(TAG, "Writing to MediaStore failed")
                 Result.failure()
