@@ -66,6 +66,9 @@ dependencies {
     implementation deps.retrofit.gson
     implementation deps.okhttp_logging_interceptor
     implementation deps.glide.runtime
+    implementation deps.activity.activity_ktx
+    implementation deps.fragment.runtime_ktx
+
 
     testImplementation deps.junit
     androidTestImplementation deps.atsl.ext_junit
