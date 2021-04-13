@@ -139,9 +139,13 @@ class SelectImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleImageRequestResult(data: Intent) {
+    private fun handleImageRequestResult(intent: Intent) {
         // Get the imageUri the user picked, from the Intent.ACTION_PICK result.
-        val imageUri = data.clipData!!.getItemAt(0).uri
+        val imageUri = if (intent.clipData == null) {
+            intent.data
+        } else {
+            intent.clipData!!.getItemAt(0).uri
+        }
 
         if (imageUri == null) {
             Log.e(TAG, "Invalid input image Uri.")

@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -40,8 +41,12 @@ class FilterActivity : AppCompatActivity() {
             setContentView(root)
             bindViews(this)
             // Check to see if we have output.
-            viewModel.workInfo.observe(this@FilterActivity) { info ->
-                onStateChange(info, this)
+            viewModel.workInfoList.observe(this@FilterActivity) { infoList ->
+                if (infoList.isNotEmpty()) {
+                    onStateChange(infoList[0], this)
+                } else {
+                    Log.e(TAG, "WorkInfo is empty.")
+                }
             }
         }
     }
@@ -107,6 +112,8 @@ class FilterActivity : AppCompatActivity() {
     }
 
     companion object {
+
+        private const val TAG = "FilterActivity"
 
         /**
          * Creates a new intent which can be used to start [FilterActivity].

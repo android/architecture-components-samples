@@ -31,8 +31,8 @@ class FilterViewModel(application: Application) : ViewModel() {
 
     private val workManager = WorkManager.getInstance(application)
 
-    internal val workInfo =
-        workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT).map { it[0] }
+    internal val workInfoList =
+        workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)
 
     internal fun apply(imageOperations: ImageOperations) {
         imageOperations.continuation.enqueue()
