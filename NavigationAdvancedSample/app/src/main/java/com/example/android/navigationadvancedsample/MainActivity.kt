@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setupBottomNavigationBar() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-
+            
+        // the graphiIds and bottom Navigation menu items should has the same id to works
         val navGraphIds = listOf(R.navigation.home, R.navigation.list, R.navigation.form)
 
         // Setup the bottom navigation view with a list of navigation graphs
