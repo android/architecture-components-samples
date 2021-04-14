@@ -20,6 +20,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 
 /**
@@ -32,7 +33,9 @@ class FilterViewModel(application: Application) : ViewModel() {
     private val workManager = WorkManager.getInstance(application)
 
     internal val workInfo =
-        workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)
+        workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT).map {
+            it.firstOrNull()
+        }
 
     internal fun apply(imageOperations: ImageOperations) {
         imageOperations.continuation.enqueue()
