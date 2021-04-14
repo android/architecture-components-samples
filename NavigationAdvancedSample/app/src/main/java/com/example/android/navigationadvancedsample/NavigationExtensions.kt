@@ -111,11 +111,7 @@ fun BottomNavigationView.setupWithNavController(
                         .setPrimaryNavigationFragment(selectedFragment)
                         .apply {
                             // Detach all other Fragments
-                            graphIdToTagMap.forEach { _, fragmentTagIter ->
-                                if (fragmentTagIter != newlySelectedItemTag) {
-                                    detach(fragmentManager.findFragmentByTag(firstFragmentTag)!!)
-                                }
-                            }
+                            detach(fragmentManager.findFragmentByTag(firstFragmentTag)!!)
                         }
                         .addToBackStack(firstFragmentTag)
                         .setReorderingAllowed(true)
