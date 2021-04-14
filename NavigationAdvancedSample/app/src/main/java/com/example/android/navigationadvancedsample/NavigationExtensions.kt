@@ -17,6 +17,7 @@
 package com.example.android.navigationadvancedsample
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.core.util.set
@@ -25,6 +26,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.android.navigationadvancedsample.fragment_builders.CustomNavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
@@ -230,7 +232,11 @@ private fun obtainNavHostFragment(
     existingFragment?.let { return it }
 
     // Otherwise, create it and return it.
-    val navHostFragment = NavHostFragment.create(navGraphId)
+    val bundle = Bundle()
+    bundle.putInt("android-support-nav:fragment:graphId", navGraphId)
+    val navHostFragment = CustomNavHostFragment()
+    navHostFragment.arguments = bundle
+
     fragmentManager.beginTransaction()
         .add(containerId, navHostFragment, fragmentTag)
         .commitNow()
