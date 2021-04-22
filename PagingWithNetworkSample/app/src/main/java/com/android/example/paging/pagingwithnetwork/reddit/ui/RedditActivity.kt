@@ -31,6 +31,7 @@ import androidx.paging.LoadState
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.databinding.ActivityRedditBinding
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
+import com.android.example.paging.pagingwithnetwork.reddit.paging.asHelperStates
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -85,7 +86,7 @@ class RedditActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                binding.swipeRefresh.isRefreshing = loadStates.refresh is LoadState.Loading
+                binding.swipeRefresh.isRefreshing = loadStates.mediator?.refresh is LoadState.Loading
             }
         }
 
@@ -97,10 +98,15 @@ class RedditActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow
-                // Only emit when REFRESH LoadState for RemoteMediator changes.
+                // Use a state-machine to track LoadStates such that we only transition to
+                // NotLoading from a RemoteMediator load if it was also presented to UI.
+                .asHelperStates()
+                // Only emit when REFRESH changes, as we only want to react on loads replacing the
+                // list.
                 .distinctUntilChangedBy { it.refresh }
-                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+                // Only react to cases where REFRESH completes i.e., NotLoading.
                 .filter { it.refresh is LoadState.NotLoading }
+                // Scroll to top is synchronous with UI updates, even if remote load was triggered.
                 .collect { binding.list.scrollToPosition(0) }
         }
     }
