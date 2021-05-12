@@ -16,4 +16,7 @@
 
 <resources>
     <string name="app_name">WorkManagerMultiprocessSample</string>
+    <string name="start_worker1">Start Remote Worker 1</string>
+    <string name="start_worker2">Start Remote Worker 2</string>
+    <string name="cancel_workers">Cancel Remote Workers</string>
 </resources>
