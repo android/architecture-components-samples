@@ -21,6 +21,9 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.multiprocess.RemoteCoroutineWorker
 
+/**
+ * Example of implementing a RemoteCoroutineWorker. This worker simply returns Success.
+ */
 class ExampleRemoteCoroutineWorker(context: Context, parameters: WorkerParameters) :
     RemoteCoroutineWorker(context, parameters) {
 

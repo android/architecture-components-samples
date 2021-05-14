@@ -22,8 +22,16 @@ import androidx.work.WorkerParameters
 import androidx.work.multiprocess.RemoteListenableWorker
 import com.google.common.util.concurrent.ListenableFuture
 import androidx.concurrent.futures.CallbackToFutureAdapter
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
+/**
+ * Example of implementing a RemoteListenableWorker. This worker simply waits 5 seconds and returns
+ * a Success result.
+ */
 class ExampleRemoteListenableWorker(context: Context, parameters: WorkerParameters) :
     RemoteListenableWorker(context, parameters) {
 

@@ -30,6 +30,13 @@ import androidx.work.multiprocess.RemoteListenableWorker.ARGUMENT_CLASS_NAME
 import androidx.work.multiprocess.RemoteListenableWorker.ARGUMENT_PACKAGE_NAME
 import androidx.work.multiprocess.RemoteWorkerService
 
+/**
+ * This class demonstrates the ability to schedule two different workers that will run in specified
+ * processes.
+ *
+ * See [buildOneTimeWorkRemoteWorkRequest] to understand how to designate the process a Worker runs
+ * in.
+ */
 class MainActivity : AppCompatActivity() {
 
     private val PACKAGE_NAME = "com.example.background.multiprocess"
