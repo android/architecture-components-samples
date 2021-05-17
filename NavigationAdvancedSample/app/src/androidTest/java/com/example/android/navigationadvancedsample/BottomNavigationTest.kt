@@ -112,24 +112,6 @@ class BottomNavigationTest {
         assertDeeperThirdScreen()
     }
 
-    @Test
-    fun bottomNavView_itemReselected_goesBackToStart() {
-        openThirdScreen()
-
-        assertThirdScreen()
-
-        onView(withContentDescription(R.string.sign_up))
-            .perform(click())
-
-        assertDeeperThirdScreen()
-
-        // Reselect the current item
-        openThirdScreen()
-
-        // Verify that it popped the back stack until the start destination.
-        assertThirdScreen()
-    }
-
     private fun assertSecondScreen() {
         onView(allOf(withText(R.string.title_list), isDescendantOfA(withId(R.id.action_bar))))
                 .check(matches(isDisplayed()))
