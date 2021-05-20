@@ -20,9 +20,13 @@ import android.content.Context
 import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.multiprocess.RemoteCoroutineWorker
+import androidx.work.multiprocess.RemoteListenableWorker
 
 /**
  * Example of implementing a RemoteCoroutineWorker. This worker simply returns Success.
+ *
+ * Use RemoteCoroutineWorker if your worker is implemented in Kotlin, otherwise use
+ * [RemoteListenableWorker] if your worker is implemented in Java.
  */
 class ExampleRemoteCoroutineWorker(context: Context, parameters: WorkerParameters) :
     RemoteCoroutineWorker(context, parameters) {
