@@ -4,26 +4,35 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadState.*
 import androidx.paging.LoadStates
-import com.android.example.paging.pagingwithnetwork.reddit.paging.SynchronousRemoteState.*
+import com.android.example.paging.pagingwithnetwork.reddit.paging.MergedState.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.scan
 import kotlin.Error
 
+@OptIn(ExperimentalCoroutinesApi::class)
+fun Flow<CombinedLoadStates>.asMergedLoadStates(): Flow<LoadStates> {
+    val syncRemoteState = LoadStatesMerger()
+    return scan(syncRemoteState.toLoadStates()) { _, combinedLoadStates ->
+        syncRemoteState.updateFromCombinedLoadStates(combinedLoadStates)
+        syncRemoteState.toLoadStates()
+    }
+}
+
 /**
  * Track the combined [LoadState] of [RemoteMediator] and [PagingSource], so that each load type
  * is only set to [NotLoading] when [RemoteMediator] load is applied on presenter-side.
  */
-private class SynchronousRemoteStates {
+private class LoadStatesMerger {
     var refresh: LoadState = NotLoading(endOfPaginationReached = false)
         private set
     var prepend: LoadState = NotLoading(endOfPaginationReached = false)
         private set
     var append: LoadState = NotLoading(endOfPaginationReached = false)
         private set
-    private var refreshState: SynchronousRemoteState = NOT_LOADING
-    private var prependState: SynchronousRemoteState = NOT_LOADING
-    private var appendState: SynchronousRemoteState = NOT_LOADING
+    private var refreshState: MergedState = NOT_LOADING
+    private var prependState: MergedState = NOT_LOADING
+    private var appendState: MergedState = NOT_LOADING
 
     fun toLoadStates() = LoadStates(
         refresh = refresh,
@@ -36,7 +45,7 @@ private class SynchronousRemoteStates {
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.refresh,
             remoteState = combinedLoadStates.mediator?.refresh,
-            synchronousRemoteState = refreshState,
+            currentMergedState = refreshState,
         ).also {
             refresh = it.first
             refreshState = it.second
@@ -45,7 +54,7 @@ private class SynchronousRemoteStates {
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.prepend,
             remoteState = combinedLoadStates.mediator?.prepend,
-            synchronousRemoteState = prependState,
+            currentMergedState = prependState,
         ).also {
             prepend = it.first
             prependState = it.second
@@ -54,7 +63,7 @@ private class SynchronousRemoteStates {
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.append,
             remoteState = combinedLoadStates.mediator?.append,
-            synchronousRemoteState = appendState,
+            currentMergedState = appendState,
         ).also {
             append = it.first
             appendState = it.second
@@ -65,11 +74,11 @@ private class SynchronousRemoteStates {
         sourceRefreshState: LoadState,
         sourceState: LoadState,
         remoteState: LoadState?,
-        synchronousRemoteState: SynchronousRemoteState,
-    ): Pair<LoadState, SynchronousRemoteState> {
+        currentMergedState: MergedState,
+    ): Pair<LoadState, MergedState> {
         if (remoteState == null) return sourceState to NOT_LOADING
 
-        return when (synchronousRemoteState) {
+        return when (currentMergedState) {
             NOT_LOADING -> when (remoteState) {
                 is Loading -> Loading to REMOTE_STARTED
                 is Error -> remoteState to REMOTE_ERROR
@@ -100,19 +109,10 @@ private class SynchronousRemoteStates {
     }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
-fun Flow<CombinedLoadStates>.asSynchronousRemoteStates(): Flow<LoadStates> {
-    val syncRemoteState = SynchronousRemoteStates()
-    return scan(syncRemoteState.toLoadStates()) { _, combinedLoadStates ->
-        syncRemoteState.updateFromCombinedLoadStates(combinedLoadStates)
-        syncRemoteState.toLoadStates()
-    }
-}
-
 /**
- * State machine used to compute [LoadState] values in [SynchronousRemoteStates].
+ * State machine used to compute [LoadState] values in [LoadStatesMerger].
  */
-enum class SynchronousRemoteState {
+private enum class MergedState {
     /**
      * Idle state; defer to remote state for endOfPaginationReached.
      */
