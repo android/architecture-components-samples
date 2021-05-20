@@ -31,7 +31,7 @@ import androidx.paging.LoadState
 import com.android.example.paging.pagingwithnetwork.GlideApp
 import com.android.example.paging.pagingwithnetwork.databinding.ActivityRedditBinding
 import com.android.example.paging.pagingwithnetwork.reddit.ServiceLocator
-import com.android.example.paging.pagingwithnetwork.reddit.paging.asHelperStates
+import com.android.example.paging.pagingwithnetwork.reddit.paging.asSynchronousRemoteStates
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -100,7 +100,7 @@ class RedditActivity : AppCompatActivity() {
             adapter.loadStateFlow
                 // Use a state-machine to track LoadStates such that we only transition to
                 // NotLoading from a RemoteMediator load if it was also presented to UI.
-                .asHelperStates()
+                .asSynchronousRemoteStates()
                 // Only emit when REFRESH changes, as we only want to react on loads replacing the
                 // list.
                 .distinctUntilChangedBy { it.refresh }

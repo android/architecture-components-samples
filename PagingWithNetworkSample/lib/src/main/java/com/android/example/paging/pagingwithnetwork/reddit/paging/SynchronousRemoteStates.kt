@@ -4,7 +4,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadState.*
 import androidx.paging.LoadStates
-import com.android.example.paging.pagingwithnetwork.reddit.paging.HelperState.*
+import com.android.example.paging.pagingwithnetwork.reddit.paging.SynchronousRemoteState.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.scan
@@ -14,16 +14,16 @@ import kotlin.Error
  * Track the combined [LoadState] of [RemoteMediator] and [PagingSource], so that each load type
  * is only set to [NotLoading] when [RemoteMediator] load is applied on presenter-side.
  */
-class CombinedLoadStatesHelper {
+private class SynchronousRemoteStates {
     var refresh: LoadState = NotLoading(endOfPaginationReached = false)
         private set
     var prepend: LoadState = NotLoading(endOfPaginationReached = false)
         private set
     var append: LoadState = NotLoading(endOfPaginationReached = false)
         private set
-    private var refreshState: HelperState = NOT_LOADING
-    private var prependState: HelperState = NOT_LOADING
-    private var appendState: HelperState = NOT_LOADING
+    private var refreshState: SynchronousRemoteState = NOT_LOADING
+    private var prependState: SynchronousRemoteState = NOT_LOADING
+    private var appendState: SynchronousRemoteState = NOT_LOADING
 
     fun toLoadStates() = LoadStates(
         refresh = refresh,
@@ -32,44 +32,44 @@ class CombinedLoadStatesHelper {
     )
 
     internal fun updateFromCombinedLoadStates(combinedLoadStates: CombinedLoadStates) {
-        computeHelperStates(
+        computeSynchronousRemoteStates(
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.refresh,
             remoteState = combinedLoadStates.mediator?.refresh,
-            helperState = refreshState,
+            synchronousRemoteState = refreshState,
         ).also {
             refresh = it.first
             refreshState = it.second
         }
-        computeHelperStates(
+        computeSynchronousRemoteStates(
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.prepend,
             remoteState = combinedLoadStates.mediator?.prepend,
-            helperState = prependState,
+            synchronousRemoteState = prependState,
         ).also {
             prepend = it.first
             prependState = it.second
         }
-        computeHelperStates(
+        computeSynchronousRemoteStates(
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.append,
             remoteState = combinedLoadStates.mediator?.append,
-            helperState = appendState,
+            synchronousRemoteState = appendState,
         ).also {
             append = it.first
             appendState = it.second
         }
     }
 
-    private fun computeHelperStates(
+    private fun computeSynchronousRemoteStates(
         sourceRefreshState: LoadState,
         sourceState: LoadState,
         remoteState: LoadState?,
-        helperState: HelperState,
-    ): Pair<LoadState, HelperState> {
+        synchronousRemoteState: SynchronousRemoteState,
+    ): Pair<LoadState, SynchronousRemoteState> {
         if (remoteState == null) return sourceState to NOT_LOADING
 
-        return when (helperState) {
+        return when (synchronousRemoteState) {
             NOT_LOADING -> when (remoteState) {
                 is Loading -> Loading to REMOTE_STARTED
                 is Error -> remoteState to REMOTE_ERROR
@@ -101,18 +101,18 @@ class CombinedLoadStatesHelper {
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun Flow<CombinedLoadStates>.asHelperStates(): Flow<LoadStates> {
-    val helper = CombinedLoadStatesHelper()
-    return scan(helper.toLoadStates()) { _, combinedLoadStates ->
-        helper.updateFromCombinedLoadStates(combinedLoadStates)
-        helper.toLoadStates()
+fun Flow<CombinedLoadStates>.asSynchronousRemoteStates(): Flow<LoadStates> {
+    val syncRemoteState = SynchronousRemoteStates()
+    return scan(syncRemoteState.toLoadStates()) { _, combinedLoadStates ->
+        syncRemoteState.updateFromCombinedLoadStates(combinedLoadStates)
+        syncRemoteState.toLoadStates()
     }
 }
 
 /**
- * State machine used to compute [LoadState] values in [CombinedLoadStatesHelper].
+ * State machine used to compute [LoadState] values in [SynchronousRemoteStates].
  */
-enum class HelperState {
+enum class SynchronousRemoteState {
     /**
      * Idle state; defer to remote state for endOfPaginationReached.
      */
