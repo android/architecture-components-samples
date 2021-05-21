@@ -1,15 +1,39 @@
 package com.android.example.paging.pagingwithnetwork.reddit.paging
 
+import androidx.annotation.VisibleForTesting
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.LoadState.*
+import androidx.paging.LoadState.NotLoading
+import androidx.paging.LoadState.Loading
 import androidx.paging.LoadStates
-import com.android.example.paging.pagingwithnetwork.reddit.paging.MergedState.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.scan
 import kotlin.Error
+import androidx.paging.PagingDataAdapter
+import androidx.paging.RemoteMediator
+import androidx.paging.PagingSource
+import androidx.paging.LoadType.REFRESH
+import androidx.paging.LoadType
+import com.android.example.paging.pagingwithnetwork.reddit.paging.MergedState.NOT_LOADING
+import com.android.example.paging.pagingwithnetwork.reddit.paging.MergedState.REMOTE_STARTED
+import com.android.example.paging.pagingwithnetwork.reddit.paging.MergedState.REMOTE_ERROR
+import com.android.example.paging.pagingwithnetwork.reddit.paging.MergedState.SOURCE_ERROR
+import com.android.example.paging.pagingwithnetwork.reddit.paging.MergedState.SOURCE_LOADING
 
+/**
+ * Converts the raw [CombinedLoadStates] [Flow] from [PagingDataAdapter.loadStateFlow] into a new
+ * [Flow] of [CombinedLoadStates] that track [CombinedLoadStates.mediator] states as they are
+ * synchronously applied in the UI. Any [Loading] state triggered by [RemoteMediator] will only
+ * transition back to [NotLoading] after the fetched items have been synchronously shown in UI by a
+ * successful [PagingSource] load of type [REFRESH].
+ *
+ * Note: This class assumes that the [RemoteMediator] implementation always invalidates
+ * [PagingSource] on a successful fetch, even if no data was modified (which Room does by default).
+ * Using this class without this guarantee can cause [LoadState] to get indefinitely stuck as
+ * [Loading] in cases where invalidation doesn't happen because the fetched network data represents
+ * exactly what is already cached in DB.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 fun Flow<CombinedLoadStates>.asMergedLoadStates(): Flow<LoadStates> {
     val syncRemoteState = LoadStatesMerger()
@@ -30,9 +54,12 @@ private class LoadStatesMerger {
         private set
     var append: LoadState = NotLoading(endOfPaginationReached = false)
         private set
-    private var refreshState: MergedState = NOT_LOADING
-    private var prependState: MergedState = NOT_LOADING
-    private var appendState: MergedState = NOT_LOADING
+    var refreshState: MergedState = NOT_LOADING
+        private set
+    var prependState: MergedState = NOT_LOADING
+        private set
+    var appendState: MergedState = NOT_LOADING
+        private set
 
     fun toLoadStates() = LoadStates(
         refresh = refresh,
@@ -40,8 +67,12 @@ private class LoadStatesMerger {
         append = append
     )
 
-    internal fun updateFromCombinedLoadStates(combinedLoadStates: CombinedLoadStates) {
-        computeSynchronousRemoteStates(
+    /**
+     * For every new emission of [CombinedLoadStates] from the original [Flow], update the
+     * [MergedState] of each [LoadType] and compute the new [LoadState].
+     */
+    fun updateFromCombinedLoadStates(combinedLoadStates: CombinedLoadStates) {
+        computeNextLoadStateAndMergedState(
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.refresh,
             remoteState = combinedLoadStates.mediator?.refresh,
@@ -50,7 +81,7 @@ private class LoadStatesMerger {
             refresh = it.first
             refreshState = it.second
         }
-        computeSynchronousRemoteStates(
+        computeNextLoadStateAndMergedState(
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.prepend,
             remoteState = combinedLoadStates.mediator?.prepend,
@@ -59,7 +90,7 @@ private class LoadStatesMerger {
             prepend = it.first
             prependState = it.second
         }
-        computeSynchronousRemoteStates(
+        computeNextLoadStateAndMergedState(
             sourceRefreshState = combinedLoadStates.source.refresh,
             sourceState = combinedLoadStates.source.append,
             remoteState = combinedLoadStates.mediator?.append,
@@ -70,7 +101,11 @@ private class LoadStatesMerger {
         }
     }
 
-    private fun computeSynchronousRemoteStates(
+    /**
+     * Compute which [LoadState] and [MergedState] to transition, given the previous and current
+     * state for a particular [LoadType].
+     */
+    private fun computeNextLoadStateAndMergedState(
         sourceRefreshState: LoadState,
         sourceState: LoadState,
         remoteState: LoadState?,
@@ -111,6 +146,10 @@ private class LoadStatesMerger {
 
 /**
  * State machine used to compute [LoadState] values in [LoadStatesMerger].
+ *
+ * This allows [LoadStatesMerger] to track whether to block transitioning to [NotLoading] from the
+ * [Loading] state if it was triggered by [RemoteMediator], until [PagingSource] invalidates and
+ * completes [REFRESH].
  */
 private enum class MergedState {
     /**
