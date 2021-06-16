@@ -26,10 +26,14 @@ import androidx.work.WorkerParameters
 import androidx.work.testing.TestWorkerBuilder
 import androidx.work.workDataOf
 import com.example.background.Constants
+import org.junit.After
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.lang.RuntimeException
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors.newSingleThreadExecutor
 
 @RunWith(AndroidJUnit4::class)
@@ -38,11 +42,23 @@ class BaseFilterWorkerTest {
     private lateinit var worker: TestBaseFilterWorker
     private val context: Context = ApplicationProvider.getApplicationContext()
 
+    private lateinit var executor: ExecutorService
+
+    @Before
+    fun setup() {
+        executor = newSingleThreadExecutor()
+    }
+
+    @After
+    fun tearDown() {
+        executor.shutdown()
+    }
+
     @Test
     fun testFiltering_withExistingUri() {
         val worker = TestWorkerBuilder<TestBaseFilterWorker>(
             context,
-            newSingleThreadExecutor(),
+            executor,
             workDataOf(Constants.KEY_IMAGE_URI to "file:///android_asset/watson.jpg")
         ).build()
 
@@ -54,7 +70,7 @@ class BaseFilterWorkerTest {
     fun testFiltering_invalidUri() {
         worker = TestWorkerBuilder<TestBaseFilterWorker>(
             context,
-            newSingleThreadExecutor(),
+            executor,
             inputData = workDataOf(Constants.KEY_IMAGE_URI to "file:///android_asset/invalid")
         ).build()
 
@@ -64,7 +80,7 @@ class BaseFilterWorkerTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun testFiltering_missingUri() {
-        worker = TestWorkerBuilder<TestBaseFilterWorker>(context, newSingleThreadExecutor()).build()
+        worker = TestWorkerBuilder<TestBaseFilterWorker>(context, executor).build()
         worker.doWork() // throws Exception
     }
 }

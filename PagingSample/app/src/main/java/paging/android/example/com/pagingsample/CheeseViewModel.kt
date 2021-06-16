@@ -78,7 +78,7 @@ class CheeseViewModel(private val dao: CheeseDao) : ViewModel() {
                     } else if (before == null) {
                         // Header
                         CheeseListItem.Separator(after.name.first())
-                    } else if (before.name.first() != after.name.first()) {
+                    } else if (!before.name.first().equals(after.name.first(), ignoreCase = true)){
                         // Between two items that start with different letters.
                         CheeseListItem.Separator(after.name.first())
                     } else {

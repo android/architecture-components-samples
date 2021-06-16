@@ -20,6 +20,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 
 /**
