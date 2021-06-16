@@ -41,6 +41,7 @@ class BaseFilterWorkerTest {
 
     private lateinit var worker: TestBaseFilterWorker
     private val context: Context = ApplicationProvider.getApplicationContext()
+
     private lateinit var executor: ExecutorService
 
     @Before
