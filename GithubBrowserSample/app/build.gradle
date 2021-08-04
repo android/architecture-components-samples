@@ -73,7 +73,10 @@ dependencies {
     implementation deps.transition
     implementation deps.fragment.testing
     implementation deps.navigation.fragment_ktx
-    implementation deps.room.runtime
+    implementation deps.sqlitejdbc
+    implementation(deps.room.runtime) {
+        exclude(group:'org.xerial')
+    }
     implementation deps.lifecycle.livedata_ktx
     implementation deps.lifecycle.runtime
     implementation deps.lifecycle.java8
@@ -91,7 +94,9 @@ dependencies {
 
     kapt deps.dagger.android_support_compiler
     kapt deps.dagger.compiler
-    kapt deps.room.compiler
+    kapt(deps.room.compiler) {
+        exclude(group:'org.xerial')
+    }
     kapt deps.lifecycle.compiler
 
     testImplementation deps.junit
