@@ -64,6 +64,7 @@ dependencies {
     implementation deps.cardview
     implementation deps.lifecycle.runtime
     implementation deps.paging_runtime
+    implementation deps.room.paging
     implementation deps.kotlin.stdlib
 
     kapt deps.room.compiler
