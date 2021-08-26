@@ -22,7 +22,7 @@
 ext.deps = [:]
 def versions = [:]
 versions.activity = '1.1.0'
-versions.android_gradle_plugin = '4.0.0'
+versions.android_gradle_plugin = '4.2.2'
 versions.annotations = "1.0.0"
 versions.apache_commons = "2.5"
 versions.appcompat = "1.2.0-alpha02"
@@ -221,7 +221,7 @@ ext.deps = deps
 
 def addRepos(RepositoryHandler handler) {
     handler.google()
-    handler.jcenter()
+    handler.mavenCentral()
     handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 ext.addRepos = this.&addRepos
