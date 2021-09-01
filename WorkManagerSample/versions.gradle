@@ -62,11 +62,11 @@ versions.rxjava2 = "2.1.3"
 versions.timber = "4.7.1"
 versions.transition = "1.3.0"
 versions.truth = "1.0.1"
-versions.work = "2.7.0-alpha01"
+versions.work = "2.7.0-beta01"
 ext.versions = versions
 
 def build_versions = [:]
-build_versions.min_sdk = 14
+build_versions.min_sdk = 21
 build_versions.compile_sdk = 'android-S'
 build_versions.target_sdk = 29
 build_versions.build_tools = "29.0.3"
