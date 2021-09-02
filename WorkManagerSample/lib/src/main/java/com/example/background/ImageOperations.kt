@@ -77,7 +77,6 @@ class ImageOperations(
     /**
      * Creates a [OneTimeWorkRequest] with the given inputData and a [tag] if set.
      */
-    @SuppressLint("UnsafeExperimentalUsageError")
     private inline fun <reified T : ListenableWorker> workRequest(
         inputData: Data = imageInputData,
         tag: String? = null
