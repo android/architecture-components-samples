@@ -40,7 +40,7 @@ class FilterActivity : AppCompatActivity() {
             setContentView(root)
             bindViews(this)
             // Check to see if we have output.
-            viewModel.workInfo.observe(this@FilterActivity) { info ->
+            viewModel.workInfo?.observe(this@FilterActivity) { info ->
                 if (info.size == 0) return@observe else onStateChange(info[0], this)
             }
         }

@@ -109,7 +109,6 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
     /**
      * Create ForegroundInfo required to run a Worker in a foreground service.
      */
-    @ExperimentalExpeditedWork
     override suspend fun getForegroundInfo(): ForegroundInfo {
         // For a real world app you might want to use a different id for each Notification.
         val notificationId = 1
