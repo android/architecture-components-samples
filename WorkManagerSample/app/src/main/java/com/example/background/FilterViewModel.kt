@@ -33,7 +33,7 @@ class FilterViewModel(application: Application) : ViewModel() {
 
     internal val workInfo =
         workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT).takeIf {
-            it.value !== null
+            it.value != null
         }?.map {
             it[0]
         }
