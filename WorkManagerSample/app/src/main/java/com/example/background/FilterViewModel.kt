@@ -33,7 +33,11 @@ class FilterViewModel(application: Application) : ViewModel() {
     private val workManager = WorkManager.getInstance(application)
 
     internal val workInfo =
-        workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)
+        workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT).takeIf {
+            it.value != null
+        }?.map {
+            it[0]
+        }
 
     internal fun apply(imageOperations: ImageOperations) {
         imageOperations.continuation.enqueue()
