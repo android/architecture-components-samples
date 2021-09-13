@@ -6,10 +6,10 @@ import androidx.paging.LoadState
 import androidx.paging.LoadState.NotLoading
 import androidx.paging.LoadState.Loading
 import androidx.paging.LoadStates
+import androidx.paging.PagingSource.LoadResult.Error
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.scan
-import kotlin.Error
 import androidx.paging.PagingDataAdapter
 import androidx.paging.RemoteMediator
 import androidx.paging.PagingSource
@@ -116,28 +116,28 @@ private class LoadStatesMerger {
         return when (currentMergedState) {
             NOT_LOADING -> when (remoteState) {
                 is Loading -> Loading to REMOTE_STARTED
-                is Error -> remoteState to REMOTE_ERROR
+                is Error<*, *> -> remoteState to REMOTE_ERROR
                 else -> NotLoading(remoteState.endOfPaginationReached) to NOT_LOADING
             }
             REMOTE_STARTED -> when {
-                remoteState is Error -> remoteState to REMOTE_ERROR
+                remoteState is Error<*, *> -> remoteState to REMOTE_ERROR
                 sourceRefreshState is Loading -> Loading to SOURCE_LOADING
                 else -> Loading to REMOTE_STARTED
             }
             REMOTE_ERROR -> when (remoteState) {
-                is Error -> remoteState to REMOTE_ERROR
+                is Error<*, *> -> remoteState to REMOTE_ERROR
                 else -> Loading to REMOTE_STARTED
             }
             SOURCE_LOADING -> when {
-                sourceRefreshState is Error -> sourceRefreshState to SOURCE_ERROR
-                remoteState is Error -> remoteState to REMOTE_ERROR
+                sourceRefreshState is Error<*, *> -> sourceRefreshState to SOURCE_ERROR
+                remoteState is Error<*, *> -> remoteState to REMOTE_ERROR
                 sourceRefreshState is NotLoading -> {
                     NotLoading(remoteState.endOfPaginationReached) to NOT_LOADING
                 }
                 else -> Loading to SOURCE_LOADING
             }
             SOURCE_ERROR -> when (sourceRefreshState) {
-                is Error -> sourceRefreshState to SOURCE_ERROR
+                is Error<*, *> -> sourceRefreshState to SOURCE_ERROR
                 else -> sourceRefreshState to SOURCE_LOADING
             }
         }
