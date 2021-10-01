@@ -55,7 +55,6 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI) ?:
         throw IllegalArgumentException("Invalid input uri")
         return try {
-            setForegroundAsync(createForegroundInfo())
             val inputStream = inputStreamFor(applicationContext, resourceUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
             val output = applyFilter(bitmap)
