@@ -85,7 +85,7 @@ class RedditActivity : AppCompatActivity() {
         )
 
         lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest { loadStates ->
+            adapter.loadStateFlow.collect { loadStates ->
                 binding.swipeRefresh.isRefreshing = loadStates.mediator?.refresh is LoadState.Loading
             }
         }
