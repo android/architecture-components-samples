@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -40,8 +41,8 @@ class FilterActivity : AppCompatActivity() {
             setContentView(root)
             bindViews(this)
             // Check to see if we have output.
-            viewModel.workInfo?.observe(this@FilterActivity) { info ->
-                onStateChange(info, this)
+            viewModel.workInfo.observe(this@FilterActivity) { info ->
+                if (info.size == 0) return@observe else onStateChange(info[0], this)
             }
         }
     }
@@ -87,6 +88,7 @@ class FilterActivity : AppCompatActivity() {
     private fun onStateChange(info: WorkInfo, binding: ActivityFilterBinding) {
         val finished = info.state.isFinished
 
+        Log.i("Caren", "on state changed: " + info.tags)
         with(binding) {
             if (!finished) {
                 progressBar.visibility = View.VISIBLE
