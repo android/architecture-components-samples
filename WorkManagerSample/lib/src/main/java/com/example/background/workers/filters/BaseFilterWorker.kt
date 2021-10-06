@@ -16,24 +16,17 @@
 
 package com.example.background.workers.filters
 
-import android.R.drawable
-import android.annotation.TargetApi
-import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.util.Log
-import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
-import androidx.core.app.NotificationCompat.Builder
 import androidx.work.*
 import com.example.background.Constants
 import com.example.background.library.R
+import com.example.background.workers.createNotification
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -107,50 +100,8 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
     override suspend fun getForegroundInfo(): ForegroundInfo {
         // For a real world app you might want to use a different id for each Notification.
         val notificationId = 1
-        return ForegroundInfo(notificationId, createNotification())
-    }
-
-    /**
-     * Create the notification and required channel (O+) for running work in a foreground service.
-     */
-    private fun createNotification(): Notification {
-        val channelId = getString(R.string.notification_channel_id)
-        val title = getString(R.string.notification_title)
-        val cancel = getString(R.string.cancel_processing)
-        val name = getString(R.string.channel_name)
-        // This PendingIntent can be used to cancel the Worker.
-        val intent = WorkManager.getInstance(applicationContext).createCancelPendingIntent(id)
-
-        val builder = Builder(applicationContext, channelId)
-            .setContentTitle(title)
-            .setTicker(title)
-            .setSmallIcon(R.drawable.baseline_gradient)
-            .setOngoing(true)
-            .addAction(drawable.ic_delete, cancel, intent)
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            createNotificationChannel(channelId, name).also {
-                builder.setChannelId(it.id)
-            }
-        }
-        return builder.build()
-    }
-
-
-    private fun getString(@StringRes id: Int) = applicationContext.getString(id)
-
-    /**
-     * Create the required notification channel for O+ devices.
-     */
-    @TargetApi(VERSION_CODES.O)
-    private fun createNotificationChannel(
-        channelId: String,
-        name: String
-    ): NotificationChannel {
-        return NotificationChannel(
-            channelId, name, NotificationManager.IMPORTANCE_LOW
-        ).also { channel ->
-            notificationManager.createNotificationChannel(channel)
-        }
+        return ForegroundInfo(notificationId, createNotification(applicationContext, id,
+        applicationContext.getString(R.string.notification_title_filtering_image)))
     }
 
     companion object {
