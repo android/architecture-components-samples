@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -88,7 +87,6 @@ class FilterActivity : AppCompatActivity() {
     private fun onStateChange(info: WorkInfo, binding: ActivityFilterBinding) {
         val finished = info.state.isFinished
 
-        Log.i("Caren", "on state changed: " + info.tags)
         with(binding) {
             if (!finished) {
                 progressBar.visibility = View.VISIBLE
