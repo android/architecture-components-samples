@@ -31,11 +31,7 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationCompat.Builder
-import androidx.work.ForegroundInfo
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import androidx.work.*
 import com.example.background.Constants
 import com.example.background.library.R
 import java.io.File
@@ -46,16 +42,15 @@ import java.io.InputStream
 import java.util.UUID
 
 abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) :
-    Worker(context, parameters) {
+    CoroutineWorker(context, parameters) {
 
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI) ?:
         throw IllegalArgumentException("Invalid input uri")
         return try {
-            setForegroundAsync(createForegroundInfo())
             val inputStream = inputStreamFor(applicationContext, resourceUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
             val output = applyFilter(bitmap)
