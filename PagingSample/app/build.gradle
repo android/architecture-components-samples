@@ -68,6 +68,7 @@ dependencies {
 
     kapt deps.room.compiler
     implementation deps.room.runtime
+    implementation deps.room.paging
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation deps.atsl.core
