@@ -37,9 +37,6 @@ import java.util.UUID
 abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
 
-    private val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
     override suspend fun doWork(): Result {
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI) ?:
         throw IllegalArgumentException("Invalid input uri")
@@ -98,15 +95,15 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
      * Create ForegroundInfo required to run a Worker in a foreground service.
      */
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        // For a real world app you might want to use a different id for each Notification.
-        val notificationId = 1
-        return ForegroundInfo(notificationId, createNotification(applicationContext, id,
+        return ForegroundInfo(NOTIFICATION_ID, createNotification(applicationContext, id,
         applicationContext.getString(R.string.notification_title_filtering_image)))
     }
 
     companion object {
         const val TAG = "BaseFilterWorker"
         const val ASSET_PREFIX = "file:///android_asset/"
+        // For a real world app you might want to use a different id for each Notification.
+        const val NOTIFICATION_ID = 1
 
         /**
          * Creates an input stream which can be used to read the given `resourceUri`.

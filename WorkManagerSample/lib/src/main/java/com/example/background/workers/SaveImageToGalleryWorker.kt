@@ -66,13 +66,15 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        // For a real world app you might want to use a different id for each Notification.
-        val notificationId = 2
-        return ForegroundInfo(notificationId, createNotification(applicationContext, id,
+        return ForegroundInfo(
+            NOTIFICATION_ID, createNotification(applicationContext, id,
             applicationContext.getString(R.string.notification_title_saving_image)))
     }
 
     companion object {
+        // Use same notification id as BaseFilter worker to update existing notification. For a real
+        // world app you might consider using a different id for each notification.
+        private const val NOTIFICATION_ID = 1
         private const val TAG = "SvImageToGalleryWrkr"
         private const val TITLE = "Filtered Image"
         private val DATE_FORMATTER =
