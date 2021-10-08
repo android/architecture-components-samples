@@ -60,12 +60,13 @@ fun createNotification(context: Context, workRequestId: UUID, notificationTitle:
 fun createNotificationChannel(
     context: Context,
     channelId: String,
-    name: String
+    name: String,
+    notificationImportance: Int = NotificationManager.IMPORTANCE_HIGH
 ): NotificationChannel {
     val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     return NotificationChannel(
-        channelId, name, NotificationManager.IMPORTANCE_LOW
+        channelId, name, notificationImportance
     ).also { channel ->
         notificationManager.createNotificationChannel(channel)
     }
