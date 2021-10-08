@@ -27,24 +27,24 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.WorkManager
 import com.example.background.library.R
-import java.util.*
+import java.util.UUID
 
 /**
  * Create the notification and required channel (O+) for running work in a foreground service.
  */
 fun createNotification(context: Context, workRequestId: UUID, notificationTitle: String): Notification {
     val channelId = context.getString(R.string.notification_channel_id)
-    val cancel = context.getString(R.string.cancel_processing)
+    val cancelText = context.getString(R.string.cancel_processing)
     val name = context.getString(R.string.channel_name)
     // This PendingIntent can be used to cancel the Worker.
-    val intent = WorkManager.getInstance(context).createCancelPendingIntent(workRequestId)
+    val cancelIntent = WorkManager.getInstance(context).createCancelPendingIntent(workRequestId)
 
     val builder = NotificationCompat.Builder(context, channelId)
         .setContentTitle(notificationTitle)
         .setTicker(notificationTitle)
         .setSmallIcon(R.drawable.baseline_gradient)
         .setOngoing(true)
-        .addAction(android.R.drawable.ic_delete, cancel, intent)
+        .addAction(android.R.drawable.ic_delete, cancelText, cancelIntent)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         createNotificationChannel(context, channelId, name).also {
             builder.setChannelId(it.id)
