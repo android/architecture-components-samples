@@ -23,10 +23,12 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media
 import android.util.Log
+import androidx.work.CoroutineWorker
 import androidx.work.Data
-import androidx.work.Worker
+import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.example.background.Constants
+import com.example.background.library.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -35,9 +37,10 @@ import java.util.Locale
  * Saves an output image to the [MediaStore].
  */
 class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParameters) :
-    Worker(appContext, workerParams) {
+    CoroutineWorker(appContext, workerParams) {
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
+
         val resolver = applicationContext.contentResolver
         return try {
             val input = Uri.parse(inputData.getString(Constants.KEY_IMAGE_URI))
@@ -62,9 +65,19 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
         return Media.insertImage(
             resolver, bitmap, DATE_FORMATTER.format(Date()), TITLE
         )
+
+    }
+
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+        return ForegroundInfo(
+            NOTIFICATION_ID, createNotification(applicationContext, id,
+            applicationContext.getString(R.string.notification_title_saving_image)))
     }
 
     companion object {
+        // Use same notification id as BaseFilter worker to update existing notification. For a real
+        // world app you might consider using a different id for each notification.
+        private const val NOTIFICATION_ID = 1
         private const val TAG = "SvImageToGalleryWrkr"
         private const val TITLE = "Filtered Image"
         private val DATE_FORMATTER =
