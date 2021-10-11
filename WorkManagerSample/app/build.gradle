@@ -16,7 +16,6 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion build_versions.compile_sdk
@@ -39,8 +38,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -62,6 +61,7 @@ dependencies {
     implementation deps.fragment.runtime_ktx
     implementation deps.constraint_layout
     implementation deps.arch_core.runtime
+    implementation deps.lifecycle.livedata_ktx
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
     implementation deps.okhttp_logging_interceptor

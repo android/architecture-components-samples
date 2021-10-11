@@ -27,12 +27,11 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPost
  */
 class InMemoryByPageKeyRepository(private val redditApi: RedditApi) : RedditPostRepository {
     override fun postsOfSubreddit(subReddit: String, pageSize: Int) = Pager(
-            PagingConfig(pageSize)
+        PagingConfig(pageSize)
     ) {
         PageKeyedSubredditPagingSource(
-                redditApi = redditApi,
-                subredditName = subReddit
+            redditApi = redditApi,
+            subredditName = subReddit
         )
     }.flow
 }
-

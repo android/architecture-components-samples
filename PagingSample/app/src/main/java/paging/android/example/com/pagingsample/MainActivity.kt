@@ -24,9 +24,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import paging.android.example.com.pagingsample.databinding.ActivityMainBinding
 
 /**
  * Shows a list of Cheeses, with swipe-to-delete, and an input field at the top to add.
@@ -35,15 +35,18 @@ import kotlinx.coroutines.launch
  * is updated automatically using paging components.
  */
 class MainActivity : AppCompatActivity() {
-    private val viewModel by viewModels<CheeseViewModel>()
+    lateinit var binding: ActivityMainBinding
+        private set
+    private val viewModel by viewModels<CheeseViewModel> { CheeseViewModelFactory(application) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Create adapter for the RecyclerView
         val adapter = CheeseAdapter()
-        cheeseList.adapter = adapter
+        binding.cheeseList.adapter = adapter
 
         // Subscribe the adapter to the ViewModel, so the items in the adapter are refreshed
         // when the list changes
@@ -58,9 +61,17 @@ class MainActivity : AppCompatActivity() {
     private fun initSwipeToDelete() {
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
             // enable the items to swipe to the left or right
-            override fun getMovementFlags(recyclerView: RecyclerView,
-                                          viewHolder: RecyclerView.ViewHolder): Int =
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                val cheeseViewHolder = viewHolder as CheeseViewHolder
+                return if (cheeseViewHolder.cheese != null) {
                     makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+                } else {
+                    makeMovementFlags(0, 0)
+                }
+            }
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                                 target: RecyclerView.ViewHolder): Boolean = false
@@ -72,24 +83,24 @@ class MainActivity : AppCompatActivity() {
                     viewModel.remove(it)
                 }
             }
-        }).attachToRecyclerView(cheeseList)
+        }).attachToRecyclerView(binding.cheeseList)
     }
 
     private fun addCheese() {
-        val newCheese = inputText.text.trim()
+        val newCheese = binding.inputText.text.trim()
         if (newCheese.isNotEmpty()) {
             viewModel.insert(newCheese)
-            inputText.setText("")
+            binding.inputText.setText("")
         }
     }
 
     private fun initAddButtonListener() {
-        addButton.setOnClickListener {
+        binding.addButton.setOnClickListener {
             addCheese()
         }
 
         // when the user taps the "Done" button in the on screen keyboard, save the item.
-        inputText.setOnEditorActionListener { _, actionId, _ ->
+        binding.inputText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 addCheese()
                 return@setOnEditorActionListener true
@@ -97,7 +108,7 @@ class MainActivity : AppCompatActivity() {
             false // action that isn't DONE occurred - ignore
         }
         // When the user clicks on the button, or presses enter, save the item.
-        inputText.setOnKeyListener { _, keyCode, event ->
+        binding.inputText.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 addCheese()
                 return@setOnKeyListener true

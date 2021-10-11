@@ -20,13 +20,17 @@ import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.example.background.workers.RenameWorkerFactory
+import java.util.concurrent.Executors
 
 /**
  * The [Application]. Responsible for initializing [WorkManager] in [Log.VERBOSE] mode.
  */
 class App : Application(), Configuration.Provider {
+
     override fun getWorkManagerConfiguration() =
-            Configuration.Builder()
-                    .setMinimumLoggingLevel(Log.VERBOSE)
-                    .build()
+        Configuration.Builder()
+            .setWorkerFactory(RenameWorkerFactory())
+            .setMinimumLoggingLevel(Log.VERBOSE)
+            .build()
 }

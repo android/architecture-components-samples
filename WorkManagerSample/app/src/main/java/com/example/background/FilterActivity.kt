@@ -21,109 +21,89 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Checkable
-import android.widget.ImageView
 import androidx.activity.viewModels
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
-import com.example.background.databinding.ActivityProcessingBinding
+import com.example.background.databinding.ActivityFilterBinding
 
-/**
- * The [android.app.Activity] where the user picks filters to be applied on an
- * image.
- */
+/** The [android.app.Activity] where the user picks filters to be applied on an image. */
 class FilterActivity : AppCompatActivity() {
 
-    private val mViewModel: FilterViewModel by viewModels()
-    private var mImageUri: Uri? = null
-    private var mOutputImageUri: Uri? = null
+    private val viewModel: FilterViewModel by viewModels { FilterViewModelFactory(application) }
+    private var outputImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityProcessingBinding.inflate(layoutInflater).apply {
+
+        ActivityFilterBinding.inflate(layoutInflater).run {
             setContentView(root)
-        }
-
-        // Don't enable upload to Imgur, unless the developer specifies their own clientId.
-        val enableUpload = Constants.IMGUR_CLIENT_ID.isNotEmpty()
-        binding.upload.isEnabled = enableUpload
-
-        val imageUriExtra = intent.getStringExtra(Constants.KEY_IMAGE_URI)
-        if (!imageUriExtra.isNullOrEmpty()) {
-            mImageUri = Uri.parse(imageUriExtra)
-            val imageView = findViewById<ImageView>(R.id.imageView)
-            Glide.with(this).load(mImageUri).into(imageView)
-        }
-
-        binding.go.setOnClickListener {
-            val applyWaterColor = isChecked(R.id.filter_watercolor)
-            val applyGrayScale = isChecked(R.id.filter_grayscale)
-            val applyBlur = isChecked(R.id.filter_blur)
-            val save = isChecked(R.id.save)
-            val upload = isChecked(R.id.upload)
-
-            val imageOperations = ImageOperations.Builder(applicationContext, mImageUri!!)
-                .setApplyWaterColor(applyWaterColor)
-                .setApplyGrayScale(applyGrayScale)
-                .setApplyBlur(applyBlur)
-                .setApplySave(save)
-                .setApplyUpload(upload)
-                .build()
-
-            mViewModel.apply(imageOperations)
-        }
-
-        binding.output.setOnClickListener {
-            if (mOutputImageUri != null) {
-                val actionView = Intent(Intent.ACTION_VIEW, mOutputImageUri)
-                if (actionView.resolveActivity(packageManager) != null) {
-                    startActivity(actionView)
-                }
+            bindViews(this)
+            // Check to see if we have output.
+            viewModel.workInfo.observe(this@FilterActivity) { info ->
+                if (info.size == 0) return@observe else onStateChange(info[0], this)
             }
         }
-
-        binding.cancel.setOnClickListener { mViewModel.cancel() }
-
-        // Check to see if we have output.
-        mViewModel.outputStatus.observe(this, Observer { listOfInfos ->
-            if (listOfInfos == null || listOfInfos.isEmpty()) {
-                return@Observer
-            }
-
-            // We only care about the one output status.
-            // Every continuation has only one worker tagged TAG_OUTPUT
-            val info = listOfInfos[0]
-            val finished = info.state.isFinished
-            if (!finished) {
-                with(binding) {
-                    progressBar.visibility = View.VISIBLE
-                    cancel.visibility = View.VISIBLE
-                    go.visibility = View.GONE
-                    output.visibility = View.GONE
-                }
-            } else {
-                with(binding) {
-                    progressBar.visibility = View.GONE
-                    cancel.visibility = View.GONE
-                    go.visibility = View.VISIBLE
-                }
-
-                val outputData = info.outputData
-                val outputImageUri = outputData.getString(Constants.KEY_IMAGE_URI)
-
-                if (!outputImageUri.isNullOrEmpty()) {
-                    mOutputImageUri = Uri.parse(outputImageUri)
-                    binding.output.visibility = View.VISIBLE
-                }
-            }
-        })
     }
 
-    private fun isChecked(@IdRes resourceId: Int): Boolean {
-        val view = findViewById<View>(resourceId)
-        return view is Checkable && (view as Checkable).isChecked
+    private fun bindViews(binding: ActivityFilterBinding) {
+        with(binding) {
+            val imageUri: Uri = Uri.parse(intent.getStringExtra(Constants.KEY_IMAGE_URI))
+            Glide.with(this@FilterActivity).load(imageUri).into(imageView)
+
+            // Only show output options if a Imgur client id is set.
+            val multipleDestinationsPossible = Constants.IMGUR_CLIENT_ID.isNotEmpty()
+            if (!multipleDestinationsPossible) {
+                destinationsGroup.visibility = View.GONE
+            }
+
+            apply.setOnClickListener {
+                val applyWaterColor = filterWatercolor.isChecked
+                val applyGrayScale = filterGrayscale.isChecked
+                val applyBlur = filterBlur.isChecked
+                val save = save.isChecked
+
+                val imageOperations = ImageOperations(
+                    applicationContext, imageUri,
+                    applyWaterColor, applyGrayScale, applyBlur,
+                    save
+                )
+
+                viewModel.apply(imageOperations)
+            }
+
+            output.setOnClickListener {
+                if (outputImageUri != null) {
+                    val viewOutput = Intent(Intent.ACTION_VIEW, outputImageUri)
+                    if (viewOutput.resolveActivity(packageManager) != null) {
+                        startActivity(viewOutput)
+                    }
+                }
+            }
+            cancel.setOnClickListener { viewModel.cancel() }
+        }
+    }
+
+    private fun onStateChange(info: WorkInfo, binding: ActivityFilterBinding) {
+        val finished = info.state.isFinished
+
+        with(binding) {
+            if (!finished) {
+                progressBar.visibility = View.VISIBLE
+                cancel.visibility = View.VISIBLE
+                apply.visibility = View.GONE
+                output.visibility = View.GONE
+            } else {
+                progressBar.visibility = View.GONE
+                cancel.visibility = View.GONE
+                apply.visibility = View.VISIBLE
+            }
+        }
+        val outputData = info.outputData
+        outputData.getString(Constants.KEY_IMAGE_URI)?.let {
+            outputImageUri = Uri.parse(it)
+            binding.output.visibility = View.VISIBLE
+        }
     }
 
     companion object {

@@ -131,7 +131,7 @@ workflows:
       - test_navigation_basic_sample
       - test_navigation_advanced_sample
       - test_paging_sample
-      # flaky, deprecated - test_paging_network_sample
+      - test_paging_network_sample
       - test_persistence_content_provider_sample
       # inst tests with flavors - test_persistence_migrations_sample
       # temporarily disabled due to #804 - test_workmanager_sample

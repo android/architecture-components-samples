@@ -18,37 +18,41 @@ package com.example.background.workers
 
 import android.content.Context
 import android.util.Log
-import androidx.work.Worker
+import androidx.annotation.VisibleForTesting
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.background.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
-/**
- * Cleans up temporary files from the output folder.
- */
+/** Clears temporary files. */
 class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
-    Worker(appContext, workerParams) {
+    CoroutineWorker(appContext, workerParams) {
 
-    override fun doWork(): Result {
-        return try {
-            cleanupDirectory()
-            Result.success()
-        } catch (exception: Exception) {
-            Log.e(TAG, "Error cleaning up", exception)
-            Result.failure()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal val targetDirectory = File(applicationContext.filesDir, Constants.OUTPUT_PATH)
+
+    override suspend fun doWork(): Result {
+        return withContext(Dispatchers.IO) {
+            try {
+                cleanupDirectory()
+                Result.success()
+            } catch (exception: Exception) {
+                Log.e(TAG, "Error cleaning up", exception)
+                Result.failure()
+            }
         }
     }
 
+    /** Removes pngs from the app's files directory */
     private fun cleanupDirectory() {
-        val outputDirectory = File(applicationContext.filesDir, Constants.OUTPUT_PATH)
-        if (outputDirectory.exists()) {
-            val entries = outputDirectory.listFiles()
-            if (!entries.isNullOrEmpty()) {
-                for (entry in entries) {
-                    val name = entry.name
-                    if (name.isNotEmpty() && name.endsWith(".png")) {
-                        val deleted = entry.delete()
-                        Log.i(TAG, "Deleted $name - $deleted")
+        targetDirectory.apply {
+            if (exists()) {
+                listFiles()?.forEach { file ->
+                    if (file.name.endsWith(".png")) {
+                        val deleted = file.delete()
+                        Log.i(TAG, "Deleted ${file.name} - $deleted")
                     }
                 }
             }

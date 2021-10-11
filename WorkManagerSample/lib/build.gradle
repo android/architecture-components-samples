@@ -16,7 +16,6 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion build_versions.compile_sdk
@@ -56,4 +55,10 @@ dependencies {
     implementation deps.glide.runtime
 
     testImplementation deps.junit
+
+    androidTestImplementation deps.atsl.ext_junit_ktx
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
+
+    androidTestImplementation deps.work.testing
 }

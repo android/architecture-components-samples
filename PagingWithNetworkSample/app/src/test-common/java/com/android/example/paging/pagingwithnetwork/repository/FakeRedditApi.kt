@@ -38,10 +38,10 @@ class FakeRedditApi : RedditApi {
     }
 
     private fun findPosts(
-            subreddit: String,
-            limit: Int,
-            after: String? = null,
-            before: String? = null
+        subreddit: String,
+        limit: Int,
+        after: String? = null,
+        before: String? = null
     ): List<RedditApi.RedditChildrenResponse> {
         // only support paging forward
         if (before != null) return emptyList()
@@ -52,13 +52,13 @@ class FakeRedditApi : RedditApi {
     }
 
     private fun findSubReddit(subreddit: String) =
-            model.getOrDefault(subreddit, SubReddit())
+        model.getOrDefault(subreddit, SubReddit())
 
     override suspend fun getTop(
-            @Path("subreddit") subreddit: String,
-            @Query("limit") limit: Int,
-            @Query("after") after: String?,
-            @Query("before") before: String?
+        @Path("subreddit") subreddit: String,
+        @Query("limit") limit: Int,
+        @Query("after") after: String?,
+        @Query("before") before: String?
     ): RedditApi.ListingResponse {
         failureMsg?.let {
             throw IOException(it)
@@ -66,11 +66,11 @@ class FakeRedditApi : RedditApi {
         val items = findPosts(subreddit, limit, after, before)
         val nextAfter = items.lastOrNull()?.data?.name
         return RedditApi.ListingResponse(
-                RedditApi.ListingData(
-                        children = items,
-                        after = nextAfter,
-                        before = null
-                )
+            RedditApi.ListingData(
+                children = items,
+                after = nextAfter,
+                before = null
+            )
         )
     }
 

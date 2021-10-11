@@ -18,25 +18,28 @@ package com.android.example.paging.pagingwithnetwork
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.android.example.paging.pagingwithnetwork.databinding.ActivityMainBinding
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
 import com.android.example.paging.pagingwithnetwork.reddit.ui.RedditActivity
-import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * chooser activity for the demo.
  */
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        withDatabase.setOnClickListener {
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.withDatabase.setOnClickListener {
             show(RedditPostRepository.Type.DB)
         }
-        networkOnly.setOnClickListener {
+        binding.networkOnly.setOnClickListener {
             show(RedditPostRepository.Type.IN_MEMORY_BY_ITEM)
         }
-        networkOnlyWithPageKeys.setOnClickListener {
+        binding.networkOnlyWithPageKeys.setOnClickListener {
             show(RedditPostRepository.Type.IN_MEMORY_BY_PAGE)
         }
     }
