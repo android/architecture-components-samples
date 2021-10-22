@@ -16,14 +16,18 @@
 
 package com.example.background.workers.filters
 
-import android.app.NotificationManager
+import android.app.ForegroundServiceStartNotAllowedException
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import androidx.work.*
+import androidx.core.os.BuildCompat
+import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.example.background.Constants
 import com.example.background.library.R
 import com.example.background.workers.createNotification
@@ -38,8 +42,8 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
     CoroutineWorker(context, parameters) {
 
     override suspend fun doWork(): Result {
-        val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI) ?:
-        throw IllegalArgumentException("Invalid input uri")
+        val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI)
+            ?: throw IllegalArgumentException("Invalid input uri")
         return try {
             val inputStream = inputStreamFor(applicationContext, resourceUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
@@ -49,6 +53,19 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
             Result.success(workDataOf(Constants.KEY_IMAGE_URI to outputUri.toString()))
         } catch (fileNotFoundException: FileNotFoundException) {
             Log.e(TAG, "Failed to decode input stream", fileNotFoundException)
+            Result.failure()
+        } catch (e: IllegalStateException) {
+            // Check if this is a ForegroundServiceStartNotAllowedException and handle accordingly.
+            val isForegroundStartNotAllowed =
+                BuildCompat.isAtLeastS() && e is ForegroundServiceStartNotAllowedException
+            val logMessage = if (isForegroundStartNotAllowed) {
+                "Couldn't start a foreground service"
+            } else {
+                "An error occured"
+            }
+            Log.e(TAG, logMessage, e)
+            // TODO Handle depending on the Worker's use case.
+            //   e.g. Batch long running work, clean up work or in this example fail the worker.
             Result.failure()
         } catch (throwable: Throwable) {
             Log.e(TAG, "Error applying filter", throwable)
@@ -95,13 +112,18 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
      * Create ForegroundInfo required to run a Worker in a foreground service.
      */
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        return ForegroundInfo(NOTIFICATION_ID, createNotification(applicationContext, id,
-        applicationContext.getString(R.string.notification_title_filtering_image)))
+        return ForegroundInfo(
+            NOTIFICATION_ID, createNotification(
+                applicationContext, id,
+                applicationContext.getString(R.string.notification_title_filtering_image)
+            )
+        )
     }
 
     companion object {
         const val TAG = "BaseFilterWorker"
         const val ASSET_PREFIX = "file:///android_asset/"
+
         // For a real world app you might want to use a different id for each Notification.
         const val NOTIFICATION_ID = 1
 

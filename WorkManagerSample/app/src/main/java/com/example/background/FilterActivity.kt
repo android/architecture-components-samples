@@ -75,9 +75,7 @@ class FilterActivity : AppCompatActivity() {
             output.setOnClickListener {
                 if (outputImageUri != null) {
                     val viewOutput = Intent(Intent.ACTION_VIEW, outputImageUri)
-                    if (viewOutput.resolveActivity(packageManager) != null) {
-                        startActivity(viewOutput)
-                    }
+                    startActivity(viewOutput)
                 }
             }
             cancel.setOnClickListener { viewModel.cancel() }

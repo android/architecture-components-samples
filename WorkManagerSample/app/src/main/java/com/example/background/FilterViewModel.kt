@@ -19,8 +19,6 @@ package com.example.background
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 
 /**
@@ -48,6 +46,7 @@ class FilterViewModelFactory(private val application: Application) : ViewModelPr
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(FilterViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
             FilterViewModel(application) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")
