@@ -24,6 +24,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkContinuation
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -90,6 +91,7 @@ class ImageOperations(
     ) =
         OneTimeWorkRequestBuilder<T>().apply {
             setInputData(inputData)
+            setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             if (!tag.isNullOrEmpty()) {
                 addTag(tag)
             }

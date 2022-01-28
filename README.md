@@ -47,6 +47,8 @@ how to use ViewModels and Room together with RxJava, in Kotlin.
 * **[WorkManagerSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerSample)** - Shows
   how to use WorkManager to do background work, in Kotlin.
 
+* **[WorkManagerMultiprocessSample](https://github.com/googlesamples/android-architecture-components/tree/master/WorkManagerMultiprocessSample)** - Shows how to use WorkManager in apps that manage multiple processes.
+
 
 ### Reporting Issues
 

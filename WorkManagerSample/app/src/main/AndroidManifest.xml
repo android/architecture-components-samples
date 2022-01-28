@@ -25,21 +25,27 @@
 
     <application
         android:name=".App"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:allowBackup="true"
+        android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true">
 
         <provider
-                android:name="androidx.work.impl.WorkManagerInitializer"
-                android:authorities="${applicationId}.workmanager-init"
+                android:name="androidx.startup.InitializationProvider"
+                android:authorities="${applicationId}.androidx-startup"
                 android:directBootAware="false"
                 android:exported="false"
                 android:multiprocess="true"
-                tools:node="remove"
-                tools:targetApi="n" />
+                tools:targetApi="n"
+                tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+    </provider>
 
         <activity android:name=".SelectImageActivity">
             <intent-filter>

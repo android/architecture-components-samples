@@ -29,7 +29,8 @@ import java.util.concurrent.Executors
 class App : Application(), Configuration.Provider {
 
     override fun getWorkManagerConfiguration() =
-        Configuration.Builder().setExecutor(Executors.newSingleThreadExecutor())
+        Configuration.Builder()
             .setWorkerFactory(RenameWorkerFactory())
-            .setMinimumLoggingLevel(Log.VERBOSE).build()
+            .setMinimumLoggingLevel(Log.VERBOSE)
+            .build()
 }
