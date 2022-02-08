@@ -13,9 +13,9 @@ import java.util.List;
 public class TestData {
 
     static final ProductEntity PRODUCT_ENTITY = new ProductEntity(1, "name", "desc",
-            3);
+            3, "category");
     static final ProductEntity PRODUCT_ENTITY2 = new ProductEntity(2, "name2", "desc2",
-            20);
+            20, "category");
 
     static final List<ProductEntity> PRODUCTS = Arrays.asList(PRODUCT_ENTITY, PRODUCT_ENTITY2);
 
