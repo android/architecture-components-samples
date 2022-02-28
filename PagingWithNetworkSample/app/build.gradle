@@ -89,6 +89,7 @@ dependencies {
     androidTestImplementation deps.atsl.rules
     androidTestImplementation deps.arch_core.testing
     androidTestImplementation deps.espresso.contrib
+    androidTestImplementation deps.coroutines.test
 
     testImplementation deps.junit
     testImplementation deps.coroutines.test
