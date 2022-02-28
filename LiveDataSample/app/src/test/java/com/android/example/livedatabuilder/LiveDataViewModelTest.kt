@@ -23,7 +23,11 @@ import com.android.example.livedatabuilder.util.MainCoroutineRule
 import com.android.example.livedatabuilder.util.getOrAwaitValue
 import com.android.example.livedatabuilder.util.observeForTesting
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -49,7 +53,7 @@ class LiveDataViewModelTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     // Use a Fake DataSource so we have all necessary control over it
-    private val fakeDataSource = FakeDataSource()
+    private val fakeDataSource = FakeDataSource(mainCoroutineRule.testDispatcher)
 
     // Class under test. Uses Dispatchers.Main so that the MainCoroutineRule can control it.
     private lateinit var viewModel: LiveDataViewModel
@@ -68,54 +72,56 @@ class LiveDataViewModelTest {
     }
 
     @Test
-    fun currentTimeTransformed() {
+    fun currentTimeTransformed() = runTest {
         // Get the result of a coroutine inside a transformation
         val timeTransformed = viewModel.currentTimeTransformed.getOrAwaitValue {
             // After observing, advance the clock to avoid the delay calls.
-            mainCoroutineRule.advanceUntilIdle()
+            advanceUntilIdle()
         }
-        assertEquals(timeTransformed, Date(FakeDataSource.CURRENT_TIME).toString())
+        assertEquals(Date(FakeDataSource.CURRENT_TIME).toString(), timeTransformed)
     }
 
     @Test
-    fun getCurrentWeather_loading() {
-        // Start with a paused dispatcher in the FakeDataSource
-        fakeDataSource.testDispatcher.pauseDispatcher()
-
+    fun getCurrentWeather_loading() = runTest {
         // Keep observing currentWeather
         viewModel.currentWeather.observeForTesting {
+            // Yield test thread so that the first LiveData emission can complete
+            yield()
 
             // Verify that the first value is Loading
-            assertEquals(viewModel.currentWeather.value, LiveDataViewModel.LOADING_STRING)
+            assertEquals(LiveDataViewModel.LOADING_STRING, viewModel.currentWeather.value)
 
-            // Resume fake dispatcher so it emits a new value
-            fakeDataSource.testDispatcher.resumeDispatcher()
+            // Execute all pending coroutines in the viewModel
+            runCurrent()
 
             // Verify the new value is available
-            assertEquals(viewModel.currentWeather.value, FakeDataSource.WEATHER_CONDITION)
+            assertEquals(FakeDataSource.WEATHER_CONDITION, viewModel.currentWeather.value)
         }
     }
 
     @Test
-    fun cache_RefreshFromViewModelScope() {
+    fun cache_RefreshFromViewModelScope() = runTest {
         // Get the initial value that comes directly from FakeDataSource
         val initialValue = viewModel.cachedValue.getOrAwaitValue()
 
         // Trigger an update, which starts a coroutine that updates the value
         viewModel.onRefresh()
 
+        // Run pending coroutine in ViewModel
+        runCurrent()
+
         // Get the new value
         val valueAfterRefresh = viewModel.cachedValue.getOrAwaitValue()
 
         // Assert they are different values
         assertNotEquals(initialValue, valueAfterRefresh)
-        assertEquals(initialValue, FakeDataSource.CURRENT_VALUE)
-        assertEquals(valueAfterRefresh, FakeDataSource.NEW_VALUE)
+        assertEquals(FakeDataSource.CURRENT_VALUE, initialValue)
+        assertEquals(FakeDataSource.NEW_VALUE, valueAfterRefresh)
     }
 }
 
 @ExperimentalCoroutinesApi
-class FakeDataSource : DataSource {
+class FakeDataSource(private val testDispatcher: TestDispatcher) : DataSource {
 
     companion object {
         const val CURRENT_VALUE = "test"
@@ -129,7 +135,6 @@ class FakeDataSource : DataSource {
 
     override fun getCurrentTime(): LiveData<Long> = MutableLiveData<Long>(CURRENT_TIME)
 
-    val testDispatcher = TestCoroutineDispatcher()
     override fun fetchWeather(): LiveData<String> = liveData(testDispatcher) {
         emit(WEATHER_CONDITION)
     }

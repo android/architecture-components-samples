@@ -8,7 +8,7 @@ import com.android.example.paging.pagingwithnetwork.reddit.repository.inMemory.b
 import com.android.example.paging.pagingwithnetwork.repository.FakeRedditApi
 import com.android.example.paging.pagingwithnetwork.repository.PostFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -25,7 +25,7 @@ class SubredditPagingSourceTest {
     }
 
     @Test
-    fun itemKeyedSubredditPagingSource() = runBlockingTest {
+    fun itemKeyedSubredditPagingSource() = runTest {
         val pagingSource = ItemKeyedSubredditPagingSource(fakeApi, DEFAULT_SUBREDDIT)
         assertEquals(
             expected = Page(
@@ -44,7 +44,7 @@ class SubredditPagingSourceTest {
     }
 
     @Test
-    fun pageKeyedSubredditPagingSource() = runBlockingTest {
+    fun pageKeyedSubredditPagingSource() = runTest {
         val pagingSource = PageKeyedSubredditPagingSource(fakeApi, DEFAULT_SUBREDDIT)
         assertEquals(
             expected = Page(
