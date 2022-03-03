@@ -23,17 +23,20 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentContainerView
 import com.android.example.github.R
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Used for testing fragments inside a fake activity.
  */
+
+@AndroidEntryPoint
 class SingleFragmentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val content = FragmentContainerView(this).apply {
             layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
             )
             id = R.id.container
         }
@@ -42,18 +45,18 @@ class SingleFragmentActivity : AppCompatActivity() {
 
     fun setFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.container, fragment, "TEST")
-            .commit()
+                .add(R.id.container, fragment, "TEST")
+                .commit()
     }
 
     fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = false) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment)
-            .apply {
-                if (addToBackStack) {
-                    addToBackStack(null)
+                .replace(R.id.container, fragment)
+                .apply {
+                    if (addToBackStack) {
+                        addToBackStack(null)
+                    }
                 }
-            }
-            .commit()
+                .commit()
     }
 }
