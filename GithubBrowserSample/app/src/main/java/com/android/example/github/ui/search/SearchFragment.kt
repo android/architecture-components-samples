@@ -30,7 +30,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,17 +37,17 @@ import com.android.example.github.AppExecutors
 import com.android.example.github.R
 import com.android.example.github.binding.FragmentDataBindingComponent
 import com.android.example.github.databinding.SearchFragmentBinding
-import com.android.example.github.di.Injectable
 import com.android.example.github.ui.common.RepoListAdapter
 import com.android.example.github.ui.common.RetryCallback
 import com.android.example.github.util.autoCleared
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class SearchFragment : Fragment(), Injectable {
+@AndroidEntryPoint
+class SearchFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+
 
     @Inject
     lateinit var appExecutors: AppExecutors
@@ -59,9 +58,7 @@ class SearchFragment : Fragment(), Injectable {
 
     var adapter by autoCleared<RepoListAdapter>()
 
-    val searchViewModel: SearchViewModel by viewModels {
-        viewModelFactory
-    }
+    val searchViewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

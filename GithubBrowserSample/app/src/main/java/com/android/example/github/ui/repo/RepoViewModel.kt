@@ -26,9 +26,10 @@ import com.android.example.github.util.AbsentLiveData
 import com.android.example.github.vo.Contributor
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@OpenForTesting
+@HiltViewModel
 class RepoViewModel @Inject constructor(repository: RepoRepository) : ViewModel() {
     private val _repoId: MutableLiveData<RepoId> = MutableLiveData()
     val repoId: LiveData<RepoId>
