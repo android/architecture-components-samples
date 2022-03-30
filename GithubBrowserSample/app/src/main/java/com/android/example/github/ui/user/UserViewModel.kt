@@ -22,14 +22,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import com.android.example.github.repository.RepoRepository
 import com.android.example.github.repository.UserRepository
-import com.android.example.github.testing.OpenForTesting
 import com.android.example.github.util.AbsentLiveData
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
 import com.android.example.github.vo.User
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@OpenForTesting
+@HiltViewModel
 class UserViewModel
 @Inject constructor(userRepository: UserRepository, repoRepository: RepoRepository) : ViewModel() {
     private val _login = MutableLiveData<String?>()
