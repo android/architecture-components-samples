@@ -45,8 +45,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RepoFragment : Fragment() {
 
-
-
     val repoViewModel: RepoViewModel by viewModels()
 
     @Inject

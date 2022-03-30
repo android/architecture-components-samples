@@ -47,8 +47,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
-
-
     @Inject
     lateinit var appExecutors: AppExecutors
 
