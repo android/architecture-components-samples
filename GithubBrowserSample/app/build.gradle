@@ -17,7 +17,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-allopen'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
@@ -81,16 +81,13 @@ dependencies {
     implementation deps.retrofit.gson
     implementation deps.glide.runtime
 
-    implementation deps.dagger.runtime
-    implementation deps.dagger.android
-    implementation deps.dagger.android_support
+    implementation deps.dagger.hilt_android
     implementation deps.constraint_layout
     implementation deps.kotlin.stdlib
 
     implementation deps.timber
 
-    kapt deps.dagger.android_support_compiler
-    kapt deps.dagger.compiler
+    kapt deps.dagger.hilt_compiler
     kapt deps.room.compiler
     kapt deps.lifecycle.compiler
 
