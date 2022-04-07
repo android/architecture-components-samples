@@ -27,8 +27,10 @@ import com.android.example.github.util.AbsentLiveData
 import com.android.example.github.vo.Repo
 import com.android.example.github.vo.Resource
 import com.android.example.github.vo.User
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 @OpenForTesting
 class UserViewModel
 @Inject constructor(userRepository: UserRepository, repoRepository: RepoRepository) : ViewModel() {
