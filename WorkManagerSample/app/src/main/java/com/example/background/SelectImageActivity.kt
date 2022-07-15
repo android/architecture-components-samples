@@ -34,6 +34,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.background.databinding.ActivitySelectBinding
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.ArrayList
 
 /**
@@ -41,6 +42,7 @@ import java.util.ArrayList
  *
  * There are two sources for the images: [MediaStore] and [StockImages].
  */
+@AndroidEntryPoint
 class SelectImageActivity : AppCompatActivity() {
 
     private var permissionRequestCount = 0

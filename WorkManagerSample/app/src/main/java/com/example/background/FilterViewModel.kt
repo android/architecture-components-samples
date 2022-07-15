@@ -16,21 +16,22 @@
 
 package com.example.background
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 /**
  * A [ViewModel] for [FilterActivity].
  *
  * Keeps track of pending image filter operations.
  */
-class FilterViewModel(application: Application) : ViewModel() {
+@HiltViewModel
+class FilterViewModel @Inject constructor(
+    private val workManager: WorkManager
+) : ViewModel() {
 
-    private val workManager = WorkManager.getInstance(application)
+    //private val workManager = WorkManager.getInstance(application)
 
     internal val workInfo =
         workManager.getWorkInfosByTagLiveData(Constants.TAG_OUTPUT)
@@ -43,7 +44,7 @@ class FilterViewModel(application: Application) : ViewModel() {
         workManager.cancelUniqueWork(Constants.IMAGE_MANIPULATION_WORK_NAME)
     }
 }
-
+/*
 class FilterViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -53,4 +54,4 @@ class FilterViewModelFactory(private val application: Application) : ViewModelPr
             throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
-}
+}*/

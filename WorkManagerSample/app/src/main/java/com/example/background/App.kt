@@ -18,19 +18,25 @@ package com.example.background
 
 import android.app.Application
 import android.util.Log
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.example.background.workers.RenameWorkerFactory
+import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
 /**
  * The [Application]. Responsible for initializing [WorkManager] in [Log.VERBOSE] mode.
  */
+@HiltAndroidApp
 class App : Application(), Configuration.Provider {
+
+    @Inject lateinit var workerFactory: HiltWorkerFactory
 
     override fun getWorkManagerConfiguration() =
         Configuration.Builder()
-            .setWorkerFactory(RenameWorkerFactory())
+            .setWorkerFactory(workerFactory)
             .setMinimumLoggingLevel(Log.VERBOSE)
             .build()
 }

@@ -26,11 +26,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.example.background.databinding.ActivityFilterBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /** The [android.app.Activity] where the user picks filters to be applied on an image. */
+@AndroidEntryPoint
 class FilterActivity : AppCompatActivity() {
 
-    private val viewModel: FilterViewModel by viewModels { FilterViewModelFactory(application) }
+    private val viewModel: FilterViewModel by viewModels()
     private var outputImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
