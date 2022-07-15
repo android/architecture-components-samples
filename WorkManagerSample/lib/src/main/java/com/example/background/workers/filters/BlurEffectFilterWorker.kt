@@ -22,9 +22,16 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import androidx.hilt.work.HiltWorker
 import androidx.work.WorkerParameters
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class BlurEffectFilterWorker(context: Context, parameters: WorkerParameters) :
+@HiltWorker
+class BlurEffectFilterWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted parameters: WorkerParameters
+) :
     BaseFilterWorker(context, parameters) {
 
     override fun applyFilter(input: Bitmap): Bitmap {

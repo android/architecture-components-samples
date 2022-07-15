@@ -16,30 +16,31 @@
 
 package com.example.background.workers.filters
 
-import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.example.background.Constants
 import com.example.background.library.R
 import com.example.background.workers.createNotification
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.util.UUID
+import java.io.*
+import java.util.*
 
-abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) :
+abstract class BaseFilterWorker(
+    context: Context,
+    parameters: WorkerParameters
+) :
     CoroutineWorker(context, parameters) {
 
     override suspend fun doWork(): Result {
-        val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI) ?:
-        throw IllegalArgumentException("Invalid input uri")
+        val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI)
+            ?: throw IllegalArgumentException("Invalid input uri")
         return try {
             val inputStream = inputStreamFor(applicationContext, resourceUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
@@ -95,13 +96,18 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
      * Create ForegroundInfo required to run a Worker in a foreground service.
      */
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        return ForegroundInfo(NOTIFICATION_ID, createNotification(applicationContext, id,
-        applicationContext.getString(R.string.notification_title_filtering_image)))
+        return ForegroundInfo(
+            NOTIFICATION_ID, createNotification(
+                applicationContext, id,
+                applicationContext.getString(R.string.notification_title_filtering_image)
+            )
+        )
     }
 
     companion object {
         const val TAG = "BaseFilterWorker"
         const val ASSET_PREFIX = "file:///android_asset/"
+
         // For a real world app you might want to use a different id for each Notification.
         const val NOTIFICATION_ID = 1
 

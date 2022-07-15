@@ -23,12 +23,15 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media
 import android.util.Log
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.example.background.Constants
 import com.example.background.library.R
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,7 +39,11 @@ import java.util.Locale
 /**
  * Saves an output image to the [MediaStore].
  */
-class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParameters) :
+@HiltWorker
+class SaveImageToGalleryWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters
+) :
     CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -70,8 +77,11 @@ class SaveImageToGalleryWorker(appContext: Context, workerParams: WorkerParamete
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
         return ForegroundInfo(
-            NOTIFICATION_ID, createNotification(applicationContext, id,
-            applicationContext.getString(R.string.notification_title_saving_image)))
+            NOTIFICATION_ID, createNotification(
+                applicationContext, id,
+                applicationContext.getString(R.string.notification_title_saving_image)
+            )
+        )
     }
 
     companion object {

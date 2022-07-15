@@ -19,15 +19,22 @@ package com.example.background.workers
 import android.content.Context
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.background.Constants
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
 /** Clears temporary files. */
-class CleanupWorker(appContext: Context, workerParams: WorkerParameters) :
+@HiltWorker
+class CleanupWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters
+) :
     CoroutineWorker(appContext, workerParams) {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

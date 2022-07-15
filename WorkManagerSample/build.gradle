@@ -23,6 +23,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.android_gradle_plugin}"
+        classpath deps.hilt.hilt_gradle_plugin
         classpath deps.kotlin.plugin
         classpath deps.benchmark_gradle
     }

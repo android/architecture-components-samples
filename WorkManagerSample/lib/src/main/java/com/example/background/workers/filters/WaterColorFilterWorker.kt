@@ -20,10 +20,17 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.renderscript.Allocation
 import android.renderscript.RenderScript
+import androidx.hilt.work.HiltWorker
 import androidx.work.WorkerParameters
 import com.example.background.ScriptC_waterColorEffect
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class WaterColorFilterWorker(context: Context, parameters: WorkerParameters) :
+@HiltWorker
+class WaterColorFilterWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted parameters: WorkerParameters
+) :
     BaseFilterWorker(context, parameters) {
 
     override fun applyFilter(input: Bitmap): Bitmap {

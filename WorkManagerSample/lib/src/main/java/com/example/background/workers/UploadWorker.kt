@@ -20,17 +20,24 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.hilt.work.HiltWorker
 import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.background.Constants
 import com.example.background.imgur.ImgurApi
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
 /**
  * Uploads an image to Imgur using the [ImgurApi].
  */
-class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
+@HiltWorker
+class UploadWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters
+) :
     Worker(appContext, workerParams) {
 
     override fun doWork(): Result {
