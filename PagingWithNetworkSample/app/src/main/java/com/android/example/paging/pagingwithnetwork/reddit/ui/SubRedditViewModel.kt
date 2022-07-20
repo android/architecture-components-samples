@@ -20,14 +20,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.android.example.paging.pagingwithnetwork.reddit.repository.RedditPostRepository
-import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.flatMapLatest
 
 class SubRedditViewModel(
     private val repository: RedditPostRepository,
@@ -44,28 +40,20 @@ class SubRedditViewModel(
         }
     }
 
-    private val clearListCh = Channel<Unit>(Channel.CONFLATED)
-
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val posts = flowOf(
-        clearListCh.receiveAsFlow().map { PagingData.empty<RedditPost>() },
-        savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
-            .asFlow()
-            .flatMapLatest { repository.postsOfSubreddit(it, 30) }
-            // cachedIn() shares the paging state across multiple consumers of posts,
-            // e.g. different generations of UI across rotation config change
-            .cachedIn(viewModelScope)
-    ).flattenMerge(2)
-
-    fun shouldShowSubreddit(
-        subreddit: String
-    ) = savedStateHandle.get<String>(KEY_SUBREDDIT) != subreddit
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val posts = savedStateHandle.getLiveData<String>(KEY_SUBREDDIT)
+        .asFlow()
+        .flatMapLatest { repository.postsOfSubreddit(it, 30) }
+        // cachedIn() shares the paging state across multiple consumers of posts,
+        // e.g. different generations of UI across rotation config change
+        .cachedIn(viewModelScope)
 
     fun showSubreddit(subreddit: String) {
         if (!shouldShowSubreddit(subreddit)) return
-
-        clearListCh.offer(Unit)
-
         savedStateHandle.set(KEY_SUBREDDIT, subreddit)
+    }
+
+    private fun shouldShowSubreddit(subreddit: String): Boolean {
+        return savedStateHandle.get<String>(KEY_SUBREDDIT) != subreddit
     }
 }

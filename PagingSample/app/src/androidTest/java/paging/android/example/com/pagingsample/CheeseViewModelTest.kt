@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -19,7 +20,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CheeseViewModelTest {
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
@@ -32,7 +33,7 @@ class CheeseViewModelTest {
     }
 
     @Test
-    fun separatorsTest() = runBlockingTest(testDispatcher) {
+    fun separatorsTest() = runTest {
         val cheeses = listOf(
             Cheese(0, "Abbaye de Belloc"),
             Cheese(1, "Brie"),
@@ -66,7 +67,8 @@ class CheeseViewModelTest {
             CheeseListItem.Item(cheeses[2]),
         )
 
-        // runBlockingTest checks for leaking jobs, so we have to cancel the one we started.
+        // runTest waits for pending jobs and collectLatest never completes,
+        // so we have to cancel it manually
         job.cancel()
     }
 }
