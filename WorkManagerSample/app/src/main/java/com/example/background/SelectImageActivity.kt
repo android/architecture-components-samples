@@ -17,9 +17,8 @@
 package com.example.background
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -28,6 +27,8 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -45,6 +46,8 @@ class SelectImageActivity : AppCompatActivity() {
 
     private var permissionRequestCount = 0
     private var hasPermissions = false
+
+    private lateinit var requestMultiplePermissions: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,53 +69,32 @@ class SelectImageActivity : AppCompatActivity() {
             permissionRequestCount = savedInstanceState.getInt(KEY_PERMISSIONS_REQUEST_COUNT, 0)
         }
 
+        requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            requestPermissionsIfNecessary()
+        }
         requestPermissionsIfNecessary()
 
+        val pickContract = registerForActivityResult(PickContract()) { imageUri ->
+            handleImageRequestResult(imageUri)
+        }
+
         binding.selectImage.setOnClickListener {
-            val chooseIntent = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            )
-            startActivityForResult(chooseIntent, REQUEST_CODE_IMAGE)
+            pickContract.launch(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         }
 
         binding.selectStockImage.setOnClickListener {
             startActivity(
-                FilterActivity.newIntent(
-                    this@SelectImageActivity, StockImages.randomStockImage()
-                )
+                    FilterActivity.newIntent(
+                            this@SelectImageActivity, StockImages.randomStockImage()
+                    )
             )
         }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(KEY_PERMISSIONS_REQUEST_COUNT, permissionRequestCount)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            when (requestCode) {
-                REQUEST_CODE_IMAGE -> handleImageRequestResult(data)
-                else -> Log.d(TAG, "Unknown request code.")
-            }
-        } else {
-            Log.e(TAG, String.format("Unexpected Result code \"%s\" or missing data.", resultCode))
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // Check if permissions were granted after a permissions request flow.
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            requestPermissionsIfNecessary() // no-op if permissions are granted already.
-        }
     }
 
     private fun requestPermissionsIfNecessary() {
@@ -122,39 +104,29 @@ class SelectImageActivity : AppCompatActivity() {
         if (!hasPermissions) {
             if (permissionRequestCount < MAX_NUMBER_REQUEST_PERMISSIONS) {
                 permissionRequestCount += 1
-                ActivityCompat.requestPermissions(
-                    this,
-                    sPermissions.toTypedArray(),
-                    REQUEST_CODE_PERMISSIONS
-                )
+                requestMultiplePermissions.launch(sPermissions.toTypedArray())
             } else {
                 Snackbar.make(
-                    findViewById(R.id.coordinatorLayout),
-                    R.string.set_permissions_in_settings,
-                    Snackbar.LENGTH_INDEFINITE
+                        findViewById(R.id.coordinatorLayout),
+                        R.string.set_permissions_in_settings,
+                        Snackbar.LENGTH_INDEFINITE
                 ).show()
-
                 findViewById<View>(R.id.selectImage).isEnabled = false
             }
         }
     }
 
-    private fun handleImageRequestResult(data: Intent) {
-        // Get the imageUri the user picked, from the Intent.ACTION_PICK result.
-        val imageUri = data.clipData!!.getItemAt(0).uri
-
-        if (imageUri == null) {
-            Log.e(TAG, "Invalid input image Uri.")
-            return
-        }
-        startActivity(FilterActivity.newIntent(this, imageUri))
+    private fun handleImageRequestResult(imageUri: Uri?) {
+        imageUri?.let {
+            startActivity(FilterActivity.newIntent(this, it))
+        } ?: Log.e(TAG, "Invalid input image Uri.")
     }
 
     private fun checkAllPermissions(): Boolean {
         var hasPermissions = true
         for (permission in sPermissions) {
             hasPermissions = hasPermissions and (ContextCompat.checkSelfPermission(
-                this, permission
+                    this, permission
             ) == PackageManager.PERMISSION_GRANTED)
         }
         return hasPermissions
@@ -166,8 +138,6 @@ class SelectImageActivity : AppCompatActivity() {
         private const val KEY_PERMISSIONS_REQUEST_COUNT = "KEY_PERMISSIONS_REQUEST_COUNT"
 
         private const val MAX_NUMBER_REQUEST_PERMISSIONS = 2
-        private const val REQUEST_CODE_IMAGE = 100
-        private const val REQUEST_CODE_PERMISSIONS = 101
 
         // A list of permissions the application needs.
         @VisibleForTesting
