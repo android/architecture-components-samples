@@ -37,17 +37,17 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove" />
+            tools:node
 
         <service
             android:name="androidx.work.multiprocess.RemoteWorkerService"
-            android:exported="false"
-            android:process=":worker1" />
+            android:exported="true"
+            android:process=
 
         <service
             android:name=".RemoteWorkerService2"
-            android:exported="false"
-            android:process=":worker2" />
+            android:exported="true"
+            android:process=
     </application>
 
 </manifest>
