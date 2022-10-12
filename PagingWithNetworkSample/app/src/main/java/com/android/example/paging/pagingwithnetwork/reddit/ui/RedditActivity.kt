@@ -136,7 +136,7 @@ class RedditActivity : AppCompatActivity() {
 
     private fun updatedSubredditFromInput() {
         binding.input.text.trim().toString().let {
-            if (it.isNotBlank() && model.shouldShowSubreddit(it)) {
+            if (it.isNotBlank()) {
                 model.showSubreddit(it)
             }
         }

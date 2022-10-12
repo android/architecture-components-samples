@@ -17,7 +17,8 @@
 
 <resources>
     <string name="notification_channel_id">WorkManagerSample</string>
-    <string name="notification_title">WorkManager Sample</string>
+    <string name="notification_title_filtering_image">WorkManager Sample: Filtering Image</string>
+    <string name="notification_title_saving_image">WorkManager Sample: Saving Filtered Image</string>
     <string name="cancel_processing">Cancel processing</string>
     <string name="channel_name">WorkManager Sample</string>
 </resources>
