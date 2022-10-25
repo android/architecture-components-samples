@@ -31,11 +31,7 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationCompat.Builder
-import androidx.work.CoroutineWorker
-import androidx.work.ForegroundInfo
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import androidx.work.*
 import com.example.background.Constants
 import com.example.background.library.R
 import java.io.File
@@ -55,7 +51,6 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
         val resourceUri = inputData.getString(Constants.KEY_IMAGE_URI) ?:
         throw IllegalArgumentException("Invalid input uri")
         return try {
-            setForeground(createForegroundInfo())
             val inputStream = inputStreamFor(applicationContext, resourceUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
             val output = applyFilter(bitmap)
@@ -109,7 +104,7 @@ abstract class BaseFilterWorker(context: Context, parameters: WorkerParameters) 
     /**
      * Create ForegroundInfo required to run a Worker in a foreground service.
      */
-    private fun createForegroundInfo(): ForegroundInfo {
+    override suspend fun getForegroundInfo(): ForegroundInfo {
         // For a real world app you might want to use a different id for each Notification.
         val notificationId = 1
         return ForegroundInfo(notificationId, createNotification())
