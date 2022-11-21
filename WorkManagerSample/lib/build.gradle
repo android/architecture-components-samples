@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+//apply plugin: 'com.android.library'
+//apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
-    compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
+    namespace 'com.example.background'
+    compileSdk 33
 
     defaultConfig {
         vectorDrawables {
             useSupportLibrary true
         }
         // Switching to Renderscript support provided by framework.
-        minSdkVersion build_versions.min_sdk
-        targetSdkVersion build_versions.target_sdk
-        versionCode 1
-        versionName "1.0"
+        minSdk 21
+        targetSdk 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
@@ -43,22 +45,21 @@ android {
 
 dependencies {
 
-    implementation deps.kotlin.stdlib
-    implementation deps.work.runtime_ktx
-    implementation deps.app_compat
-    implementation deps.cardview
-    implementation deps.material
-    implementation deps.constraint_layout
-    implementation deps.retrofit.runtime
-    implementation deps.retrofit.gson
-    implementation deps.okhttp_logging_interceptor
-    implementation deps.glide.runtime
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.cardview:cardview:$cardview_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:${okhttp_logging_interceptor_version}"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
 
-    testImplementation deps.junit
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$atsl_junit_version"
+    androidTestImplementation "androidx.test:runner:$atsl_runner_version"
+    androidTestImplementation "androidx.test:rules:$atsl_rules_version"
 
-    androidTestImplementation deps.atsl.ext_junit_ktx
-    androidTestImplementation deps.atsl.runner
-    androidTestImplementation deps.atsl.rules
-
-    androidTestImplementation deps.work.testing
+    androidTestImplementation "androidx.work:work-testing:$work_version"
 }

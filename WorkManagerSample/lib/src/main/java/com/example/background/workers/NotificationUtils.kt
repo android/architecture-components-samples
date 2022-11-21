@@ -26,7 +26,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.WorkManager
-import com.example.background.library.R
+import com.example.background.R
 import java.util.UUID
 
 /**

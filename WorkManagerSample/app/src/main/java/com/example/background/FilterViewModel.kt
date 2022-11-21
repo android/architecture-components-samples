@@ -20,6 +20,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 
@@ -46,7 +47,7 @@ class FilterViewModel(application: Application) : ViewModel() {
 
 class FilterViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(FilterViewModel::class.java)) {
             FilterViewModel(application) as T
         } else {

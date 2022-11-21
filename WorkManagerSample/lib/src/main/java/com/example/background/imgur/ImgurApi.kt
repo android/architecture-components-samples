@@ -20,9 +20,11 @@ import android.net.Uri
 import com.example.background.Constants
 import okhttp3.Interceptor
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.Response
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -51,7 +53,7 @@ class ImgurApi private constructor() {
 
     fun uploadImage(imageUri: Uri): Call<PostImageResponse> {
         val imageFile = File(imageUri.path!!)
-        val requestFile = RequestBody.create(MEDIA_TYPE_PNG, imageFile)
+        val requestFile = imageFile.asRequestBody(MEDIA_TYPE_PNG)
         val body = MultipartBody.Part.createFormData("image", "image.png", requestFile)
         return imgurService.postImage(body)
     }
@@ -61,7 +63,7 @@ class ImgurApi private constructor() {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
-            val headers = request.headers().newBuilder()
+            val headers = request.headers.newBuilder()
                 .add("Authorization", "Client-ID ${Constants.IMGUR_CLIENT_ID}")
                 .build()
             val authenticatedRequest = request.newBuilder().headers(headers).build()
@@ -71,7 +73,7 @@ class ImgurApi private constructor() {
 
     companion object {
 
-        private val MEDIA_TYPE_PNG = MediaType.parse("image/png")
+        private val MEDIA_TYPE_PNG = "image/png".toMediaTypeOrNull()
         val instance: Lazy<ImgurApi> = lazy { ImgurApi() }
     }
 }

@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+//apply plugin: 'com.android.application'
+//apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.devtools.ksp' version "1.7.10-1.0.6"
+}
 
 android {
-    compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
+    namespace 'com.example.background'
+    compileSdk 33
+
     defaultConfig {
-        applicationId "com.example.background"
-        vectorDrawables {
-            useSupportLibrary true
-        }
-        // Switching to Renderscript support provided by framework.
-        minSdkVersion build_versions.min_sdk
-        targetSdkVersion build_versions.target_sdk
+        applicationId "com.example.juicetracker"
+        minSdk 21
+        targetSdk 33
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -53,25 +57,25 @@ android {
 dependencies {
     implementation project(path: ':lib')
 
-    implementation deps.kotlin.stdlib
-    implementation deps.work.runtime_ktx
-    implementation deps.app_compat
-    implementation deps.cardview
-    implementation deps.material
-    implementation deps.fragment.runtime_ktx
-    implementation deps.constraint_layout
-    implementation deps.arch_core.runtime
-    implementation deps.lifecycle.livedata_ktx
-    implementation deps.retrofit.runtime
-    implementation deps.retrofit.gson
-    implementation deps.okhttp_logging_interceptor
-    implementation deps.glide.runtime
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.cardview:cardview:$cardview_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.fragment:fragment-ktx:${fragment_version}"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+    implementation "androidx.arch.core:core-runtime:$arch_core_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:${okhttp_logging_interceptor_version}"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
 
-    testImplementation deps.junit
-    androidTestImplementation deps.atsl.ext_junit
-    androidTestImplementation deps.atsl.runner
-    androidTestImplementation deps.atsl.rules
-    androidTestImplementation deps.espresso.core
-    androidTestImplementation deps.work.testing
-    androidTestImplementation deps.arch_core.testing
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$atsl_junit_version"
+    androidTestImplementation "androidx.test:runner:$atsl_runner_version"
+    androidTestImplementation "androidx.test:rules:$atsl_rules_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+    androidTestImplementation "androidx.arch.core:core-testing:$arch_core_version"
 }

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'androidx.benchmark'
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'androidx.benchmark'
+}
 
 android {
-    compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
+    namespace 'com.example.background'
+    compileSdk 33
 
     defaultConfig {
+        testInstrumentationRunnerArguments mode: 'none'
         vectorDrawables {
             useSupportLibrary true
         }
-        // Switching to Renderscript support provided by framework.
-        minSdkVersion 18
-        targetSdkVersion build_versions.target_sdk
-        versionCode 1
-        versionName "1.0"
+        minSdk 21
+        targetSdk 33
 
         // Set this argument to capture profiling information, instead of measuring performance.
         // Can be one of:
@@ -38,7 +38,6 @@ android {
         //   * Sampled
         //   * Method
         // See full descriptions of available options at: d.android.com/benchmark#profiling
-        testInstrumentationRunnerArgument 'androidx.benchmark.profiling.mode', 'none'
     }
 
     testBuildType = "release"
@@ -58,20 +57,21 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    testNamespace 'com.example.benchmark'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':lib')
 
-    implementation deps.kotlin.stdlib
-    implementation deps.work.runtime_ktx
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
-    androidTestImplementation deps.junit
-    androidTestImplementation deps.atsl.ext_junit
-    androidTestImplementation deps.atsl.runner
-    androidTestImplementation deps.atsl.rules
-    androidTestImplementation deps.benchmark
-    androidTestImplementation deps.espresso.core
-    androidTestImplementation deps.work.testing
+    androidTestImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$atsl_junit_version"
+    androidTestImplementation "androidx.test:runner:$atsl_runner_version"
+    androidTestImplementation "androidx.test:rules:$atsl_rules_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+    androidTestImplementation "androidx.benchmark:benchmark-junit4:$benchmark_version"
 }
