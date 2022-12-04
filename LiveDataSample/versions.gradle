@@ -22,7 +22,7 @@
 ext.deps = [:]
 def versions = [:]
 versions.activity = '1.1.0'
-versions.android_gradle_plugin = '4.0.0'
+versions.android_gradle_plugin = '4.2.2'
 versions.annotations = "1.0.0"
 versions.apache_commons = "2.5"
 versions.appcompat = "1.2.0-alpha02"
@@ -69,7 +69,6 @@ def build_versions = [:]
 build_versions.min_sdk = 14
 build_versions.compile_sdk = 29
 build_versions.target_sdk = 29
-build_versions.build_tools = "29.0.3"
 ext.build_versions = build_versions
 
 def deps = [:]
