@@ -22,7 +22,7 @@ android {
     compileSdkVersion build_versions.compile_sdk
     defaultConfig {
         applicationId "com.android.example.paging.pagingwithnetwork"
-        minSdkVersion build_versions.min_sdk
+        minSdkVersion 21
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
