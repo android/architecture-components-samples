@@ -46,7 +46,7 @@ jobs:
 
       - name: Build project
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew assembleDebug lintDebug --stacktrace
+        run: ./gradlew assembleDebug lintSqliteDebug lintRoomDebug lintRoom2Debug lintRoom3Debug --stacktrace
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
