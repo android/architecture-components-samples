@@ -16,7 +16,7 @@ env:
   SAMPLE_PATH: BasicSample
 
 jobs:
-  build:
+  build_and_test:
     runs-on: macOS-latest
     timeout-minutes: 30
 
