@@ -9,6 +9,7 @@ on:
       - 'BasicSample/**'
   pull_request:
     paths:
+      - '.github/workflows/BasicSample.yaml'
       - 'BasicSample/**'
 
 env:
