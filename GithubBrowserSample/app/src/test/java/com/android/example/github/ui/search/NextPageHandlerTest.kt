@@ -147,8 +147,8 @@ class NextPageHandlerTest {
         assertThat(liveData.hasActiveObservers(), `is`(false))
     }
 
-    private fun enqueueResponse(query: String): MutableLiveData<Resource<Boolean>> {
-        val liveData = MutableLiveData<Resource<Boolean>>()
+    private fun enqueueResponse(query: String): MutableLiveData<Resource<Boolean>?> {
+        val liveData = MutableLiveData<Resource<Boolean>?>()
         `when`(repository.searchNextPage(query)).thenReturn(liveData)
         return liveData
     }

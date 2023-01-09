@@ -27,18 +27,19 @@ import com.android.example.github.util.mock
 import com.android.example.github.vo.RepoSearchResult
 import com.android.example.github.vo.Resource
 import okhttp3.Headers
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import okhttp3.Headers.Companion.headersOf
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
+import org.mockito.Mockito.`when`
 import retrofit2.Call
 import retrofit2.Response
 import java.io.IOException
@@ -58,7 +59,7 @@ class FetchNextSearchPageTaskTest {
 
     private lateinit var task: FetchNextSearchPageTask
 
-    private val observer: Observer<Resource<Boolean>> = mock()
+    private val observer: Observer<Resource<Boolean>?> = mock()
 
     @Before
     fun init() {
@@ -120,9 +121,8 @@ class FetchNextSearchPageTaskTest {
         val call = mock<Call<RepoSearchResponse>>()
         `when`(call.execute()).thenReturn(
             Response.error(
-                400, ResponseBody.create(
-                    MediaType.parse("txt"), "bar"
-                )
+                400, "bar"
+                    .toResponseBody("txt".toMediaTypeOrNull())
             )
         )
         `when`(service.searchRepos("foo", 1)).thenReturn(call)
@@ -152,12 +152,11 @@ class FetchNextSearchPageTaskTest {
         val headers = if (nextPage == null)
             null
         else
-            Headers
-                .of(
-                    "link",
-                    "<https://api.github.com/search/repositories?q=foo&page=" + nextPage
-                            + ">; rel=\"next\""
-                )
+            headersOf(
+                "link",
+                "<https://api.github.com/search/repositories?q=foo&page=" + nextPage
+        + ">; rel=\"next\""
+            )
         val success = if (headers == null)
             Response.success(body)
         else

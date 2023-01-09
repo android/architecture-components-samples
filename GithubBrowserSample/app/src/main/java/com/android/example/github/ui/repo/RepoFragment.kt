@@ -90,7 +90,8 @@ class RepoFragment : Fragment(), Injectable {
             }
         }
         binding = dataBinding
-        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(R.transition.move)
+        sharedElementReturnTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.move)
         return dataBinding.root
     }
 

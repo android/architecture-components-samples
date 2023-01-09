@@ -36,8 +36,8 @@ class FetchNextSearchPageTask constructor(
     private val githubService: GithubService,
     private val db: GithubDb
 ) : Runnable {
-    private val _liveData = MutableLiveData<Resource<Boolean>>()
-    val liveData: LiveData<Resource<Boolean>> = _liveData
+    private val _liveData = MutableLiveData<Resource<Boolean>?>()
+    val liveData: MutableLiveData<Resource<Boolean>?> = _liveData
 
     override fun run() {
         val current = db.repoDao().findSearchResult(query)

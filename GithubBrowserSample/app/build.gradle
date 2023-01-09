@@ -29,7 +29,7 @@ android {
     compileSdkVersion build_versions.compile_sdk
     defaultConfig {
         applicationId "com.android.example.github"
-        minSdkVersion build_versions.min_sdk
+        minSdkVersion 21
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
@@ -60,6 +60,7 @@ android {
     }
     lintOptions {
         lintConfig rootProject.file('lint.xml')
+        disable 'InvalidPackage'
     }
 }
 
@@ -98,7 +99,6 @@ dependencies {
     testImplementation deps.arch_core.testing
     testImplementation deps.mockito.core
 
-    androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
