@@ -47,14 +47,14 @@
                 tools:node="remove" />
     </provider>
 
-        <activity android:name=".SelectImageActivity">
+        <activity android:name=".SelectImageActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".FilterActivity">
+        <activity android:name=".FilterActivity" android:exported="true">
         </activity>
 
     </application>

@@ -20,14 +20,13 @@ apply plugin: 'androidx.benchmark'
 
 android {
     compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
 
     defaultConfig {
         vectorDrawables {
             useSupportLibrary true
         }
         // Switching to Renderscript support provided by framework.
-        minSdkVersion 18
+        minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
