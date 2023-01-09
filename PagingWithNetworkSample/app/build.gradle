@@ -81,6 +81,7 @@ dependencies {
     implementation deps.retrofit.gson
     implementation deps.okhttp_logging_interceptor
     implementation deps.glide.runtime
+    implementation deps.swiperefreshlayout
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation deps.atsl.ext_junit

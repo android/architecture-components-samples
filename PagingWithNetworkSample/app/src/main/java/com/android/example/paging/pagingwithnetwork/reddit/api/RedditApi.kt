@@ -19,6 +19,7 @@ package com.android.example.paging.pagingwithnetwork.reddit.api
 import android.util.Log
 import com.android.example.paging.pagingwithnetwork.reddit.vo.RedditPost
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -60,7 +61,7 @@ interface RedditApi {
                     .addInterceptor(logger)
                     .build()
             return Retrofit.Builder()
-                    .baseUrl(HttpUrl.parse(BASE_URL)!!)
+                    .baseUrl(BASE_URL.toHttpUrlOrNull()!!)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
