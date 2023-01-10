@@ -25,15 +25,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.android.example.github.testing.SingleFragmentActivity
+import com.android.example.github.util.DataBindingIdlingResourceTest.TestFragment
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@Ignore("https://github.com/android/architecture-components-samples/issues/1076")
 class AutoClearedValueTest {
 
     @Rule

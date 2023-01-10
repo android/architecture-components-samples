@@ -67,7 +67,7 @@ class DataBindingIdlingResource : IdlingResource {
         } else {
             wasNotIdle = true
             // check next frame
-            scenario.onFragment { fragment ->
+            (scenario as FragmentScenario<Fragment>).onFragment { fragment ->
                 fragment.view?.postDelayed({
                     if (fragment.view != null) {
                         isIdleNow
@@ -87,7 +87,7 @@ class DataBindingIdlingResource : IdlingResource {
      */
     private fun getBindings(): List<ViewDataBinding> {
         lateinit var bindings: List<ViewDataBinding>
-        scenario.onFragment {  fragment ->
+        (scenario as FragmentScenario<Fragment>).onFragment {  fragment ->
             bindings = fragment.requireView().flattenHierarchy().mapNotNull { view ->
                 DataBindingUtil.getBinding<ViewDataBinding>(view)
             }
