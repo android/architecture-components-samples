@@ -53,6 +53,7 @@ jobs:
         with:
           api-level: 26
           arch: x86
+          profile: Nexus 6
           disable-animations: true
           script: ./gradlew connectedCheck --stacktrace
           working-directory: ${{ env.SAMPLE_PATH }}
