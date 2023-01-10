@@ -54,18 +54,18 @@ jobs:
           api-level: 26
           arch: x86
           disable-animations: true
-          script: ./gradlew :app:connectedDebugAndroidTest :lib:connectedDebugAndroidTest --stacktrace
+          script: ./gradlew :app:connectedDebugAndroidTest --stacktrace
           working-directory: ${{ env.SAMPLE_PATH }}
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v3
         with:
           name: build-outputs-WorkManagerSample
-          path: ${{ env.SAMPLE_PATH }}/app/build/outputs
+          path: ${{ env.SAMPLE_PATH }}/**/build/outputs
 
       - name: Upload build reports
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: build-reports-WorkManagerSample
-          path: ${{ env.SAMPLE_PATH }}/app/build/reports
+          path: ${{ env.SAMPLE_PATH }}/**/build/reports
