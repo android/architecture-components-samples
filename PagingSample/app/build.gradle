@@ -65,6 +65,8 @@ dependencies {
     implementation deps.paging_runtime
     implementation deps.kotlin.stdlib
 
+    implementation deps.coroutines.android
+
     kapt deps.room.compiler
     implementation deps.room.runtime
     implementation deps.room.paging
