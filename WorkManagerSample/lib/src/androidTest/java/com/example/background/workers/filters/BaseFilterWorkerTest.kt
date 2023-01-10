@@ -23,19 +23,20 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.ListenableWorker.Result.Failure
 import androidx.work.ListenableWorker.Result.Success
 import androidx.work.WorkerParameters
-import androidx.work.testing.TestWorkerBuilder
+import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
 import com.example.background.Constants
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.RuntimeException
-import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors.newSingleThreadExecutor
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class BaseFilterWorkerTest {
 
@@ -55,10 +56,9 @@ class BaseFilterWorkerTest {
     }
 
     @Test
-    fun testFiltering_withExistingUri() {
-        val worker = TestWorkerBuilder<TestBaseFilterWorker>(
+    fun testFiltering_withExistingUri() = runTest {
+        val worker = TestListenableWorkerBuilder<TestBaseFilterWorker>(
             context,
-            executor,
             workDataOf(Constants.KEY_IMAGE_URI to "file:///android_asset/watson.jpg")
         ).build()
 
@@ -67,10 +67,9 @@ class BaseFilterWorkerTest {
     }
 
     @Test
-    fun testFiltering_invalidUri() {
-        worker = TestWorkerBuilder<TestBaseFilterWorker>(
+    fun testFiltering_invalidUri() = runTest {
+        worker = TestListenableWorkerBuilder<TestBaseFilterWorker>(
             context,
-            executor,
             inputData = workDataOf(Constants.KEY_IMAGE_URI to "file:///android_asset/invalid")
         ).build()
 
@@ -79,8 +78,8 @@ class BaseFilterWorkerTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun testFiltering_missingUri() {
-        worker = TestWorkerBuilder<TestBaseFilterWorker>(context, executor).build()
+    fun testFiltering_missingUri() = runTest {
+        worker = TestListenableWorkerBuilder<TestBaseFilterWorker>(context).build()
         worker.doWork() // throws Exception
     }
 }

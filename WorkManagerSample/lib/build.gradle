@@ -45,6 +45,7 @@ dependencies {
     implementation deps.kotlin.stdlib
     implementation deps.work.runtime_ktx
     implementation deps.app_compat
+    implementation deps.coroutines.android
     implementation deps.cardview
     implementation deps.material
     implementation deps.constraint_layout
@@ -58,6 +59,7 @@ dependencies {
     androidTestImplementation deps.atsl.ext_junit_ktx
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
+    androidTestImplementation deps.coroutines.test
 
     androidTestImplementation deps.work.testing
 }
