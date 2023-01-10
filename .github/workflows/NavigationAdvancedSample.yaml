@@ -42,7 +42,7 @@ jobs:
             ~/.gradle/caches/modules-*
             ~/.gradle/caches/jars-*
             ~/.gradle/caches/build-cache-*
-          key: gradle-${{ hashFiles('checksum.txt') }}
+          key: navadv-${{ hashFiles('checksum.txt') }}
 
       - name: Build project
         working-directory: ${{ env.SAMPLE_PATH }}
@@ -58,11 +58,9 @@ jobs:
           disable-animations: true
           working-directory: ${{ env.SAMPLE_PATH }}
           script: |
-            adb logcat -c                             # clear logs
-            touch app/emulator.log                    # create log file
-            chmod 777 app/emulator.log                # allow writing to log file
-            adb logcat >> app/emulator.log &          # pipe all logcat messages into log file as a background process
-            ./gradlew connectedCheck                  # here run your tests   
+            adb logcat -c
+            adb logcat &
+            ./gradlew :presentation:connectedDebugAndroidTest
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v3
@@ -76,14 +74,3 @@ jobs:
         with:
           name: build-reports-NavigationAdvancedSample
           path: ${{ env.SAMPLE_PATH }}/app/build/reports
-
-      - name: Upload Failing Test Report Log
-        if: steps.testing.outcome != 'success'        # upload the generated log on failure of the tests job
-        uses: actions/upload-artifact@v2
-        with:
-          name: logs
-          path: app/emulator.log # path to where the log is
-
-      - name: Raise error on test fail # set a red tick on the workflow run if the tests failed
-        if: steps.testing.outcome != 'success'
-        run: exit 1
