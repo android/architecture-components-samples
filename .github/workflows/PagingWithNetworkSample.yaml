@@ -54,7 +54,7 @@ jobs:
           api-level: 26
           arch: x86
           disable-animations: true
-          script: ./gradlew connectedCheck --stacktrace
+          script: ./gradlew :app:connectedDebugAndroidTest --stacktrace
           working-directory: ${{ env.SAMPLE_PATH }}
 
       - name: Upload build outputs (APKs)
