@@ -64,7 +64,7 @@ class UserFragmentTest {
     val countingAppExecutors = CountingAppExecutorsRule()
     @Rule
     @JvmField
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule()
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule<UserFragment>()
     private lateinit var viewModel: UserViewModel
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
     private val navController = mock<NavController>()

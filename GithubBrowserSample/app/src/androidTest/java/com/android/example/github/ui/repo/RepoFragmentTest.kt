@@ -70,7 +70,7 @@ class RepoFragmentTest {
     val countingAppExecutors = CountingAppExecutorsRule()
     @Rule
     @JvmField
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule()
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule<RepoFragment>()
 
     private val navController = mock<NavController>()
     private val repoLiveData = MutableLiveData<Resource<Repo>>()
