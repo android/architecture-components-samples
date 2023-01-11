@@ -19,6 +19,7 @@ package com.example.android.navigationsample
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.annotation.UiThreadTest
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -39,13 +40,13 @@ class TitleScreenTestKotlin {
     fun testNavigateToPlay() {
         // Create a TestNavHostController
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
-        navController.setGraph(R.navigation.navigation)
 
         // Create a graphical FragmentScenario for the TitleScreen
         val titleScenario = launchFragmentInContainer<TitleScreen>()
 
         // Set the NavController property on the fragment
         titleScenario.onFragment { fragment ->
+            navController.setGraph(R.navigation.navigation)
             Navigation.setViewNavController(fragment.requireView(), navController)
         }
 
@@ -60,13 +61,13 @@ class TitleScreenTestKotlin {
     fun testNavigateToLeaderboard() {
         // Create a TestNavHostController
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
-        navController.setGraph(R.navigation.navigation)
 
         // Create a graphical FragmentScenario for the TitleScreen
         val titleScenario = launchFragmentInContainer<TitleScreen>()
 
         // Set the NavController property on the fragment
         titleScenario.onFragment { fragment: TitleScreen ->
+            navController.setGraph(R.navigation.navigation)
             Navigation.setViewNavController(fragment.requireView(), navController)
         }
 

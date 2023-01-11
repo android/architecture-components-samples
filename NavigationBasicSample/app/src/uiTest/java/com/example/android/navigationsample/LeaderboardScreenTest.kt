@@ -20,17 +20,15 @@ class LeaderboardScreenTest {
 
     @Test
     fun testNavigateToProfile() {
-        val navController = TestNavHostController(
-                ApplicationProvider.getApplicationContext()).apply {
-            setGraph(R.navigation.navigation)
-            setCurrentDestination(R.id.leaderboard)
-        }
+        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
         // Create a graphical FragmentScenario for the Leaderboard fragment
         val leaderboardScenario = launchFragmentInContainer<Leaderboard>()
 
         // Set the NavController property on the fragment
         leaderboardScenario.onFragment { fragment ->
+            navController.setGraph(R.navigation.navigation)
+            navController.setCurrentDestination(R.id.leaderboard)
             Navigation.setViewNavController(fragment.requireView(), navController)
         }
 

@@ -76,10 +76,14 @@ dependencies {
     implementation deps.navigation.fragment_ktx
     implementation deps.navigation.runtime_ktx
     implementation deps.fragment.runtime_ktx
+
     // "androidx.fragment:fragment-testing" must be scoped to all sourcesets.
-    implementation(deps.fragment.testing)
+    implementation deps.fragment.testing
+    // Forcing androidx.test:core version
+    implementation deps.atsl.core
 
     // Espresso and UI Testing
+    androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.espresso.contrib
@@ -88,6 +92,7 @@ dependencies {
     androidTestImplementation deps.truth
 
     // Host-side tests
+    testImplementation deps.atsl.core
     testImplementation deps.atsl.ext_junit
     testImplementation deps.robolectric
     // Espresso API running in Robolectric
