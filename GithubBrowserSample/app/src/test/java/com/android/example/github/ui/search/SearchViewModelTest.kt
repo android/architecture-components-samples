@@ -82,7 +82,7 @@ class SearchViewModelTest {
 
     @Test
     fun swap() {
-        val nextPage = MutableLiveData<Resource<Boolean>>()
+        val nextPage = MutableLiveData<Resource<Boolean>?>()
         `when`(repository.searchNextPage("foo")).thenReturn(nextPage)
 
         val result = mock<Observer<Resource<List<Repo>>>>()

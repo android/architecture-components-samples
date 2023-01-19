@@ -17,17 +17,15 @@ class RegisterScreenTest {
 
     @Test
     fun testNavigateToMatch() {
-        val navController = TestNavHostController(
-                ApplicationProvider.getApplicationContext()).apply {
-            setGraph(R.navigation.navigation)
-            setCurrentDestination(R.id.register)
-        }
+        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
         // Create a graphical FragmentScenario for the Register fragment
         val registerScenario = launchFragmentInContainer<Register>()
 
         // Set the NavController property on the fragment
         registerScenario.onFragment { fragment ->
+            navController.setGraph(R.navigation.navigation)
+            navController.setCurrentDestination(R.id.register)
             Navigation.setViewNavController(fragment.requireView(), navController)
         }
 

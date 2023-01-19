@@ -27,10 +27,9 @@ allOpen {
 }
 android {
     compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.android.example.github"
-        minSdkVersion build_versions.min_sdk
+        minSdkVersion 21
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
@@ -61,6 +60,7 @@ android {
     }
     lintOptions {
         lintConfig rootProject.file('lint.xml')
+        disable 'InvalidPackage'
     }
 }
 
@@ -71,7 +71,10 @@ dependencies {
     implementation deps.material
     implementation deps.core_ktx
     implementation deps.transition
+
     implementation deps.fragment.testing
+    implementation deps.atsl.core
+
     implementation deps.navigation.fragment_ktx
     implementation deps.room.runtime
     implementation deps.lifecycle.livedata_ktx
@@ -94,6 +97,7 @@ dependencies {
     kapt deps.room.compiler
     kapt deps.lifecycle.compiler
 
+    testImplementation deps.atsl.core
     testImplementation deps.junit
     testImplementation deps.mock_web_server
     testImplementation deps.arch_core.testing

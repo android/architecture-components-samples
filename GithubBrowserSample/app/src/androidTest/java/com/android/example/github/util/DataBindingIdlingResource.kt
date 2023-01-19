@@ -34,7 +34,7 @@ import java.util.UUID
  * calling [monitorFragment] with a [FragmentScenario], thereby monitoring all bindings in that
  * fragment and any child views.
  */
-class DataBindingIdlingResource : IdlingResource {
+class DataBindingIdlingResource<F : Fragment> : IdlingResource {
     // list of registered callbacks
     private val idlingCallbacks = mutableListOf<IdlingResource.ResourceCallback>()
     // give it a unique id to workaround an espresso bug where you cannot register/unregister
@@ -44,14 +44,14 @@ class DataBindingIdlingResource : IdlingResource {
     // onTransitionToIdle callbacks if Espresso never thought we were idle in the first place.
     private var wasNotIdle = false
 
-    private lateinit var scenario: FragmentScenario<out Fragment>
+    private lateinit var scenario: FragmentScenario<F>
 
     override fun getName() = "DataBinding $id"
 
     /**
      * Sets the fragment from a [FragmentScenario] to be used from [DataBindingIdlingResource].
      */
-    fun monitorFragment(fragmentScenario: FragmentScenario<out Fragment>) {
+    fun monitorFragment(fragmentScenario: FragmentScenario<F>) {
         scenario = fragmentScenario
     }
 

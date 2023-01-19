@@ -20,10 +20,9 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.android.example.paging.pagingwithnetwork"
-        minSdkVersion build_versions.min_sdk
+        minSdkVersion 21
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
@@ -82,6 +81,7 @@ dependencies {
     implementation deps.retrofit.gson
     implementation deps.okhttp_logging_interceptor
     implementation deps.glide.runtime
+    implementation deps.swiperefreshlayout
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation deps.atsl.ext_junit

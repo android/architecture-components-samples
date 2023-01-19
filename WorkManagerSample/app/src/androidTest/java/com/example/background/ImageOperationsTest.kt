@@ -25,6 +25,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.FlakyTest
 import androidx.test.filters.SdkSuppress
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
@@ -74,6 +75,7 @@ class ImageOperationsTest {
     }
 
     @Test
+    @FlakyTest
     fun testImageOperations() {
         val imageOperations = ImageOperations(targetContext, IMAGE, grayScale = true)
 

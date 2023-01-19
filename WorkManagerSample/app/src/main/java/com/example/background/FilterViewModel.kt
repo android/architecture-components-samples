@@ -46,7 +46,7 @@ class FilterViewModel(application: Application) : ViewModel() {
 
 class FilterViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(FilterViewModel::class.java)) {
             FilterViewModel(application) as T
         } else {

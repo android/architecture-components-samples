@@ -125,7 +125,7 @@ class RepoRepository @Inject constructor(
         }.asLiveData()
     }
 
-    fun searchNextPage(query: String): LiveData<Resource<Boolean>> {
+    fun searchNextPage(query: String): LiveData<Resource<Boolean>?> {
         val fetchNextSearchPageTask = FetchNextSearchPageTask(
             query = query,
             githubService = githubService,

@@ -27,7 +27,7 @@ import com.android.example.github.util.CountingAppExecutors
 import com.android.example.github.util.InstantAppExecutors
 import com.android.example.github.util.mock
 import com.android.example.github.vo.Resource
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -137,7 +137,7 @@ class NetworkBoundResourceTest(private val useRealExecutors: Boolean) {
         handleSaveCallResult = {
             saved.set(true)
         }
-        val body = ResponseBody.create(MediaType.parse("text/html"), "error")
+        val body = ResponseBody.create("text/html".toMediaTypeOrNull(), "error")
         handleCreateCall = { ApiUtil.createCall(Response.error<Foo>(500, body)) }
 
         val observer = mock<Observer<Resource<Foo>>>()
@@ -185,7 +185,7 @@ class NetworkBoundResourceTest(private val useRealExecutors: Boolean) {
         handleSaveCallResult = {
             saved.set(true)
         }
-        val body = ResponseBody.create(MediaType.parse("text/html"), "error")
+        val body = ResponseBody.create("text/html".toMediaTypeOrNull(), "error")
         val apiResponseLiveData = MutableLiveData<ApiResponse<Foo>>()
         handleCreateCall = { apiResponseLiveData }
 

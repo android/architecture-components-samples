@@ -145,7 +145,7 @@ class RepoRepositoryTest {
     @Test
     fun searchNextPage_null() {
         `when`(dao.findSearchResult("foo")).thenReturn(null)
-        val observer = mock<Observer<Resource<Boolean>>>()
+        val observer = mock<Observer<Resource<Boolean>?>>()
         repository.searchNextPage("foo").observeForever(observer)
         verify(observer).onChanged(null)
     }
