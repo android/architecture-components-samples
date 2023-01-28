@@ -24,6 +24,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -35,6 +36,7 @@ class MainActivityTest {
 
     @Test
     @UiThread
+    @Ignore("https://github.com/android/architecture-components-samples/issues/1075")
     fun showSomeResults() {
         val intent = Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -19,14 +19,13 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.example.background"
         vectorDrawables {
             useSupportLibrary true
         }
         // Switching to Renderscript support provided by framework.
-        minSdkVersion build_versions.min_sdk
+        minSdkVersion 21
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
@@ -71,7 +70,8 @@ dependencies {
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
+    androidTestImplementation deps.arch_core.testing
+    androidTestImplementation deps.coroutines.test
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.work.testing
-    androidTestImplementation deps.arch_core.testing
 }

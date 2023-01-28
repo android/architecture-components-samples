@@ -69,7 +69,7 @@ class SearchFragmentTest {
     val countingAppExecutors = CountingAppExecutorsRule()
     @Rule
     @JvmField
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule()
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule<SearchFragment>()
 
     private lateinit var mockBindingAdapter: FragmentBindingAdapters
     private lateinit var viewModel: SearchViewModel
