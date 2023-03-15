@@ -28,12 +28,10 @@ interface RedditPostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(posts: List<RedditPost>)
 
-    @Query("SELECT * FROM posts WHERE subreddit = :subreddit ORDER BY indexInResponse ASC")
+    // Order by _id which is an immutable key to help maintain consistent item ordering
+    @Query("SELECT * FROM posts WHERE subreddit = :subreddit ORDER BY _id ASC")
     fun postsBySubreddit(subreddit: String): PagingSource<Int, RedditPost>
 
     @Query("DELETE FROM posts WHERE subreddit = :subreddit")
     suspend fun deleteBySubreddit(subreddit: String)
-
-    @Query("SELECT MAX(indexInResponse) + 1 FROM posts WHERE subreddit = :subreddit")
-    suspend fun getNextIndexInSubreddit(subreddit: String): Int
 }
