@@ -20,7 +20,7 @@ A collection of samples using the **[Architecture Components](https://developer.
 
 * **[GithubBrowserSample](https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample)** - An **advanced**  sample that uses the Architecture components, `Dagger` and the `Github API`, in `Kotlin`.
 
-* **[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use `Room` with `RxJava 2`. Also uses `ViewModel`.
+* **[BasicRxJavaSample](https://github.com/googlesamples/android-architecture-components/blob/master/BasicRxJavaSample)** - Shows how to use `Room` with `RxJava 2` and uses `ViewModel`.
 
 * **[PersistenceMigrationsSample](https://github.com/googlesamples/android-architecture-components/blob/master/PersistenceMigrationsSample)** - Shows how to implement migrations in `Room`.
 
