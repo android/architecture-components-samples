@@ -32,9 +32,9 @@ class PostFactory {
                 created = System.currentTimeMillis(),
                 thumbnail = null,
                 subreddit = subredditName,
-                url = null
+                url = null,
+                _id = id
         )
-        post.indexInResponse = -1
         return post
     }
 }
