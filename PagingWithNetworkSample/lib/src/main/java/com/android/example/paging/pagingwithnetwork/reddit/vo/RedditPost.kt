@@ -25,7 +25,11 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "posts",
         indices = [Index(value = ["subreddit"], unique = false)])
 data class RedditPost(
-        @PrimaryKey
+        // A unique Int key starting at 0 which autoIncrements by 1 with every insert.
+        // We need this immutable key to maintain consistent item ordering so that the UI
+        // does not scroll out of order when new posts are appended and inserted into this db.
+        @PrimaryKey(autoGenerate = true)
+        val _id: Int?,
         @SerializedName("name")
         val name: String,
         @SerializedName("title")
@@ -43,6 +47,4 @@ data class RedditPost(
         val created: Long,
         val thumbnail: String?,
         val url: String?) {
-    // to be consistent w/ changing backend order, we need to keep a data like this
-    var indexInResponse: Int = -1
 }
