@@ -53,6 +53,7 @@ dependencies {
     implementation project(path: ':lib')
 
     implementation deps.kotlin.stdlib
+    implementation deps.activity.activity_ktx
     implementation deps.work.runtime_ktx
     implementation deps.app_compat
     implementation deps.cardview
