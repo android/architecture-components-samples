@@ -16,10 +16,10 @@
 
 package com.android.example.github.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.android.example.github.AppExecutors
 import com.android.example.github.api.ApiEmptyResponse
 import com.android.example.github.api.ApiErrorResponse
@@ -64,6 +64,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>
         }
     }
 
+    @MainThread
     private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {
         val apiResponse = createCall()
         // we re-attach dbSource as a new source, it will dispatch its latest value quickly
@@ -88,11 +89,9 @@ abstract class NetworkBoundResource<ResultType, RequestType>
                     }
                 }
                 is ApiEmptyResponse -> {
-                    appExecutors.mainThread().execute {
-                        // reload from disk whatever we had
-                        result.addSource(loadFromDb()) { newData ->
-                            setValue(Resource.success(newData))
-                        }
+                    // reload from disk whatever we had
+                    result.addSource(loadFromDb()) { newData ->
+                        setValue(Resource.success(newData))
                     }
                 }
                 is ApiErrorResponse -> {
@@ -105,6 +104,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>
         }
     }
 
+    @MainThread
     protected open fun onFetchFailed() {}
 
     fun asLiveData() = result as LiveData<Resource<ResultType>>
