@@ -1,6 +1,7 @@
-Room Migration Sample
-======================
+# Room Migration Sample
+Demos database migrations using Room.
 
+## Introduction
 This is an API sample to showcase how to deal with database migrations using Room. From
 [docs](https://developer.android.com/topic/libraries/architecture/room.html#db-migration):
 
@@ -13,9 +14,6 @@ classes to preserve user data in this manner. Each [Migration](https://developer
 class specifies a startVersion and endVersion. At runtime, Room runs each [Migration](https://developer.android.com/reference/android/arch/persistence/room/migration/Migration.html)
 class's [migrate()](https://developer.android.com/reference/android/arch/persistence/room/migration/Migration.html#migrate(android.arch.persistence.db.SupportSQLiteDatabase)
 method, using the correct order to migrate the database to a later version.
-
-Introduction
--------------
 
 ## Functionality
 The sample app shows an editable user name, stored in the database.

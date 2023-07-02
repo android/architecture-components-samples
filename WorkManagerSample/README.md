@@ -1,6 +1,7 @@
-Android Jetpack WorkManager Sample
-==================================
+# Android Jetpack WorkManager Sample
+Demos WorkManager to do background work for a image processing app.
 
+## Introduction
 This is a simple image processing application written in Kotlin that shows how to use [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager/) to do background work.
 
 ## Learn more about WorkManager

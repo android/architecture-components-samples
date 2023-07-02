@@ -1,6 +1,8 @@
 Android Architecture Components Navigation Basic Sample
 ==============================================
+Demos Navigation component with focus on actions, transitions, back stack, arguments, and deep links.
 
+## Introduction
 ### Features
 
 This sample showcases the following features of the Navigation component:

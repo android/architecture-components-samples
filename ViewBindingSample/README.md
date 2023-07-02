@@ -1,6 +1,9 @@
 View Binding Sample
 =============================================
+Demos the Architecture Component View Binding.
 
+Introduction
+------------
 This sample requires Android Studio 3.6+ and showcases the following Architecture Components:
 
 * [View Binding](https://developer.android.com/topic/libraries/view-binding)
