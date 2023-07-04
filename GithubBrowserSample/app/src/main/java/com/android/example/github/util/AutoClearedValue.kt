@@ -19,7 +19,7 @@ package com.android.example.github.util
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.observe
+import androidx.lifecycle.Observer
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -32,15 +32,23 @@ class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Frag
     private var _value: T? = null
 
     init {
+        val viewLifecycleOwnerLiveDataObserver = Observer<LifecycleOwner?> {
+            val viewLifecycleOwner = it ?: return@Observer
+
+            viewLifecycleOwner.lifecycle.addObserver(object: DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    _value = null
+                }
+            })
+        }
+
         fragment.lifecycle.addObserver(object: DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
-                fragment.viewLifecycleOwnerLiveData.observe(fragment) { viewLifecycleOwner ->
-                    viewLifecycleOwner?.lifecycle?.addObserver(object: DefaultLifecycleObserver {
-                        override fun onDestroy(owner: LifecycleOwner) {
-                            _value = null
-                        }
-                    })
-                }
+                fragment.viewLifecycleOwnerLiveData.observeForever(viewLifecycleOwnerLiveDataObserver)
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                fragment.viewLifecycleOwnerLiveData.removeObserver(viewLifecycleOwnerLiveDataObserver)
             }
         })
     }
