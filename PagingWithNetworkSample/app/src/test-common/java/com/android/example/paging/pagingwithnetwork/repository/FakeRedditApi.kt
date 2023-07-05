@@ -37,6 +37,10 @@ class FakeRedditApi : RedditApi {
         subreddit.items.add(post)
     }
 
+    fun clearPosts() {
+        model.clear()
+    }
+
     private fun findPosts(
         subreddit: String,
         limit: Int,
