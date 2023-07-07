@@ -21,4 +21,5 @@ public interface Product {
     String getName();
     String getDescription();
     int getPrice();
+    String getCategory();
 }
