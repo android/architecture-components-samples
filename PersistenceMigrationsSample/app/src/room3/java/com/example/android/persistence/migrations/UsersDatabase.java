@@ -102,32 +102,6 @@ public abstract class UsersDatabase extends RoomDatabase {
         }
     };
 
-    /**
-     * Migrate from
-     * version 1 - using the SQLiteDatabase API
-     * to
-     * version 4 - using Room where {@link User} has a new field: {@link User#mDate} and
-     * {@link User#mId} is a String
-     */
-    @VisibleForTesting
-    static final Migration MIGRATION_1_4 = new Migration(1, 4) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            // Create the new table
-            database.execSQL(
-                    "CREATE TABLE users_new (userid TEXT, username TEXT, last_update INTEGER,"
-                            + " PRIMARY KEY(userid))");
-            // Copy the data
-            database.execSQL("INSERT INTO users_new (userid, username, last_update) "
-                    + "SELECT userid, username, 0 "
-                    + "FROM users");
-            // Remove the old table
-            database.execSQL("DROP TABLE users");
-            // Change the table name to the correct one
-            database.execSQL("ALTER TABLE users_new RENAME TO users");
-        }
-    };
-
     public static UsersDatabase getInstance(Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
