@@ -7,7 +7,7 @@ A collection of samples using the [Architecture Components](https://developer.an
 - [Lifecycle-aware components](https://developer.android.com/topic/libraries/architecture/lifecycle)
 - [ViewModels](https://developer.android.com/topic/libraries/architecture/viewmodel)
 - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
-- [Paging](https://developer.android.com/topic/libraries/architecture/paging/)
+- [Paging](https://developer.android.com/topic/libraries/architecture/paging/v3-overview)
 - [Navigation](https://developer.android.com/topic/libraries/architecture/navigation/)
 - [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
 - [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager/)
